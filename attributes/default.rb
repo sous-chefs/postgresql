@@ -32,7 +32,7 @@ when "debian"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
 
-  set[:postgresql][:data_dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+  set[:postgresql][:data_dir] = "/var/lib/postgresql/#{node[:postgresql][:version]}/main"
   set[:postgresql][:conf_dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
 
 when "ubuntu"
@@ -49,7 +49,7 @@ when "ubuntu"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
 
-  set[:postgresql][:data_dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+  set[:postgresql][:data_dir] = "/var/lib/postgresql/#{node[:postgresql][:version]}/main"
   set[:postgresql][:conf_dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
 
 when "fedora"
