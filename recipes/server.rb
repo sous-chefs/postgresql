@@ -19,6 +19,7 @@
 # limitations under the License.
 #
 
+ENV['LC_ALL'] = "en_US.utf8"
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 
 include_recipe "postgresql::client"
