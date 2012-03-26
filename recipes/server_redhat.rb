@@ -40,7 +40,7 @@ end
 
 package "postgresql" do
   case node['platform']
-  when "redhat","centos","scientific"
+  when "redhat","centos","scientific","amazon"
     case 
     when node['platform_version'].to_f >= 6.0
       package_name "postgresql"
@@ -53,7 +53,7 @@ package "postgresql" do
 end
 
 case node['platform']
-when "redhat","centos","scientific"
+when "redhat","centos","scientific","amazon"
   case
   when node['platform_version'].to_f >= 6.0
     package "postgresql-server"

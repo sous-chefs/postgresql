@@ -22,9 +22,9 @@
 pg_packages = case node['platform']
 when "ubuntu","debian"
   %w{postgresql-client libpq-dev make}
-when "fedora","suse","amazon"
+when "fedora","suse"
   %w{postgresql-devel}
-when "redhat","centos","scientific"
+when "redhat","centos","scientific","amazon"
   case
   when node['platform_version'].to_f >= 6.0
     %w{postgresql-devel}
