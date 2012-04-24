@@ -43,8 +43,6 @@ service "postgresql" do
     case
     when node['platform_version'].to_f <= 5.0
       service_name "postgresql-#{node['postgresql']['version']}"
-    when node['platform_version'] =~ /squeeze/
-      service_name "postgresql"
     else
       service_name "postgresql"
     end
