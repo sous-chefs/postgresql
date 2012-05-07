@@ -45,7 +45,7 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 end
 
 execute "/sbin/service postgresql initdb" do
-  not_if { ::FileTest.exist?(File.join(node.postgresql.dir, "PG_VERSION")) }
+  not_if { ::FileTest.exist?(File.join(node['postgresql']['conf_dir'], "PG_VERSION")) }
 end
 
 service "postgresql" do
@@ -53,7 +53,7 @@ service "postgresql" do
   action [:enable, :start]
 end
 
-template "#{node[:postgresql][:conf_dir]}/postgresql.conf" do
+template "#{node['postgresql']['conf_dir']}/postgresql.conf" do
   source "redhat.postgresql.conf.erb"
   owner "postgres"
   group "postgres"
