@@ -34,11 +34,7 @@ when "redhat","centos","scientific"
 end
 
 pg_packages.each do |pg_pack|
-  package pg_pack do
-    action :nothing
-  end.run_action(:install)
+  package pg_pack 
 end
 
-gem_package "pg" do
-  action :nothing
-end.run_action(:install)
+gem_package "pg" 
