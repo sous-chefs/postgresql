@@ -39,6 +39,4 @@ pg_packages.each do |pg_pack|
   end.run_action(:install)
 end
 
-chef_gem "pg" do
-  action :nothing
-end.run_action(:install)
+chef_gem "pg"
