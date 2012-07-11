@@ -20,6 +20,7 @@
 #
 
 include_recipe "postgresql::client"
+include_recipe "postgresql::fix_locale"
 
 case node[:postgresql][:version]
 when "8.3"
