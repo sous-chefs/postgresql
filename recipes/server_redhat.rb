@@ -70,7 +70,7 @@ end
 
 service "postgresql" do
   supports :restart => true, :status => true, :reload => true
-  action :enable
+  action [:enable, :restart]
 end
 
 template "#{node[:postgresql][:dir]}/postgresql.conf" do
@@ -78,10 +78,6 @@ template "#{node[:postgresql][:dir]}/postgresql.conf" do
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies :restart, resources(:service => "postgresql")
+  notifies :restart, resources(:service => "postgresql"), :immediately
 end
 
-service "postgresql" do
-  supports :restart => true, :status => true, :reload => true
-  action :start
-end
