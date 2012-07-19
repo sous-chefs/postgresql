@@ -59,7 +59,13 @@
 # or via the -i or -h command line switches.
 #
 
-
+<% node[:postgresql][:client_authentication].each do |hash| -%>
+  <% if hash['type'] == 'local' -%>
+<%= "#{hash['type']} #{hash['database']} #{hash['user']} #{hash['method']} #{hash['options']}" %>
+  <% else -%>
+<%= "#{hash['type']} #{hash['database']} #{hash['user']} #{hash['cidr']} #{hash['method']} #{hash['options']}" %>
+  <% end -%>
+<% end -%>
 
 
 # DO NOT DISABLE!
