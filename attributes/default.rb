@@ -82,10 +82,11 @@ when "redhat","centos","scientific"
 
 when "suse"
 
-  if platform_version.to_f <= 11.1
+  case
+  when platform_version.to_f <= 11.1
     default[:postgresql][:version] = "8.3"
   else
-    default[:postgresql][:version] = "8.4"
+    default[:postgresql][:version] = "9.0"
   end
 
   set[:postgresql][:dir] = "/var/lib/pgsql/data"
