@@ -68,6 +68,16 @@ when "suse"
   end
 
   set[:postgresql][:dir] = "/var/lib/pgsql/data"
+  
+when "smartos"
+
+  # if platform_version.to_f <= 12
+  #     default[:postgresql][:version] = "8.3"
+  #   else
+  #     default[:postgresql][:version] = "8.4"
+  #   end
+  default[:postgresql][:version] = "9.1"
+  set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
 
 else
   default[:postgresql][:version] = "8.4"

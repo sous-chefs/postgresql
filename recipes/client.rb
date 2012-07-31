@@ -31,6 +31,8 @@ when "redhat","centos","scientific"
   else
     [ "postgresql#{node['postgresql']['version'].split('.').join}-devel" ]
   end
+when "smartos"
+  %w{postgresql91-client}
 end
 
 pg_packages.each do |pg_pack|
