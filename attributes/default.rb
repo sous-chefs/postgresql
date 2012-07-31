@@ -76,8 +76,8 @@ when "smartos"
   #   else
   #     default[:postgresql][:version] = "8.4"
   #   end
-  default[:postgresql][:version] = "9.1"
-  set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+  default[:postgresql][:version] = "91"
+  set[:postgresql][:dir] = "/var/pgsql/data91"
 
 else
   default[:postgresql][:version] = "8.4"
