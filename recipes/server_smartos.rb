@@ -27,7 +27,7 @@ package "postgresql91-adminpack"
 
 service "postgresql" do
   supports :restart => true, :status => true, :reload => true
-  action :nothing
+  action [:enable, :start]
 end
 
 template "#{node[:postgresql][:dir]}/postgresql.conf" do
