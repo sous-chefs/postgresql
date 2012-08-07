@@ -84,4 +84,3 @@ template "#{node[:postgresql][:dir]}/postgresql.conf" do
   mode 0600
   notifies :restart, resources(:service => "postgresql"), :immediately
 end
-
