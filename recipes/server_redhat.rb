@@ -38,30 +38,10 @@ user "postgres" do
   supports :manage_home => false
 end
 
-package "postgresql" do
-  case node.platform
-  when "redhat","centos","scientific"
-    case 
-    when node.platform_version.to_f >= 6.0
-      package_name "postgresql"
-    else
-      package_name "postgresql#{node['postgresql']['version'].split('.').join}"
-    end
-  else
-    package_name "postgresql"
+node['postgresql']['server_packages'].each do |pg_pack|
+  package pg_pack do
+    action :install
   end
-end
-
-case node.platform
-when "redhat","centos","scientific"
-  case
-  when node.platform_version.to_f >= 6.0
-    package "postgresql-server"
-  else
-    package "postgresql#{node['postgresql']['version'].split('.').join}-server"
-  end
-when "fedora","suse"
-  package "postgresql-server"
 end
 
 execute "/sbin/service postgresql initdb" do
@@ -80,4 +60,3 @@ template "#{node[:postgresql][:dir]}/postgresql.conf" do
   mode 0600
   notifies :restart, resources(:service => "postgresql"), :immediately
 end
-
