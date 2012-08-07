@@ -35,10 +35,6 @@ end
 
 pg_packages.each do |pg_pack|
   package pg_pack do
-    action :nothing
-  end.run_action(:install)
+    action :install
+  end
 end
-
-gem_package "pg" do
-  action :nothing
-end.run_action(:install)
