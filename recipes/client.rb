@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-node['postgresql']['client_packages'].each do |pg_pack|
+node['postgresql']['client']['packages'].each do |pg_pack|
   package pg_pack do
     action :install
   end

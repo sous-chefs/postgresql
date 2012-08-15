@@ -38,7 +38,7 @@ user "postgres" do
   supports :manage_home => false
 end
 
-node['postgresql']['server_packages'].each do |pg_pack|
+node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack do
     action :install
   end

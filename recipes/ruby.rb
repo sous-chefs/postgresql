@@ -27,7 +27,7 @@ node.set['build_essential']['compiletime'] = true
 include_recipe "build-essential"
 include_recipe "postgresql::client"
 
-node['postgresql']['client_packages'].each do |pg_pack|
+node['postgresql']['client']['packages'].each do |pg_pack|
 
   resources("package[#{pg_pack}]").run_action(:install)
 
