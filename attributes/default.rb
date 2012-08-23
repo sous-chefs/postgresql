@@ -91,7 +91,7 @@ when "suse"
   set[:postgresql][:dir] = "/var/lib/pgsql/data" 
 when "smartos"
 
-  # if platform_version.to_f <= 12
+# if platform_version.to_f <= 12
   #     default[:postgresql][:version] = "8.3"
   #   else
   #     default[:postgresql][:version] = "8.4"
