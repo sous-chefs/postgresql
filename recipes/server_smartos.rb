@@ -23,6 +23,8 @@ include_recipe "postgresql::client"
 
 node.default[:postgresql][:ssl] = "true"
 
+node.default[:postgresql][:listen_addresses] = node.ipaddress
+
 package "postgresql91-adminpack"
 
 service "postgresql" do
@@ -37,3 +39,4 @@ template "#{node[:postgresql][:dir]}/postgresql.conf" do
   mode 0600
   notifies :restart, resources(:service => "postgresql"), :immediately
 end
+

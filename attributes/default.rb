@@ -98,6 +98,8 @@ when "smartos"
   #   end
   default[:postgresql][:version] = "91"
   set[:postgresql][:dir] = "/var/pgsql/data91"
+  default['postgresql']['client']['packages'] = ["postgresql91-client"]
+  default['postgresql']['server']['packages'] = ["postgresql91-adminpack"]
 else
   default[:postgresql][:version] = "8.4"
   set[:postgresql][:dir]         = "/etc/postgresql/#{node[:postgresql][:version]}/main"
@@ -106,3 +108,4 @@ else
 end
 
 default[:postgresql][:listen_addresses] = "localhost"
+default[:postgresql][:allow_ipv4_clients_ip_range] = "127.0.0.1/32"
