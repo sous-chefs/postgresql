@@ -50,18 +50,37 @@ template "#{node[:postgresql][:dir]}/pg_hba.conf" do
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies :reload, resources(:service => "postgresql"), :immediately
+  notifies :reload, resources(:service => "postgresql")
 end
 
-# Default PostgreSQL install has 'ident' checking on unix user 'postgres'
-# and 'md5' password checking with connections from 'localhost'. This script
-# runs as user 'postgres', so we can execute the 'role' and 'database' resources
-# as 'root' later on, passing the below credentials in the PG client.
-bash "assign-postgres-password" do
-  user 'postgres'
-  code <<-EOH
-echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node[:postgresql][:password][:postgres]}';" | psql
-  EOH
-  not_if "echo '\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres --no-password -h localhost"
-  action :run
+case node['platform']
+# output from the joyent smartos postgres server install:
+# The default password for the master 'postgres' user is:
+# 
+#   postgres
+when "smartos"
+  bash "assign-postgres-password" do
+    user 'postgres'
+    code <<-EOH
+    export PGPASSWORD='postgres' 
+    echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node[:postgresql][:password][:postgres]}';" | psql -U postgres
+    EOH
+    not_if "export PGPASSWORD='postgres'; echo '\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres -h localhost"
+    action :run
+  end
+else
+  # Default PostgreSQL install has 'ident' checking on unix user 'postgres'
+  # and 'md5' password checking with connections from 'localhost'. This script
+  # runs as user 'postgres', so we can execute the 'role' and 'database' resources
+  # as 'root' later on, passing the below credentials in the PG client.
+  bash "assign-postgres-password" do
+    user 'postgres'
+    code <<-EOH
+  echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node[:postgresql][:password][:postgres]}';" | psql
+    EOH
+    not_if "echo '\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres --no-password -h localhost"
+    action :run
+  end
 end
+
+

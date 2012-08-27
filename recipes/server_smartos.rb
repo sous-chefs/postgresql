@@ -25,7 +25,8 @@ node.default[:postgresql][:ssl] = "true"
 
 node.default[:postgresql][:listen_addresses] = node.ipaddress
 
-package "postgresql91-adminpack"
+# package "postgresql91-adminpack"
+package "postgresql91-server"
 
 service "postgresql" do
   supports :restart => true, :status => true, :reload => true
@@ -37,6 +38,6 @@ template "#{node[:postgresql][:dir]}/postgresql.conf" do
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies :restart, resources(:service => "postgresql"), :immediately
+  notifies :restart, resources(:service => "postgresql")
 end
 
