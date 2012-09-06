@@ -36,21 +36,13 @@ end
 
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
-case node.platform
+case node['platform']
 when "redhat", "centos", "fedora", "suse", "scientific", "amazon"
   include_recipe "postgresql::server_redhat"
 when "debian", "ubuntu"
   include_recipe "postgresql::server_debian"
 when "smartos"
   include_recipe "postgresql::server_smartos"
-end
-
-template "#{node[:postgresql][:dir]}/pg_hba.conf" do
-  source "pg_hba.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 0600
-  notifies :reload, resources(:service => "postgresql")
 end
 
 case node['platform']
@@ -65,7 +57,7 @@ when "smartos"
     export PGPASSWORD='postgres' 
     echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node[:postgresql][:password][:postgres]}';" | psql -U postgres
     EOH
-    not_if "export PGPASSWORD='postgres'; echo '\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres -h localhost"
+    not_if "echo '\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres -h localhost"
     action :run
   end
 else
@@ -82,5 +74,4 @@ else
     action :run
   end
 end
-
 

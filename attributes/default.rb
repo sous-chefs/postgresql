@@ -102,7 +102,7 @@ else
   default['postgresql']['server']['packages'] = ["postgresql"]
 end
 
-default[:postgresql][:listen_addresses] = "localhost"
 default[:postgresql][:allow_ipv4_clients_ip_range] = "127.0.0.1/32"
-default[:postgresql][:replication] = false
-default[:postgresql][:database_master_role] = "database_master"
+default[:postgresql][:listen_addresses] = "localhost"
+default[:postgresql][:database_master_role]  = "database_master"
+default[:postgresql][:database_standby_role] = "database_standby"

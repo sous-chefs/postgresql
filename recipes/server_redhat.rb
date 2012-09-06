@@ -53,6 +53,14 @@ service "postgresql" do
   action [:enable, :start]
 end
 
+template "#{node[:postgresql][:dir]}/pg_hba.conf" do
+  source "pg_hba.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 0600
+  notifies :reload, resources(:service => "postgresql")
+end
+
 template "#{node[:postgresql][:dir]}/postgresql.conf" do
   source "redhat.postgresql.conf.erb"
   owner "postgres"

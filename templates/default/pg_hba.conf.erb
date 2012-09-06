@@ -81,6 +81,8 @@ local   all         all                               ident
 host    all         all         <%= node[:postgresql][:allow_ipv4_clients_ip_range] %>         md5
 # IPv6 local connections:
 host    all         all         ::1/128               md5
-<% if node[:postgresql][:database_master] %>
-host  replication   all   <%= node[:postgresql][:allow_ipv4_clients_ip_range] %>      trust
+<% if @standbys %>
+  <% @standbys.each do |standby| %>
+host  replication   replication_user   <%= standby['ipaddress'].to_s %>/32      trust
+  <% end %>
 <% end %>

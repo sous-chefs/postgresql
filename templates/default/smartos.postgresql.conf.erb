@@ -56,7 +56,7 @@
 
 # - Connection Settings -
 
-listen_addresses = '<%= node.postgresql.listen_addresses -%>'		# what IP address(es) to listen on;					# comma-separated list of addresses;
+listen_addresses = '<%= @listen_addresses -%>'		# what IP address(es) to listen on;					# comma-separated list of addresses;
 					# defaults to 'localhost', '*' = all
 					# (change requires restart)
 #port = 5432				# (change requires restart)
@@ -187,12 +187,18 @@ shared_buffers = 32MB			# min 128kB
 #------------------------------------------------------------------------------
 # REPLICATION
 #------------------------------------------------------------------------------
-<% if @master %>
+
 # - Master Server -
 
 # These settings are ignored on a standby server
-wal_level = hot_standby
-max_wal_senders = 3		# max number of walsender processes
+<% if @wal_level %>
+wal_level = <%= @wal_level %>
+<% end %>
+
+<% if @max_wal_senders %>
+max_wal_senders = <%= @max_wal_senders %>		# max number of walsender processes
+<% end %>
+
 				# (change requires restart)
 #wal_sender_delay = 1s		# walsender cycle time, 1-10000 milliseconds
 #wal_keep_segments = 0		# in logfile segments, 16MB each; 0 disables
@@ -202,12 +208,13 @@ max_wal_senders = 3		# max number of walsender processes
 				# comma-separated list of application_name
 				# from standby(s); '*' = all
 
-<% elsif @slave %>
 # - Standby Servers -
 
 # These settings are ignored on a master server
 
+<% if @hot_standby %>
 hot_standby = on			# "on" allows queries during recovery
+<% end %>
 					# (change requires restart)
 #max_standby_archive_delay = 30s	# max delay before canceling queries
 					# when reading WAL from archive;
@@ -219,7 +226,6 @@ hot_standby = on			# "on" allows queries during recovery
 					# 0 disables
 #hot_standby_feedback = off		# send info from standby to prevent
 					# query conflicts
-<% end %>
 
 #------------------------------------------------------------------------------
 # QUERY TUNING
