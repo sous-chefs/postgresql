@@ -104,5 +104,12 @@ end
 
 default[:postgresql][:allow_ipv4_clients_ip_range] = "127.0.0.1/32"
 default[:postgresql][:listen_addresses] = "localhost"
+
+# Replication Settings
 default[:postgresql][:database_master_role]  = "database_master"
 default[:postgresql][:database_standby_role] = "database_standby"
+default[:postgresql][:wal_level] = "hot_standby"
+default[:postgresql][:wal_keep_segments] = 8
+default[:postgresql][:max_wal_senders] = 5
+default[:postgresql][:hot_standby] = true
+
