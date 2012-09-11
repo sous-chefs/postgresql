@@ -15,23 +15,22 @@ Requirements
 
 Tested on:
 
-* Ubuntu 10.04, 11.10
-* Red Hat 6.1, Scientific 6.1
+* Ubuntu 10.04, 11.10, 12.04
+* Red Hat 6.1, Scientific 6.1, CentOS 6.3
 
 ## Cookboooks
 
 Requires Opscode's `openssl` cookbook for secure password generation.
 
 Requires a C compiler and development headers in order to build the
-`pg` RubyGem to provide Ruby bindings so they're available in other
-cookbooks.
+`pg` RubyGem to provide Ruby bindings in the `ruby` recipe.
 
 Opscode's `build-essential` cookbook provides this functionality on
 Debian, Ubuntu, and EL6-family.
 
 While not required, Opscode's `database` cookbook contains resources
 and providers that can interact with a PostgreSQL database. This
-cookbook is a dependency of that one.
+cookbook is a dependency of database.
 
 Attributes
 ==========
@@ -42,6 +41,12 @@ The following attributes are set based on the platform, see the
 * `node['postgresql']['version']` - version of postgresql to manage
 * `node['postgresql']['dir']` - home directory of where postgresql
   data and configuration lives.
+
+* `node['postgresql']['client']['packages']` - An array of package names
+  that should be installed on "client" systems.
+* `node['postgresql']['server']['packages']` - An array of package names
+  that should be installed on "server" systems.
+
 
 The following attributes are generated in
 `recipe[postgresql::server]`.
@@ -66,6 +71,18 @@ Installs postgresql client packages and development headers during the
 compile phase. Also installs the `pg` Ruby gem during the compile
 phase so it can be made available for the `database` cookbook's
 resources, providers and libraries.
+
+ruby
+----
+
+**NOTE** This recipe does not currently work when installing Chef with
+  the
+  ["Omnibus" full stack installer](http://opscode.com/chef/install)
+  due to an incompatibility with OpenSSL. See
+  [COOK-1406](http://tickets.opscode.com/browse/COOK-1406)
+
+Install the `pg` gem under Chef's Ruby environment so it can be used
+in other recipes.
 
 server
 ------
@@ -104,12 +121,6 @@ Usage
 
 On systems that need to connect to a PostgreSQL database, add to a run
 list `recipe[postgresql]` or `recipe[postgresql::client]`.
-
-This does install the `pg` RubyGem, which has native C extensions, so
-that the resources and providers can be used in the `database`
-cookbook, or elsewhere in the same Chef run. Use Opscode's
-`build-essential` cookbook to make sure the proper build tools are
-installed so the C extensions can be compiled.
 
 On systems that should be PostgreSQL servers, use
 `recipe[postgresql::server]` on a run list. This recipe does set a
