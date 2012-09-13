@@ -53,6 +53,12 @@ service "postgresql" do
   action [:enable, :start]
 end
 
+directory node[:postgresql][:dir] do
+  recursive true
+  owner "postgres"
+  group "postgres"
+end
+
 template "#{node[:postgresql][:dir]}/postgresql.conf" do
   source "redhat.postgresql.conf.erb"
   owner "postgres"
