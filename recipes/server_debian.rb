@@ -55,6 +55,12 @@ service "postgresql" do
   action :nothing
 end
 
+directory node[:postgresql][:dir] do
+  recursive true
+  owner "postgres"
+  group "postgres"
+end
+
 template "#{node[:postgresql][:dir]}/postgresql.conf" do
   source "debian.postgresql.conf.erb"
   owner "postgres"
