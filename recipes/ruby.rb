@@ -27,10 +27,34 @@ node.set['build_essential']['compiletime'] = true
 include_recipe "build-essential"
 include_recipe "postgresql::client"
 
-node['postgresql']['client']['packages'].each do |pg_pack|
+def pkg_devel_installed?
+  pg_devel_pkg = node['postgresql']['client']['packages'].select { |pkg| pkg =~ /devel/ }.first
 
-  resources("package[#{pg_pack}]").run_action(:install)
+  if platform? "debian", "ubuntu"
+    pkg_cmd = "dpkg -l"
+  else
+    pkg_cmd = "rpm -qa"
+  end
 
+  pg_devel_status = Chef::ShellOut.new("#{pkg_cmd} #{pg_devel_pkg}").run_command.stdout
+  pg_devel_installed = ! pg_devel_status.empty?
 end
 
-chef_gem "pg"
+link "/usr/bin/pg_config" do
+  to "/usr/pgsql-#{node['postgresql']['version']}/bin/pg_config"
+  unless pg_devel_installed?
+    action :nothing
+    subscribes :create, resources("package[#{pg_devel_pkg}]"), :immediately
+  else
+    action :create
+  end
+end
+
+chef_gem "pg" do
+  if ::File.exists? "/usr/bin/pg_config"
+    action :install
+  else
+    action :nothing
+    subscribes :install, resources("link[/usr/bin/pg_config]"), :immediately
+  end
+end
