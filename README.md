@@ -75,10 +75,10 @@ resources, providers and libraries.
 ruby
 ----
 
-**NOTE** This recipe does not currently work when installing Chef with
+**NOTE** This recipe may not currently work when installing Chef with
   the
-  ["Omnibus" full stack installer](http://opscode.com/chef/install)
-  due to an incompatibility with OpenSSL. See
+  ["Omnibus" full stack installer](http://opscode.com/chef/install) on
+  some platforms due to an incompatibility with OpenSSL. See
   [COOK-1406](http://tickets.opscode.com/browse/COOK-1406)
 
 Install the `pg` gem under Chef's Ruby environment so it can be used
