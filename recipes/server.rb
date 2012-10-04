@@ -41,6 +41,8 @@ when "redhat", "centos", "fedora", "suse", "scientific", "amazon"
   include_recipe "postgresql::server_redhat"
 when "debian", "ubuntu"
   include_recipe "postgresql::server_debian"
+when "smartos"
+  include_recipe "postgresql::server_smartos"
 end
 
 template "#{node[:postgresql][:dir]}/pg_hba.conf" do
