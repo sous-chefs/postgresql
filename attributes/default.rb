@@ -129,6 +129,13 @@ when "suse"
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
 
+when "smartos"
+  
+  default[:postgresql][:version] = "9.1.4"
+  set[:postgresql][:dir] = "/var/pgsql/data"
+  default['postgresql']['client']['packages'] = %w{postgresql91-client}
+  default['postgresql']['server']['packages'] = %w{postgresql91-server}
+
 else
   default['postgresql']['version'] = "8.4"
   default['postgresql']['dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
