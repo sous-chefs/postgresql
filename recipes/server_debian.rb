@@ -52,7 +52,7 @@ service "postgresql" do
     end
   end
   supports :restart => true, :status => true, :reload => true
-  action :nothing
+  action [:enable, :start]
 end
 
 template "#{node[:postgresql][:dir]}/postgresql.conf" do
