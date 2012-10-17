@@ -101,3 +101,8 @@ else
 end
 
 default['postgresql']['listen_addresses'] = "localhost"
+default['postgresql']['hba_conf'] = [
+  {:type => 'local', :database => 'all', :user => 'all', :method => 'ident'},
+  {:type => 'host' , :database => 'all', :user => 'all', :address => '127.0.0.1/32' , :method => 'md5'},
+  {:type => 'host' , :database => 'all', :user => 'all', :address => '::1/128' , :method => 'md5'}
+]
