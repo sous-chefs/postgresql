@@ -94,7 +94,7 @@ when "smartos"
   default[:postgresql][:version] = "91"
   set[:postgresql][:dir] = "/var/pgsql/data91"
   default['postgresql']['client']['packages'] = ["postgresql91-client"]
-  default['postgresql']['server']['packages'] = ["postgresql91-adminpack"]
+  default['postgresql']['server']['packages'] = ["postgresql91-server"]
 else
   default[:postgresql][:version] = "8.4"
   set[:postgresql][:dir]         = "/etc/postgresql/#{node[:postgresql][:version]}/main"
