@@ -27,6 +27,7 @@ include_recipe "postgresql::client"
 node.set_unless['postgresql']['password']['postgres'] = secure_password
 node.save unless Chef::Config['solo']
 
+
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
 case node['platform']
@@ -51,7 +52,7 @@ end
 bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
-echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql
+echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql -h #{node[:postgresql][:unix_socket_directory]}
   EOH
   not_if "echo '\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres --no-password -h localhost"
   action :run

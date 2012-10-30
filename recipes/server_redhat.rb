@@ -38,6 +38,12 @@ user "postgres" do
   supports :manage_home => false
 end
 
+directory node['postgresql']['unix_socket_directory'] do
+  owner 'postgres'
+  group 'postgres'
+  mode '0755'
+end
+
 node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack do
     action :install
