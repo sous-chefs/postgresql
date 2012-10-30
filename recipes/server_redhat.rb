@@ -38,6 +38,12 @@ user "postgres" do
   supports :manage_home => false
 end
 
+directory node['postgresql']['unix_socket_directory'] do
+  owner 'postgres'
+  group 'postgres'
+  mode '0755'
+end
+
 node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack do
     action :install
@@ -45,7 +51,7 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 end
 
 execute "/sbin/service postgresql initdb" do
-  not_if { ::FileTest.exist?(File.join(node.postgresql.dir, "PG_VERSION")) }
+  not_if { ::FileTest.exist?(File.join(node['postgresql']['conf_dir'], "PG_VERSION")) }
 end
 
 service "postgresql" do
@@ -53,7 +59,7 @@ service "postgresql" do
   action [:enable, :start]
 end
 
-template "#{node[:postgresql][:dir]}/postgresql.conf" do
+template "#{node['postgresql']['conf_dir']}/postgresql.conf" do
   source "redhat.postgresql.conf.erb"
   owner "postgres"
   group "postgres"

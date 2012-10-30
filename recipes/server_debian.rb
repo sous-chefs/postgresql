@@ -55,7 +55,13 @@ service "postgresql" do
   action :nothing
 end
 
-template "#{node[:postgresql][:dir]}/postgresql.conf" do
+directory node['postgresql']['unix_socket_directory'] do
+  owner 'postgres'
+  group 'postgres'
+  mode '0755'
+end
+
+template "#{node['postgresql']['conf_dir']}/postgresql.conf" do
   source "debian.postgresql.conf.erb"
   owner "postgres"
   group "postgres"
