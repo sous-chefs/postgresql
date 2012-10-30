@@ -184,7 +184,7 @@ wal_level = <%= node['postgresql']['wal_level'] -%>    # minimal, archive, or ho
 max_wal_senders = <%= node['postgresql']['max_wal_senders']%>		# max number of walsender processes
 				# (change requires restart)
 #wal_sender_delay = 200ms	# walsender cycle time, 1-10000 milliseconds
-wal_keep_segments = <%= node['postgresql']['wall_keep_segments'] -%>		# in logfile segments, 16MB each; 0 disables
+wal_keep_segments = <%= node['postgresql']['wal_keep_segments'] -%>		# in logfile segments, 16MB each; 0 disables
 <% end %>
 
 

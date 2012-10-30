@@ -134,9 +134,8 @@ default['postgresql']['archive_mode'] = "off"
 default['postgresql']['archive_command'] = ""
 # replication
 default['postgresql']['max_wal_senders'] = 0
-default['postgresql']['wall_keep_segments'] = 0
+default['postgresql']['wal_keep_segments'] = 0
 # standby
 default['postgresql']['hot_standby'] = "off"
 # logs
-default['postgresql']['listen_addresses'] = "localhost"
 default['postgresql']['log_min_duration_statement'] = "-1"
