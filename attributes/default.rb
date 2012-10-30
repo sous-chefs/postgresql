@@ -122,14 +122,7 @@ default['postgresql']['port']                 = 5432
 default['postgresql']['max_connections']      = 100
 default['postgresql']['unix_socket_directory']      = "/var/run/postgresql"
 # security and authentication
-case node['postgresql']['version']
-when "8.3"
-  default['postgresql']['ssl'] = "off"
-when "8.4"
-  default['postgresql']['ssl'] = "true"
-when "9.1"
-  default['postgresql']['ssl'] = "true"
-end
+default['postgresql']['ssl'] = "off"
 default['postgresql']['ssl_renegotiation_limit']  = "512MB"
 # resource tuning
 default['postgresql']['shared_buffers'] = "24MB"
