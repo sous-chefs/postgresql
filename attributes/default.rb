@@ -121,13 +121,31 @@ default['postgresql']['listen_addresses']     = "localhost"
 default['postgresql']['port']                 = 5432
 default['postgresql']['max_connections']      = 100
 default['postgresql']['unix_socket_directory']      = "/var/run/postgresql"
+
 # security and authentication
 default['postgresql']['ssl'] = "off"
 default['postgresql']['ssl_renegotiation_limit']  = "512MB"
+
 # resource tuning
-default['postgresql']['shared_buffers'] = "24MB"
-default['postgresql']['work_mem'] = "1MB"
+def kibibytes_to_mebibytes kib
+    kib / 1024
+end
+
+def mebibytes_to_bytes mib
+    mib * 1024 * 1024
+end
+
+default[:postgresql][:total_memory_pct] = 0.80
+default[:postgresql][:shared_memory_percentage]=0.25
+default[:postgresql][:effective_cache_size_percentage]=0.80
+
+set[:postgresql][:total_memory_mb]=kibibytes_to_mebibytes(node[:memory][:total].to_i * node[:postgresql][:total_memory_pct]).to_i
+set[:postgresql][:shared_buffers]=(node[:postgresql][:total_memory_mb] * node[:postgresql][:shared_memory_percentage]).to_i
+set[:postgresql][:effective_cache_size]=(node[:postgresql][:total_memory_mb] * node[:postgresql][:effective_cache_size_percentage]).to_i
+
+default['postgresql']['work_mem'] = "32MB"
 default['postgresql']['maintenance_work_mem'] = "16MB"
+
 # archiving
 default['postgresql']['wal_level'] = 'minimal'
 default['postgresql']['archive_mode'] = "off"
@@ -138,4 +156,12 @@ default['postgresql']['wal_keep_segments'] = 0
 # standby
 default['postgresql']['hot_standby'] = "off"
 # logs
-default['postgresql']['log_min_duration_statement'] = "-1"
+default[:postgresql][:log_destination]="csvlog"
+default[:postgresql][:logging_collector]="on"
+default[:postgresql][:log_directory]="/var/log/postgresql"
+default[:postgresql][:log_filename]="postgresql-%Y-%m-%d_%H%M%S.log"
+default[:postgresql][:log_rotation_age]="1d"
+default[:postgresql][:log_rotation_size]="100MB"
+default[:postgresql][:log_min_messages]='warning'
+default[:postgresql][:log_min_error_statement]="error"
+default[:postgresql][:log_min_duration_statement]=-1

@@ -245,7 +245,7 @@ archive_command = '<%= node['postgresql']['archive_command'] -%>'		# command to 
 #cpu_tuple_cost = 0.01			# same scale as above
 #cpu_index_tuple_cost = 0.005		# same scale as above
 #cpu_operator_cost = 0.0025		# same scale as above
-#effective_cache_size = 128MB
+effective_cache_size = <%= node['postgresql']['effective_cache_size'] %>
 
 # - Genetic Query Optimizer -
 
@@ -271,21 +271,21 @@ archive_command = '<%= node['postgresql']['archive_command'] -%>'		# command to 
 
 # - Where to Log -
 
-#log_destination = 'stderr'		# Valid values are combinations of
+log_destination = <%= node['postgresql']['log_destination'] %> # Valid values are combinations of
 					# stderr, csvlog, syslog and eventlog,
 					# depending on platform.  csvlog
 					# requires logging_collector to be on.
 
 # This is used when logging to stderr:
-#logging_collector = off		# Enable capturing of stderr and csvlog
+logging_collector = <%= node['postgresql']['logging_collector']	%>	# Enable capturing of stderr and csvlog
 					# into log files. Required to be on for
 					# csvlogs.
 					# (change requires restart)
 
 # These are only used if logging_collector is on:
-#log_directory = 'pg_log'		# directory where log files are written,
+log_directory = '<%= node['postgresql']['log_directory'] %>'		# directory where log files are written,
 					# can be absolute or relative to PGDATA
-#log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'	# log file name pattern,
+log_filename = '<%= node['postgresql']['log_filename'] %>'	# log file name pattern,
 					# can include strftime() escapes
 #log_truncate_on_rotation = off		# If on, an existing log file of the
 					# same name as the new log file will be
@@ -295,9 +295,9 @@ archive_command = '<%= node['postgresql']['archive_command'] -%>'		# command to 
 					# or size-driven rotation.  Default is
 					# off, meaning append to existing files
 					# in all cases.
-#log_rotation_age = 1d			# Automatic rotation of logfiles will
+log_rotation_age = <%= node['postgresql']['log_rotation_age'] %>			# Automatic rotation of logfiles will
 					# happen after that time.  0 to disable.
-#log_rotation_size = 10MB		# Automatic rotation of logfiles will 
+log_rotation_size = <%= node['postgresql']['log_rotation_size']	%># Automatic rotation of logfiles will 
 					# happen after that much log output.
 					# 0 to disable.
 
@@ -319,7 +319,7 @@ archive_command = '<%= node['postgresql']['archive_command'] -%>'		# command to 
 					#   warning
 					#   error
 
-#log_min_messages = notice		# values in order of decreasing detail:
+log_min_messages = <%= node['postgresql']['log_min_messages'] %>		# values in order of decreasing detail:
 					#   debug5
 					#   debug4
 					#   debug3
@@ -335,7 +335,7 @@ archive_command = '<%= node['postgresql']['archive_command'] -%>'		# command to 
 
 #log_error_verbosity = default		# terse, default, or verbose messages
 
-#log_min_error_statement = error	# values in order of decreasing detail:
+log_min_error_statement = <%= node['postgresql']['log_min_error_statement'] %>	# values in order of decreasing detail:
 				 	#   debug5
 					#   debug4
 					#   debug3
@@ -349,7 +349,7 @@ archive_command = '<%= node['postgresql']['archive_command'] -%>'		# command to 
 					#   fatal
 					#   panic (effectively off)
 
-#log_min_duration_statement = -1	# -1 is disabled, 0 logs all statements
+log_min_duration_statement = <%= node['postgresql']['log_min_duration_statement'] %>	# -1 is disabled, 0 logs all statements
 					# and their durations, > 0 logs only
 					# statements running at least this time.
 
