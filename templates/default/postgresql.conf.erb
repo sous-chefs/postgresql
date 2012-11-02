@@ -1,0 +1,17 @@
+# PostgreSQL configuration file
+# This file was automatically generated and dropped off by chef!
+
+<% node[:postgresql][:config].each do |key, value| %>
+<%= key %> = <%= 
+  case value
+  when String
+    "'#{value}'"
+  when TrueClass
+    'on'
+  when FalseClass
+    'off'
+  else
+    value
+  end
+%>
+<% end %>
