@@ -125,6 +125,7 @@ default['postgresql']['unix_socket_directory']      = "/var/run/postgresql"
 # security and authentication
 default['postgresql']['ssl'] = "off"
 default['postgresql']['ssl_renegotiation_limit']  = "512MB"
+default['postgresql']['ssl_ciphers'] = '!aNULL:!eNULL:!LOW:!EXPORT:!MD5:ALL'
 
 # resource tuning
 default['postgresql']['total_memory_pct'] = 0.80
