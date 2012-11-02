@@ -43,6 +43,14 @@ when "debian", "ubuntu"
   include_recipe "postgresql::server_debian"
 end
 
+template "#{node[:postgresql][:dir]}/postgresql.conf" do
+  source "postgresql.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 0600
+  notifies :restart, resources(:service => "postgresql"), :immediately
+end
+
 template "#{node[:postgresql][:dir]}/pg_hba.conf" do
   source "pg_hba.conf.erb"
   owner "postgres"
