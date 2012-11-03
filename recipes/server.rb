@@ -1,4 +1,4 @@
-#/postgresql.conf.
+#
 # Cookbook Name:: postgresql
 # Recipe:: server
 #
@@ -36,10 +36,10 @@ end
 
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
-case node.platform
-when "redhat", "centos", "fedora", "suse", "scientific", "amazon"
+case node['platform_family']
+when "rhel", "fedora", "suse"
   include_recipe "postgresql::server_redhat"
-when "debian", "ubuntu"
+when "debian"
   include_recipe "postgresql::server_debian"
 end
 

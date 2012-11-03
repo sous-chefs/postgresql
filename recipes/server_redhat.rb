@@ -44,11 +44,12 @@ node['postgresql']['server']['packages'].each do |pg_pack|
   end
 end
 
-execute "/sbin/service postgresql initdb" do
+execute "/sbin/service #{node['postgresql']['server']['service_name']} initdb" do
   not_if { ::FileTest.exist?(File.join(node.postgresql.dir, "PG_VERSION")) }
 end
 
 service "postgresql" do
+  service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
 end

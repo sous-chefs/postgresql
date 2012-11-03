@@ -29,6 +29,13 @@ when "debian"
     default[:postgresql][:version] = "9.1"
   end
 
+  case
+  when node['platform_version'].to_f <= 5.0
+    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+  else
+    default['postgresql']['server']['service_name'] = "postgresql"
+  end
+
   set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
@@ -42,6 +49,13 @@ when "ubuntu"
     default[:postgresql][:version] = "8.4"
   else
     default[:postgresql][:version] = "9.1"
+  end
+
+  case
+  when node['platform_version'].to_f <= 10.04
+    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+  else
+    default['postgresql']['server']['service_name'] = "postgresql"
   end
 
   set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
@@ -59,6 +73,7 @@ when "fedora"
   set[:postgresql][:dir] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
+  default['postgresql']['server']['service_name'] = "postgresql"
 
 when "amazon"
 
@@ -66,6 +81,7 @@ when "amazon"
   set[:postgresql][:dir] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
+  default['postgresql']['server']['service_name'] = "postgresql"
 
 when "redhat","centos","scientific"
 
@@ -79,6 +95,7 @@ when "redhat","centos","scientific"
     default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
     default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
   end
+  default['postgresql']['server']['service_name'] = "postgresql"
 
 when "suse"
 
@@ -91,12 +108,14 @@ when "suse"
   set[:postgresql][:dir] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
+  default['postgresql']['server']['service_name'] = "postgresql"
 
 else
   default[:postgresql][:version] = "8.4"
   set[:postgresql][:dir]         = "/etc/postgresql/#{node[:postgresql][:version]}/main"
   default['postgresql']['client']['packages'] = ["postgresql"]
   default['postgresql']['server']['packages'] = ["postgresql"]
+  default['postgresql']['server']['service_name'] = "postgresql"
 end
 
 default[:postgresql][:listen_addresses] = "localhost"
