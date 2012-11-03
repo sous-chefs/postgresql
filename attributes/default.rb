@@ -30,7 +30,6 @@ when "debian"
   end
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
-
   case
   when node['platform_version'].to_f <= 5.0
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
@@ -53,7 +52,6 @@ when "ubuntu"
   end
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
-
   case
   when node['platform_version'].to_f <= 10.04
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
