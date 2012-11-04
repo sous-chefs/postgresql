@@ -199,7 +199,7 @@ wal_keep_segments = <%= node['postgresql']['wal_keep_segments'] %>		# in logfile
 #checkpoint_completion_target = 0.5	# checkpoint target duration, 0.0 - 1.0
 #checkpoint_warning = 30s		# 0 is off
 
-<% if node['postgresql']['version'].to_f == 9.1 %>
+<% if node['postgresql']['version'].to_f >= 9.1 %>
 # - Standby Servers -
 hot_standby           = '<%= node['postgresql']['hot_standby'] %>'
 
@@ -288,7 +288,9 @@ log_directory = '<%= node['postgresql']['log_directory'] %>'		# directory where 
 					# can be absolute or relative to PGDATA
 log_filename = '<%= node['postgresql']['log_filename'] %>'	# log file name pattern,
 					# can include strftime() escapes
+<% if node['postgresql']['version'].to_f >= 9.1 %>
 log_file_mode = <%= node['postgresql']['log_file_mode'] %>
+<% end %>
 #log_truncate_on_rotation = off		# If on, an existing log file of the
 					# same name as the new log file will be
 					# truncated rather than appended to.
