@@ -18,59 +18,65 @@
 #
 
 case platform
-when "debian"
+when 'debian'
 
   case
   when platform_version.to_f <= 5.0
-    default[:postgresql][:version] = "8.3"
+    default['postgresql']['version'] = '8.3'
   when platform_version.to_f == 6.0
-    default[:postgresql][:version] = "8.4"
+    default['postgresql']['version'] = '8.4'
   else
-    default[:postgresql][:version] = "9.1"
+    default['postgresql']['version'] = '9.1'
   end
 
-  set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
 
-when "ubuntu"
+  set['postgresql']['data_dir'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  set['postgresql']['conf_dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+
+when 'ubuntu'
 
   case
   when platform_version.to_f <= 9.04
-    default[:postgresql][:version] = "8.3"
+    default['postgresql']['version'] = '8.3'
   when platform_version.to_f <= 11.04
-    default[:postgresql][:version] = "8.4"
+    default['postgresql']['version'] = '8.4'
   else
-    default[:postgresql][:version] = "9.1"
+    default['postgresql']['version'] = '9.1'
   end
 
-  set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
 
-when "fedora"
+  set['postgresql']['data_dir'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  set['postgresql']['conf_dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+
+when 'fedora'
 
   if platform_version.to_f <= 12
-    default[:postgresql][:version] = "8.3"
+    default['postgresql']['version'] = '8.3'
   else
-    default[:postgresql][:version] = "8.4"
+    default['postgresql']['version'] = '8.4'
   end
 
-  set[:postgresql][:dir] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
 
-when "amazon"
+  set['postgresql']['data_dir'] = '/var/lib/pgsql/data'
+  set['postgresql']['conf_dir'] = '/var/lib/pgsql/data'
 
-  default[:postgresql][:version] = "8.4"
-  set[:postgresql][:dir] = "/var/lib/pgsql/data"
+when 'amazon'
+
+  default['postgresql']['version'] = '8.4'
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
 
-when "redhat","centos","scientific"
+  set['postgresql']['data_dir'] = '/var/lib/pgsql/data'
+  set['postgresql']['conf_dir'] = '/var/lib/pgsql/data'
+when 'redhat','centos','scientific'
 
-  default[:postgresql][:version] = "8.4"
-  set[:postgresql][:dir] = "/var/lib/pgsql/data"
+  default['postgresql']['version'] = '8.4'
 
   if node['platform_version'].to_f >= 6.0
     default['postgresql']['client']['packages'] = %w{postgresql-devel}
@@ -80,23 +86,76 @@ when "redhat","centos","scientific"
     default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
   end
 
-when "suse"
+  set['postgresql']['data_dir'] = '/var/lib/pgsql/data'
+  set['postgresql']['conf_dir'] = '/var/lib/pgsql/data'
+
+when 'suse'
 
   if platform_version.to_f <= 11.1
-    default[:postgresql][:version] = "8.3"
+    default['postgresql']['version'] = '8.3'
   else
-    default[:postgresql][:version] = "8.4"
+    default['postgresql']['version'] = '8.4'
   end
 
-  set[:postgresql][:dir] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
 
+  set['postgresql']['data_dir'] = '/var/lib/pgsql/data'
+  set['postgresql']['conf_dir'] = '/var/lib/pgsql/data'
+
 else
-  default[:postgresql][:version] = "8.4"
-  set[:postgresql][:dir]         = "/etc/postgresql/#{node[:postgresql][:version]}/main"
-  default['postgresql']['client']['packages'] = ["postgresql"]
-  default['postgresql']['server']['packages'] = ["postgresql"]
+  default['postgresql']['version'] = '8.4'
+  set['postgresql']['data_dir']         = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  set['postgresql']['conf_dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  
 end
 
-default[:postgresql][:listen_addresses] = "localhost"
+# Defaults for tunable settings
+
+# file locations
+default['postgresql']['hba_file']          = "#{node['postgresql']['conf_dir']}/pg_hba.conf"
+default['postgresql']['ident_file']        = "#{node['postgresql']['conf_dir']}/pg_ident.conf"
+default['postgresql']['external_pid_file']    = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
+# connections
+default['postgresql']['listen_addresses']     = 'localhost'
+default['postgresql']['port']                 = 5432
+default['postgresql']['max_connections']      = 100
+default['postgresql']['unix_socket_directory']      = '/var/run/postgresql'
+
+# security and authentication
+default['postgresql']['ssl'] = 'off'
+default['postgresql']['ssl_renegotiation_limit']  = '512MB'
+default['postgresql']['ssl_ciphers'] = '!aNULL:!eNULL:!LOW:!EXPORT:!MD5:ALL'
+
+# resource tuning
+default['postgresql']['total_memory_percentage'] = 0.80
+default['postgresql']['shared_memory_percentage']=0.25
+default['postgresql']['effective_cache_size_percentage']=0.80
+
+set['postgresql']['total_memory_mb']= PostgresqlCookbook::MemoryConversions.kibibytes_to_mebibytes(node['memory']['total'].to_i * node['postgresql']['total_memory_percentage']).to_i
+set['postgresql']['shared_buffers']=(node['postgresql']['total_memory_mb'] * node['postgresql']['shared_memory_percentage']).to_i
+set['postgresql']['effective_cache_size']=(node['postgresql']['total_memory_mb'] * node['postgresql']['effective_cache_size_percentage']).to_i
+
+default['postgresql']['work_mem'] = '32MB'
+default['postgresql']['maintenance_work_mem'] = '16MB'
+
+# archiving
+default['postgresql']['wal_level'] = 'minimal'
+default['postgresql']['archive_mode'] = 'off'
+default['postgresql']['archive_command'] = ""
+# replication
+default['postgresql']['max_wal_senders'] = 0
+default['postgresql']['wal_keep_segments'] = 0
+# standby
+default['postgresql']['hot_standby'] = 'off'
+# logs
+default['postgresql']['log_destination']='csvlog'
+default['postgresql']['logging_collector']='on'
+default['postgresql']['log_directory']='/var/log/postgresql'
+default['postgresql']['log_filename']='postgresql-%Y-%m-%d_%H%M%S'
+default['postgresql']['log_file_mode']='0640'
+default['postgresql']['log_rotation_age']='1d'
+default['postgresql']['log_rotation_size']='100MB'
+default['postgresql']['log_min_messages']='warning'
+default['postgresql']['log_min_error_statement']='error'
+default['postgresql']['log_min_duration_statement']=-1
