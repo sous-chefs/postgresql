@@ -289,6 +289,27 @@ conventions), installs the postgresql server packages, initializes the
 database and manages the postgresql service, and manages the
 postgresql.conf file.
 
+sysctl
+------
+
+Applies several linux kernel tuning parameters using the `sysctl::default`
+recipe from the `sysctl` community cookbook. The parameter setting is generally
+conservative; if it detects a setting that is "better" (_e.g._ a larger setting
+for `kernel.shmmax` will not be replaced). The recipe can detect the current
+settings in a couple different ways. First, it will look for existing `sysctl`
+entries on the node. Additionally, if the Cloudant [sysctl Ohai
+plugin](https://github.com/cloudant/ohai-plugins/tree/master/sysctl.rb) is run
+on the node, the current sysctl settings will be checked. Finally, if none of
+these are available, some hardcoded defaults based on inspecting a freshly
+installed Ubuntu system will be used as the baseline. The details for
+calculating the sysctl tweaks can be found in the
+`libraries/sysctl_tweak_calculator.rb` file.
+
+**Note**
+
+As of version 0.1.0 of the sysctl cookbok, this recipe will only work on Debian
+and Ubuntu systems, as that cookbook only supports those systems.
+
 Resources/Providers
 ===================
 
