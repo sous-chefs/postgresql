@@ -72,7 +72,7 @@ module PostgresqlCookbook
             path_list = path.split('.') 
             
             if node.attribute?('sysctl')
-                value = recurse_path_from node.sysctl, path_list
+                value = recurse_path_from node['sysctl'], path_list
             end
             
             if value.nil? && node['kernel'].attribute?('sysctl')

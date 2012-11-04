@@ -20,3 +20,4 @@ end
 
 depends "openssl"
 depends "sysctl"
+depends "build-essential"
