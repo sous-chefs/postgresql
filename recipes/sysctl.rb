@@ -33,3 +33,12 @@ node.set['sysctl']['vm']['swappiness'] = calculator.vm_swappiness
 node.save unless Chef::Config.solo
 
 include_recipe 'sysctl::default'
+
+#FIXME: This is a workaround for a bug in the currently released version of the
+#sysctl recipe (0.1.0). A pull request
+#(https://github.com/Fewbytes/sysctl-cookbook/pulls/3) has been submitted for that cookbook, but
+#to make sure that the changes the the syctl settings are applied, we force procps to run.
+
+service 'procps' do
+    action :start
+end
