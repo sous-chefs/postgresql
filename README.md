@@ -99,7 +99,7 @@ The following attributes are set based on the platform, see the
 A number of attributes have been exposed for tuning the postgres installation.
 The three most important are:
 
-*  `node['postgresql']['total_memory_pct']` - The percentage of the node's total
+*  `node['postgresql']['total_memory_percentage']` - The percentage of the node's total
    available memory that should be dedicated to postgresql. Defaults to 0.80
    (80%)
 
@@ -140,7 +140,7 @@ general rule of thumb; they are highly dependent on the server work load.
   joins. Hash tables are used in hash joins, hash-based aggregation, and
   hash-based processing of IN subqueries.
 
-* `node['postgresql']['maintenance_work_mem'] - Specifies the maximum amount of
+* `node['postgresql']['maintenance_work_mem']` - Specifies the maximum amount of
   memory to be used by maintenance operations, such as VACUUM, CREATE INDEX, and
   ALTER TABLE ADD FOREIGN KEY. It defaults to 16 megabytes (16MB). Since only
   one of these operations can be executed at a time by a database session, and
@@ -169,6 +169,9 @@ general rule of thumb; they are highly dependent on the server work load.
 
 * `node['postgresql']['log_filename']` - The pattern to use when generating log
   file names. Defaults to `postgresql-%Y-%m-%d_%H%M%S`
+
+* `node['postgresql']['log_file_mode']` - The permissions to set on the log
+  file. Defaults to '640'.
 
 * `node['postgresql']['log_rotation_age']` - When logging_collector is enabled,
   this parameter determines the maximum lifetime of an individual log file.
@@ -226,7 +229,7 @@ general rule of thumb; they are highly dependent on the server work load.
 
 ### Replication Slaves
 
-* `node['postgresql']['hot_standby'] - Specifies whether or not you can connect
+* `node['postgresql']['hot_standby']` - Specifies whether or not you can connect
   and run queries during recovery. Defaults to 'off'
  
 ## Other attributes

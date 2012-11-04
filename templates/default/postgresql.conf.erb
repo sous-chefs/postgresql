@@ -119,7 +119,7 @@ ssl_ciphers = '<%= node['postgresql']['ssl_ciphers'] %>' #allowed SSL ciphers
 
 # - Memory -
 
-shared_buffers = <%= node['postgresql']['shared_buffers'] %>			# min 128kB or max_connections*16kB
+shared_buffers = <%= node['postgresql']['shared_buffers'] %>MB		# min 128kB or max_connections*16kB
 					# (change requires restart)
 #temp_buffers = 8MB			# min 800kB
 #max_prepared_transactions = 5		# can be 0 or more
@@ -246,7 +246,7 @@ archive_command = '<%= node['postgresql']['archive_command'] %>'		# command to u
 #cpu_tuple_cost = 0.01			# same scale as above
 #cpu_index_tuple_cost = 0.005		# same scale as above
 #cpu_operator_cost = 0.0025		# same scale as above
-effective_cache_size = <%= node['postgresql']['effective_cache_size'] %>
+effective_cache_size = <%= node['postgresql']['effective_cache_size'] %>MB
 
 # - Genetic Query Optimizer -
 
@@ -288,6 +288,7 @@ log_directory = '<%= node['postgresql']['log_directory'] %>'		# directory where 
 					# can be absolute or relative to PGDATA
 log_filename = '<%= node['postgresql']['log_filename'] %>'	# log file name pattern,
 					# can include strftime() escapes
+log_file_mode = <%= node['postgresql']['log_file_mode'] %>
 #log_truncate_on_rotation = off		# If on, an existing log file of the
 					# same name as the new log file will be
 					# truncated rather than appended to.
