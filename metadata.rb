@@ -18,4 +18,6 @@ end
   supports el, ">= 6.0"
 end
 
-depends "openssl"
+%w{build-essential openssl}.each do |dep|
+  depends dep
+end
