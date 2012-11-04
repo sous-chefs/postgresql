@@ -62,7 +62,7 @@ directory node['postgresql']['unix_socket_directory'] do
 end
 
 template "#{node['postgresql']['conf_dir']}/postgresql.conf" do
-  source "debian.postgresql.conf.erb"
+  source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
   mode 0600

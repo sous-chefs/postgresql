@@ -60,7 +60,7 @@ service "postgresql" do
 end
 
 template "#{node['postgresql']['conf_dir']}/postgresql.conf" do
-  source "redhat.postgresql.conf.erb"
+  source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
   mode 0600
