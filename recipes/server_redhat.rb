@@ -44,6 +44,12 @@ directory node['postgresql']['unix_socket_directory'] do
   mode '0755'
 end
 
+directory node['postgresql']['log_directory'] do
+  owner 'postgres'
+  group 'postgres'
+  mode '0750'
+end
+
 node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack do
     action :install
