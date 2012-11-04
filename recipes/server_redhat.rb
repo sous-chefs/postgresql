@@ -47,7 +47,7 @@ end
 directory node['postgresql']['log_directory'] do
   owner 'postgres'
   group 'postgres'
-  mode '0750'
+  mode '750'
 end
 
 node['postgresql']['server']['packages'].each do |pg_pack|

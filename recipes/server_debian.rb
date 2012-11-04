@@ -64,7 +64,7 @@ end
 directory node['postgresql']['log_directory'] do
   owner 'postgres'
   group 'adm'
-  mode '0750'
+  mode '1750'
 end
 
 template "#{node['postgresql']['conf_dir']}/postgresql.conf" do
