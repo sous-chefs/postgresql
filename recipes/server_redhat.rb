@@ -44,8 +44,23 @@ node['postgresql']['server']['packages'].each do |pg_pack|
   end
 end
 
-execute "/sbin/service postgresql initdb" do
-  not_if { ::FileTest.exist?(File.join(node.postgresql.dir, "PG_VERSION")) }
+case node['platform']
+when "redhat","centos","scientific"
+  case
+  when node['platform_version'].to_f >= 6.0
+    package "postgresql-server"
+  else
+    package "postgresql#{node['postgresql']['version'].split('.').join}-server"
+  end
+when "fedora","suse"
+  package "postgresql-server"
+end
+
+# Following not valid for 9.x version of postgresql
+if node['postgresql']['version'].to_f < 9.0
+  execute "/sbin/service postgresql initdb" do
+    not_if { ::FileTest.exist?(File.join(node['postgresql']['dir'], "PG_VERSION")) }
+  end
 end
 
 service "postgresql" do
@@ -53,7 +68,7 @@ service "postgresql" do
   action [:enable, :start]
 end
 
-template "#{node[:postgresql][:dir]}/postgresql.conf" do
+template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "redhat.postgresql.conf.erb"
   owner "postgres"
   group "postgres"
