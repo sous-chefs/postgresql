@@ -57,10 +57,9 @@ when "fedora","suse"
 end
 
 # Following not valid for 9.x version of postgresql
-case node['postgresql']['version']
-when "8.3", "8.4"
+if node['postgresql']['version'].to_f < 9.0
   execute "/sbin/service postgresql initdb" do
-    not_if { ::FileTest.exist?(File.join(node.postgresql.dir, "PG_VERSION")) }
+    not_if { ::FileTest.exist?(File.join(node['postgresql']['dir'], "PG_VERSION")) }
   end
 end
 
