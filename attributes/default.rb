@@ -29,7 +29,7 @@ when "debian"
     default[:postgresql][:version] = "9.1"
   end
 
-  default['postgresql']['dir'] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
 
@@ -44,7 +44,7 @@ when "ubuntu"
     default[:postgresql][:version] = "9.1"
   end
 
-  default['postgresql']['dir'] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
 
@@ -94,7 +94,7 @@ when "suse"
 
 else
   default[:postgresql][:version] = "8.4"
-  default['postgresql']['dir']         = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+  default['postgresql']['dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
   default['postgresql']['client']['packages'] = ["postgresql"]
   default['postgresql']['server']['packages'] = ["postgresql"]
 end
