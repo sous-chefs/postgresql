@@ -29,9 +29,9 @@ node.save unless Chef::Config[:solo]
 
 case node[:postgresql][:version]
 when "8.3"
-  node.default[:postgresql][:ssl] = "off"
+  node.default[:postgresql][:ssl] = false
 when "8.4"
-  node.default[:postgresql][:ssl] = "true"
+  node.default[:postgresql][:ssl] = true
 end
 
 # Include the right "family" recipe for installing the server
