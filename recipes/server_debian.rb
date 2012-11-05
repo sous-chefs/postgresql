@@ -21,13 +21,6 @@
 
 include_recipe "postgresql::client"
 
-
-if node['postgresql']['version'].to_f <= 8.3
-  node.default['postgresql']['ssl'] = "off"
-else
-  node.default['postgresql']['ssl'] = "true"
-end
-
 node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack do
     action :install

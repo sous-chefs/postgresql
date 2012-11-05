@@ -27,10 +27,11 @@ include_recipe "postgresql::client"
 node.set_unless['postgresql']['password']['postgres'] = secure_password
 node.save unless Chef::Config[:solo]
 
-if node['postgresql']['version'].to_f <= 8.3
-  node.default['postgresql']['ssl'] = "off"
-else
-  node.default['postgresql']['ssl'] = "true"
+case node[:postgresql][:version]
+when "8.3"
+  node.default[:postgresql][:ssl] = false
+when "8.4"
+  node.default[:postgresql][:ssl] = true
 end
 
 # Include the right "family" recipe for installing the server
