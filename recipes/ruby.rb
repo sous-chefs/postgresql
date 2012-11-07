@@ -18,19 +18,23 @@
 # limitations under the License.
 #
 
-execute "apt-get update" do
-  ignore_failure true
-  action :nothing
-end.run_action(:run) if node['platform_family'] == "debian"
+begin
+  require 'pg'
+rescue LoadError
+  execute "apt-get update" do
+    ignore_failure true
+    action :nothing
+  end.run_action(:run) if node['platform_family'] == "debian"
 
-node.set['build_essential']['compiletime'] = true
-include_recipe "build-essential"
-include_recipe "postgresql::client"
+  node.set['build_essential']['compiletime'] = true
+  include_recipe "build-essential"
+  include_recipe "postgresql::client"
 
-node['postgresql']['client']['packages'].each do |pg_pack|
+  node['postgresql']['client']['packages'].each do |pg_pack|
 
-  resources("package[#{pg_pack}]").run_action(:install)
+    resources("package[#{pg_pack}]").run_action(:install)
 
+  end
+
+  chef_gem "pg"
 end
-
-chef_gem "pg"
