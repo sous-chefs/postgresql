@@ -83,7 +83,7 @@ ssl = <%= node['postgresql']['ssl']	%>		# (change requires restart)
 
 					# (change requires restart)
 
-<% if node['postgresql']['ssl'] == 'true' %>
+<% if ::PostgresqlCookbook::Util.truish? node['postgresql']['ssl']  %>
 ssl_renegotiation_limit = <%= node['postgresql']['ssl_renegotiation_limit']	%> # amount of data between renegotiations
 ssl_ciphers = '<%= node['postgresql']['ssl_ciphers'] %>' #allowed SSL ciphers
 <% else %>
