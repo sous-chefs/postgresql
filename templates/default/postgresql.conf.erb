@@ -58,7 +58,7 @@ external_pid_file = '<%= node['postgresql']['external_pid_file'] %>'		# write an
 
 # - Connection Settings -
 
-listen_addresses = '<%= node.postgresql.listen_addresses %>'		# what IP address(es) to listen on;
+listen_addresses = '<%= node['postgresql']['listen_addresses'] %>'		# what IP address(es) to listen on;
 					# comma-separated list of addresses;
 					# defaults to 'localhost', '*' = all
 					# (change requires restart)
@@ -126,8 +126,8 @@ shared_buffers = <%= node['postgresql']['shared_buffers'] %>MB		# min 128kB or m
 					# (change requires restart)
 # Note:  Increasing max_prepared_transactions costs ~600 bytes of shared memory
 # per transaction slot, plus lock space (see max_locks_per_transaction).
-work_mem = <%= node["postgresql"]["work_mem"] %>				# min 64kB
-maintenance_work_mem = <%= node["postgresql"]["maintenance_work_mem"] %>		# min 1MB
+work_mem = <%= node['postgresql']['work_mem'] %>				# min 64kB
+maintenance_work_mem = <%= node['postgresql']['maintenance_work_mem'] %>		# min 1MB
 #max_stack_depth = 2MB			# min 100kB
 
 # - Free Space Map -
@@ -372,7 +372,7 @@ log_min_duration_statement = <%= node['postgresql']['log_min_duration_statement'
 #log_disconnections = off
 #log_duration = off
 #log_hostname = off
-log_line_prefix = '<% node["postgresql"]["log_line_prefix"] %>'			# special values:
+log_line_prefix = '<% node['postgresql']['log_line_prefix'] %>'			# special values:
 					#   %u = user name
 					#   %d = database name
 					#   %r = remote host and port
