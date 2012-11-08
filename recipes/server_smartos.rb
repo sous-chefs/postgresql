@@ -98,7 +98,7 @@ if db_standbys.size > 0
             mode "0755"
             action :create
           end
-    
+
           bash "run pg_basebackup" do
             user "root"
             cwd "/var/pgsql"
@@ -112,9 +112,9 @@ if db_standbys.size > 0
             EOH
             only_if { db_master['postgresql']['password']['replication_user'] }
           end
-    
+
           node['postgresql']['password']['postgres'] = db_master['postgresql']['password']['postgres']
-          
+
           ruby_block "confirm replication" do
             node['postgresql']['replicated'] = true
             only_if "tail -n 1 /var/log/postgresql91.log | grep 'ready to accept read only connections'"

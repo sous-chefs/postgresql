@@ -104,6 +104,7 @@ end
 
 default[:postgresql][:allow_ipv4_clients_ip_range] = "127.0.0.1/32"
 default[:postgresql][:listen_addresses] = "localhost"
+default[:postgresql][:max_connections] = "1024"
 
 # Replication Settings
 default[:postgresql][:database_master_role]  = "database_master"
