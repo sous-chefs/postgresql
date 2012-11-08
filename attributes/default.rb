@@ -101,3 +101,4 @@ else
 end
 
 default['postgresql']['listen_addresses'] = "localhost"
+default['postgresql']['port'] = 5432
