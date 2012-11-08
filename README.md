@@ -47,6 +47,14 @@ The following attributes are set based on the platform, see the
 * `node['postgresql']['server']['packages']` - An array of package names
   that should be installed on "server" systems.
 
+The following attributes are set for all platforms, see the
+`attributes/default.rb` file for default values.
+
+ * `node['postgresql']['hba_conf']` - An array of the hba_conf entries
+ to include. Each entry is a map with keys: `:type`,`:database`,
+ `:user`, `:address`, `:method`.
+ For example `{:type => 'host' , :database => 'all', :user => 'all',
+ :address => '127.0.0.1/32' , :method => 'md5'}`
 
 The following attributes are generated in
 `recipe[postgresql::server]`.
