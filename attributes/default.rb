@@ -100,41 +100,40 @@ else
   default['postgresql']['server']['packages'] = ["postgresql"]
 end
 
-default[:postgresql][:listen_addresses] = "localhost"
-
-if(node.platform_family == 'debian')
-  default[:postgresql][:config][:data_directory] = "/var/lib/postgresql/#{node.postgresql.version}/main"
-  default[:postgresql][:config][:hba_file] = "/etc/postgresql/#{node.postgresql.version}/main/pg_hba.conf"
-  default[:postgresql][:config][:ident_file] = "/etc/postgresql/#{node.postgresql.version}/main/pg_ident.conf"
-  default[:postgresql][:config][:external_pid_file] = "/var/run/postgresql/#{node[:postgresql][:version]}-main.pid"
-  default[:postgresql][:config][:listen_addresses] = node[:postgresql][:listen_addresses]
-  default[:postgresql][:config][:port] = 5432
-  default[:postgresql][:config][:max_connections] = 100
-  default[:postgresql][:config][:unix_socket_directory] = '/var/run/postgresql'
-  default[:postgresql][:config][:ssl] = node[:postgresql][:ssl]
-  default[:postgresql][:config][:shared_buffers] = '24MB'
-  default[:postgresql][:config][:max_fsm_pages] = 153600 if node[:postgresql][:version].to_f < 8.4
-  default[:postgresql][:config][:log_line_prefix] = '%t '
-  default[:postgresql][:config][:datestyle] = 'iso, mdy'
-  default[:postgresql][:config][:default_text_search_config] = 'pg_catalog.english'
-else
-  default[:postgresql][:config][:listen_addresses] = node[:postgresql][:listen_addresses]
-  default[:postgresql][:config][:max_connections] = node[:postgresql][:max_connections]
-  default[:postgresql][:config][:shared_buffers] = '32MB'
-  default[:postgresql][:config][:logging_collector] = true
-  default[:postgresql][:config][:log_directory] = 'pg_log'
-  default[:postgresql][:config][:log_filename] = 'postgresql-%a.log'
-  default[:postgresql][:config][:log_truncate_on_rotation] = true
-  default[:postgresql][:config][:log_rotation_age] = '1d'
-  default[:postgresql][:config][:log_rotation_size] = 0
-  default[:postgresql][:config][:datestyle] = 'iso, mdy'
-  default[:postgresql][:config][:lc_messages] = 'en_US.UTF-8'
-  default[:postgresql][:config][:lc_monetary] = 'en_US.UTF-8'
-  default[:postgresql][:config][:lc_numeric] = 'en_US.UTF-8'
-  default[:postgresql][:config][:lc_time] = 'en_US.UTF-8'
-  default[:postgresql][:config][:default_text_search_config] = 'pg_catalog.english'
+case node['platform_family']
+when 'debian'
+  default['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
+  default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
+  default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
+  default['postgresql']['config']['listen_addresses'] = 'localhost'
+  default['postgresql']['config']['port'] = 5432
+  default['postgresql']['config']['max_connections'] = 100
+  default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql'
+  default['postgresql']['config']['ssl'] = node['postgresql']['ssl']
+  default['postgresql']['config']['shared_buffers'] = '24MB'
+  default['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
+  default['postgresql']['config']['log_line_prefix'] = '%t '
+  default['postgresql']['config']['datestyle'] = 'iso, mdy'
+  default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
+when 'rhel', 'fedora'
+  default['postgresql']['config']['listen_addresses'] = 'localhost'
+  default['postgresql']['config']['max_connections'] = 100
+  default['postgresql']['config']['shared_buffers'] = '32MB'
+  default['postgresql']['config']['logging_collector'] = true
+  default['postgresql']['config']['log_directory'] = 'pg_log'
+  default['postgresql']['config']['log_filename'] = 'postgresql-%a.log'
+  default['postgresql']['config']['log_truncate_on_rotation'] = true
+  default['postgresql']['config']['log_rotation_age'] = '1d'
+  default['postgresql']['config']['log_rotation_size'] = 0
+  default['postgresql']['config']['datestyle'] = 'iso, mdy'
+  default['postgresql']['config']['lc_messages'] = 'en_US.UTF-8'
+  default['postgresql']['config']['lc_monetary'] = 'en_US.UTF-8'
+  default['postgresql']['config']['lc_numeric'] = 'en_US.UTF-8'
+  default['postgresql']['config']['lc_time'] = 'en_US.UTF-8'
+  default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
 end
-default[:postgresql][:pg_hba] = [
+default['postgresql']['pg_hba'] = [
   {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'},
   {:type => 'local', :db => 'all', :user => 'all', :addr => nil, :method => 'ident'},
   {:type => 'host', :db => 'all', :user => 'all', :addr => '127.0.0.1/32', :method => 'md5'},

@@ -39,9 +39,9 @@ user "postgres" do
 end
 
 node['postgresql']['server']['packages'].each do |pg_pack|
-  package pg_pack do
-    action :install
-  end
+
+  package pg_pack
+
 end
 
 case node['platform']

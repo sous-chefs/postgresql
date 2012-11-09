@@ -27,11 +27,11 @@ include_recipe "postgresql::client"
 node.set_unless['postgresql']['password']['postgres'] = secure_password
 node.save unless Chef::Config[:solo]
 
-case node[:postgresql][:version]
+case node['postgresql']['version']
 when "8.3"
-  node.default[:postgresql][:ssl] = false
+  node.default['postgresql']['ssl'] = false
 when "8.4"
-  node.default[:postgresql][:ssl] = true
+  node.default['postgresql']['ssl'] = true
 end
 
 # Include the right "family" recipe for installing the server
@@ -43,20 +43,20 @@ when "debian", "ubuntu"
   include_recipe "postgresql::server_debian"
 end
 
-template "#{node[:postgresql][:dir]}/postgresql.conf" do
+template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies :restart, resources(:service => "postgresql"), :immediately
+  notifies :restart, 'service[postgresql]', :immediately
 end
 
-template "#{node[:postgresql][:dir]}/pg_hba.conf" do
+template "#{node['postgresql']['dir']}/pg_hba.conf" do
   source "pg_hba.conf.erb"
   owner "postgres"
   group "postgres"
   mode 00600
-  notifies :reload, resources(:service => "postgresql"), :immediately
+  notifies :reload, 'service[postgresql]', :immediately
 end
 
 # Default PostgreSQL install has 'ident' checking on unix user 'postgres'

@@ -1,9 +1,9 @@
 # PostgreSQL configuration file
 # This file was automatically generated and dropped off by chef!
 
-<% node[:postgresql][:config].each do |key, value| %>
+<% node['postgresql']['config'].each do |key, value| %>
 <% next if value.nil? -%>
-<%= key %> = <%= 
+<%= key %> = <%=
   case value
   when String
     "'#{value}'"

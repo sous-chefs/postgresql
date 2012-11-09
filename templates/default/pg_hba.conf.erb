@@ -2,7 +2,7 @@
 # This file was automatically generated and dropped off by chef!
 
 # TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
-<% node[:postgresql][:pg_hba].each do |auth| -%>
+<% node['postgresql']['pg_hba'].each do |auth| -%>
 <%= auth[:type] %>  <%= auth[:db] %>  <%= auth[:user] %>  <%= auth[:addr] %>  <%= auth[:method] %>
 <% end -%>
 
