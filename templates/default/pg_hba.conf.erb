@@ -1,5 +1,7 @@
 # PostgreSQL Client Authentication Configuration File
-# This file was automatically generated and dropped off by chef!
+# This file was automatically generated and dropped off by Chef!
+# Please refer to the PostgreSQL documentation for details on
+# configuration settings.
 
 # TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
 <% node['postgresql']['pg_hba'].each do |auth| -%>

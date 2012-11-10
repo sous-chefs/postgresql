@@ -17,60 +17,60 @@
 # limitations under the License.
 #
 
-case platform
+case node['platform']
 when "debian"
 
   case
-  when platform_version.to_f <= 5.0
+  when node['platform_version'].to_f <= 5.0
     default['postgresql']['version'] = "8.3"
-  when platform_version.to_f == 6.0
+  when node['platform_version'].to_f == 6.0
     default['postgresql']['version'] = "8.4"
   else
     default['postgresql']['version'] = "9.1"
   end
 
-  set['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
 
 when "ubuntu"
 
   case
-  when platform_version.to_f <= 9.04
+  when node['platform_version'].to_f <= 9.04
     default['postgresql']['version'] = "8.3"
-  when platform_version.to_f <= 11.04
+  when node['platform_version'].to_f <= 11.04
     default['postgresql']['version'] = "8.4"
   else
     default['postgresql']['version'] = "9.1"
   end
 
-  set['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
 
 when "fedora"
 
-  if platform_version.to_f <= 12
+  if node['platform_version'].to_f <= 12
     default['postgresql']['version'] = "8.3"
   else
     default['postgresql']['version'] = "8.4"
   end
 
-  set['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['dir'] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
 
 when "amazon"
 
   default['postgresql']['version'] = "8.4"
-  set['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['dir'] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
 
-when "redhat","centos","scientific"
+when "redhat", "centos", "scientific", "oracle"
 
   default['postgresql']['version'] = "8.4"
-  set['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['dir'] = "/var/lib/pgsql/data"
 
   if node['platform_version'].to_f >= 6.0
     default['postgresql']['client']['packages'] = %w{postgresql-devel}
@@ -82,24 +82,35 @@ when "redhat","centos","scientific"
 
 when "suse"
 
-  case
-  when platform_version.to_f <= 11.1
+  if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
   else
     default['postgresql']['version'] = "9.0"
   end
 
-  set['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['dir'] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
 
 else
   default['postgresql']['version'] = "8.4"
-  set['postgresql']['dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  default['postgresql']['dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
   default['postgresql']['client']['packages'] = ["postgresql"]
   default['postgresql']['server']['packages'] = ["postgresql"]
 end
 
+# These defaults have disparity between which postgresql configuration
+# settings are used because they were extracted from the original
+# configuration files that are now removed in favor of dynamic
+# generation.
+#
+# While the configuration ends up being the same as the default
+# in previous versions of the cookbook, the content of the rendered
+# template will change, and this will result in service notification
+# if you upgrade the cookbook on existing systems.
+#
+# The ssl config attribute is generated in the recipe to avoid awkward
+# merge/precedence order during the Chef run.
 case node['platform_family']
 when 'debian'
   default['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
@@ -110,7 +121,6 @@ when 'debian'
   default['postgresql']['config']['port'] = 5432
   default['postgresql']['config']['max_connections'] = 100
   default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql'
-  default['postgresql']['config']['ssl'] = node['postgresql']['ssl']
   default['postgresql']['config']['shared_buffers'] = '24MB'
   default['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
   default['postgresql']['config']['log_line_prefix'] = '%t '
@@ -133,6 +143,7 @@ when 'rhel', 'fedora'
   default['postgresql']['config']['lc_time'] = 'en_US.UTF-8'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
 end
+
 default['postgresql']['pg_hba'] = [
   {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'},
   {:type => 'local', :db => 'all', :user => 'all', :addr => nil, :method => 'ident'},

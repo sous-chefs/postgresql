@@ -54,7 +54,47 @@ The following attributes are generated in
 * `node['postgresql']['password']['postgres']` - randomly generated
   password by the `openssl` cookbook's library.
 * `node['postgresql']['ssl']` - whether to enable SSL (off for version
-  8.3, true for 8.4).
+  8.3, true for 8.4+).
+
+Configuration
+-------------
+
+The `postgresql.conf` and `pg_hba.conf` files are dynamically
+generated from attributes. Each key in `node['postgresql']['config']`
+is a postgresql configuration directive, and will be rendered in the
+config file. For example, the attribute:
+
+    node['postgresql']['config']['listen_address'] = 'localhost'
+
+Will result in the following line in the `postgresql.conf` file:
+
+    listen_address = 'localhost'
+
+The attributes file contains default values for Debian and RHEL
+platform families (per the `node['platform_family']`). These defaults
+have disparity between the platforms because they were originally
+extracted from the postgresql.conf files in the previous version of
+this cookbook, which differed in their default config. The resulting
+configuration files will be the same as before, but the content will
+be dynamically rendered from the attributes. The helpful commentary
+will no longer be present. You should consult the PostgreSQL
+documentation for specific configuration details.
+
+The `pg_hba.conf` file is dynamically generated from the
+`node['postgresql']['pg_hba']` attribute. This attribute must be an
+array of hashes, each hash containing the authorization data. As it is
+an array, you can append to it in your own recipes. The hash keys in
+the array must be symbols. Each hash will be written as a line in
+`pg_hba.conf`. For example, this entry from
+`node['postgresql']['pg_hba']`:
+
+    {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'}
+
+Will result in the following line in `pg_hba.conf`:
+
+    local all postgres  ident
+
+Use `nil` if the CIDR-ADDRESS should be empty (as above).
 
 Recipes
 =======
@@ -67,10 +107,8 @@ Includes the client recipe.
 client
 ------
 
-Installs postgresql client packages and development headers during the
-compile phase. Also installs the `pg` Ruby gem during the compile
-phase so it can be made available for the `database` cookbook's
-resources, providers and libraries.
+Installs the packages defined in the
+`node['postgresql']['client']['packages']` attribute.
 
 ruby
 ----
@@ -79,10 +117,14 @@ ruby
   the
   ["Omnibus" full stack installer](http://opscode.com/chef/install) on
   some platforms due to an incompatibility with OpenSSL. See
-  [COOK-1406](http://tickets.opscode.com/browse/COOK-1406)
+  [COOK-1406](http://tickets.opscode.com/browse/COOK-1406). You can
+  build from source into the Chef omnibus installation to work around
+  this issue.
 
 Install the `pg` gem under Chef's Ruby environment so it can be used
-in other recipes.
+in other recipes. The build-essential packages and postgresql client
+packages will be installed during the compile phase, so that the
+native extensions of `pg` can be compiled.
 
 server
 ------
@@ -93,21 +135,24 @@ manages the configuration for the server:
 
 * generates a strong default password (via `openssl`) for `postgres`
 * sets the password for postgres
+* manages the `postgresql.conf` file.
 * manages the `pg_hba.conf` file.
 
 server\_debian
 --------------
 
-Installs the postgresql server packages, manages the postgresql
-service and the postgresql.conf file.
+Installs the postgresql server packages and sets up the service. You
+should include the `postgresql::server` recipe, which will include
+this on Debian platforms.
 
 server\_redhat
 --------------
 
 Manages the postgres user and group (with UID/GID 26, per RHEL package
 conventions), installs the postgresql server packages, initializes the
-database and manages the postgresql service, and manages the
-postgresql.conf file.
+database, and manages the postgresql service. You should include the
+`postgresql::server` recipe, which will include this on RHEL/Fedora
+platforms.
 
 Resources/Providers
 ===================
@@ -132,8 +177,9 @@ your node's `json_attribs` file or in a role.
 License and Author
 ==================
 
-Author:: Joshua Timberman (<joshua@opscode.com>)
-Author:: Lamont Granquist (<lamont@opscode.com>)
+- Author:: Joshua Timberman (<joshua@opscode.com>)
+- Author:: Lamont Granquist (<lamont@opscode.com>)
+- Author:: Chris Roberts (<chrisroberts.code@gmail.com>)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
