@@ -80,6 +80,25 @@ be dynamically rendered from the attributes. The helpful commentary
 will no longer be present. You should consult the PostgreSQL
 documentation for specific configuration details.
 
+For values that are "on" or "off", they should be specified as literal
+`true` or `false`. String values will be used with single quotes. Any
+configuration option set to the literal `nil` will be skipped
+entirely. All other values (e.g., numeric literals) will be used as
+is. So for example:
+
+    node.default['postgresql']['config']['logging_collector'] = true
+    node.default['postgresql']['config']['datestyle'] = 'iso, mdy'
+    node.default['postgresql']['config']['ident_file'] = nil
+    node.default['postgresql']['config']['port] = 5432
+
+Will result in the following config lines:
+
+    logging_collector = 'on'
+    datestyle = 'iso,mdy'
+    port = 5432
+
+(no line printed for `ident_file` as it is `nil`)
+
 The `pg_hba.conf` file is dynamically generated from the
 `node['postgresql']['pg_hba']` attribute. This attribute must be an
 array of hashes, each hash containing the authorization data. As it is
