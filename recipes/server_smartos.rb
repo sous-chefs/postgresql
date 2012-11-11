@@ -53,13 +53,13 @@ if db_standbys.size > 0
     )
     notifies :restart, resources(:service => "postgresql")
   end
-  
+
   # set string of ips for standbys for pg_hba file
   node['postgresql']['standby_ips'] = db_standbys.map { |standby| standby['ipaddress'] }.join('/32, ')
 
   if node.role?(node[:postgresql][:database_master_role])
     Chef::Log.info "Current node is a master"
-    
+
     # Create a replication user
     node.set_unless[:postgresql][:password][:replication_user] = secure_password
 
@@ -92,34 +92,34 @@ if db_standbys.size > 0
     end
 
     unless node['postgresql']['replicated'] 
-          directory "/var/pgsql/pgbasebackup" do
-            owner "postgres"
-            group "postgres"
-            mode "0755"
-            action :create
-          end
+      directory "/var/pgsql/pgbasebackup" do
+        owner "postgres"
+        group "postgres"
+        mode "0755"
+        action :create
+      end
 
-          bash "run pg_basebackup" do
-            user "root"
-            cwd "/var/pgsql"
-            code <<-EOH
+      bash "run pg_basebackup" do
+        user "root"
+        cwd "/var/pgsql"
+        code <<-EOH
             rm -rf /var/pgsql/pgbasebackup/*
             svcadm disable postgresql
             PGPASSWORD=#{db_master['postgresql']['password']['replication_user']} pg_basebackup -v -U replication_user -h #{db_master['ipaddress'].to_s} -D /var/pgsql/pgbasebackup
             cp -r /var/pgsql/pgbasebackup/* /var/pgsql/data91/
             chown -R postgres:postgres /var/pgsql/data91/
             svcadm enable postgresql
-            EOH
-            only_if { db_master['postgresql']['password']['replication_user'] }
-          end
+        EOH
+        only_if { db_master['postgresql']['password']['replication_user'] }
+      end
 
-          node['postgresql']['password']['postgres'] = db_master['postgresql']['password']['postgres']
+      node['postgresql']['password']['postgres'] = db_master['postgresql']['password']['postgres']
 
-          ruby_block "confirm replication" do
-            node['postgresql']['replicated'] = true
-            only_if "tail -n 1 /var/log/postgresql91.log | grep 'ready to accept read only connections'"
-          end
-       end
+      ruby_block "confirm replication" do
+        node['postgresql']['replicated'] = true
+        only_if "tail -n 1 /var/log/postgresql91.log | grep 'ready to accept read only connections'"
+      end
+    end
   end
 else
   # write out normal settings non-replication
