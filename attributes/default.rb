@@ -126,6 +126,7 @@ when 'debian'
   default['postgresql']['config']['log_line_prefix'] = '%t '
   default['postgresql']['config']['datestyle'] = 'iso, mdy'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
+  default['postgresql']['config']['ssl'] = true
 when 'rhel', 'fedora'
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['max_connections'] = 100
