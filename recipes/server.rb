@@ -23,9 +23,24 @@
 
 include_recipe "postgresql::client"
 
-# randomly generate postgres password
-node.set_unless['postgresql']['password']['postgres'] = secure_password
-node.save unless Chef::Config[:solo]
+# randomly generate postgres password, unless using solo - see README
+if Chef::Config[:solo]
+  missing_attrs = %w{
+    postgres
+  }.select do |attr|
+    node['postgresql']['password'][attr].nil?
+  end.map { |attr| "node['postgresql']['password']['#{attr}']" }
+
+  if !missing_attrs.empty?
+    Chef::Application.fatal!([
+        "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
+        "For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note"
+      ].join(' '))
+  end
+else
+  node.set_unless['postgresql']['password']['postgres'] = secure_password
+  node.save
+end
 
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.

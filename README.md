@@ -198,6 +198,24 @@ certificates and distribute them in your own cookbook, and set the
 `node['postgresql']['config']['ssl']` attribute to true in your
 role/cookboook/node.
 
+Chef Solo Note
+==============
+
+The following node attribute is stored on the Chef Server when using
+`chef-client`. Because `chef-solo` does not connect to a server or
+save the node object at all, to have the password persist across
+`chef-solo` runs, you must specify them in the `json_attribs` file
+used. For Example:
+
+    {
+      "postgresql": {
+        "password": {
+          "postgres": "iloverandompasswordsbutthiswilldo"
+        }
+      },
+      "run_list": ["recipe[postgresql::server]"]
+    }
+
 License and Author
 ==================
 
