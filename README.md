@@ -53,8 +53,6 @@ The following attributes are generated in
 
 * `node['postgresql']['password']['postgres']` - randomly generated
   password by the `openssl` cookbook's library.
-* `node['postgresql']['ssl']` - whether to enable SSL (off for version
-  8.3, true for 8.4+).
 
 Configuration
 -------------
@@ -192,6 +190,13 @@ password and expect to use it. It performs a node.save when Chef is
 not running in `solo` mode. If you're using `chef-solo`, you'll need
 to set the attribute `node['postgresql']['password']['postgres']` in
 your node's `json_attribs` file or in a role.
+
+On Debian family systems, SSL will be enabled, as the packages on
+Debian/Ubuntu also generate the SSL certificates. If you use another
+platform and wish to use SSL in postgresql, then generate your SSL
+certificates and distribute them in your own cookbook, and set the
+`node['postgresql']['config']['ssl']` attribute to true in your
+role/cookboook/node.
 
 License and Author
 ==================
