@@ -1,3 +1,18 @@
+## v2.0.0:
+
+This version is backwards incompatible with previous versions of the
+cookbook due to use of `platform_family`, and the refactored
+configuration files using node attributes. See README.md for details
+on how to modify configuration of PostgreSQL.
+
+* [COOK-1508] - fix mixlib shellout error on SUSE
+* [COOK-1744] - Add service enable & start
+* [COOK-1779] - Don't run apt-get update and others in ruby recipe if pg is installed
+* [COOK-1871] - Attribute driven configuration files for PostgreSQL
+* [COOK-1900] - don't assume ssl on all postgresql 8.4+ installs
+* [COOK-1901] - fail a chef-solo run when the postgres password
+  attribute is not set
+
 ## v1.0.0:
 
 **Important note for this release**
