@@ -44,15 +44,15 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
-case node['platform']
-when "redhat","centos","scientific"
+case node['platform_family']
+when "rhel"
   case
   when node['platform_version'].to_f >= 6.0
     package "postgresql-server"
   else
     package "postgresql#{node['postgresql']['version'].split('.').join}-server"
   end
-when "fedora","suse"
+when "fedora", "suse"
   package "postgresql-server"
 end
 
