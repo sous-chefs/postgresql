@@ -23,10 +23,13 @@ when "debian"
   case
   when node['platform_version'].to_f <= 5.0
     default['postgresql']['version'] = "8.3"
+    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
   when node['platform_version'].to_f == 6.0
     default['postgresql']['version'] = "8.4"
+    default['postgresql']['server']['service_name'] = "postgresql"
   else
     default['postgresql']['version'] = "9.1"
+    default['postgresql']['server']['service_name'] = "postgresql"
   end
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
@@ -52,6 +55,7 @@ when "ubuntu"
   end
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  
   case
   when node['platform_version'].to_f <= 10.04
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
