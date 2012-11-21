@@ -18,7 +18,7 @@ Tested on:
 * Ubuntu 10.04, 11.10, 12.04
 * Red Hat 6.1, Scientific 6.1, CentOS 6.3
 
-## Cookboooks
+## Cookbooks
 
 Requires Opscode's `openssl` cookbook for secure password generation.
 
