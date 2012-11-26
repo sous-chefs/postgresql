@@ -56,14 +56,14 @@ when "fedora", "suse"
   package "postgresql-server"
 end
 
-# Following not valid for 9.x version of postgresql
 if node['postgresql']['version'].to_f < 9.0
-  execute "/sbin/service postgresql initdb" do
+  execute "/sbin/service #{node['postgresql']['server']['service_name']} initdb" do
     not_if { ::FileTest.exist?(File.join(node['postgresql']['dir'], "PG_VERSION")) }
   end
 end
 
 service "postgresql" do
+  service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
 end
