@@ -3,7 +3,7 @@
 # Please refer to the PostgreSQL documentation for details on
 # configuration settings.
 
-<% node['postgresql']['config'].each do |key, value| %>
+<% node['postgresql']['config'].sort.each do |key, value| %>
 <% next if value.nil? -%>
 <%= key %> = <%=
   case value
