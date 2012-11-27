@@ -92,6 +92,7 @@ EOS
     spec_installer = execute 'install pg spec' do
       command "#{gem_exec} spec ./cache/#{gem_name}.gem --ruby > ./specifications/#{gem_name}.gemspec"
       cwd File.join(gem_dir, '..', '..')
+      action :nothing
     end
     spec_installer.run_action(:run)
 
