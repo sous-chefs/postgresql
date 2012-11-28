@@ -1,7 +1,3 @@
-
-#
-# Cookbook Name:: postgresql_test
-# Recipe:: server
 #
 # Copyright 2012, Opscode, Inc.
 #
@@ -18,7 +14,14 @@
 # limitations under the License.
 #
 
-node.set['postgresql']['password']['postgres'] = "iloverandompasswordsbutthiswilldo"
+require File.expand_path('../support/helpers', __FILE__)
 
-include_recipe "postgresql::ruby"
-include_recipe "postgresql::server"
+describe 'mycookbook::default' do
+  include Helpers::Postgresql
+
+  it 'installs the postgresql client packages' do
+    node['postgresql']['client']['packages'].each do |pkg|
+      package(pkg).must_be_installed
+    end
+  end
+end
