@@ -1,3 +1,8 @@
+## v2.0.1:
+
+* [COOK-1406] - pg gem compile is unable to find libpq under Chef full
+  stack (omnibus) installation
+
 ## v2.0.0:
 
 This version is backwards incompatible with previous versions of the
