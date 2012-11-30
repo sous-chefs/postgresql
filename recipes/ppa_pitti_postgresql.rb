@@ -1,6 +1,6 @@
 include_recipe 'apt'
 
-apt_repository 'postgresql latest' do
+apt_repository 'Pitti Postgresql PPA' do
   uri 'http://ppa.launchpad.net/pitti/postgresql/ubuntu'
   distribution node[:lsb][:codename]
   components %w(main)
