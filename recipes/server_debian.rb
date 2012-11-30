@@ -28,10 +28,6 @@ else # > 8.3
   node.default[:postgresql][:ssl] = "true"
 end
 
-if(node['postgresql']['server']['latest_packages'])
-  include_recipe 'postgresql::debian_latest_repo'
-end
-
 node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack do
     action :install

@@ -100,4 +100,4 @@ else
 end
 
 default[:postgresql][:listen_addresses] = "localhost"
-default[:postgresql][:server][:latest_packages] = false
+default[:postgresql][:enable_pitti_ppa] = false
