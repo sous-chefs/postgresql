@@ -1,0 +1,5 @@
+cookbook "postgresql" do
+  configuration "default"
+  configuration "ruby"
+  configuration "server"
+end

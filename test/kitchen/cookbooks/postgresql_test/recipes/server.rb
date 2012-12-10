@@ -1,10 +1,9 @@
+
 #
-# Cookbook Name:: postgresql
+# Cookbook Name:: postgresql_test
 # Recipe:: server
 #
-# Author:: Joshua Timberman (<joshua@opscode.com>)
-# Author:: Lamont Granquist (<lamont@opscode.com>)#
-# Copyright 2009-2011, Opscode, Inc.
+# Copyright 2012, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,16 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe "postgresql::client"
+node.set['postgresql']['password']['postgres'] = "iloverandompasswordsbutthiswilldo"
 
-node['postgresql']['server']['packages'].each do |pg_pack|
-
-  package pg_pack
-
-end
-
-service "postgresql" do
-  service_name node['postgresql']['server']['service_name']
-  supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
-end
+include_recipe "postgresql::ruby"
+include_recipe "postgresql::server"

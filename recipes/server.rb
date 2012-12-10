@@ -1,4 +1,4 @@
-#/postgresql.conf.
+#
 # Cookbook Name:: postgresql
 # Recipe:: server
 #
@@ -23,32 +23,48 @@
 
 include_recipe "postgresql::client"
 
-# randomly generate postgres password
-node.set_unless[:postgresql][:password][:postgres] = secure_password
-node.save unless Chef::Config[:solo]
+# randomly generate postgres password, unless using solo - see README
+if Chef::Config[:solo]
+  missing_attrs = %w{
+    postgres
+  }.select do |attr|
+    node['postgresql']['password'][attr].nil?
+  end.map { |attr| "node['postgresql']['password']['#{attr}']" }
 
-case node[:postgresql][:version]
-when "8.3"
-  node.default[:postgresql][:ssl] = "off"
-when "8.4", "9.0"
-  node.default[:postgresql][:ssl] = "true"
+  if !missing_attrs.empty?
+    Chef::Application.fatal!([
+        "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
+        "For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note"
+      ].join(' '))
+  end
+else
+  node.set_unless['postgresql']['password']['postgres'] = secure_password
+  node.save
 end
 
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
-case node.platform
-when "redhat", "centos", "fedora", "suse", "scientific", "amazon"
+case node['platform_family']
+when "rhel", "fedora", "suse"
   include_recipe "postgresql::server_redhat"
-when "debian", "ubuntu"
+when "debian"
   include_recipe "postgresql::server_debian"
 end
 
-template "#{node[:postgresql][:dir]}/pg_hba.conf" do
-  source "pg_hba.conf.erb"
+template "#{node['postgresql']['dir']}/postgresql.conf" do
+  source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies :reload, resources(:service => "postgresql"), :immediately
+  notifies :restart, 'service[postgresql]', :immediately
+end
+
+template "#{node['postgresql']['dir']}/pg_hba.conf" do
+  source "pg_hba.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 00600
+  notifies :reload, 'service[postgresql]', :immediately
 end
 
 # Default PostgreSQL install has 'ident' checking on unix user 'postgres'
@@ -58,7 +74,7 @@ end
 bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
-echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node[:postgresql][:password][:postgres]}';" | psql
+echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql
   EOH
   not_if "echo '\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres --no-password -h localhost"
   action :run
