@@ -92,7 +92,7 @@ when "suse"
 when "smartos"
 
   default[:postgresql][:version] = "91"
-  set[:postgresql][:dir] = "/var/pgsql/data91"
+  set[:postgresql][:dir] = "/var/pgsql/data"
   default['postgresql']['client']['packages'] = ["postgresql91-client"]
   default['postgresql']['server']['packages'] = ["postgresql91-server"]
 else
