@@ -75,8 +75,9 @@ extracted from the postgresql.conf files in the previous version of
 this cookbook, which differed in their default config. The resulting
 configuration files will be the same as before, but the content will
 be dynamically rendered from the attributes. The helpful commentary
-will no longer be present. You should consult the PostgreSQL
-documentation for specific configuration details.
+from the PostgreSQL developers upstream will also be present. However,
+you should consult the PostgreSQL documentation for specific
+configuration details.
 
 For values that are "on" or "off", they should be specified as literal
 `true` or `false`. String values will be used with single quotes. Any
