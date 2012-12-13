@@ -47,6 +47,9 @@ The following attributes are set based on the platform, see the
 * `node['postgresql']['server']['packages']` - An array of package names
   that should be installed on "server" systems.
 
+* `node['postgresql']['enable_pitti_ppa']` - Whether to enable the PPA
+  by Martin Pitti, which contains newer versions of PostgreSQL. See
+  __Recipes__ "`ppa_pitti_postgresql`" below for more information.
 
 The following attributes are generated in
 `recipe[postgresql::server]`.
@@ -170,6 +173,17 @@ conventions), installs the postgresql server packages, initializes the
 database, and manages the postgresql service. You should include the
 `postgresql::server` recipe, which will include this on RHEL/Fedora
 platforms.
+
+ppa\_pitti\_postgresql
+----------------------
+
+Enables Martin Pitti's PPA for updated PostgreSQL packages.
+Automatically included if the `node['postgresql']['enable_pitti_ppa']`
+attribute is true. Also set the
+`node['postgresql']['client']['packages']` and
+`node['postgresql']['server]['packages']` to the list of packages to
+use from this repository, and set the `node['postgresql']['version']`
+attribute to the version to use (e.g., "9.2").
 
 Resources/Providers
 ===================

@@ -1,4 +1,10 @@
-## v2.0.1:
+## v2.1.0:
+
+* [COOK-1872] - Allow latest PostgreSQL deb packages to be installed
+* [COOK-1961] - Postgresql config file changes with every Chef run
+* [COOK-2041] - Postgres cookbook no longer installs on OpenSuSE 11.4
+
+## v2.0.2:
 
 * [COOK-1406] - pg gem compile is unable to find libpq under Chef full
   stack (omnibus) installation
