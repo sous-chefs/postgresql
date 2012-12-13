@@ -39,7 +39,7 @@ when "debian"
 
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
-  default['postgresql']['contrib']['packages'] = %w{postgresql}
+  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
 
 when "ubuntu"
 
@@ -62,7 +62,7 @@ when "ubuntu"
 
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   default['postgresql']['server']['packages'] = %w{postgresql}
-  default['postgresql']['contrib']['packages'] = %w{postgresql}
+  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
 
 when "fedora"
 
@@ -122,7 +122,7 @@ else
   default['postgresql']['dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
   default['postgresql']['client']['packages'] = ["postgresql"]
   default['postgresql']['server']['packages'] = ["postgresql"]
-  default['postgresql']['contrib']['packages'] = ["postgresql"]
+  default['postgresql']['contrib']['packages'] = ["postgresql-contrib"]
   default['postgresql']['server']['service_name'] = "postgresql"
 end
 
