@@ -16,7 +16,7 @@
 
 require File.expand_path('../support/helpers', __FILE__)
 
-describe 'mycookbook::default' do
+describe 'postgresql::default' do
   include Helpers::Postgresql
 
   it 'installs the postgresql client packages' do

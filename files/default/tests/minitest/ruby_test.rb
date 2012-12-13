@@ -19,7 +19,7 @@
 
 require File.expand_path('../support/helpers', __FILE__)
 
-describe 'mycookbook::default' do
+describe 'postgresql::ruby' do
   include Helpers::Postgresql
 
   it 'installs the pg gem in Chefs ruby environment' do
