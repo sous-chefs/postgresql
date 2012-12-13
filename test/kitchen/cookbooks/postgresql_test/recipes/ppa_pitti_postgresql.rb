@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: postgresql_test
-# Recipe:: default
+# Recipe:: ppa_pitti_postgresql
 #
 # Copyright 2012, Opscode, Inc.
 #
@@ -17,13 +17,8 @@
 # limitations under the License.
 #
 
-module Helpers
-  module Postgresql
-    require 'chef/mixin/shell_out'
-    include Chef::Mixin::ShellOut
-    include MiniTest::Chef::Assertions
-    include MiniTest::Chef::Context
-    include MiniTest::Chef::Resources
+node.set['postgresql']['enable_pitti_ppa'] = true
+node.set['postgresql']['version'] = '9.2'
+node.set['postgresql']['client']['packages'] = %w{postgresql-client-9.2 libpq-dev}
 
-  end
-end
+include_recipe "postgresql::default"
