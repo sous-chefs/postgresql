@@ -79,6 +79,10 @@
 #unix_socket_group = ''			# (change requires restart)
 #unix_socket_permissions = 0777		# begin with 0 to use octal notation
 					# (change requires restart)
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+#bonjour = off				# advertise server via Bonjour
+					# (change requires restart)
+<% end -%>
 #bonjour_name = ''			# defaults to the computer name
 					# (change requires restart)
 
@@ -131,7 +135,7 @@
 # - Memory -
 
 <% if @shared_buffers -%>shared_buffers = <%= @shared_buffers %>
-<% end %>#shared_buffers = 4096			# min 128kB
+<% end %>#shared_buffers = 32MB			# min 128kB
 					# (change requires restart)
 #temp_buffers = 8MB			# min 800kB
 <% if node['postgresql']['version'].to_f < 8.4 -%>
@@ -189,9 +193,17 @@
 
 # - Settings -
 
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+#wal_level = minimal			# minimal, archive, or hot_standby
+					# (change requires restart)
+<% end -%>
 #fsync = on				# turns forced synchronization on or off
+<% if node['postgresql']['version'].to_f < 9.1 -%>
 #synchronous_commit = on		# immediate fsync at commit
-#wal_sync_method = fsync		# the default is the first option 
+<% else -%>
+#synchronous_commit = on		# synchronization level; on, off, or local
+<% end -%>
+#wal_sync_method = fsync		# the default is the first option
 					# supported by the operating system:
 					#   open_datasync
 					#   fdatasync (default on Linux)
@@ -199,7 +211,11 @@
 					#   fsync_writethrough
 					#   open_sync
 #full_page_writes = on			# recover from partial page writes
+<% if node['postgresql']['version'].to_f < 9.1 -%>
 #wal_buffers = 64kB			# min 32kB
+<% else -%>
+#wal_buffers = -1			# min 32kB, -1 sets based on shared_buffers
+<% end -%>
 					# (change requires restart)
 #wal_writer_delay = 200ms		# 1-10000 milliseconds
 
@@ -223,6 +239,48 @@
 
 
 #------------------------------------------------------------------------------
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+# REPLICATION
+#------------------------------------------------------------------------------
+
+# - Master Server -
+
+# These settings are ignored on a standby server
+
+#max_wal_senders = 0		# max number of walsender processes
+				# (change requires restart)
+#wal_sender_delay = 1s		# walsender cycle time, 1-10000 milliseconds
+#wal_keep_segments = 0		# in logfile segments, 16MB each; 0 disables
+#vacuum_defer_cleanup_age = 0	# number of xacts by which cleanup is delayed
+<% if node['postgresql']['version'].to_f >= 9.1 -%>
+#replication_timeout = 60s	# in milliseconds; 0 disables
+#synchronous_standby_names = ''	# standby servers that provide sync rep
+				# comma-separated list of application_name
+				# from standby(s); '*' = all
+<% end -%>
+
+# - Standby Servers -
+
+# These settings are ignored on a master server
+
+#hot_standby = off			# "on" allows queries during recovery
+					# (change requires restart)
+#max_standby_archive_delay = 30s	# max delay before canceling queries
+					# when reading WAL from archive;
+					# -1 allows indefinite delay
+#max_standby_streaming_delay = 30s	# max delay before canceling queries
+					# when reading streaming WAL;
+					# -1 allows indefinite delay
+<% if node['postgresql']['version'].to_f >= 9.1 -%>
+#wal_receiver_status_interval = 10s	# send replies at least this often
+					# 0 disables
+#hot_standby_feedback = off		# send info from standby to prevent
+					# query conflicts
+<% end -%>
+
+
+#------------------------------------------------------------------------------
+<% end -%>
 # QUERY TUNING
 #------------------------------------------------------------------------------
 
@@ -232,6 +290,9 @@
 #enable_hashagg = on
 #enable_hashjoin = on
 #enable_indexscan = on
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+#enable_material = on
+<% end -%>
 #enable_mergejoin = on
 #enable_nestloop = on
 #enable_seqscan = on
@@ -255,6 +316,9 @@
 #geqo_pool_size = 0			# selects default based on effort
 #geqo_generations = 0			# selects default based on effort
 #geqo_selection_bias = 2.0		# range 1.5-2.0
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+#geqo_seed = 0.0			# range 0.0-1.0
+<% end -%>
 
 # - Other Planner Options -
 
@@ -296,10 +360,15 @@
 
 # These are only used if logging_collector is on:
 <% if @log_directory -%>log_directory = '<%= @log_directory %>'
-<% end %>#log_directory = 'pg_log'		# log file name pattern,
+<% end %>#log_directory = 'pg_log'		# directory where log files are written,
+					# can be absolute or relative to PGDATA
 <% if @log_filename -%>log_filename = '<%= @log_filename %>'
 <% end %>#log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'      # log file name pattern,
 					# can include strftime() escapes
+<% if node['postgresql']['version'].to_f >= 9.1 -%>
+#log_file_mode = 0600			# creation mode for log files,
+					# begin with 0 to use octal notation
+<% end -%>
 <% if @log_truncate_on_rotation -%>log_truncate_on_rotation = <%=
    case @log_truncate_on_rotation
    when TrueClass
@@ -309,7 +378,7 @@
    else
         @log_truncate_on_rotation
    end %>
-<% end %>#log_truncate_on_rotation = on		# If on, an existing log file of the
+<% end %>#log_truncate_on_rotation = on		# If on, an existing log file with the
 					# same name as the new log file will be
 					# truncated rather than appended to.
 					# But such truncation only occurs on
@@ -365,9 +434,9 @@
 					#   log
 					#   fatal
 					#   panic
-
+<% if node['postgresql']['version'].to_f < 9.0 -%>
 #log_error_verbosity = default		# terse, default, or verbose messages
-
+<% end -%>
 #log_min_error_statement = error	# values in order of decreasing detail:
 				 	#   debug5
 					#   debug4
@@ -402,6 +471,9 @@
 #log_connections = off
 #log_disconnections = off
 #log_duration = off
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+#log_error_verbosity = default		# terse, default, or verbose messages
+<% end -%>
 #log_hostname = off
 <% if @log_line_prefix -%>log_line_prefix = '<%= @log_line_prefix %>'
 <% end %>#log_line_prefix = ''			# special values:
@@ -413,6 +485,9 @@
 					#   %t = timestamp without milliseconds
 					#   %m = timestamp with milliseconds
 					#   %i = command tag
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+					#   %e = SQL state
+<% end -%>
 					#   %c = session ID
 					#   %l = session line number
 					#   %s = session start timestamp
@@ -427,8 +502,12 @@
 #log_temp_files = -1			# log temporary files equal or larger
 					# than the specified size in kilobytes;
 					# -1 disables, 0 logs all temp files
+<% if node['postgresql']['version'].to_f < 9.0 -%>
 #log_timezone = unknown			# actually, defaults to TZ environment
 					# setting
+<% else -%>
+#log_timezone = '(defaults to server environment setting)'
+<% end -%>
 
 
 #------------------------------------------------------------------------------
@@ -441,7 +520,7 @@
 #track_counts = on
 <% if node['postgresql']['version'].to_f >= 8.4 -%>
 #track_functions = none			# none, pl, all
-#track_activity_query_size = 1024
+#track_activity_query_size = 1024 	# (change requires restart)
 <% end -%>
 #update_process_title = on
 #stats_temp_directory = 'pg_stat_tmp'
@@ -466,6 +545,7 @@
 					# actions running at least this number
 					# of milliseconds.
 #autovacuum_max_workers = 3		# max number of autovacuum subprocesses
+					# (change requires restart)
 #autovacuum_naptime = 1min		# time between autovacuum runs
 #autovacuum_vacuum_threshold = 50	# min number of row updates before
 					# vacuum
@@ -496,11 +576,17 @@
 #check_function_bodies = on
 #default_transaction_isolation = 'read committed'
 #default_transaction_read_only = off
+<% if node['postgresql']['version'].to_f >= 9.1 -%>
+#default_transaction_deferrable = off
+<% end -%>
 #session_replication_role = 'origin'
 #statement_timeout = 0			# in milliseconds, 0 is disabled
 #vacuum_freeze_min_age = 50000000
 <% if node['postgresql']['version'].to_f >= 8.4 -%>
 #vacuum_freeze_table_age = 150000000
+<% end -%>
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+#bytea_output = 'hex'			# hex, escape
 <% end -%>
 #xmlbinary = 'base64'
 #xmloption = 'content'
@@ -508,8 +594,16 @@
 # - Locale and Formatting -
 
 <% if @datestyle -%>datestyle = '<%= @datestyle %>'<% else %>datestyle = 'iso, mdy'<% end %>
+<% if node['postgresql']['version'].to_f >= 8.4 -%>
+#intervalstyle = 'postgres'
+<% end -%>
+
+<% if node['postgresql']['version'].to_f < 9.1 -%>
 #timezone = unknown			# actually, defaults to TZ environment
 					# setting
+<% else -%>
+#timezone = '(defaults to server environment setting)'
+<% end -%>
 #timezone_abbreviations = 'Default'     # Select the set of available time zone
 					# abbreviations.  Currently, there are
 					#   Default
@@ -517,7 +611,11 @@
 					#   India
 					# You can create your own file in
 					# share/timezonesets/.
+<% if node['postgresql']['version'].to_f < 9.0 -%>
 #extra_float_digits = 0			# min -15, max 2
+<% else -%>
+#extra_float_digits = 0			# min -15, max 3
+<% end -%>
 #client_encoding = sql_ascii		# actually, defaults to database
 					# encoding
 
@@ -554,7 +652,10 @@
 # Note:  Each lock table slot uses ~270 bytes of shared memory, and there are
 # max_locks_per_transaction * (max_connections + max_prepared_transactions)
 # lock table slots.
-
+<% if node['postgresql']['version'].to_f >= 9.1 -%>
+#max_pred_locks_per_transaction = 64	# min 10
+					# (change requires restart)
+<% end -%>
 
 #------------------------------------------------------------------------------
 # VERSION/PLATFORM COMPATIBILITY
@@ -562,14 +663,28 @@
 
 # - Previous PostgreSQL Versions -
 
+<% if node['postgresql']['version'].to_f < 9.0 -%>
 #add_missing_from = off
+<% end -%>
 #array_nulls = on
 #backslash_quote = safe_encoding	# on, off, or safe_encoding
 #default_with_oids = off
 #escape_string_warning = on
+<% if node['postgresql']['version'].to_f < 9.0 -%>
 #regex_flavor = advanced		# advanced, extended, or basic
+<% end -%>
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+#lo_compat_privileges = off
+<% end -%>
+<% if node['postgresql']['version'].to_f >= 9.1 -%>
+#quote_all_identifiers = off
+<% end -%>
 #sql_inheritance = on
+<% if node['postgresql']['version'].to_f < 9.1 -%>
 #standard_conforming_strings = off
+<% else -%>
+#standard_conforming_strings = on
+<% end -%>
 #synchronize_seqscans = on
 
 # - Other Platforms and Clients -
@@ -578,6 +693,16 @@
 
 
 #------------------------------------------------------------------------------
+<% if node['postgresql']['version'].to_f >= 9.1 -%>
+# ERROR HANDLING
+#------------------------------------------------------------------------------
+
+#exit_on_error = off				# terminate session on any error?
+#restart_after_crash = on			# reinitialize after backend crash?
+
+
+#------------------------------------------------------------------------------
+<% end -%>
 # CUSTOMIZED OPTIONS
 #------------------------------------------------------------------------------
 
