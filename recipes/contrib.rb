@@ -17,10 +17,6 @@
 
 include_recipe "postgresql::server"
 
-if(node['postgresql']['enable_pitti_ppa'])
-  include_recipe 'postgresql::ppa_pitti_postgresql'
-end
-
 node['postgresql']['contrib']['packages'].each do |pg_pack|
 
   package pg_pack
