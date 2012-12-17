@@ -65,7 +65,7 @@
 <% if @listen_addresses -%>listen_addresses = '<%= @listen_addresses %>'
 <% end %>#listen_addresses = 'localhost'		# what IP address(es) to listen on;
 					# comma-separated list of addresses;
-					# defaults to 'localhost', '*' = all
+					# defaults to 'localhost'; use '*' for all
 					# (change requires restart)
 <% if @port -%>port = <%= @port %>
 <% end %>#port = 5432				# (change requires restart)
@@ -102,6 +102,12 @@
 #ssl_ciphers = 'ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH'	# allowed SSL ciphers
 					# (change requires restart)
 #ssl_renegotiation_limit = 512MB	# amount of data between renegotiations
+<% if node['postgresql']['version'].to_f >= 9.2 -%>
+#ssl_cert_file = 'server.crt'		# (change requires restart)
+#ssl_key_file = 'server.key'		# (change requires restart)
+#ssl_ca_file = ''			# (change requires restart)
+#ssl_crl_file = ''			# (change requires restart)
+<% end -%>
 #password_encryption = on
 #db_user_namespace = off
 
@@ -161,6 +167,12 @@
 #max_fsm_relations = 1000		# min 100, ~70 bytes each
 					# (change requires restart)
 <% end -%>
+<% if node['postgresql']['version'].to_f >= 9.2 -%>
+# - Disk -
+
+#temp_file_limit = -1			# limits per-session temp file space
+					# in kB, or -1 for no limit
+<% end -%>
 
 # - Kernel Resource Usage -
 
@@ -200,8 +212,11 @@
 #fsync = on				# turns forced synchronization on or off
 <% if node['postgresql']['version'].to_f < 9.1 -%>
 #synchronous_commit = on		# immediate fsync at commit
-<% else -%>
+<% elsif node['postgresql']['version'].to_f == 9.1 -%>
 #synchronous_commit = on		# synchronization level; on, off, or local
+<% elsif node['postgresql']['version'].to_f >= 9.2 -%>
+#synchronous_commit = on		# synchronization level;
+					# off, local, remote_write, or on
 <% end -%>
 #wal_sync_method = fsync		# the default is the first option
 					# supported by the operating system:
@@ -234,6 +249,9 @@
 #archive_mode = off		# allows archiving to be done
 				# (change requires restart)
 #archive_command = ''		# command to use to archive a logfile segment
+				# placeholders: %p = path of file to archive
+				#               %f = file name only
+				# e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
 #archive_timeout = 0		# force a logfile segment switch after this
 				# number of seconds; 0 disables
 
@@ -243,6 +261,7 @@
 # REPLICATION
 #------------------------------------------------------------------------------
 
+<% if node['postgresql']['version'].to_f <= 9.1 -%>
 # - Master Server -
 
 # These settings are ignored on a standby server
@@ -257,6 +276,26 @@
 #synchronous_standby_names = ''	# standby servers that provide sync rep
 				# comma-separated list of application_name
 				# from standby(s); '*' = all
+<% end -%>
+<% end -%>
+<% if node['postgresql']['version'].to_f >= 9.2 -%>
+# - Sending Server(s) -
+
+# Set these on the master and on any standby that will send replication data.
+
+#max_wal_senders = 0		# max number of walsender processes
+				# (change requires restart)
+#wal_keep_segments = 0		# in logfile segments, 16MB each; 0 disables
+#replication_timeout = 60s	# in milliseconds; 0 disables
+
+# - Master Server -
+
+# These settings are ignored on a standby server.
+
+#synchronous_standby_names = ''	# standby servers that provide sync rep
+				# comma-separated list of application_name
+				# from standby(s); '*' = all
+#vacuum_defer_cleanup_age = 0	# number of xacts by which cleanup is delayed
 <% end -%>
 
 # - Standby Servers -
@@ -397,12 +436,18 @@
 # These are relevant when logging to syslog:
 #syslog_facility = 'LOCAL0'
 #syslog_ident = 'postgres'
+<% if node['postgresql']['version'].to_f < 9.2 -%>
 
 #silent_mode = off			# Run server silently.
 					# DO NOT USE without syslog or
 					# logging_collector
 					# (change requires restart)
+<% end -%>
 
+<% if node['postgresql']['version'].to_f >= 9.2 -%>
+# This is only relevant when logging to eventlog (win32):
+#event_source = 'PostgreSQL'
+<% end -%>
 
 # - When to Log -
 
@@ -437,6 +482,7 @@
 <% if node['postgresql']['version'].to_f < 9.0 -%>
 #log_error_verbosity = default		# terse, default, or verbose messages
 <% end -%>
+
 #log_min_error_statement = error	# values in order of decreasing detail:
 				 	#   debug5
 					#   debug4
@@ -477,6 +523,9 @@
 #log_hostname = off
 <% if @log_line_prefix -%>log_line_prefix = '<%= @log_line_prefix %>'
 <% end %>#log_line_prefix = ''			# special values:
+<% if node['postgresql']['version'].to_f >= 9.0 -%>
+					#   %a = application name
+<% end -%>
 					#   %u = user name
 					#   %d = database name
 					#   %r = remote host and port
@@ -518,6 +567,9 @@
 
 #track_activities = on
 #track_counts = on
+<% if node['postgresql']['version'].to_f >= 9.2 -%>
+#track_io_timing = off
+<% end -%>
 <% if node['postgresql']['version'].to_f >= 8.4 -%>
 #track_functions = none			# none, pl, all
 #track_activity_query_size = 1024 	# (change requires restart)
@@ -597,7 +649,6 @@
 <% if node['postgresql']['version'].to_f >= 8.4 -%>
 #intervalstyle = 'postgres'
 <% end -%>
-
 <% if node['postgresql']['version'].to_f < 9.1 -%>
 #timezone = unknown			# actually, defaults to TZ environment
 					# setting
@@ -706,4 +757,8 @@
 # CUSTOMIZED OPTIONS
 #------------------------------------------------------------------------------
 
+<% if node['postgresql']['version'].to_f < 9.2 -%>
 #custom_variable_classes = ''		# list of custom variable class names
+<% else -%>
+# Add settings for extensions here
+<% end -%>
