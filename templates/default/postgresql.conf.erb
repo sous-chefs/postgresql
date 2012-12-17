@@ -329,6 +329,9 @@
 #enable_hashagg = on
 #enable_hashjoin = on
 #enable_indexscan = on
+<% if node['postgresql']['version'].to_f >= 9.2 -%>
+#enable_indexonlyscan = on
+<% end -%>
 <% if node['postgresql']['version'].to_f >= 9.0 -%>
 #enable_material = on
 <% end -%>
