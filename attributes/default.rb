@@ -180,3 +180,4 @@ default['postgresql']['pg_hba'] = [
 ]
 
 default['postgresql']['enable_pitti_ppa'] = false
+default['postgresql']['enable_pgdg_yum'] = false

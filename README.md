@@ -49,6 +49,10 @@ The following attributes are set based on the platform, see the
 * `node['postgresql']['contrib']['packages']` - An array of package names
   that could be installed on "server" systems for useful sysadmin tools.
 
+* `node['postgresql']['enable_pgdg_yum']` - Whether to enable the yum repo
+  by the PostgreSQL Global Development Group, which contains newer versions
+  of PostgreSQL.
+
 
 The following attributes are generated in
 `recipe[postgresql::server]`.
@@ -183,6 +187,24 @@ This is the contrib directory of the PostgreSQL distribution, which
 includes porting tools, analysis utilities, and plug-in features that
 database engineers often require. Some (like pgbench) are executable.
 Others (like pg_buffercache) are installed into the database.
+
+yum\_pgdg\_postgresql
+---------------------
+
+Enables the PostgreSQL Global Development Group yum repository
+maintained by Devrim G&#252;nd&#252;z for updated PostgreSQL packages.
+(The PGDG is the groups that develops PostgreSQL.)
+Automatically included if the `node['postgresql']['enable_pgdg_yum']`
+attribute is true. Also use `override_attributes` to set a number of
+values that will need to have embedded version numbers. For example:
+
+    node['postgresql']['enable_pgdg_yum'] = true
+    node['postgresql']['version'] = "9.2"
+    node['postgresql']['dir'] = "/var/lib/pgsql/9.2/data"
+    node['postgresql']['client']['packages'] = ["postgresql92-devel"]
+    node['postgresql']['server']['packages'] = ["postgresql92-server"]
+    node['postgresql']['server']['service_name'] = "postgresql-9.2"
+    node['postgresql']['contrib']['packages'] = ["postgresql92-contrib"]
 
 Resources/Providers
 ===================
