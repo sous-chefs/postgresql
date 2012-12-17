@@ -1,7 +1,4 @@
 #
-# Cookbook Name:: postgresql_test
-# Recipe:: default
-#
 # Copyright 2012, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +16,20 @@
 
 require File.expand_path('../support/helpers', __FILE__)
 
-describe 'postgresql::ruby' do
+describe 'postgresql::ppa_pitti_postgresql' do
   include Helpers::Postgresql
 
-  it 'installs the pg gem in Chefs ruby environment' do
-    assert Gem::Specification.all_names.grep("pg-.*")
+  it 'creates the Pitti PPA sources.list' do
+    skip unless %w{debian}.include?(node['platform_family'])
+    file("/etc/apt/sources.list.d/pitti-postgresql-ppa-source.list").must_exist
+  end
+
+  it 'installs postgresql-client-9.2' do
+    package("postgresql-client-9.2").must_be_installed
+  end
+
+  it 'makes psql version 9.2 available' do
+    psql = shell_out("psql --version")
+    assert psql.stdout.include?("psql (PostgreSQL) 9.2")
   end
 end

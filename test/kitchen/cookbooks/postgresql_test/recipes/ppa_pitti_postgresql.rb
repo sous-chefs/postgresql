@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: postgresql_test
-# Recipe:: default
+# Recipe:: ppa_pitti_postgresql
 #
 # Copyright 2012, Opscode, Inc.
 #
@@ -17,12 +17,8 @@
 # limitations under the License.
 #
 
-require File.expand_path('../support/helpers', __FILE__)
+node.set['postgresql']['enable_pitti_ppa'] = true
+node.set['postgresql']['version'] = '9.2'
+node.set['postgresql']['client']['packages'] = %w{postgresql-client-9.2 libpq-dev}
 
-describe 'postgresql::ruby' do
-  include Helpers::Postgresql
-
-  it 'installs the pg gem in Chefs ruby environment' do
-    assert Gem::Specification.all_names.grep("pg-.*")
-  end
-end
+include_recipe "postgresql::default"

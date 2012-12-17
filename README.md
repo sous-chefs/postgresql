@@ -53,6 +53,9 @@ The following attributes are set based on the platform, see the
   by the PostgreSQL Global Development Group, which contains newer versions
   of PostgreSQL.
 
+* `node['postgresql']['enable_pitti_ppa']` - Whether to enable the PPA
+  by Martin Pitti, which contains newer versions of PostgreSQL. See
+  __Recipes__ "`ppa_pitti_postgresql`" below for more information.
 
 The following attributes are generated in
 `recipe[postgresql::server]`.
@@ -187,6 +190,17 @@ This is the contrib directory of the PostgreSQL distribution, which
 includes porting tools, analysis utilities, and plug-in features that
 database engineers often require. Some (like pgbench) are executable.
 Others (like pg_buffercache) are installed into the database.
+
+ppa\_pitti\_postgresql
+----------------------
+
+Enables Martin Pitti's PPA for updated PostgreSQL packages.
+Automatically included if the `node['postgresql']['enable_pitti_ppa']`
+attribute is true. Also set the
+`node['postgresql']['client']['packages']` and
+`node['postgresql']['server]['packages']` to the list of packages to
+use from this repository, and set the `node['postgresql']['version']`
+attribute to the version to use (e.g., "9.2").
 
 yum\_pgdg\_postgresql
 ---------------------

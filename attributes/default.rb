@@ -112,7 +112,7 @@ when "suse"
   end
 
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
+  default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
@@ -154,7 +154,7 @@ when 'debian'
   default['postgresql']['config']['datestyle'] = 'iso, mdy'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
   default['postgresql']['config']['ssl'] = true
-when 'rhel', 'fedora'
+when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['max_connections'] = 100
   default['postgresql']['config']['shared_buffers'] = '32MB'
