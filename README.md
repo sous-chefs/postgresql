@@ -118,13 +118,28 @@ the array must be symbols. Each hash will be written as a line in
 `pg_hba.conf`. For example, this entry from
 `node['postgresql']['pg_hba']`:
 
-    {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'}
+    {:comment => '# Optional comment',
+    :type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'md5'}
 
 Will result in the following line in `pg_hba.conf`:
 
-    local all postgres  ident
+    # Optional comment
+    local   all             postgres                                md5
 
 Use `nil` if the CIDR-ADDRESS should be empty (as above).
+Don't provide a comment if none is desired in the `pg_hba.conf` file.
+
+Note that the following authorization rule is supplied automatically by
+the cookbook template. The cookbook needs this to execute SQL in the
+PostgreSQL server without supplying the clear-text password (which isn't
+known by the cookbook). Therefore, your `node['postgresql']['pg_hba']`
+attributes don't need to specify this authorization rule:
+
+    # "local" is for Unix domain socket connections only
+    local   all             all                                     ident
+
+(By the way, the template uses `peer` instead of `ident` for PostgreSQL-9.1
+and above, which has the same effect.)
 
 Recipes
 =======
