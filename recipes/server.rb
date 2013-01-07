@@ -73,15 +73,18 @@ template "#{node['postgresql']['dir']}/pg_hba.conf" do
   notifies :reload, 'service[postgresql]', :immediately
 end
 
-# Default PostgreSQL install has 'ident' checking on unix user 'postgres'
-# and 'md5' password checking with connections from 'localhost'. This script
-# runs as user 'postgres', so we can execute the 'role' and 'database' resources
-# as 'root' later on, passing the below credentials in the PG client.
+# NOTE: Consider two facts before modifying "assign-postgres-password":
+# (1) Passing the "ALTER ROLE ..." through the psql command only works
+#     if passwordless authorization was configured for local connections.
+#     For example, if pg_hba.conf has a "local all postgres ident" rule.
+# (2) It is probably fruitless to optimize this with a not_if to avoid
+#     setting the same password. This chef recipe doesn't have access to
+#     the plain text password, and testing the encrypted (md5 digest)
+#     version is not straight-forward.
 bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
 echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql
   EOH
-  not_if "echo '\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres --no-password -h localhost"
   action :run
 end
