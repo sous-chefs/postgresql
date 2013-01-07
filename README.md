@@ -56,6 +56,7 @@ The following attributes are generated in
 
 * `node['postgresql']['password']['postgres']` - randomly generated
   password by the `openssl` cookbook's library.
+  (TODO: This is broken, as it disables the password.)
 
 Configuration
 -------------
@@ -154,6 +155,7 @@ appropriate server packages installed and service managed. Also
 manages the configuration for the server:
 
 * generates a strong default password (via `openssl`) for `postgres`
+  (TODO: This is broken, as it disables the password.)
 * sets the password for postgres
 * manages the `postgresql.conf` file.
 * manages the `pg_hba.conf` file.
@@ -200,8 +202,12 @@ list `recipe[postgresql]` or `recipe[postgresql::client]`.
 
 On systems that should be PostgreSQL servers, use
 `recipe[postgresql::server]` on a run list. This recipe does set a
-password and expect to use it. It performs a node.save when Chef is
-not running in `solo` mode. If you're using `chef-solo`, you'll need
+password for the `postgres` user.
+If you're using `chef server`, if the attribute
+`node['postgresql']['password']['postgres']` is not found,
+the recipe generates a random password and performs a node.save.
+(TODO: This is broken, as it disables the password.)
+If you're using `chef-solo`, you'll need
 to set the attribute `node['postgresql']['password']['postgres']` in
 your node's `json_attribs` file or in a role.
 
@@ -229,6 +235,17 @@ used. For Example:
       },
       "run_list": ["recipe[postgresql::server]"]
     }
+
+That should actually be the "encrypted password" instead of cleartext,
+so you should generate it as an md5 hash using the PostgreSQL algorithm.
+
+* You could copy the md5-hashed password from an existing postgres
+database if you have `postgres` access and want to use the same password:<br>
+`select * from pg_shadow where usename='postgres';`
+* You can run this from any postgres database session to use a new password:<br>
+`select 'md5'||md5('iloverandompasswordsbutthiswilldo'||'postgres');`
+* You can run this from a linux commandline:<br>
+`echo -n 'iloverandompasswordsbutthiswilldo''postgres' | openssl md5 | sed -e 's/.* /md5/'`
 
 License and Author
 ==================
