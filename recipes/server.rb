@@ -71,6 +71,7 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
     :max_fsm_pages => node['postgresql']['config']['max_fsm_pages'],
     :logging_collector => node['postgresql']['config']['logging_collector'],
     :log_directory => node['postgresql']['config']['log_directory'],
+    :log_filename => node['postgresql']['config']['log_filename'],
     :log_truncate_on_rotation => node['postgresql']['config']['log_truncate_on_rotation'],
     :log_rotation_age => node['postgresql']['config']['log_rotation_age'],
     :log_rotation_size => node['postgresql']['config']['log_rotation_size'],
