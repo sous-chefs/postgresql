@@ -57,6 +57,32 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   group "postgres"
   mode 0600
   notifies :restart, 'service[postgresql]', :immediately
+  variables({
+    :data_directory => node['postgresql']['config']['data_directory'],
+    :hba_file => node['postgresql']['config']['hba_file'],
+    :ident_file => node['postgresql']['config']['ident_file'],
+    :external_pid_file => node['postgresql']['config']['external_pid_file'],
+    :listen_addresses => node['postgresql']['config']['listen_addresses'],
+    :port => node['postgresql']['config']['port'],
+    :max_connections => node['postgresql']['config']['max_connections'],
+    :unix_socket_directory => node['postgresql']['config']['unix_socket_directory'],
+    :ssl => node['postgresql']['config']['ssl'],
+    :shared_buffers => node['postgresql']['config']['shared_buffers'],
+    :max_fsm_pages => node['postgresql']['config']['max_fsm_pages'],
+    :logging_collector => node['postgresql']['config']['logging_collector'],
+    :log_directory => node['postgresql']['config']['log_directory'],
+    :log_filename => node['postgresql']['config']['log_filename'],
+    :log_truncate_on_rotation => node['postgresql']['config']['log_truncate_on_rotation'],
+    :log_rotation_age => node['postgresql']['config']['log_rotation_age'],
+    :log_rotation_size => node['postgresql']['config']['log_rotation_size'],
+    :log_line_prefix => node['postgresql']['config']['log_line_prefix'],
+    :datestyle => node['postgresql']['config']['datestyle'],
+    :lc_messages => node['postgresql']['config']['lc_messages'],
+    :lc_monetary => node['postgresql']['config']['lc_monetary'],
+    :lc_numeric => node['postgresql']['config']['lc_numeric'],
+    :lc_time => node['postgresql']['config']['lc_time'],
+    :default_text_search_config => node['postgresql']['config']['default_text_search_config']
+  })
 end
 
 template "#{node['postgresql']['dir']}/pg_hba.conf" do

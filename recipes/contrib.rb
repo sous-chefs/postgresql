@@ -1,10 +1,6 @@
 #
 # Cookbook Name:: postgresql
-# Recipe:: client
-#
-# Author:: Joshua Timberman (<joshua@opscode.com>)
-# Author:: Lamont Granquist (<lamont@opscode.com>)
-# Copyright 2009-2011 Opscode, Inc.
+# Recipe:: contrib
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,15 +15,9 @@
 # limitations under the License.
 #
 
-if(node['postgresql']['enable_pitti_ppa'])
-  include_recipe 'postgresql::ppa_pitti_postgresql'
-end
+include_recipe "postgresql::server"
 
-if(node['postgresql']['enable_pgdg_yum'])
-  include_recipe 'postgresql::yum_pgdg_postgresql'
-end
-
-node['postgresql']['client']['packages'].each do |pg_pack|
+node['postgresql']['contrib']['packages'].each do |pg_pack|
 
   package pg_pack
 
