@@ -21,9 +21,9 @@ case node['platform']
 when "debian"
 
   case
-  when node['platform_version'].to_f <= 5.0
+  when node['platform_version'].to_f < 6.0 # All 5.X
     default['postgresql']['version'] = "8.3"
-  when node['platform_version'].to_f == 6.0
+  when node['platform_version'].to_f < 7.0 # All 6.X
     default['postgresql']['version'] = "8.4"
   else
     default['postgresql']['version'] = "9.1"
@@ -31,7 +31,7 @@ when "debian"
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   case
-  when node['platform_version'].to_f <= 5.0
+  when node['platform_version'].to_f < 6.0 # All 5.X
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
   else
     default['postgresql']['server']['service_name'] = "postgresql"
