@@ -46,6 +46,8 @@ The following attributes are set based on the platform, see the
   that should be installed on "client" systems.
 * `node['postgresql']['server']['packages']` - An array of package names
   that should be installed on "server" systems.
+* `node['postgresql']['contrib']['packages']` - An array of package names
+  that could be installed on "server" systems for useful sysadmin tools.
 
 * `node['postgresql']['enable_pitti_ppa']` - Whether to enable the PPA
   by Martin Pitti, which contains newer versions of PostgreSQL. See
@@ -173,6 +175,16 @@ conventions), installs the postgresql server packages, initializes the
 database, and manages the postgresql service. You should include the
 `postgresql::server` recipe, which will include this on RHEL/Fedora
 platforms.
+
+contrib
+-------
+
+Installs the packages defined in the
+`node['postgresql']['contrib']['packages']` attribute.
+This is the contrib directory of the PostgreSQL distribution, which
+includes porting tools, analysis utilities, and plug-in features that
+database engineers often require. Some (like pgbench) are executable.
+Others (like pg_buffercache) should be installed into the database.
 
 ppa\_pitti\_postgresql
 ----------------------
