@@ -207,6 +207,9 @@ values that will need to have embedded version numbers. For example:
     node['postgresql']['server']['service_name'] = "postgresql-9.2"
     node['postgresql']['contrib']['packages'] = ["postgresql92-contrib"]
 
+You may set `node['postgresql']['pgdg']['repo_rpm_url']` attributes
+to pick up recent [PGDG repo packages](http://yum.postgresql.org/repopackages.php).
+
 Resources/Providers
 ===================
 
