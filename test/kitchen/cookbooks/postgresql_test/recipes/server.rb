@@ -18,7 +18,5 @@
 # limitations under the License.
 #
 
-node.set['postgresql']['password']['postgres'] = "iloverandompasswordsbutthiswilldo"
-
 include_recipe "postgresql::ruby"
 include_recipe "postgresql::server"

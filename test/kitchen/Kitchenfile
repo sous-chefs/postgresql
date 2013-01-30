@@ -2,5 +2,7 @@ cookbook "postgresql" do
   configuration "default"
   configuration "ruby"
   configuration "server"
+  configuration "contrib"
   configuration "ppa_pitti_postgresql"
+  exclude :platform => 'centos', :configuration => 'ppa_pitti_postgresql'
 end
