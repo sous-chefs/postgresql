@@ -1,9 +1,6 @@
-
 #
-# Cookbook Name:: postgresql_test
-# Recipe:: server
-#
-# Copyright 2012, Opscode, Inc.
+# Cookbook Name:: postgresql
+# Recipe:: contrib
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,5 +15,10 @@
 # limitations under the License.
 #
 
-include_recipe "postgresql::ruby"
 include_recipe "postgresql::server"
+
+node['postgresql']['contrib']['packages'].each do |pg_pack|
+
+  package pg_pack
+
+end
