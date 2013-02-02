@@ -46,12 +46,6 @@ The following attributes are set based on the platform, see the
   that should be installed on "client" systems.
 * `node['postgresql']['server']['packages']` - An array of package names
   that should be installed on "server" systems.
-* `node['postgresql']['contrib']['packages']` - An array of package names
-  that could be installed on "server" systems for useful sysadmin tools.
-
-* `node['postgresql']['enable_pgdg_yum']` - Whether to enable the yum repo
-  by the PostgreSQL Global Development Group, which contains newer versions
-  of PostgreSQL.
 
 * `node['postgresql']['enable_pitti_ppa']` - Whether to enable the PPA
   by Martin Pitti, which contains newer versions of PostgreSQL. See
@@ -84,9 +78,8 @@ extracted from the postgresql.conf files in the previous version of
 this cookbook, which differed in their default config. The resulting
 configuration files will be the same as before, but the content will
 be dynamically rendered from the attributes. The helpful commentary
-from the PostgreSQL developers upstream will also be present. However,
-you should consult the PostgreSQL documentation for specific
-configuration details.
+will no longer be present. You should consult the PostgreSQL
+documentation for specific configuration details.
 
 For values that are "on" or "off", they should be specified as literal
 `true` or `false`. String values will be used with single quotes. Any
@@ -181,16 +174,6 @@ database, and manages the postgresql service. You should include the
 `postgresql::server` recipe, which will include this on RHEL/Fedora
 platforms.
 
-contrib
--------
-
-Installs the packages defined in the
-`node['postgresql']['contrib']['packages']` attribute.
-This is the contrib directory of the PostgreSQL distribution, which
-includes porting tools, analysis utilities, and plug-in features that
-database engineers often require. Some (like pgbench) are executable.
-Others (like pg_buffercache) are installed into the database.
-
 ppa\_pitti\_postgresql
 ----------------------
 
@@ -201,24 +184,6 @@ attribute is true. Also set the
 `node['postgresql']['server]['packages']` to the list of packages to
 use from this repository, and set the `node['postgresql']['version']`
 attribute to the version to use (e.g., "9.2").
-
-yum\_pgdg\_postgresql
----------------------
-
-Enables the PostgreSQL Global Development Group yum repository
-maintained by Devrim G&#252;nd&#252;z for updated PostgreSQL packages.
-(The PGDG is the groups that develops PostgreSQL.)
-Automatically included if the `node['postgresql']['enable_pgdg_yum']`
-attribute is true. Also use `override_attributes` to set a number of
-values that will need to have embedded version numbers. For example:
-
-    node['postgresql']['enable_pgdg_yum'] = true
-    node['postgresql']['version'] = "9.2"
-    node['postgresql']['dir'] = "/var/lib/pgsql/9.2/data"
-    node['postgresql']['client']['packages'] = ["postgresql92", "postgresql92-devel"]
-    node['postgresql']['server']['packages'] = ["postgresql92-server"]
-    node['postgresql']['server']['service_name'] = "postgresql-9.2"
-    node['postgresql']['contrib']['packages'] = ["postgresql92-contrib"]
 
 Resources/Providers
 ===================
@@ -264,17 +229,6 @@ used. For Example:
       },
       "run_list": ["recipe[postgresql::server]"]
     }
-
-That should actually be the "encrypted password" instead of cleartext,
-so you should generate it as an md5 hash using the PostgreSQL algorithm.
-
-* You could copy the md5-hashed password from an existing postgres
-database if you have `postgres` access and want to use the same password:<br>
-`select * from pg_shadow where usename='postgres';`
-* You can run this from any postgres database session to use a new password:<br>
-`select 'md5'||md5('iloverandompasswordsbutthiswilldo'||'postgres');`
-* You can run this from a linux commandline:<br>
-`echo -n 'iloverandompasswordsbutthiswilldo''postgres' | openssl md5 | sed -e 's/.* /md5/'`
 
 License and Author
 ==================
