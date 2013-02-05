@@ -4,5 +4,7 @@ cookbook "postgresql" do
   configuration "server"
   configuration "contrib"
   configuration "ppa_pitti_postgresql"
+  configuration "yum_pgdg_postgresql"
   exclude :platform => 'centos', :configuration => 'ppa_pitti_postgresql'
+  exclude :platform => 'ubuntu', :configuration => 'yum_pgdg_postgresql'
 end
