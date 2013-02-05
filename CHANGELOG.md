@@ -1,3 +1,8 @@
+## v2.2.2:
+
+* [COOK-2232] -Provide PGDG yum repo to install postgresql 9.x on
+  redhat-derived distributions
+
 ## v2.2.0:
 
 * [COOK-2230] - Careful about Debian minor version numbers
