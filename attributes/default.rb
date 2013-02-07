@@ -110,7 +110,7 @@ default[:postgresql][:max_connections] = "1024"
 default[:postgresql][:database_master_role]  = "database_master"
 default[:postgresql][:database_standby_role] = "database_standby"
 default[:postgresql][:wal_level] = "hot_standby"
-default[:postgresql][:wal_keep_segments] = 8
+default[:postgresql][:wal_keep_segments] = 12
 default[:postgresql][:max_wal_senders] = 5
 default[:postgresql][:hot_standby] = true
 
