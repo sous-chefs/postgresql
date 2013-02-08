@@ -172,12 +172,14 @@ when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
 end
 
-default['postgresql']['pg_hba'] = [
-  {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'},
-  {:type => 'local', :db => 'all', :user => 'all', :addr => nil, :method => 'ident'},
-  {:type => 'host', :db => 'all', :user => 'all', :addr => '127.0.0.1/32', :method => 'md5'},
-  {:type => 'host', :db => 'all', :user => 'all', :addr => '::1/128', :method => 'md5'}
-]
+# pg_hba is empty in order to make easier to configure access as
+# desired by the users of the cookbook.
+# {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'},
+# {:type => 'local', :db => 'all', :user => 'all', :addr => nil, :method => 'ident'},
+# {:type => 'host', :db => 'all', :user => 'all', :addr => '127.0.0.1/32', :method => 'md5'},
+# {:type => 'host', :db => 'all', :user => 'all', :addr => '::1/128', :method => 'md5'}
+
+default['postgresql']['pg_hba'] = []
 
 default['postgresql']['password'] = Hash.new
 
