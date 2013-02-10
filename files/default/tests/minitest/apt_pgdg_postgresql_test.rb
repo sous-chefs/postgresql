@@ -16,12 +16,12 @@
 
 require File.expand_path('../support/helpers', __FILE__)
 
-describe 'postgresql::ppa_pitti_postgresql' do
+describe 'postgresql::apt_pgdg_postgresql' do
   include Helpers::Postgresql
 
-  it 'creates the Pitti PPA sources.list' do
+  it 'creates the PGDG apt sources.list' do
     skip unless %w{debian}.include?(node['platform_family'])
-    file("/etc/apt/sources.list.d/pitti-postgresql-ppa.list").must_exist
+    file("/etc/apt/sources.list.d/apt.postgresql.org-source.list").must_exist
   end
 
   it 'installs postgresql-client-9.2' do
