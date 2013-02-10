@@ -1,7 +1,4 @@
 #
-# Cookbook Name:: postgresql_test
-# Recipe:: ppa_pitti_postgresql
-#
 # Copyright 2012, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +14,22 @@
 # limitations under the License.
 #
 
-node.set['postgresql']['enable_pitti_ppa'] = true
-node.set['postgresql']['version'] = '9.2'
-node.set['postgresql']['client']['packages'] = %w{postgresql-client-9.2 libpq-dev}
+require File.expand_path('../support/helpers', __FILE__)
 
-include_recipe "postgresql::default"
+describe 'postgresql::apt_pgdg_postgresql' do
+  include Helpers::Postgresql
+
+  it 'creates the PGDG apt sources.list' do
+    skip unless %w{debian}.include?(node['platform_family'])
+    file("/etc/apt/sources.list.d/apt.postgresql.org-source.list").must_exist
+  end
+
+  it 'installs postgresql-client-9.2' do
+    package("postgresql-client-9.2").must_be_installed
+  end
+
+  it 'makes psql version 9.2 available' do
+    psql = shell_out("psql --version")
+    assert psql.stdout.include?("psql (PostgreSQL) 9.2")
+  end
+end
