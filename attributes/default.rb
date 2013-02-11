@@ -181,7 +181,7 @@ default['postgresql']['pg_hba'] = [
 
 default['postgresql']['password'] = Hash.new
 
-default['postgresql']['enable_pgdb_apt'] = false
+default['postgresql']['enable_pgdg_apt'] = false
 default['postgresql']['enable_pgdg_yum'] = false
 
 # The PostgreSQL RPM Building Project built repository RPMs for easy
