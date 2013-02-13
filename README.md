@@ -251,13 +251,13 @@ important to choose the `db_type` correctly:
    This could be used to tune a system that isn't a dedicated database.
 
 The default attributes created by this recipe are easy to override with
-normal attributes because of Chef attribute precedence. For example,
-a DBA who closely follows OS-level system monitoring may want to smooth
-out disk I/O by experimentng with this node JSON attribute:
+normal attributes because of Chef attribute precedence. For example, if
+you are running application benchmarks to try different buffer cache
+sizes, you would experiment with this node JSON attribute:
 
     "postgresql": {
       "config": {
-        "checkpoint_completion_target": "0.5"
+        "shared_buffers": "2.5GB"
       }
     }
 
