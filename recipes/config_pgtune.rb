@@ -1,6 +1,7 @@
 #
 # Cookbook Name:: postgresql
 # Recipe:: config_pgtune
+# Author:: David Crane (<davidc@donorschoose.org>)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+#######
+# Load the binaryround(value) method from libraries/default.rb
+::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
 
 #######
 # This recipe is based on Greg Smith's pgtune script (the Feb 1, 2012
@@ -131,66 +136,6 @@ end
 
 # Ohai reports node[:memory][:total] in kB, as in "921756kB"
 mem = total_memory.split("kB")[0].to_i / 1024 # in MB
-
-#######
-# The memory settings (shared_buffers, effective_cache_size, work_mem,
-# maintenance_work_mem and wal_buffers) will be rounded down to keep
-# the 4 most significant bits, so that SHOW will be likely to use a
-# larger divisor. The output is actually a human readable string that
-# ends with "GB", "MB" or "kB" if over 1023, exactly what Postgresql
-# will expect in a postgresql.conf setting. The output may be up to
-# 6.25% less than the original value because of the rounding.
-def binaryround(value)
-
-    # Keep a multiplier which grows through powers of 1
-    multiplier = 1
-
-    # Truncate value to 4 most significant bits
-    while value >= 16
-        value = (value / 2).floor
-        multiplier = multiplier * 2
-    end
-
-    # Factor any remaining powers of 2 into the multiplier
-    while value == 2*((value / 2).floor)
-        value = (value / 2).floor
-        multiplier = multiplier * 2
-    end
-
-    # Factor enough powers of 2 back into the value to
-    # leave the multiplier as a power of 1024 that can
-    # be represented as units of "GB", "MB" or "kB".
-    if multiplier >= 1024*1024*1024
-      while multiplier > 1024*1024*1024
-        value = 2*value
-        multiplier = (multiplier/2).floor
-      end
-      multiplier = 1
-      units = "GB"
-
-    elsif multiplier >= 1024*1024
-      while multiplier > 1024*1024
-        value = 2*value
-        multiplier = (multiplier/2).floor
-      end
-      multiplier = 1
-      units = "MB"
-
-    elsif multiplier >= 1024
-      while multiplier > 1024
-        value = 2*value
-        multiplier = (multiplier/2).floor
-      end
-      multiplier = 1
-      units = "kB"
-
-    else
-      units = ""
-    end
-
-    # Now we can return a nice human readable string.
-    return "#{multiplier * value}#{units}"
-end
 
 #######
 # RAM-related settings computed as in Greg Smith's pgtune script.

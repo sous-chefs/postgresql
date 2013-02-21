@@ -257,7 +257,7 @@ sizes, you would experiment with this node JSON attribute:
 
     "postgresql": {
       "config": {
-        "shared_buffers": "2.5GB"
+        "shared_buffers": "3GB"
       }
     }
 
