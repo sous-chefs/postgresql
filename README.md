@@ -88,6 +88,9 @@ be dynamically rendered from the attributes. The helpful commentary
 will no longer be present. You should consult the PostgreSQL
 documentation for specific configuration details.
 
+See __Recipes__ `config_initdb` and `config_pgtune` below to
+auto-generate many postgresql.conf settings.
+
 For values that are "on" or "off", they should be specified as literal
 `true` or `false`. String values will be used with single quotes. Any
 configuration option set to the literal `nil` will be skipped
@@ -197,6 +200,96 @@ database, and manages the postgresql service. You should include the
 `postgresql::server` recipe, which will include this on RHEL/Fedora
 platforms.
 
+config\_initdb
+--------------
+
+Takes locale and timezone settings from the system configuration.
+This recipe creates `node.default['postgresql']['config']` attributes
+that conform to the system's locale and timezone. In addition, this
+recipe creates the same error reporting and logging settings that
+`initdb` provided: a rotation of 7 days of log files named
+postgresql-Mon.log, etc.
+
+The default attributes created by this recipe are easy to override with
+normal attributes because of Chef attribute precedence. For example,
+suppose a DBA wanted to keep log files indefinitely, rolling over daily
+or when growing to 10MB. The Chef installation could include the
+`postgresql::config_initdb` recipe for the locale and timezone settings,
+but customize the logging settings with these node JSON attributes:
+
+    "postgresql": {
+      "config": {
+        "log_rotation_age": "1d",
+        "log_rotation_size": "10MB",
+        "log_filename": "postgresql-%Y-%m-%d_%H%M%S.log"
+      }
+    }
+
+Credits: This `postgresql::config_initdb` recipe is based on algorithms
+in the [source code](http://doxygen.postgresql.org/initdb_8c_source.html)
+for the PostgreSQL `initdb` utility.
+
+config\_pgtune
+--------------
+
+Performance tuning.
+Takes the wimpy default postgresql.conf and expands the database server
+to be as powerful as the hardware it's being deployed on. This recipe
+creates a baseline configuration of `node.default['postgresql']['config']`
+attributes in the right general range for a dedicated Postgresql system.
+Most installations won't need additional performance tuning.
+
+The only decision you need to make is to choose a `db_type` from the
+following database workloads. (See the recipe code comments for more
+detailed descriptions.)
+
+ * "dw" -- Data Warehouse
+ * "oltp" -- Online Transaction Processing
+ * "web" -- Web Application
+ * "mixed" -- Mixed DW and OLTP characteristics
+ * "desktop" -- Not a dedicated database
+
+This recipe uses a performance model with three input parameters.
+These node attributes are completely optional, but it is obviously
+important to choose the `db_type` correctly:
+
+ * `node['postgresql']['config_pgtune']['db_type']` --
+   Specifies database type from the list of five choices above.
+   If not specified, the default is "mixed".
+
+ * `node['postgresql']['config_pgtune']['max_connections']` --
+   Specifies maximum number of connections expected.
+   If not specified, it depends on database type:
+   "web":200, "oltp":300, "dw":20, "mixed":80, "desktop":5
+
+ * `node['postgresql']['config_pgtune']['total_memory']` --
+   Specifies total system memory in kB. (E.g., "49416564kB".)
+   If not specified, it will be taken from Ohai automatic attributes.
+   This could be used to tune a system that isn't a dedicated database.
+
+The default attributes created by this recipe are easy to override with
+normal attributes because of Chef attribute precedence. For example, if
+you are running application benchmarks to try different buffer cache
+sizes, you would experiment with this node JSON attribute:
+
+    "postgresql": {
+      "config": {
+        "shared_buffers": "3GB"
+      }
+    }
+
+Note that the recipe uses `max_connections` in its computations. If
+you want to override that setting, you should specify
+`node['postgresql']['config_pgtune']['max_connections']` instead of
+`node['postgresql']['config']['max_connections']`.
+
+Credits: This `postgresql::config_pgtune` recipe is based on the
+[pgtune python script](https://github.com/gregs1104/pgtune)
+developed by
+[Greg Smith](http://notemagnet.blogspot.com/2008/11/automating-initial-postgresqlconf.html)
+and
+[other pgsql-hackers](http://www.postgresql.org/message-id/491C6CDC.8090506@agliodbs.com).
+
 contrib
 -------
 
@@ -305,6 +398,7 @@ License and Author
 - Author:: Joshua Timberman (<joshua@opscode.com>)
 - Author:: Lamont Granquist (<lamont@opscode.com>)
 - Author:: Chris Roberts (<chrisroberts.code@gmail.com>)
+- Author:: David Crane (<davidc@donorschoose.org>)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
