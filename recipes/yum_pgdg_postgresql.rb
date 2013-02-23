@@ -47,13 +47,13 @@ repo_rpm_package = repo_rpm_filename.split(/-/,3)[0..1].join('-')
 
 # Download the PGDG repository RPM as a local file
 remote_file "#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}" do
-  source "#{repo_rpm_url}"
+  source repo_rpm_url
   mode "0644"
 end
 
 # Install the PGDG repository RPM from the local file
 # E.g., /etc/yum.repos.d/pgdg-91-centos.repo
-package "#{repo_rpm_package}" do
+package repo_rpm_package do
   provider Chef::Provider::Package::Rpm
   source "#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}"
   action :install
