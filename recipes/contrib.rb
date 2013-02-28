@@ -29,10 +29,11 @@ end
 # as specified by the node attributes.
 if (node['postgresql']['contrib'].attribute?('extensions'))
   node['postgresql']['contrib']['extensions'].each do |pg_ext|
-    execute "#{pg_ext} extension on template1" do
-      command <<-EOC
-        sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS #{pg_ext}";
-      EOC
+    bash "install-#{pg_ext}-extension" do
+      user 'postgres'
+      code <<-EOH
+        echo "CREATE EXTENSION IF NOT EXISTS #{pg_ext};" | psql -d template1
+      EOH
       action :run
     end
   end
