@@ -294,11 +294,34 @@ contrib
 -------
 
 Installs the packages defined in the
-`node['postgresql']['contrib']['packages']` attribute.
-This is the contrib directory of the PostgreSQL distribution, which
-includes porting tools, analysis utilities, and plug-in features that
-database engineers often require. Some (like pgbench) are executable.
-Others (like pg_buffercache) should be installed into the database.
+`node['postgresql']['contrib']['packages']` attribute. The contrib
+directory of the PostgreSQL distribution includes porting tools,
+analysis utilities, and plug-in features that database engineers often
+require. Some (like `pgbench`) are executable. Others (like
+`pg_buffercache`) would need to be installed into the database.
+
+Also installs any contrib module extensions defined in the 
+`node['postgresql']['contrib']['extensions']` attribute. These will be
+available in any subsequently created databases in the cluster, because
+they will be installed into the `template1` database using the
+`CREATE EXTENSION` command. For example, it is often necessary/helpful
+for problem troubleshooting and maintenance planning to install the
+views and functions in these [standard instrumentation extensions]
+(http://www.postgresql.org/message-id/flat/4DC32600.6080900@pgexperts.com#4DD3D6C6.5060006@2ndquadrant.com):
+
+    node['postgresql']['contrib']['extensions'] = [
+      "pageinspect",
+      "pg_buffercache",
+      "pg_freespacemap",
+      "pgrowlocks",
+      "pg_stat_statements",
+      "pgstattuple"
+    ]
+
+Note that the `pg_stat_statements` view only works if `postgresql.conf`
+loads its shared library, which can be done with this node attribute:
+
+    node['postgresql']['config']['shared_preload_libraries'] = 'pg_stat_statements'
 
 ppa\_pitti\_postgresql
 ----------------------
