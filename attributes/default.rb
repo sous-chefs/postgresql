@@ -92,29 +92,30 @@ when "redhat", "centos", "scientific", "oracle"
   default['postgresql']['version'] = "8.4"
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
 
-  if node['platform_version'].to_f >= 6.0
-    default['postgresql']['client']['packages'] = %w{postgresql-devel}
-    default['postgresql']['server']['packages'] = %w{postgresql-server}
-    default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  else
-    default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
-    default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
-    default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
+  postgresql_base = "postgresql"
+  if node['platform_version'].to_f < 6.0
+    postgresql_base += node['postgresql']['version'].split('.').join
   end
+  default['postgresql']['client']['packages'] =  ["#{postgresql_base}-devel"]
+  default['postgresql']['server']['packages'] =  ["#{postgresql_base}-server"]
+  default['postgresql']['contrib']['packages'] = ["#{postgresql_base}-contrib"]
   default['postgresql']['server']['service_name'] = "postgresql"
 
 when "suse"
 
-  if node['platform_version'].to_f <= 11.1
-    default['postgresql']['version'] = "8.3"
-  else
-    default['postgresql']['version'] = "9.0"
+  default['postgresql']['version'] = "9.1"
+
+  postgresql_base = "postgresql"
+  if node['platform_version'] == "11.2"
+    postgresql_base += node['postgresql']['version'].split('.').join
   end
 
+  # rubygem-pg via the client recipe, the ruby recipe will not build it
+  default['postgresql']['client']['packages'] =  ["#{postgresql_base}", "rubygem-pg"]
+  default['postgresql']['server']['packages'] =  ["#{postgresql_base}-server"]
+  default['postgresql']['contrib']['packages'] = ["#{postgresql_base}-contrib"]
+
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
 
 else
