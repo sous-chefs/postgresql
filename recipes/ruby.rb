@@ -18,9 +18,7 @@
 # limitations under the License.
 #
 
-begin
-  require 'pg'
-rescue LoadError
+def client_install()
   execute "apt-get update" do
     ignore_failure true
     action :nothing
@@ -35,7 +33,9 @@ rescue LoadError
     resources("package[#{pg_pack}]").run_action(:install)
 
   end
+end
 
+def gem_install()
   begin
     chef_gem "pg"
   rescue Gem::Installer::ExtensionBuildError => e
@@ -97,5 +97,18 @@ EOS
     spec_installer.run_action(:run)
 
     Chef::Log.warn 'Installation of pg gem successful!'
+  end
+end
+
+begin
+  require 'pg'
+rescue LoadError
+  if node['postgresql']['ruby']['packages']
+    node['postgresql']['ruby']['packages'].each do |pkg|
+      package pkg
+    end
+  else
+    client_install
+    gem_install
   end
 end

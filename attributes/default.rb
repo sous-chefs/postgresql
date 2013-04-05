@@ -76,6 +76,7 @@ when "fedora"
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  default['postgresql']['ruby']['packages'] = %w{rubygem-pg}
   default['postgresql']['server']['service_name'] = "postgresql"
 
 when "amazon"
@@ -110,10 +111,10 @@ when "suse"
     postgresql_base += node['postgresql']['version'].split('.').join
   end
 
-  # rubygem-pg via the client recipe, the ruby recipe will not build it
-  default['postgresql']['client']['packages'] =  ["#{postgresql_base}", "rubygem-pg"]
+  default['postgresql']['client']['packages'] =  ["#{postgresql_base}"]
   default['postgresql']['server']['packages'] =  ["#{postgresql_base}-server"]
   default['postgresql']['contrib']['packages'] = ["#{postgresql_base}-contrib"]
+  default['postgresql']['ruby']['packages'] = ["rubygem-pg"]
 
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
   default['postgresql']['server']['service_name'] = "postgresql"
