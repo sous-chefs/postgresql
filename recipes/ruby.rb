@@ -21,11 +21,7 @@
 begin
   require 'pg'
 rescue LoadError
-  execute "apt-get update" do
-    ignore_failure true
-    action :nothing
-  end.run_action(:run) if node['platform_family'] == "debian"
-
+  
   node.set['build_essential']['compiletime'] = true
   include_recipe "build-essential"
   include_recipe "postgresql::client"
