@@ -20,6 +20,7 @@
 #
 
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
+::Chef::Recipe.send(:include, Opscode::Postgresql::X509Subjects)
 
 include_recipe "postgresql::client"
 
@@ -57,6 +58,48 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
+# The postgresql server won't start if ssl=on is specified but the
+# server.key and server.crt don't exist yet. Since the template for
+# the postgresql.conf file does an immediate service restart, we
+# should generate a ssl key and certificate first. This would be a
+# self-signed certificate suitable for encrypted SSL connections.
+# A certificate signed by a certificate authority (CA) should be used
+# if clients need to verify the server's identity.
+if (node['postgresql']['server'].attribute?('generate_x509_certificate'))
+  # Defaults in case attribute doesn't specify or is a TrueClass.
+  days_to_certify = 3650
+  x509_subject = "/"
+
+  x509_spec = node['postgresql']['server']['generate_x509_certificate']
+  if (x509_spec.is_a?(Chef::Node::Attribute))
+    x509_subject = assemble_x509_subject(Hash[x509_spec])
+    if (x509_spec.attribute?('days_to_certify'))
+      days_to_certify = x509_spec['days_to_certify']
+    end
+  end
+
+  bash "Create SSL Private Key and Server Certificate" do
+      user "postgres"
+      group "postgres"
+      cwd "#{node[:postgresql][:dir]}"
+      code <<-EOH
+        umask 077
+        # server.key, an unencrypted 2048-bit RSA private key.
+        openssl genrsa 2048 \
+                >server.key
+        # server.crt, a self-signed X509 certificate.
+        openssl req -new -x509 \
+                -key server.key \
+                -days "#{days_to_certify}" \
+                -subj "#{x509_subject}" \
+                >server.crt
+      EOH
+      # The server.key and server.crt are only examined during server start
+      notifies :restart, 'service[postgresql]'
+      not_if { File.exists?("#{node[:postgresql][:dir]}/server.crt") }
+  end
+end
+
 template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "postgresql.conf.erb"
   owner "postgres"
@@ -84,7 +127,7 @@ end
 bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
-echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql
+    echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql
   EOH
   action :run
 end
