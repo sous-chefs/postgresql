@@ -35,6 +35,8 @@ if (node['postgresql']['contrib'].attribute?('extensions'))
         echo "CREATE EXTENSION IF NOT EXISTS #{pg_ext};" | psql -d template1
       EOH
       action :run
+      ::Chef::Resource.send(:include, Opscode::PostgresqlHelpers)
+      not_if {extension_already_installed?(pg_ext)}
     end
   end
 end
