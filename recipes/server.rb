@@ -57,12 +57,35 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
+# If the node['postgresql']['minimize_conf_restarts'] attribute is true, this
+# postgresql.conf template will reload instead of restart the postgresql
+# service, as long as reload is sufficient to activate all postgresql.conf
+# changes. It can be valuable to avoid a service interruption while
+# tuning a postgresql server. However, determining whether a reload is
+# sufficient is only possible if the execution order of the recipes and
+# the resources in the chef run_list are well understood. Every recipe
+# that sets default attributes directly on a node must be execute before
+# this recipe, since the conditional notifies executes when this recipe
+# runs, but it needs to see the same node['postgresql']['config']
+# attributes that postgresql.conf.erb will see when the resource runs.
+# In particular, the config_initdb.rb and/or config_pgtune.rb recipes
+# need to run before this server.rb recipe. It appears that other levels
+# of the attribute hierarchy (such as cookbook defaults, role defaults
+# and normal node attributes) are already loaded by the time this
+# server.rb recipe is run. Overall, this is complex enough that the
+# whole minimize_conf_restarts algorithm is an optional advanced feature
+# requiring the node['postgresql']['minimize_conf_restarts'] attribute.
 template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies :restart, 'service[postgresql]', :immediately
+  # If requested, try to :reload instead of :restart if possible.
+  ::Chef::Resource.send(:include, Opscode::PostgresqlHelpers)
+  notifies ( node['postgresql']['minimize_conf_restarts'] ?
+             minimize_conf_restarts(node['postgresql']['config']) :
+             :restart
+           ), 'service[postgresql]', :immediately
 end
 
 template "#{node['postgresql']['dir']}/pg_hba.conf" do
