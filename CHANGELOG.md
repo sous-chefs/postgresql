@@ -1,3 +1,10 @@
+## v2.4.0:
+
+* [COOK-2163] - Dangerous "assign-postgres-password" in "recipes/server.rb" -- Can lock out dbadmin access
+* [COOK-2390] - Recipes to auto-generate many postgresql.conf settings, following "initdb" and "pgtune"
+* [COOK-2435] - Foodcritic fixes for postgresql cookbook
+* [COOK-2476] - Installation into database of any contrib module extensions listed in a node attribute
+
 ## v2.2.2:
 
 * [COOK-2232] -Provide PGDG yum repo to install postgresql 9.x on
