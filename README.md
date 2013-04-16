@@ -110,6 +110,22 @@ Will result in the following config lines:
 
 (no line printed for `ident_file` as it is `nil`)
 
+You may set the optional `node['postgresql']['minimize_conf_restarts']`
+attribute to tell the server recipe to attempt a service reload, if
+possible, instead of restart, to apply all `postgresql.conf` changes
+(all added/deleted/modified settings). Warning: the cookbook can
+correctly determine whether it can use reload only if all
+`node.default['postgresql']['config']` attributes were set before the
+`server` recipe is loaded. In particular, pay attention to the run_list
+order of these recipes, if they are being used:
+
+    # Correct order if using node['postgresql']['minimize_conf_restarts']
+    run_list(
+        "recipe[postgresql::config_initdb]",
+        "recipe[postgresql::config_pgtune]",
+        "recipe[postgresql::server]"
+    )
+
 The `pg_hba.conf` file is dynamically generated from the
 `node['postgresql']['pg_hba']` attribute. This attribute must be an
 array of hashes, each hash containing the authorization data. As it is

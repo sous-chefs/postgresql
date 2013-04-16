@@ -347,6 +347,97 @@ def extension_already_installed?(pg_ext)
   end
 end
 
+#######
+# Function to determine type of service notification to activate the new config.
+#   Input: node['postgresql']['config'] Attributes
+#   Output: :start (if psql fails), :reload (if SIGUP sufficient), :restart (if necessary).
+# Best use is template "#{node['postgresql']['dir']}/postgresql.conf" conditional notifies.
+def minimize_conf_restarts(config)
+  # Since we need to capture added/changed/removed settings,
+  # we need a left join between all old and the new settings.
+  #
+  # We need to know whether any settings require a service restart.
+  # Those are the ones indicated by pg_settings.context='postmaster'.
+  #
+  # Through the left join, null new_settings means no entry in new
+  # postgresql.conf file, so there is a coalesce to decide what will
+  # happen with new postgresql.conf: either new_settings or boot_val,
+  # which is the parameter value assumed at server startup if the
+  # parameter is not otherwise set.
+  #
+  # To determine whether that would be a change from current settings,
+  # there are two sources of complexity:
+  # (1) Some settings have a magic value to specify auto-tuning, in
+  #     which case source='override' and the supposed reset_val
+  #     reports the resulting derived value, not the magic value.
+  #     In these cases, the boot_val is the magic value, since
+  #     the auto-tuning behavior is the postgresql default.
+  #     Other source='override' settings, like file locations,
+  #     have a null boot_val and the reset_val does convey the
+  #     current configuration. When source<>'override', the
+  #     reset_val does actually reflect the current configuration.
+  # (2) Some integer settings have a unit, which is an implicit
+  #     multiplier applied to a value specified as a naked integer.
+  #     Or the value may be specified directly in appropriate units
+  #     using a suffix such as MB or ms. The naked representation
+  #     is always in boot_val/reset_val as explained above. The
+  #     most human-readable suffixed representation is generally
+  #     available through the current_setting function. This would
+  #     be 1GB instead of 1024MB, for example. So if the chef
+  #     attribute value is not in simplest form, the match can't be
+  #     detected and the service will be restarted (not optimimal,
+  #     but not a malfunction). Note that this optimization is also
+  #     skipped when source='override' because current_setting will
+  #     report the auto-tune value in effect.
+
+  query = [
+    "SELECT CASE WHEN count(*) > 0 THEN 'restart ' || array_agg(name)::text",
+    "            ELSE 'reload' END AS required_action",
+    "  FROM pg_settings",
+    "  LEFT JOIN (",
+    config.sort.map { |k,v|
+             "    (select '#{k}' as key, '#{case v
+                                            when String
+                                              v
+                                            when TrueClass
+                                              'on'
+                                            when FalseClass
+                                              'off'
+                                            else
+                                              v
+                                            end
+                                           }' as setting)"
+           }.join(" UNION\n"),
+    "  ) AS attributes",
+    "    ON lower(pg_settings.name) = lower(attributes.key)",
+    " WHERE context = 'postmaster'",
+    "   AND COALESCE(attributes.setting, boot_val)",
+    "         -- Test if that new configuration setting is currently in effect:",
+    "       NOT IN (",
+    "         -- Ordinary setting, which might be an integer scaled by the unit.",
+    "         COALESCE(CASE WHEN source = 'override' THEN boot_val ELSE reset_val END, '-'),",
+    "         -- Human readable setting, in a form that also specifies the unit.",
+    "         COALESCE(CASE WHEN source = 'override' THEN NULL ELSE current_setting(name) END, '-')",
+    "       );"
+  ]
+
+  #Chef::Log.warn("CONFIG SQL:\n#{query.join("\n")}")
+
+  @minimize_conf_restarts ||= begin
+    case execute_sql(query)
+    when /^restart (.*)$/
+      Chef::Log.warn("minimize_conf_restarts: must restart service[postgresql] for postgresql.conf changes to %s." % $1)
+      :restart
+    when 'reload'
+      Chef::Log.warn("minimize_conf_restarts: may reload service[postgresql] because no postgresql.conf changes require a restart.")
+      :reload
+    else
+      Chef::Log.warn("minimize_conf_restarts: should start service[postgresql] for postgresql.conf changes because service isn't running.")
+      :start
+    end
+  end
+end
+
 # End the Opscode::PostgresqlHelpers module
   end
 end
