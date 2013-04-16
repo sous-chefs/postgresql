@@ -1,0 +1,70 @@
+---
+driver_plugin: vagrant
+
+platforms:
+- name: ubuntu-12.04
+  driver_config:
+    box: canonical-ubuntu-12.04
+    box_url: http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box
+    require_chef_omnibus: true
+  run_list: ["recipe[apt]"]
+- name: ubuntu-10.04
+  driver_config:
+    box: opscode-ubuntu-10.04
+    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_chef-11.2.0.box
+  run_list: ["recipe[apt]"]
+- name: centos-6.3
+  driver_config:
+    box: opscode-centos-6.3
+    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.3_chef-11.2.0.box
+- name: centos-5.8
+  driver_config:
+    box: opscode-centos-5.8
+    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.8_chef-11.2.0.box
+
+suites:
+- name: default
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql]
+  attributes: {}
+- name: contrib
+  run_list:
+  - recipe[postgresql::contrib]
+  attributes: {}
+- name: ppa-pitti
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql]
+  excludes: ["centos-5.8", "centos-6.3"]
+  attributes:
+    postgresql:
+      enable_pitti_ppa: true
+      version: "9.2"
+      client:
+        packages: ["postgresql-client-9.2", "libpq-dev"]
+- name: yum-pgdg
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-6.0.7"]
+  attributes:
+    postgresql:
+      enable_pgdg_yum: true
+      version: "9.2"
+      client:
+        packages: ["postgresql92"]
+- name: ruby
+  run_list:
+  - recipe[postgresql::ruby]
+  - recipe[minitest-handler]
+  attributes: {}
+- name: server
+  run_list:
+  - recipe[postgresql::ruby]
+  - recipe[minitest-handler]
+  - recipe[postgresql::server]
+  attributes:
+    postgresql:
+      password:
+        postgres: "iloverandompasswordsbutthiswilldo"
