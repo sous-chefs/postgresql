@@ -57,20 +57,8 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
-template "#{node['postgresql']['dir']}/postgresql.conf" do
-  source "postgresql.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 0600
-  notifies :restart, 'service[postgresql]', :immediately
-end
-
-template "#{node['postgresql']['dir']}/pg_hba.conf" do
-  source "pg_hba.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 00600
-  notifies :reload, 'service[postgresql]', :immediately
+if node['postgresql']['server']['config']
+  include_recipe "postgresql::config_server"
 end
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
