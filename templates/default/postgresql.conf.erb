@@ -1,0 +1,16 @@
+listen_addresses                     = '<%= node[:postgresql][:listen_addresses] %>'
+port                                 = 5432
+max_connections                      = <%= node[:postgresql][:max_connections] %>
+
+shared_buffers                       = <%= node[:postgresql][:shared_buffers] %>
+
+log_timezone                         = 'UTC'
+datestyle                            = 'iso, mdy'
+timezone                             = 'UTC'
+
+lc_messages                          = 'en_US.UTF-8'
+lc_monetary                          = 'en_US.UTF-8'
+lc_numeric                           = 'en_US.UTF-8'
+lc_time                              = 'en_US.UTF-8'
+
+default_text_search_config           = 'pg_catalog.english'

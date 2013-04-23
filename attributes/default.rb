@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: postgresql
-# Attributes:: postgresql
+# Attributes:: default
 #
-# Copyright 2008-2009, Opscode, Inc.
+# Copyright ModCloth, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,100 +17,7 @@
 # limitations under the License.
 #
 
-case platform
-when "debian"
-
-  case
-  when platform_version.to_f <= 5.0
-    default[:postgresql][:version] = "8.3"
-  when platform_version.to_f == 6.0
-    default[:postgresql][:version] = "8.4"
-  else
-    default[:postgresql][:version] = "9.1"
-  end
-
-  set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
-  default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
-  default['postgresql']['server']['packages'] = %w{postgresql}
-
-when "ubuntu"
-
-  case
-  when platform_version.to_f <= 9.04
-    default[:postgresql][:version] = "8.3"
-  when platform_version.to_f <= 11.04
-    default[:postgresql][:version] = "8.4"
-  else
-    default[:postgresql][:version] = "9.1"
-  end
-
-  set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
-  default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
-  default['postgresql']['server']['packages'] = %w{postgresql}
-
-when "fedora"
-
-  if platform_version.to_f <= 12
-    default[:postgresql][:version] = "8.3"
-  else
-    default[:postgresql][:version] = "8.4"
-  end
-
-  set[:postgresql][:dir] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-
-when "amazon"
-
-  default[:postgresql][:version] = "8.4"
-  set[:postgresql][:dir] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-
-when "redhat","centos","scientific"
-
-  default[:postgresql][:version] = "8.4"
-  set[:postgresql][:dir] = "/var/lib/pgsql/data"
-
-  if node['platform_version'].to_f >= 6.0
-    default['postgresql']['client']['packages'] = %w{postgresql-devel}
-    default['postgresql']['server']['packages'] = %w{postgresql-server}
-  else
-    default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
-    default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
-  end
-
-when "suse"
-
-  if platform_version.to_f <= 11.1
-    default[:postgresql][:version] = "8.3"
-  else
-    default[:postgresql][:version] = "8.4"
-  end
-
-  set[:postgresql][:dir] = "/var/lib/pgsql/data" 
-when "smartos"
-
-  default[:postgresql][:version] = "91"
-  set[:postgresql][:dir] = "/var/pgsql/data91"
-  default['postgresql']['client']['packages'] = ["postgresql91-client"]
-  default['postgresql']['server']['packages'] = ["postgresql91-server"]
-else
-  default[:postgresql][:version] = "8.4"
-  set[:postgresql][:dir]         = "/etc/postgresql/#{node[:postgresql][:version]}/main"
-  default['postgresql']['client']['packages'] = ["postgresql"]
-  default['postgresql']['server']['packages'] = ["postgresql"]
-end
-
-default[:postgresql][:allow_ipv4_clients_ip_range] = "127.0.0.1/32"
-default[:postgresql][:listen_addresses] = "localhost"
-default[:postgresql][:max_connections] = "1024"
-
-# Replication Settings
-default[:postgresql][:database_master_role]  = "database_master"
-default[:postgresql][:database_standby_role] = "database_standby"
-default[:postgresql][:wal_level] = "hot_standby"
-default[:postgresql][:wal_keep_segments] = 12
-default[:postgresql][:max_wal_senders] = 5
-default[:postgresql][:hot_standby] = true
+default[:postgresql][:listen_addresses]                         = `ifconfig -a | egrep '192.168\|10.[0-9]\|172.16' | grep inet | awk '{print $2}'`.strip.to_s
+default[:postgresql][:max_connections]                          = "500"
+default[:postgresql][:shared_buffers]                           = "32MB"
 

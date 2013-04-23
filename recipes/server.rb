@@ -1,10 +1,8 @@
-#/postgresql.conf.
+#
 # Cookbook Name:: postgresql
 # Recipe:: server
 #
-# Author:: Joshua Timberman (<joshua@opscode.com>)
-# Author:: Lamont Granquist (<lamont@opscode.com>)
-# Copyright 2009-2011, Opscode, Inc.
+# Copyright ModCloth, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,70 +17,54 @@
 # limitations under the License.
 #
 
-::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-
 include_recipe "postgresql::client"
 
-# randomly generate postgres password
-node.set_unless[:postgresql][:password][:postgres] = secure_password
-node.save unless Chef::Config[:solo]
-
-case node[:postgresql][:version]
-when "8.3"
-  node.default[:postgresql][:ssl] = "off"
-when "8.4"
-  node.default[:postgresql][:ssl] = "true"
+package "postgresql92-server" do
+  action :install
 end
 
-# Include the right "family" recipe for installing the server
-# since they do things slightly differently.
-case node['platform']
-when "redhat", "centos", "fedora", "suse", "scientific", "amazon"
-  include_recipe "postgresql::server_redhat"
-when "debian", "ubuntu"
-  include_recipe "postgresql::server_debian"
-when "smartos"
-  include_recipe "postgresql::server_smartos"
+package "postgresql92-replicationtools" do
+  action :install
 end
 
-template "#{node[:postgresql][:dir]}/pg_hba.conf" do
-  source "pg_hba.conf.erb"
-  owner "postgres"
+package "postgresql92-datatypes" do
+  action :install
+end
+
+service "postgresql92-server" do
+  action :enable
+  supports :enable => true, :disable => true, :restart => true
+end
+
+cookbook_file "/var/pgsql/data/pg_hba.conf" do
+  source "pg_hba.conf"
+  user "postgres"
   group "postgres"
-  mode 0600
-  variables(:standby_ips => node['postgresql']['standby_ips'])
-  notifies :reload, resources(:service => "postgresql")
+  notifies :restart, "service[postgresql92-server]"
 end
 
-case node['platform']
-# output from the joyent smartos postgres server install:
-# The default password for the master 'postgres' user is:
-# 
-#   postgres
-when "smartos"
-  bash "assign-postgres-password" do
-    user 'postgres'
-    retries 3
-    retry_delay 10
-    code <<-EOH
-    export PGPASSWORD='postgres' 
-    echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node[:postgresql][:password][:postgres]}';" | psql -U postgres
-    EOH
-    not_if "PGPASSWORD='postgres' echo '\\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres -h localhost"
-    action :run
-  end
-else
-  # Default PostgreSQL install has 'ident' checking on unix user 'postgres'
-  # and 'md5' password checking with connections from 'localhost'. This script
-  # runs as user 'postgres', so we can execute the 'role' and 'database' resources
-  # as 'root' later on, passing the below credentials in the PG client.
-  bash "assign-postgres-password" do
-    user 'postgres'
-    code <<-EOH
-  echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node[:postgresql][:password][:postgres]}';" | psql
-    EOH
-    not_if "echo '\\connect' | PGPASSWORD=#{node['postgresql']['password']['postgres']} psql --username=postgres --no-password -h localhost"
-    action :run
-  end
+cookbook_file "/var/pgsql/data/pg_ident.conf" do
+  source "pg_ident.conf"
+  user "postgres"
+  group "postgres"
+  notifies :restart, "service[postgresql92-server]"
+end
+
+cookbook_file "/tmp/postgres_password.sh" do
+  source "postgres_password.sh"
+  mode "0755"
+end
+
+template "/var/pgsql/data/postgresql.conf" do
+  source "postgresql.conf.erb"
+  user "postgres"
+  group "postgres"
+  notifies :restart, "service[postgresql92-server]"
+end
+
+bash 'set root password for postgresql' do
+  user 'root'
+  code '/tmp/postgres_password.sh'
+  not_if { ::File.exists?('/root/.pg_service.conf') }
 end
 
