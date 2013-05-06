@@ -8,3 +8,7 @@ apt_repository 'pitti-postgresql-ppa' do
   key '8683D8A2'
   action :add
 end
+
+execute "apt-get update" do
+  action :nothing
+end.run_action(:run)
