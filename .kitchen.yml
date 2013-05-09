@@ -31,7 +31,10 @@ suites:
 - name: contrib
   run_list:
   - recipe[postgresql::contrib]
-  attributes: {}
+  attributes:
+    postgresql:
+      password:
+        postgres: "iloverandompasswordsbutthiswilldo"
 - name: ppa-pitti
   run_list:
   - recipe[minitest-handler]
