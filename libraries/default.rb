@@ -340,8 +340,8 @@ end
 #   Input: Extension name
 #   Output: true or false
 # Best use as a not_if gate on bash "install-#{pg_ext}-extension" resource.
-def extension_already_installed?(pg_ext)
-  @extension_already_installed ||= begin
+def extension_installed?(pg_ext)
+  @extension_installed ||= begin
     installed=execute_sql("select 'installed' from pg_extension where extname = '#{pg_ext}';")
     installed =~ /^installed$/
   end

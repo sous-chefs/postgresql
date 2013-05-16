@@ -36,7 +36,7 @@ if (node['postgresql']['contrib'].attribute?('extensions'))
       EOH
       action :run
       ::Chef::Resource.send(:include, Opscode::PostgresqlHelpers)
-      not_if {extension_already_installed?(pg_ext)}
+      not_if {extension_installed?(pg_ext)}
     end
   end
 end
