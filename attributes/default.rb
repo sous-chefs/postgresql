@@ -54,15 +54,15 @@ when "ubuntu"
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   case
-  when node['platform_version'].to_f <= 10.04
+  when node['platform_version'].to_f < 10.04 # after 10.04
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
   else
     default['postgresql']['server']['service_name'] = "postgresql"
   end
 
-  default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
-  default['postgresql']['server']['packages'] = %w{postgresql}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  default['postgresql']['client']['packages'] =  ["postgresql-client-#{node['postgresql']['version']} libpq-dev"]
+  default['postgresql']['server']['packages'] =  ["postgresql-#{node['postgresql']['version']}"]
+  default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}-contrib"]
 
 when "fedora"
 
@@ -154,6 +154,12 @@ when 'debian'
   default['postgresql']['config']['datestyle'] = 'iso, mdy'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
   default['postgresql']['config']['ssl'] = true
+
+  if node['postgresql']['version'].to_f >= 9.2
+    default['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem'          # (change requires restart)
+    default['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key'         # (change requires restart)
+  end
+
 when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['max_connections'] = 100
@@ -182,6 +188,7 @@ default['postgresql']['pg_hba'] = [
 default['postgresql']['password'] = Hash.new
 
 default['postgresql']['enable_pitti_ppa'] = false
+default['postgresql']['enable_postgres_apt'] = false
 default['postgresql']['enable_pgdg_yum'] = false
 
 # The PostgreSQL RPM Building Project built repository RPMs for easy
