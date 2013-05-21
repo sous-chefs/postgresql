@@ -181,7 +181,13 @@ default['postgresql']['pg_hba'] = [
 
 default['postgresql']['password'] = Hash.new
 
-default['postgresql']['enable_pitti_ppa'] = false
+default['postgresql']['enable_pgdg_apt'] = false
+
+case node['platform_family']
+when 'debian'
+  default['postgresql']['pgdg']['release_apt_codename'] = node['lsb']['codename']
+end
+
 default['postgresql']['enable_pgdg_yum'] = false
 
 # The PostgreSQL RPM Building Project built repository RPMs for easy

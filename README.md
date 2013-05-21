@@ -49,9 +49,9 @@ The following attributes are set based on the platform, see the
 * `node['postgresql']['contrib']['packages']` - An array of package names
   that could be installed on "server" systems for useful sysadmin tools.
 
-* `node['postgresql']['enable_pitti_ppa']` - Whether to enable the PPA
-  by Martin Pitti, which contains newer versions of PostgreSQL. See
-  __Recipes__ "`ppa_pitti_postgresql`" below for more information.
+* `node['postgresql']['enable_pgdg_apt']` - Whether to enable the apt repo
+  by the PostgreSQL Global Development Group, which contains newer versions
+  of PostgreSQL.
 
 * `node['postgresql']['enable_pgdg_yum']` - Whether to enable the yum repo
   by the PostgreSQL Global Development Group, which contains newer versions
@@ -323,11 +323,13 @@ loads its shared library, which can be done with this node attribute:
 
     node['postgresql']['config']['shared_preload_libraries'] = 'pg_stat_statements'
 
-ppa\_pitti\_postgresql
+apt\_pgdg\_postgresql
 ----------------------
 
-Enables Martin Pitti's PPA for updated PostgreSQL packages.
-Automatically included if the `node['postgresql']['enable_pitti_ppa']`
+Enables the PostgreSQL Global Development Group yum repository
+maintained by Devrim G&#252;nd&#252;z for updated PostgreSQL packages.
+(The PGDG is the groups that develops PostgreSQL.)
+Automatically included if the `node['postgresql']['enable_pgdg_apt']`
 attribute is true. Also set the
 `node['postgresql']['client']['packages']` and
 `node['postgresql']['server]['packages']` to the list of packages to

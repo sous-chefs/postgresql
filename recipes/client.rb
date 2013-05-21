@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-if(node['postgresql']['enable_pitti_ppa'])
-  include_recipe 'postgresql::ppa_pitti_postgresql'
+if(node['postgresql']['enable_pgdg_apt'])
+  include_recipe 'postgresql::apt_pgdg_postgresql'
 end
 
 if(node['postgresql']['enable_pgdg_yum'])

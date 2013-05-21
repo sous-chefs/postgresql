@@ -40,14 +40,14 @@ suites:
     postgresql:
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
-- name: ppa-pitti
+- name: apt-pgdg
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
   excludes: ["centos-5.9", "centos-6.4"]
   attributes:
     postgresql:
-      enable_pitti_ppa: true
+      enable_pgdg_apt: true
       version: "9.2"
       client:
         packages: ["postgresql-client-9.2", "libpq-dev"]
