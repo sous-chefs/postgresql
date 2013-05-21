@@ -21,7 +21,7 @@ describe 'postgresql::apt_pgdg_postgresql' do
 
   it 'creates the PGDG apt sources.list' do
     skip unless %w{debian}.include?(node['platform_family'])
-    file("/etc/apt/sources.list.d/apt.postgresql.org-source.list").must_exist
+    file("/etc/apt/sources.list.d/apt.postgresql.org.list").must_exist
   end
 
   it 'installs postgresql-client-9.2' do
