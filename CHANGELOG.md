@@ -1,3 +1,9 @@
+## vNEXT:
+
+### Task
+
+- [COOK-3022]: update baseboxes in .kitchen.yml
+
 ## v2.4.0:
 
 * [COOK-2163] - Dangerous "assign-postgres-password" in "recipes/server.rb" -- Can lock out dbadmin access
