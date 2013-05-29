@@ -27,6 +27,12 @@ rescue LoadError
   end.run_action(:run) if node['platform_family'] == "debian"
 
   node.set['build_essential']['compiletime'] = true
+
+  if node['postgresql']['enable_pgdg_yum']
+    node.set['postgresql']['yum_pgdg_postgresql']['compiletime'] = true
+    ENV['PATH'] = "/usr/pgsql-#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
+  end
+
   include_recipe "build-essential"
   include_recipe "postgresql::client"
 

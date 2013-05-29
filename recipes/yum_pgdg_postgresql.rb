@@ -46,15 +46,18 @@ repo_rpm_package = repo_rpm_filename.split(/-/,3)[0..1].join('-')
 # appear in your distro's repo and you want a more recent patch level.
 
 # Download the PGDG repository RPM as a local file
-remote_file "#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}" do
+r = remote_file "#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}" do
   source repo_rpm_url
   mode "0644"
+  action( node['postgresql']['yum_pgdg_postgresql']['compiletime'] ? :nothing : :create )
 end
+r.run_action(:create) if node['postgresql']['yum_pgdg_postgresql']['compiletime']
 
 # Install the PGDG repository RPM from the local file
 # E.g., /etc/yum.repos.d/pgdg-91-centos.repo
-package repo_rpm_package do
+r = package repo_rpm_package do
   provider Chef::Provider::Package::Rpm
   source "#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}"
-  action :install
+  action( node['postgresql']['yum_pgdg_postgresql']['compiletime'] ? :nothing : :install )
 end
+r.run_action(:install) if node['postgresql']['yum_pgdg_postgresql']['compiletime']
