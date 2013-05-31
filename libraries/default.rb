@@ -368,7 +368,7 @@ def pgdgrepo_rpm_info
   # E.g., repo_rpm_package = "pgdg-centos92"
   repo_rpm_package = repo_rpm_filename.split(/-/,3)[0..1].join('-')
 
-  return ["#{repo_rpm_url}", "#{repo_rpm_filename}", "#{repo_rpm_package}"]
+  return [ repo_rpm_url, repo_rpm_filename, repo_rpm_package ]
 end
 
 # End the Opscode::PostgresqlHelpers module
