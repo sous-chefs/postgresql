@@ -114,3 +114,29 @@ suites:
         service_name: "postgresql-9.2"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
+
+- name: apt-pgdg-client-ruby
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql]
+  - recipe[postgresql::ruby]
+  excludes: ["centos-5.9", "centos-6.4"]
+  attributes:
+    postgresql:
+      enable_pgdg_apt: true
+      version: "9.2"
+      client:
+        packages: ["postgresql-client-9.2", "libpq-dev"]
+
+- name: yum-pgdg-client-ruby
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql]
+  - recipe[postgresql::ruby]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-6.0.7"]
+  attributes:
+    postgresql:
+      enable_pgdg_yum: true
+      version: "9.2"
+      client:
+        packages: ["postgresql92", "postgresql92-devel"]
