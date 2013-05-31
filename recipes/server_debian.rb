@@ -22,15 +22,15 @@
 include_recipe "postgresql::client"
 
 if node['postgresql']['version'].to_f > 9 && node['platform_version'].to_f >= 6.0 && node['platform_version'].to_f < 7.0
-  apt_repository "debian-backports" do
+apt_repository "debian-backports" do
     uri "http://backports.debian.org/debian-backports"
-    components ["squeeze-backports"]
-    distribution "main"
+    components ["main"]
+    distribution "squeeze-backports"
     action :add
   end
 
   apt_repository "pgapt.debian.net" do
-    uri "http://pgapt.debian.net/"
+    uri "http://apt.postgresql.org/"
     components ["9.0","9.2"]
     distribution "squeeze-pgdg"
     action :add
