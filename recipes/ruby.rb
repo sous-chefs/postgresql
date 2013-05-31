@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
+# Load the pgdgrepo_rpm_info method from libraries/default.rb
+::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
+
 begin
   require 'pg'
 rescue LoadError
@@ -27,14 +30,22 @@ rescue LoadError
   end.run_action(:run) if node['platform_family'] == "debian"
 
   node.set['build_essential']['compiletime'] = true
+  include_recipe "build-essential"
+  include_recipe "postgresql::client"
 
   if node['postgresql']['enable_pgdg_yum']
-    node.set['postgresql']['yum_pgdg_postgresql']['compiletime'] = true
+    repo_rpm_url, repo_rpm_filename, repo_rpm_package = pgdgrepo_rpm_info
+    include_recipe "postgresql::yum_pgdg_postgresql"
+    resources("remote_file[#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}]").run_action(:create)
+    resources("package[#{repo_rpm_package}]").run_action(:install)
     ENV['PATH'] = "/usr/pgsql-#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
   end
 
-  include_recipe "build-essential"
-  include_recipe "postgresql::client"
+  if node['postgresql']['enable_pgdg_apt']
+    include_recipe "postgresql::apt_pgdg_postgresql"
+    resources("file[remove deprecated Pitti PPA apt repository]").run_action(:delete)
+    resources("apt_repository[apt.postgresql.org]").run_action(:add)
+  end
 
   node['postgresql']['client']['packages'].each do |pg_pack|
 
