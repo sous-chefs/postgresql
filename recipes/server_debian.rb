@@ -30,8 +30,8 @@ apt_repository "debian-backports" do
   end
 
   apt_repository "pgapt.debian.net" do
-    uri "http://apt.postgresql.org/"
-    components ["9.0","9.2"]
+    uri "http://apt.postgresql.org/pub/repos/apt/"
+    components ["9.0","9.1","9.2","9.3"]
     distribution "squeeze-pgdg"
     action :add
   end
