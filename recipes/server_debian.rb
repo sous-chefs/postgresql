@@ -21,10 +21,36 @@
 
 include_recipe "postgresql::client"
 
-node['postgresql']['server']['packages'].each do |pg_pack|
+if node['postgresql']['version'].to_f > 9 && node['platform_version'].to_f >= 6.0 && node['platform_version'].to_f < 7.0
+  apt_repository "debian-backports" do
+    uri "http://backports.debian.org/debian-backports"
+    components ["main","squeeze-backports"]
+    action :add
+  end
 
-  package pg_pack
+  apt_repository "pgapt.debian.net" do
+    uri "http://pgapt.debian.net/"
+    components ["squeeze-pgdg","9.0","9.2"]
+    action :add
+  end
 
+  include_recipe 'apt'
+  
+  package 'libpq5' do
+    options '-t squeeze-backports'
+    action :install
+  end
+
+  package 'postgresql-common' do
+    options '-t squeeze-backports'
+    action :install
+  end
+  
+  package "postgresql-#{node['postgresql']['version']}"
+else
+  node['postgresql']['server']['packages'].each do |pg_pack|
+    package pg_pack
+  end
 end
 
 service "postgresql" do
