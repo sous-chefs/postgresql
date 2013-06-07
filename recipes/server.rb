@@ -78,7 +78,7 @@ if (node['postgresql']['server'].attribute?('generate_x509_certificate'))
     end
   end
 
-  bash "Create SSL Private Key and Server Certificate" do
+  crt = bash "Create SSL Private Key and Server Certificate" do
       user "postgres"
       group "postgres"
       cwd "#{node[:postgresql][:dir]}"
@@ -98,6 +98,10 @@ if (node['postgresql']['server'].attribute?('generate_x509_certificate'))
       notifies :restart, 'service[postgresql]'
       not_if { File.exists?("#{node[:postgresql][:dir]}/server.crt") }
   end
+
+  # Must create CRT during compilation phase, since postgresql server
+  # will not restart otherwise.
+  crt.run_action(:run)
 end
 
 template "#{node['postgresql']['dir']}/postgresql.conf" do
