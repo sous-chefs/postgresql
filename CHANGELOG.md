@@ -1,3 +1,10 @@
+## v3.0.2:
+
+### Bug
+
+- [COOK-3076]: postgresql::ruby recipe error when using pgdg
+  repositories
+
 ## v3.0.0:
 
 This is a backwards-incompatible release because the Pitti PPA is
