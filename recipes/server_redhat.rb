@@ -38,10 +38,23 @@ user "postgres" do
   supports :manage_home => false
 end
 
+directory node['postgresql']['dir'] do
+  owner "postgres"
+  group "postgres"
+  recursive true
+  action :create
+end
+
 node['postgresql']['server']['packages'].each do |pg_pack|
 
   package pg_pack
 
+end
+
+template "/etc/sysconfig/pgsql/#{node['postgresql']['server']['service_name']}" do
+  source "pgsql.sysconfig.erb"
+  mode "0644"
+  notifies :restart, "service[postgresql]", :delayed
 end
 
 unless platform_family?("suse")
