@@ -14,9 +14,9 @@
 
 # "local" is for Unix domain socket connections only
 <% if node['postgresql']['version'].to_f < 9.1 -%>
-local   all             all                                     ident
+local   all             postgres                                ident
 <% elsif node['postgresql']['version'].to_f >= 9.1 -%>
-local   all             all                                     peer
+local   all             postgres                                peer
 <% end -%>
 
 ###########
