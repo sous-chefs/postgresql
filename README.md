@@ -118,8 +118,8 @@ the array must be symbols. Each hash will be written as a line in
 `pg_hba.conf`. For example, this entry from
 `node['postgresql']['pg_hba']`:
 
-    {:comment => '# Optional comment',
-    :type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'md5'}
+    [{:comment => '# Optional comment',
+     :type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'md5'}]
 
 Will result in the following line in `pg_hba.conf`:
 
