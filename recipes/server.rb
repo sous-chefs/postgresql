@@ -78,7 +78,7 @@ if (node['postgresql']['server'].attribute?('generate_x509_certificate'))
     end
   end
 
-  crt = bash "Create SSL Private Key and Server Certificate" do
+  bash "Create SSL Private Key and Server Certificate" do
       user "postgres"
       group "postgres"
       cwd "#{node[:postgresql][:dir]}"
@@ -98,10 +98,6 @@ if (node['postgresql']['server'].attribute?('generate_x509_certificate'))
       notifies :restart, 'service[postgresql]'
       not_if { File.exists?("#{node[:postgresql][:dir]}/server.crt") }
   end
-
-  # Must create CRT during compilation phase, since postgresql server
-  # will not restart otherwise.
-  crt.run_action(:run)
 end
 
 template "#{node['postgresql']['dir']}/postgresql.conf" do
@@ -109,6 +105,19 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   owner "postgres"
   group "postgres"
   mode 0600
+
+  # Note that the service cannot start with ssl=on unless the SSL
+  # key and crt already exist. Therefore, the following conditional
+  # notifies (optionally generate_x509_certificate) must be done
+  # before any attempt to start the service, especially for a
+  # bootstrap installation.
+  if (node['postgresql']['server'].attribute?('generate_x509_certificate'))
+    notifies :run,
+      resources(:bash => "Create SSL Private Key and Server Certificate"),
+      :immediately
+  end
+
+  # If requested, try to :reload instead of :restart if possible.
   notifies :restart, 'service[postgresql]', :immediately
 end
 
