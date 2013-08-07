@@ -12,13 +12,6 @@
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 <% end -%>
 
-# "local" is for Unix domain socket connections only
-<% if node['postgresql']['version'].to_f < 9.1 -%>
-local   all             all                                     ident
-<% elsif node['postgresql']['version'].to_f >= 9.1 -%>
-local   all             all                                     peer
-<% end -%>
-
 ###########
 # Other authentication configurations taken from chef node defaults:
 ###########
@@ -33,3 +26,10 @@ local   all             all                                     peer
 <%= auth[:type].ljust(7) %> <%= auth[:db].ljust(15) %> <%= auth[:user].ljust(15) %>                         <%= auth[:method] %>
 <%   end %>
 <% end %>
+
+# "local" is for Unix domain socket connections only
+<% if node['postgresql']['version'].to_f < 9.1 -%>
+local   all             all                                     ident
+<% elsif node['postgresql']['version'].to_f >= 9.1 -%>
+local   all             all                                     peer
+<% end -%>
