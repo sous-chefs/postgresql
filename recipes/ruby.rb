@@ -86,7 +86,7 @@ EOS
     end
 
     lib_builder = execute 'generate pg gem Makefile' do
-      command "#{RbConfig.ruby} extconf.rb"
+      command "#{RbConfig.ruby} extconf.rb --with-pg-config=/usr/pgsql-#{node['postgresql']['version']}/bin/pg_config"
       cwd ext_dir
       action :nothing
     end
