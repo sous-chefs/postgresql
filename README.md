@@ -72,7 +72,7 @@ generated from attributes. Each key in `node['postgresql']['config']`
 is a postgresql configuration directive, and will be rendered in the
 config file. For example, the attribute:
 
-    node['postgresql']['config']['listen_address'] = 'localhost'
+    node['postgresql']['config']['listen_addresses'] = 'localhost'
 
 Will result in the following line in the `postgresql.conf` file:
 
