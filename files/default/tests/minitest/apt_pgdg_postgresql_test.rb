@@ -32,8 +32,8 @@ describe 'postgresql::apt_pgdg_postgresql' do
     package("postgresql-client-9.2").must_be_installed
   end
 
-  it 'makes psql version 9.2 available' do
+  it "makes psql version 9.2 or 9.3" do
     psql = shell_out("psql --version")
-    assert psql.stdout.include?("psql (PostgreSQL) 9.2")
+    assert psql.stdout.match(/9\.(2|3)/)
   end
 end

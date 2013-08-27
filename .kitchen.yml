@@ -101,6 +101,26 @@ suites:
         ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
         ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
 
+- name: apt-pgdg-server-9-3
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
+  - recipe[postgresql::server]
+  excludes: ["centos-5.9", "centos-6.4"]
+  attributes:
+    postgresql:
+      enable_pgdg_apt: true
+      pgdg:
+        release_apt_codename: "precise"
+      version: "9.3"
+      server:
+        packages: ["postgresql-9.3"]
+      password:
+        postgres: "iloverandompasswordsbutthiswilldo"
+      config:
+        ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+        ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+
 - name: yum-pgdg-server
   run_list:
   - recipe[minitest-handler]
