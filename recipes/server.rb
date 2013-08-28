@@ -43,7 +43,7 @@ else
   # it should actually install a password (as opposed to disable password
   # login for user 'postgres'). However, a random password wouldn't be
   # useful if it weren't saved as clear text in Chef Server for later
-  # retrieval. 
+  # retrieval.
   node.set_unless['postgresql']['password']['postgres'] = secure_password
   node.save
 end

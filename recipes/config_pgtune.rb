@@ -191,7 +191,7 @@ if (mem >= 256)
   }.fetch(db_type)
 
   node.default['postgresql']['config']['effective_cache_size'] = binaryround(effective_cache_size*1024*1024)
-    
+
   # (4) work_mem
   #     Sets the maximum memory to be used for query workspaces.
   work_mem =
@@ -239,7 +239,7 @@ checkpoint_segments =
 }.fetch(db_type)
 
 node.default['postgresql']['config']['checkpoint_segments'] = checkpoint_segments
-  
+
 # (7) checkpoint_completion_target
 #     Time spent flushing dirty buffers during checkpoint, as fraction
 #     of checkpoint interval.
@@ -252,7 +252,7 @@ checkpoint_completion_target =
 }.fetch(db_type)
 
 node.default['postgresql']['config']['checkpoint_completion_target'] = checkpoint_completion_target
-  
+
 # (8) wal_buffers
 #     Sets the number of disk-page buffers in shared memory for WAL.
 # Starting with 9.1, wal_buffers will auto-tune if set to the -1 default.
@@ -264,7 +264,7 @@ if node['postgresql']['version'].to_f < 9.1
 else
   node.default['postgresql']['config']['wal_buffers'] = "-1"
 end
-  
+
 # (9) default_statistics_target
 #     Sets the default statistics target. This applies to table columns
 #     that have not had a column-specific target set via

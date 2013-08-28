@@ -300,7 +300,7 @@ analysis utilities, and plug-in features that database engineers often
 require. Some (like `pgbench`) are executable. Others (like
 `pg_buffercache`) would need to be installed into the database.
 
-Also installs any contrib module extensions defined in the 
+Also installs any contrib module extensions defined in the
 `node['postgresql']['contrib']['extensions']` attribute. These will be
 available in any subsequently created databases in the cluster, because
 they will be installed into the `template1` database using the
