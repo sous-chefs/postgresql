@@ -3,6 +3,12 @@ postgresql Cookbook CHANGELOG
 This file is used to list changes made in each version of the postgresql cookbook.
 
 
+v3.0.4
+------
+### Bug
+- **[COOK-3173](https://tickets.opscode.com/browse/COOK-3173)** - Use :reload instead of :restart on conf changes
+- **[COOK-2939](https://tickets.opscode.com/browse/COOK-2939)** - Fix RedHat support
+
 v3.0.2
 ------
 ### Bug
