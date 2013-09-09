@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+default['postgresql']['enable_pgdg_apt'] = false
+
 case node['platform']
 when "debian"
 
@@ -61,7 +63,11 @@ when "ubuntu"
   end
 
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
-  default['postgresql']['server']['packages'] = %w{postgresql}
+  if node['postgresql']['enable_pgdg_apt']
+    default['postgresql']['server']['packages'] = ["postgresql-#{node[:postgresql][:version]}"]
+  else
+    default['postgresql']['server']['packages'] = %w{postgresql}
+  end
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
 
 when "fedora"
@@ -180,8 +186,6 @@ default['postgresql']['pg_hba'] = [
 ]
 
 default['postgresql']['password'] = Hash.new
-
-default['postgresql']['enable_pgdg_apt'] = false
 
 case node['platform_family']
 when 'debian'
