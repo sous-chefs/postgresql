@@ -26,7 +26,7 @@ describe 'postgresql::server' do
   end
 
   it 'runs the postgresql service' do
-    service("postgresql").must_be_running
+    service((node['postgresql']['server']['service_name'] || 'postgresql')).must_be_running
   end
 
   it 'can connect to postgresql' do
