@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-if node['postgresql']['version'].to_f > 9.1
+if node['postgresql']['version'].to_f > 9.1 && ['debian', 'ubuntu'].include?(node['platform'])
   node.default['postgresql']['enable_pgdg_apt'] = true
 end
 
@@ -66,9 +66,9 @@ when "ubuntu"
     node.default['postgresql']['server']['service_name'] = "postgresql"
   end
 
-  node.default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
+  node.default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}", 'libpq-dev']
   if node['postgresql']['enable_pgdg_apt'] == true
-    node.default['postgresql']['server']['packages'] = ["postgresql-#{node[:postgresql][:version]}"]
+    node.default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
   else
     node.default['postgresql']['server']['packages'] = %w{postgresql}
   end
