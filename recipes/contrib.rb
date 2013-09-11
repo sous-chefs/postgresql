@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-include_recipe "postgresql::server"
+include_recipe "postgresql::server_utf8"
 
 # Install the PostgreSQL contrib package(s) from the distribution,
 # as specified by the node attributes.
