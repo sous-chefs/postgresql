@@ -86,7 +86,12 @@ EOS
     end
 
     lib_builder = execute 'generate pg gem Makefile' do
-      command "#{RbConfig.ruby} extconf.rb"
+      # [COOK-3490] pg gem install requires full path on RHEL
+      if node['platform_family'] == 'rhel'
+        command "#{RbConfig.ruby} extconf.rb --with-pg-config=/usr/pgsql-#{node['postgresql']['version']}/bin/pg_config"
+      else
+        command "#{RbConfig.ruby} extconf.rb"
+      end
       cwd ext_dir
       action :nothing
     end
