@@ -80,8 +80,14 @@ when "fedora"
 
 when "amazon"
 
-  default['postgresql']['version'] = "8.4"
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  if node['platform_version'].to_f >= 2012.03
+    default['postgresql']['version'] = "9.0"
+    default['postgresql']['dir'] = "/var/lib/pgsql9/data"
+  else
+    default['postgresql']['version'] = "8.4"
+    default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  end
+
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
