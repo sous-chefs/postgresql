@@ -58,10 +58,10 @@ The following attributes are set based on the platform, see the
   of PostgreSQL.
 
 * `node['postgresql']['initdb_locale']` - Sets the default locale for the 
-  database cluster. If this attribue is not specified, the locale is 
+  database cluster. If this attribute is not specified, the locale is 
   inherited from the environment that initdb runs in. Sometimes you must
   have a system locale that is not what you want for your database cluster,
-  and this attribute addresses those scenarios. Valid only for EL-family
+  and this attribute addresses that scenario. Valid only for EL-family
   distros (RedHat/Centos/etc.).
 
 The following attributes are generated in
