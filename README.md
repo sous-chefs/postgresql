@@ -110,6 +110,11 @@ Will result in the following config lines:
 
 (no line printed for `ident_file` as it is `nil`)
 
+Note that the `unix_socket_directory` configuration was renamed to
+`unix_socket_directories` in Postgres 9.3 so make sure to use the
+`node['postgresql']['unix_socket_directories']` attribute instead of
+`node['postgresql']['unix_socket_directory']`.
+
 The `pg_hba.conf` file is dynamically generated from the
 `node['postgresql']['pg_hba']` attribute. This attribute must be an
 array of hashes, each hash containing the authorization data. As it is
