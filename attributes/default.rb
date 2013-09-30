@@ -64,7 +64,7 @@ when "ubuntu"
 
   default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
   if node['postgresql']['enable_pgdg_apt']
-    default['postgresql']['server']['packages'] = ["postgresql-#{node[:postgresql][:version]}"]
+    default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
   else
     default['postgresql']['server']['packages'] = %w{postgresql}
   end
