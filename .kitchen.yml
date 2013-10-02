@@ -58,7 +58,7 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.2"
+      version: "9.3"
 
 - name: yum-pgdg-client
   run_list:
@@ -68,9 +68,9 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.2"
+      version: "9.3"
       client:
-        packages: ["postgresql92"]
+        packages: ["postgresql93"]
 
 - name: ruby
   run_list:
@@ -97,7 +97,7 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.2"
+      version: "9.3"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
       config:
@@ -113,10 +113,10 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.2"
+      version: "9.3"
       server:
-        packages: ["postgresql92-server"]
-        service_name: "postgresql-9.2"
+        packages: ["postgresql93-server"]
+        service_name: "postgresql-9.3"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
 
@@ -129,7 +129,7 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.2"
+      version: "9.3"
 
 - name: yum-pgdg-client-ruby
   run_list:
@@ -140,6 +140,6 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.2"
+      version: "9.3"
       client:
-        packages: ["postgresql92", "postgresql92-devel"]
+        packages: ["postgresql93", "postgresql93-devel"]
