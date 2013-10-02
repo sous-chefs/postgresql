@@ -39,9 +39,9 @@ when "debian"
     default['postgresql']['server']['service_name'] = "postgresql"
   end
 
-  default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
-  default['postgresql']['server']['packages'] = %w{postgresql}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
+  default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
+  default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
 
 when "ubuntu"
 
@@ -62,13 +62,9 @@ when "ubuntu"
     default['postgresql']['server']['service_name'] = "postgresql"
   end
 
-  default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
-  if node['postgresql']['enable_pgdg_apt']
-    default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
-  else
-    default['postgresql']['server']['packages'] = %w{postgresql}
-  end
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
+  default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
+  default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
 
 when "fedora"
 

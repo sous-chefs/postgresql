@@ -52,8 +52,6 @@ suites:
     postgresql:
       enable_pgdg_apt: true
       version: "9.2"
-      client:
-        packages: ["postgresql-client-9.2", "libpq-dev"]
 
 - name: yum-pgdg-client
   run_list:
@@ -93,8 +91,6 @@ suites:
     postgresql:
       enable_pgdg_apt: true
       version: "9.2"
-      server:
-        packages: ["postgresql-9.2"]
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
       config:
@@ -127,8 +123,6 @@ suites:
     postgresql:
       enable_pgdg_apt: true
       version: "9.2"
-      client:
-        packages: ["postgresql-client-9.2", "libpq-dev"]
 
 - name: yum-pgdg-client-ruby
   run_list:
