@@ -203,7 +203,7 @@ default['postgresql']['initdb_locale'] = nil
 # access to the PGDG yum repositories. Links to RPMs for installation
 # on the supported version/platform combinations are listed at
 # http://yum.postgresql.org/repopackages.php, and the links for
-# PostgreSQL 8.4, 9.0, 9.1 and 9.2 (from 2013-01-15) are captured below.
+# PostgreSQL 8.4, 9.0, 9.1, 9.2 and 9.3 are captured below.
 #
 # The correct RPM for installing /etc/yum.repos.d is based on:
 # * the attribute configuring the desired Postgres Software:
@@ -305,10 +305,6 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       "16" => {
         "i386" => "http://yum.postgresql.org/9.2/fedora/fedora-16-i386/pgdg-fedora92-9.2-5.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.2/fedora/fedora-16-x86_64/pgdg-fedora92-9.2-5.noarch.rpm"
-      },
-      "15" => {
-        "i386" => "http://yum.postgresql.org/9.2/fedora/fedora-15-i386/pgdg-fedora92-9.2-5.noarch.rpm",
-        "x86_64" => "http://yum.postgresql.org/9.2/fedora/fedora-15-x86_64/pgdg-fedora92-9.2-5.noarch.rpm"
       }
     }
   },
