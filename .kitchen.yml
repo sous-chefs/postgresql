@@ -18,6 +18,13 @@ platforms:
   run_list:
   - recipe[apt]
 
+- name: debian-7.1.0
+  driver_config:
+    box: opscode-debian-7.1.0
+    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_debian-7.1.0_provisionerless.box
+  run_list:
+  - recipe[apt]
+
 - name: centos-6.4
   driver_config:
     box: opscode-centos-6.4
@@ -57,7 +64,7 @@ suites:
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-6.0.7"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -102,7 +109,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-6.0.7"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -129,7 +136,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-6.0.7"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
