@@ -57,6 +57,13 @@ The following attributes are set based on the platform, see the
   by the PostgreSQL Global Development Group, which contains newer versions
   of PostgreSQL.
 
+* `node['postgresql']['initdb_locale']` - Sets the default locale for the
+  database cluster. If this attribute is not specified, the locale is
+  inherited from the environment that initdb runs in. Sometimes you must
+  have a system locale that is not what you want for your database cluster,
+  and this attribute addresses that scenario. Valid only for EL-family
+  distros (RedHat/Centos/etc.).
+
 The following attributes are generated in
 `recipe[postgresql::server]`.
 
