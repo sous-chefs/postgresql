@@ -3,6 +3,21 @@ postgresql Cookbook CHANGELOG
 This file is used to list changes made in each version of the postgresql cookbook.
 
 
+v3.1.0
+------
+### Improvement
+- **[COOK-3685](https://tickets.opscode.com/browse/COOK-3685)** - Upgrade Repo Attributes for Postgresql 9.3
+- **[COOK-3597](https://tickets.opscode.com/browse/COOK-3597)** - Fix implementation of `initdb_locale` attribute for RHEL
+- **[COOK-3566](https://tickets.opscode.com/browse/COOK-3566)** - Give the user's rules more priority than the default ones in pg_hba
+- **[COOK-3553](https://tickets.opscode.com/browse/COOK-3553)** - Remove automatic `apt-get update`
+
+### Bug
+- **[COOK-3611](https://tickets.opscode.com/browse/COOK-3611)** - Remove `unix_socket_directory` (it does not exists in 9.3)
+- **[COOK-3599](https://tickets.opscode.com/browse/COOK-3599)** - Automatically add PGDG apt repo dependency on PostgreSQL version
+- **[COOK-3555](https://tickets.opscode.com/browse/COOK-3555)** - Documentation Fix
+- **[COOK-2383](https://tickets.opscode.com/browse/COOK-2383)** - Update Postgres version in attributes
+
+
 v3.0.4
 ------
 ### Bug
