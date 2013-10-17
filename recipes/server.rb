@@ -57,6 +57,16 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
+# fix default installation using en_US instead of en_US.UTF-8
+bash 'fix-cluster-locale' do
+  user 'root'
+  code <<-EOH
+pg_dropcluster --stop #{node['postgresql']['version']} main
+pg_createcluster --locale=en_US.UTF-8 --start #{node['postgresql']['version']} main
+  EOH
+  action :run
+end
+
 template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "postgresql.conf.erb"
   owner "postgres"
