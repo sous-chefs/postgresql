@@ -52,14 +52,14 @@
 # etc. through these node.default['postgresql']['config'] attributes:
 #
 # - Where to Log -
-#   * log_destination = 'stderr'		
-#   * log_directory = 'pg_log'		
+#   * log_destination = 'stderr'
+#   * log_directory = 'pg_log'
 #   * log_filename = 'postgresql-%a.log'
 #     (Default was: postgresql-%Y-%m-%d_%H%M%S.log)
 #   * logging_collector = true # on
 #     (Turned on to capture stderr logging and redirect into log files)
 #     (Default was: false # off)
-#   * log_rotation_age = 1d			
+#   * log_rotation_age = 1d
 #   * log_rotation_size = 0
 #     (Default was: 10MB)
 #   * log_truncate_on_rotation = true # on

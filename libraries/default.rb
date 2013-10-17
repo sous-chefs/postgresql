@@ -116,7 +116,7 @@ def locale_date_order
         return 'mdy'
     end
 end
-  
+
 #######
 # Timezone Configuration
 require 'find'
@@ -275,7 +275,7 @@ def select_default_timezone(tzdir)
 
     system_timezone = nil
 
-    # Check TZ environment variable 
+    # Check TZ environment variable
     tzname = ENV['TZ']
     if !tzname.nil? && !tzname.empty? && validate_zone(tzname)
         system_timezone = tzname

@@ -24,14 +24,11 @@
 begin
   require 'pg'
 rescue LoadError
-  execute "apt-get update" do
-    ignore_failure true
-    action :nothing
-  end.run_action(:run) if node['platform_family'] == "debian"
 
   node.set['build_essential']['compiletime'] = true
   include_recipe "build-essential"
   include_recipe "postgresql::client"
+  include_recipe "postgresql::server"
 
   if node['postgresql']['enable_pgdg_yum']
     repo_rpm_url, repo_rpm_filename, repo_rpm_package = pgdgrepo_rpm_info
@@ -48,9 +45,11 @@ rescue LoadError
   end
 
   node['postgresql']['client']['packages'].each do |pg_pack|
-
     resources("package[#{pg_pack}]").run_action(:install)
+  end
 
+  node['postgresql']['server']['packages'].each do |pg_pack|
+    resources("package[#{pg_pack}]").run_action(:install)
   end
 
   begin
@@ -86,7 +85,12 @@ EOS
     end
 
     lib_builder = execute 'generate pg gem Makefile' do
-      command "#{RbConfig.ruby} extconf.rb"
+      # [COOK-3490] pg gem install requires full path on RHEL
+      if node['platform_family'] == 'rhel'
+        command "#{RbConfig.ruby} extconf.rb --with-pg-config=/usr/pgsql-#{node['postgresql']['version']}/bin/pg_config"
+      else
+        command "#{RbConfig.ruby} extconf.rb"
+      end
       cwd ext_dir
       action :nothing
     end
