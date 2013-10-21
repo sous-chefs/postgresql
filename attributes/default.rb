@@ -131,8 +131,8 @@ when "suse"
 
 when "smartos"
   
-  default[:postgresql][:version] = "9.1.4"
-  set[:postgresql][:dir] = "/var/pgsql/data"
+  default['postgresql']['version'] = "9.1.4"
+  set['postgresql']['dir'] = "/var/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql91-client}
   default['postgresql']['server']['packages'] = %w{postgresql91-server}
 
@@ -193,10 +193,10 @@ when 'rhel', 'fedora', 'suse'
 end
 
 default['postgresql']['pg_hba'] = [
-  {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'},
-  {:type => 'local', :db => 'all', :user => 'all', :addr => nil, :method => 'ident'},
-  {:type => 'host', :db => 'all', :user => 'all', :addr => '127.0.0.1/32', :method => 'md5'},
-  {:type => 'host', :db => 'all', :user => 'all', :addr => '::1/128', :method => 'md5'}
+  {'type' => 'local', 'db' => 'all', 'user' => 'postgres', 'addr' => nil, 'method' => 'ident'},
+  {'type' => 'local', 'db' => 'all', 'user' => 'all', 'addr' => nil, 'method' => 'ident'},
+  {'type' => 'host', 'db' => 'all', 'user' => 'all', 'addr' => '127.0.0.1/32', 'method' => 'md5'},
+  {'type' => 'host', 'db' => 'all', 'user' => 'all', 'addr' => ':'1'/128', 'method' => 'md5'}
 ]
 
 default['postgresql']['password'] = Hash.new
