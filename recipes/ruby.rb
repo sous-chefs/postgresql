@@ -28,7 +28,6 @@ rescue LoadError
   node.set['build_essential']['compiletime'] = true
   include_recipe "build-essential"
   include_recipe "postgresql::client"
-  include_recipe "postgresql::server"
 
   if node['postgresql']['enable_pgdg_yum']
     repo_rpm_url, repo_rpm_filename, repo_rpm_package = pgdgrepo_rpm_info
@@ -47,10 +46,10 @@ rescue LoadError
   node['postgresql']['client']['packages'].each do |pg_pack|
     resources("package[#{pg_pack}]").run_action(:install)
   end
-
-  node['postgresql']['server']['packages'].each do |pg_pack|
-    resources("package[#{pg_pack}]").run_action(:install)
-  end
+  
+  package "libpq-dev" do
+    action :nothing
+  end.run_action(:install)
 
   begin
     chef_gem "pg"
