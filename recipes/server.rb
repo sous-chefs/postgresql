@@ -61,7 +61,7 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
-  mode 0600
+  mode 0644
   notifies :reload, 'service[postgresql]', :immediately
 end
 
