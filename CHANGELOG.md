@@ -3,6 +3,12 @@ postgresql Cookbook CHANGELOG
 This file is used to list changes made in each version of the postgresql cookbook.
 
 
+v3.2.0
+------
+- [COOK-3717] Pgdg repositories improvements
+- [COOK-3756] Change postgresql.conf mode from 0600 to 0644
+
+
 v3.1.0
 ------
 ### Improvement
