@@ -18,6 +18,13 @@ platforms:
   run_list:
   - recipe[apt]
 
+- name: debian-7.1.0
+  driver_config:
+    box: opscode-debian-7.1.0
+    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_debian-7.1.0_provisionerless.box
+  run_list:
+  - recipe[apt]
+
 - name: centos-6.4
   driver_config:
     box: opscode-centos-6.4
@@ -51,21 +58,19 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.2"
-      client:
-        packages: ["postgresql-client-9.2", "libpq-dev"]
+      version: "9.3"
 
 - name: yum-pgdg-client
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-6.0.7"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.2"
+      version: "9.3"
       client:
-        packages: ["postgresql92"]
+        packages: ["postgresql93"]
 
 - name: ruby
   run_list:
@@ -92,9 +97,7 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.2"
-      server:
-        packages: ["postgresql-9.2"]
+      version: "9.3"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
       config:
@@ -106,14 +109,14 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-6.0.7"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.2"
+      version: "9.3"
       server:
-        packages: ["postgresql92-server"]
-        service_name: "postgresql-9.2"
+        packages: ["postgresql93-server"]
+        service_name: "postgresql-9.3"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
 
@@ -126,19 +129,17 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.2"
-      client:
-        packages: ["postgresql-client-9.2", "libpq-dev"]
+      version: "9.3"
 
 - name: yum-pgdg-client-ruby
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-6.0.7"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.2"
+      version: "9.3"
       client:
-        packages: ["postgresql92", "postgresql92-devel"]
+        packages: ["postgresql93", "postgresql93-devel"]
