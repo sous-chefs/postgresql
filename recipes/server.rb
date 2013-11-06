@@ -55,6 +55,8 @@ when "rhel", "fedora", "suse"
   include_recipe "postgresql::server_redhat"
 when "debian"
   include_recipe "postgresql::server_debian"
+when "smartos"
+  include_recipe "postgresql::server_smartos"
 end
 
 template "#{node['postgresql']['dir']}/postgresql.conf" do
