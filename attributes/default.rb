@@ -18,6 +18,7 @@
 #
 
 default['postgresql']['enable_pgdg_apt'] = false
+default['postgresql']['server']['config_change_notify'] = :restart
 
 case node['platform']
 when "debian"

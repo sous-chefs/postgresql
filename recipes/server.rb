@@ -57,12 +57,14 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
+change_notify = node['postgresql']['server']['config_change_notify']
+
 template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
-  mode 0644
-  notifies :reload, 'service[postgresql]', :immediately
+  mode 0600
+  notifies change_notify, 'service[postgresql]', :immediately
 end
 
 template "#{node['postgresql']['dir']}/pg_hba.conf" do
@@ -70,7 +72,7 @@ template "#{node['postgresql']['dir']}/pg_hba.conf" do
   owner "postgres"
   group "postgres"
   mode 00600
-  notifies :reload, 'service[postgresql]', :immediately
+  notifies change_notify, 'service[postgresql]', :immediately
 end
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
