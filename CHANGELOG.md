@@ -3,6 +3,11 @@ postgresql Cookbook CHANGELOG
 This file is used to list changes made in each version of the postgresql cookbook.
 
 
+v3.3.2
+------
+- Testing maintainer transfer to Heavywater with Opscode as collaborator
+
+
 v3.3.0
 ------
 ### Bug
