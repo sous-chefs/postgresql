@@ -18,6 +18,7 @@
 #
 
 default['postgresql']['enable_pgdg_apt'] = false
+default['postgresql']['server']['config_change_notify'] = :restart
 
 case node['platform']
 when "debian"
@@ -100,7 +101,7 @@ when "redhat", "centos", "scientific", "oracle"
   default['postgresql']['version'] = "8.4"
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
 
-  if node['platform_version'].to_f >= 6.0
+  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] == '8.4'
     default['postgresql']['client']['packages'] = %w{postgresql-devel}
     default['postgresql']['server']['packages'] = %w{postgresql-server}
     default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
@@ -109,7 +110,14 @@ when "redhat", "centos", "scientific", "oracle"
     default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
     default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
   end
-  default['postgresql']['server']['service_name'] = "postgresql"
+
+  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] != '8.4'
+     default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+  else
+    default['postgresql']['dir'] = "/var/lib/pgsql/data"
+    default['postgresql']['server']['service_name'] = "postgresql"
+  end
 
 when "suse"
 

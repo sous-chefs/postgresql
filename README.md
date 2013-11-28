@@ -46,6 +46,8 @@ The following attributes are set based on the platform, see the
   that should be installed on "client" systems.
 * `node['postgresql']['server']['packages']` - An array of package names
   that should be installed on "server" systems.
+* `node['postgresql']['server']['config_change_notify']` - Type of
+  notification triggered when a config file changes.
 * `node['postgresql']['contrib']['packages']` - An array of package names
   that could be installed on "server" systems for useful sysadmin tools.
 
@@ -399,6 +401,12 @@ platform and wish to use SSL in postgresql, then generate your SSL
 certificates and distribute them in your own cookbook, and set the
 `node['postgresql']['config']['ssl']` attribute to true in your
 role/cookboook/node.
+
+On server systems, the postgres server is restarted when a configuration
+file changes.  This can be changed to reload only by setting the
+following attribute:
+
+    node['postgresql']['server']['config_change_notify'] = :reload
 
 Chef Solo Note
 ==============
