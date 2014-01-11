@@ -64,7 +64,7 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies change_notify, 'service[postgresql]', :immediately
+  notifies change_notify, 'service[postgresql]', :delayed
 end
 
 template "#{node['postgresql']['dir']}/pg_hba.conf" do
@@ -72,8 +72,9 @@ template "#{node['postgresql']['dir']}/pg_hba.conf" do
   owner "postgres"
   group "postgres"
   mode 00600
-  notifies change_notify, 'service[postgresql]', :immediately
+  notifies change_notify, 'service[postgresql]', :delayed
 end
+
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
 # (1) Passing the "ALTER ROLE ..." through the psql command only works

@@ -1,0 +1,4 @@
+# The standby connects to the primary that is running on host @host
+# and port @port as the user @user whose password is @password.
+standby_mode = on
+primary_conninfo = 'host=<%= @host %> port=<%= @port %> user=<%= @user %> password=<%= @password %>'
