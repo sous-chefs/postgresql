@@ -1,0 +1,78 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+chef_json = {
+  postgresql: {
+    password: {
+      postgres: "howdy"
+    },
+    version: 9.3,
+    config: {
+      # this seems to be required off for now
+      ssl: false
+    },
+    streaming: {
+      master_host: "192.168.7.10"
+    },
+  }
+}
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "precise64"
+  config.vm.network "public_network"
+
+  # this is not really needed, but archiving locally is weird
+  config.vm.synced_folder "pgdata/", "/share/psql", mount_options: %w(dmode=777 fmode=644)
+
+#  config.vm.provision "shell",
+#    path:   "apt.postgresql.org.sh"
+
+#  config.vm.provision :chef_solo do |chef|
+#    chef.cookbooks_path = "../my-recipes/cookbooks"
+#    chef.roles_path = "../my-recipes/roles"
+#    chef.add_role("psql_base")
+    #chef.json = { postgresql: { password: 'md5d4dd6397cf55a4507874c3864f092a8c' } }
+    #chef.add_recipe( "apt" )
+#  end
+
+  # define our psql master
+  config.vm.define :master do |conf|
+    conf.vm.host_name = "pgsql-master"
+    conf.vm.network 'private_network', ip: "192.168.7.10"
+    conf.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "2048"]
+    end
+    config.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = "../my-recipes/cookbooks"
+      chef.roles_path = "../my-recipes/roles"
+      chef.add_recipe( "postgresql::server_streaming_master" )
+      chef.json = chef_json
+    end
+    #conf.vm.provision "shell",
+    #  inline: "apt-get -y install postgresql-9.3"
+  end
+
+  # define our slaves, two for now
+  { slave1: 31, slave2: 32 }.each do |slave,ip|
+    config.vm.define slave do |conf|
+      conf.vm.host_name = "pgsql-#{slave}"
+      conf.vm.network 'private_network', ip: "192.168.7.#{ip}"
+      conf.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
+      end
+      config.vm.provision :chef_solo do |chef|
+        chef.cookbooks_path = "../my-recipes/cookbooks"
+        chef.roles_path = "../my-recipes/roles"
+        chef.add_recipe( "postgresql::server_streaming_slave" )
+        chef.json = chef_json
+      end
+    end
+  end
+end

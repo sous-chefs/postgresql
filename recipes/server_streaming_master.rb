@@ -18,8 +18,24 @@
 # limitations under the License.
 #
 
-normal['postgresql']['config']['wal_level']         = "archive"
-normal['postgresql']['config']['max_wal_senders']   = 5  unless node['postgresql']['config']['max_wal_senders'].to_i   > 0
-normal['postgresql']['config']['wal_keep_segments'] = 32 unless node['postgresql']['config']['wal_keep_segments'].to_i > 0
+if node['postgresql']['version'].to_f < 9.3
+  Chef::Log.fatal!("Streaming replication requires postgresql 9.3 or greater and
+    you have configured #{node['postgresql']['version']}.  Bail.")
+  node.override['postgresql']['version'] = "9.3"
+end
 
-include_recipe 'postgres::server'
+node['postgresql']['streaming']['master']['config'].each do |k,v|
+  node.default['postgresql']['config'][k] = v
+end
+
+node.default['postgresql']['pg_hba'] =
+  node['postgresql']['streaming']['master']['pg_hba']
+
+include_recipe 'postgresql::server'
+
+directory node['postgresql']['shared_archive'] do
+  owner "postgres"
+  group "postgres"
+  mode 00755
+  action :create
+end
