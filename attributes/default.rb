@@ -43,6 +43,8 @@ when "debian"
   default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
   default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
   default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
+  default['postgresql']['plpython']['packages'] = ["postgresql-plpython-#{node['postgresql']['version']}"]
+  default['postgresql']['plpython3']['packages'] = ["postgresql-plpython3-#{node['postgresql']['version']}"]
 
 when "ubuntu"
 
@@ -66,6 +68,8 @@ when "ubuntu"
   default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
   default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
   default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
+  default['postgresql']['plpython']['packages'] = ["postgresql-plpython-#{node['postgresql']['version']}"]
+  default['postgresql']['plpython3']['packages'] = ["postgresql-plpython3-#{node['postgresql']['version']}"]
 
 when "fedora"
 
@@ -80,6 +84,8 @@ when "fedora"
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
+  default['postgresql']['plpython']['packages'] = %w{postgresql-plpython}
+  default['postgresql']['plpython3']['packages'] = %w{postgresql-plpython3}
 
 when "amazon"
 
@@ -95,6 +101,8 @@ when "amazon"
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
+  default['postgresql']['plpython']['packages'] = %w{postgresql-plpython}
+  default['postgresql']['plpython3']['packages'] = %w{postgresql-plpython3}
 
 when "redhat", "centos", "scientific", "oracle"
 
@@ -105,10 +113,14 @@ when "redhat", "centos", "scientific", "oracle"
     default['postgresql']['client']['packages'] = %w{postgresql-devel}
     default['postgresql']['server']['packages'] = %w{postgresql-server}
     default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+    default['postgresql']['plpython']['packages'] = %w{postgresql-plpython}
+    default['postgresql']['plpython3']['packages'] = %w{postgresql-plpython3}
   else
     default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
     default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
     default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
+    default['postgresql']['plpython']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-plpython"]
+    default['postgresql']['plpython3']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-plpython3"]
   end
 
   if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] != '8.4'
@@ -132,6 +144,8 @@ when "suse"
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
+  default['postgresql']['plpython']['packages'] = %w{postgresql-plpython}
+  default['postgresql']['plpython3']['packages'] = %w{postgresql-plpython3}
 
 else
   default['postgresql']['version'] = "8.4"
@@ -140,6 +154,8 @@ else
   default['postgresql']['server']['packages'] = ["postgresql"]
   default['postgresql']['contrib']['packages'] = ["postgresql"]
   default['postgresql']['server']['service_name'] = "postgresql"
+  default['postgresql']['plpython']['packages'] = %w{postgresql-plpython}
+  default['postgresql']['plpython3']['packages'] = %w{postgresql-plpython3}
 end
 
 # These defaults have disparity between which postgresql configuration
