@@ -75,6 +75,20 @@ template "#{node['postgresql']['dir']}/pg_hba.conf" do
   notifies change_notify, 'service[postgresql]', :immediately
 end
 
+# ensure the service is running
+# (if it has been stopped out-of-band and the above up-to-date,
+# then the assign-postgres-password command below will fail)
+service "postgresql" do
+  action :start
+end
+
+# needed because the above fails if service is stopped out of band
+# see http://serverfault.com/questions/534498/how-to-ensure-a-service-is-running-using-chef
+execute "force-start-postgresql" do
+  command "service postgresql start || /etc/init.d/postgresql start"
+  action :run
+end
+
 # NOTE: Consider two facts before modifying "assign-postgres-password":
 # (1) Passing the "ALTER ROLE ..." through the psql command only works
 #     if passwordless authorization was configured for local connections.
