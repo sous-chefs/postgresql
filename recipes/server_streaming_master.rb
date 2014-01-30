@@ -27,13 +27,13 @@ node['postgresql']['streaming']['master']['config'].each do |k,v|
   node.default['postgresql']['config'][k] = v
 end
 
-node.default['postgresql']['pg_hba'] =
+node.default['postgresql']['pg_hba'] +=
   node['postgresql']['streaming']['master']['pg_hba']
 
 include_recipe 'postgresql::server'
 
-if node['postgresql'].attribute? 'shared_archive'
-  directory node['postgresql']['shared_archive'] do
+if node['postgresql']['archive_path']
+  directory node['postgresql']['archive_path'] do
     owner "postgres"
     group "postgres"
     mode 00755
