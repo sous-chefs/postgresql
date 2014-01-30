@@ -57,9 +57,10 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
+# foodcritic doesn't understand this for some reason
 change_notify = node['postgresql']['server']['config_change_notify']
 
-template "#{node['postgresql']['dir']}/postgresql.conf" do
+template "#{node['postgresql']['dir']}/postgresql.conf" do # ~FC037
   source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
@@ -67,7 +68,7 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   notifies change_notify, 'service[postgresql]', :delayed
 end
 
-template "#{node['postgresql']['dir']}/pg_hba.conf" do
+template "#{node['postgresql']['dir']}/pg_hba.conf" do # ~FC037
   source "pg_hba.conf.erb"
   owner "postgres"
   group "postgres"

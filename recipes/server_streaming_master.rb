@@ -32,11 +32,10 @@ node.default['postgresql']['pg_hba'] =
 
 include_recipe 'postgresql::server'
 
-if node['postgresql'].attribute? 'shared_archive'
-  directory node['postgresql']['shared_archive'] do
-    owner "postgres"
-    group "postgres"
-    mode 00755
-    action :create
-  end
+directory node['postgresql']['shared_archive'] do
+  owner "postgres"
+  group "postgres"
+  mode 00755
+  action :create
+  only_if { node['postgresql'].attribute? 'shared_archive' }
 end
