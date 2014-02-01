@@ -2,6 +2,20 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.2
+------
+All wal-e recipe (from wal-e cookbook).  It does not make sense to have wal-e without postgres
+
+
+v3.4.1
+------
+Enhance the streaming support.  Fix up ph_hba.conf template a bit
+
+
+v3.4.0
+------
+First shot at streaming replication support using 9.3
+
 
 v3.3.4
 ------
