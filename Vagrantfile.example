@@ -26,7 +26,12 @@ chef_json = {
       {type: 'host', db: 'all', user: 'all', addr: '::1/128', method: 'md5'},
       {type: 'host', db: 'all', user: 'all', addr: '192.168.7.0/24', method: 'trust'},
     ]
-  },
+    wal_e: {
+      aws_access_key: 'ACCESS',
+      aws_secret_key: 'SECRET',
+      s3_bucket:      'BUCKET'
+    }
+  }
 }
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -37,6 +42,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "precise64"
   config.vm.network "public_network"
+  #config.berkshelf.enabled = true
 
   # this is not really needed, but archiving locally is weird
   config.vm.synced_folder "pgdata/", "/share/psql", mount_options: %w(dmode=777 fmode=666)
@@ -53,6 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       chef.cookbooks_path = "../my-recipes/cookbooks"
       chef.roles_path = "../my-recipes/roles"
       chef.add_recipe( "postgresql::server_streaming_master" )
+      chef.add_recipe( "postgresql::wal-e" )
       json = chef_json.dup
       json[:postgresql][:pg_hba] << {type: 'host', db: 'replication', user: 'all', addr: '192.168.7.31/30', method: 'trust'}
       chef.json = json
