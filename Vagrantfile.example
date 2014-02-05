@@ -17,7 +17,9 @@ chef_json = {
       archive_mode: false
     },
     streaming: {
-      master_host: "192.168.7.10"
+      master: {
+        host: "192.168.7.10"
+      }
     },
     pg_hba: [
       {type: 'local', db: 'all', user: 'postgres', addr: nil, method: 'ident'},

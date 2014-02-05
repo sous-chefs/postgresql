@@ -16,13 +16,11 @@ if archive_mode
   end.map { |attr| "node['postgresql']['wal_e']['#{attr}']" }
 
   if !missing_attrs.empty?
-    Chef::Application.fatal!([
-        "You must set #{missing_attrs.join(', ')}.",
-      ].join(' '))
+    Chef::Application.fatal!( "You must set #{missing_attrs.join(', ')}.")
   end
 
   # This is needed for wal-e even with postgres version 9.1
-  # This recipe doesn't normally pull it inunless portgres is greater then 9.1
+  # This recipe doesn't normally pull it unless postgres is greater then 9.1
   if platform_family?('ubuntu', 'debian')
     include_recipe 'postgresql::apt_pgdg_postgresql'
   end
@@ -81,16 +79,17 @@ if archive_mode
   node.default['postgresql']['config']['archive_command'] = "/usr/bin/envdir #{node['postgresql']['wal_e']['env_dir']} /usr/local/bin/wal-e wal-push %p"
   node.default['postgresql']['config']['archive_timeout'] = 60
   node.set['postgresql']['shared_archive'] = nil
-
+  
+  bb_cron = node['postgresql']['wal_e']['base_backup']
   cron "wal_e_base_backup" do
     user node['postgresql']['wal_e']['user']
     command "/usr/bin/envdir #{node['postgresql']['wal_e']['env_dir']} /usr/local/bin/wal-e backup-push #{node['postgresql']['config']['data_directory']}"
 
-    minute node['postgresql']['wal_e']['base_backup']['minute']
-    hour node['postgresql']['wal_e']['base_backup']['hour']
-    day node['postgresql']['wal_e']['base_backup']['day']
-    month node['postgresql']['wal_e']['base_backup']['month']
-    weekday node['postgresql']['wal_e']['base_backup']['weekday']
+    minute  bb_cron['minute']
+    hour    bb_cron['hour']
+    day     bb_cron['day']
+    month   bb_cron['month']
+    weekday bb_cron['weekday']
   end
 
 end

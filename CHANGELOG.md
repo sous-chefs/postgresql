@@ -4,7 +4,7 @@ This file is used to list changes made in each version of the postgresql cookboo
 
 v3.4.2
 ------
-All wal-e recipe (from wal-e cookbook).  It does not make sense to have wal-e without postgres
+Add wal-e recipe (from wal-e cookbook).  It does not make sense to have wal-e without postgres
 
 
 v3.4.1

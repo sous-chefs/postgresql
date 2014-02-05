@@ -18,13 +18,13 @@
 # limitations under the License.
 #
 
-# ensure that the amster host (or IP) is set.
+# ensure that the master host (or IP) is set.
 # or else to what are we a slave?
 missing_attrs = %w{
-  master_host
+  host
 }.select do |attr|
-  node['postgresql']['streaming'][attr].nil?
-end.map { |attr| "node['postgresql']['streaming']['#{attr}']" }
+  node['postgresql']['streaming']['master'][attr].nil?
+end.map { |attr| "node['postgresql']['streaming']['master']['#{attr}']" }
 
 if !missing_attrs.empty?
   Chef::Application.fatal!([
@@ -56,9 +56,10 @@ execute "remove-psql-slave-datadir" do
   not_if do ! FileTest.directory?( node['postgresql']['config']['data_directory'] ) end
 end
 
+master = node['postgresql']['streaming']['master']
 execute "create-psql-slave-datadir" do
   user    "postgres"
-  command "pg_basebackup -X s -D #{node['postgresql']['config']['data_directory']} -U postgres -h #{node['postgresql']['streaming']['master_host']} -R"
+  command "pg_basebackup -X s -D #{node['postgresql']['config']['data_directory']} -U postgres -h #{master['host']} -p #{master['port']} -R"
 end
 
 service "postgresql" do

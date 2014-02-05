@@ -1,4 +1,4 @@
-if not %w(etch lenny lucid precise sid squeeze wheezy).include? node['lsb']['codename'] # node['postgresql']['pgdg']['release_apt_codename']
+if not %w(etch lenny lucid precise sid squeeze wheezy).include? node['lsb']['codename'] 
   raise "Not supported release by PGDG apt repository"
 end
 
