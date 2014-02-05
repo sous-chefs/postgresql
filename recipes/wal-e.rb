@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: wal-e
-# Recipe:: default
+# Cookbook Name:: postgresql
+# Recipe:: wal-e
 
 # only install the cron entry if we have archive mode turned on
 archive_mode = node['postgresql']['config']['archive_mode']
