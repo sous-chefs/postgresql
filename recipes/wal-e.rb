@@ -15,7 +15,7 @@ if archive_mode
     node['postgresql']['wal_e'][attr].nil?
   end.map { |attr| "node['postgresql']['wal_e']['#{attr}']" }
 
-  if !missing_attrs.empty?
+  if missing_attrs.any?
     Chef::Application.fatal!( "You must set #{missing_attrs.join(', ')}.")
   end
 
