@@ -16,8 +16,8 @@
 # Other authentication configurations taken from chef node defaults:
 ###########
 <% node['postgresql']['pg_hba'].each do |auth| -%>
-
 <%   if auth[:comment] %>
+
 <%= auth[:comment] %>
 <%   end %>
 <%   if auth[:addr] %>
