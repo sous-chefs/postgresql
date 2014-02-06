@@ -3,7 +3,9 @@
 default['postgresql']['archive_path'] = '/share/psql/archive'
 default['postgresql']['streaming'] = {
   master: {
-  # default config for streaming.
+    # this defaults to the config's port value
+    port: node['postgresql']['config']['port'],
+    # default config for streaming.
     config: {
       wal_level: "hot_standby",
       listen_addresses: '*',
