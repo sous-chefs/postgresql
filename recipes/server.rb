@@ -59,6 +59,12 @@ end
 
 change_notify = node['postgresql']['server']['config_change_notify']
 
+directory node['postgresql']['dir'] do
+  owner "postgres"
+  group "postgres"
+  recursive true
+end
+
 template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "postgresql.conf.erb"
   owner "postgres"
