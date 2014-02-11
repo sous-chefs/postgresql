@@ -23,13 +23,6 @@
 
 include_recipe "postgresql::client"
 
-# ensure postgres isn't running already...
-service "postgresql" do
-  Chef::Log.info("About to shut down postgresql")
-  action :stop
-end
-
-
 # randomly generate postgres password, unless using solo - see README
 if Chef::Config[:solo]
   missing_attrs = %w{
