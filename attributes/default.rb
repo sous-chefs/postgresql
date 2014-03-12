@@ -66,6 +66,8 @@ when "ubuntu"
   default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
   default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
   default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
+  default['postgresql']['config']['ssl_key_file'] = "/etc/ssl/private/ssl-cert-snakeoil.key"
+  default['postgresql']['config']['ssl_cert_file'] = "/etc/ssl/certs/ssl-cert-snakeoil.pem"
 
 when "fedora"
 
