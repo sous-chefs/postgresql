@@ -18,6 +18,10 @@ platforms:
   run_list:
   - recipe[apt]
 
+- name: ubuntu-13.10
+  run_list:
+  - recipe[apt]
+
 - name: debian-7.1.0
   driver_config:
     box: opscode-debian-7.1.0
@@ -64,7 +68,7 @@ suites:
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-13.10", "ubuntu-14.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -109,7 +113,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-13.10", "ubuntu-14.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -136,7 +140,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-13.10", "ubuntu-14.04", "debian-7.1.0"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
