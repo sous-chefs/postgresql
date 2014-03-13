@@ -28,8 +28,8 @@ describe 'postgresql::apt_pgdg_postgresql' do
     file("/etc/apt/sources.list.d/apt.postgresql.org.list").must_exist
   end
 
-  it 'installs postgresql-client-9.2' do
-    package("postgresql-client-9.2").must_be_installed
+  it 'installs postgresql-client-9.*' do
+    package("postgresql-client-9.*").must_be_installed
   end
 
   it "makes psql version 9.2 or 9.3" do
