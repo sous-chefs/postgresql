@@ -51,7 +51,7 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
-template "/etc/sysconfig/pgsql/#{node['postgresql']['server']['service_name']}" do
+template "#{node['postgresql']['sysconfig']}" do
   source "pgsql.sysconfig.erb"
   mode "0644"
   notifies :restart, "service[postgresql]", :delayed
