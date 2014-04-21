@@ -20,6 +20,7 @@
 #
 
 include_recipe "postgresql::client"
+include_recipe "postgresql::fix_locale"
 
 node['postgresql']['server']['packages'].each do |pg_pack|
 
