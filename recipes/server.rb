@@ -86,7 +86,7 @@ end
 bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
-echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql
+echo 'ALTER ROLE postgres ENCRYPTED PASSWORD '"'"'#{node['postgresql']['password']['postgres']}'"'"';' | psql
   EOH
   action :run
 end
