@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-if platform_family?('ubuntu', 'debian') && node['postgresql']['version'].to_f > 9.1
-    node.default['postgresql']['enable_pgdg_apt'] = true
+if platform_family?('ubuntu', 'debian') && node['postgresql']['version'].to_f > 9.3
+  node.default['postgresql']['enable_pgdg_apt'] = true
 end
 
 if(node['postgresql']['enable_pgdg_apt'])
