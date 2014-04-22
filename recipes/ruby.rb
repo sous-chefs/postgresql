@@ -46,7 +46,13 @@ rescue LoadError
   node['postgresql']['client']['packages'].each do |pg_pack|
     resources("package[#{pg_pack}]").run_action(:install)
   end
-  
+
+  if ["debian","ubuntu"].include? node['platform']  
+    package "libpq-dev" do
+        action :nothing
+    end.run_action(:install)
+  end
+
   begin
     chef_gem "pg"
   rescue Gem::Installer::ExtensionBuildError => e
