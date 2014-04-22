@@ -51,8 +51,10 @@ when "ubuntu"
     default['postgresql']['version'] = "8.3"
   when node['platform_version'].to_f <= 11.04
     default['postgresql']['version'] = "8.4"
-  else
+  when node['platform_version'].to_f <= 13.10
     default['postgresql']['version'] = "9.1"
+  else
+    default['postgresql']['version'] = "9.3"
   end
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
@@ -61,6 +63,12 @@ when "ubuntu"
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
   else
     default['postgresql']['server']['service_name'] = "postgresql"
+  end
+
+  case
+  when node['platform_version'].to_f >= 14.04
+    default['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+    default['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key'
   end
 
   default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
