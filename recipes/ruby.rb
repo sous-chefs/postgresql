@@ -25,7 +25,7 @@ begin
   require 'pg'
 rescue LoadError
 
-  node.set['build_essential']['compiletime'] = true
+  node.set['build-essential']['compile_time'] = true
   include_recipe "build-essential"
   include_recipe "postgresql::client"
 
