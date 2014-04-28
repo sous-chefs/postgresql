@@ -32,7 +32,7 @@ rescue LoadError
     e.run_action(:run) unless ::File.exists?('/var/lib/apt/periodic/update-success-stamp')
   end
 
-  node.set['build-essential']['compiletime'] = true
+  node.set['build-essential']['compile_time'] = true
   include_recipe "build-essential"
   include_recipe "postgresql::client"
 
