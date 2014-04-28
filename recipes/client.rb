@@ -19,8 +19,16 @@
 # limitations under the License.
 #
 
-if node['postgresql']['version'].to_f > 9.1 && platform_family?('ubuntu', 'debian')
-  node.default['postgresql']['enable_pgdg_apt'] = true
+if platform_family?('ubuntu', 'debian')
+  if node['postgresql']['version'].to_f > 9.1
+    node.default['postgresql']['enable_pgdg_apt'] = true
+  else
+    # Ubuntu 10.04 missing security package workaround
+    e = execute 'apt-get update' do
+      action :nothing
+    end
+    e.run_action(:run)
+  end
 end
 
 if(node['postgresql']['enable_pgdg_apt'])
