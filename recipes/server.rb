@@ -57,23 +57,25 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
+# foodcritic doesn't understand this for some reason
 change_notify = node['postgresql']['server']['config_change_notify']
 
-template "#{node['postgresql']['dir']}/postgresql.conf" do
+template "#{node['postgresql']['dir']}/postgresql.conf" do # ~FC037
   source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies change_notify, 'service[postgresql]', :immediately
+  notifies change_notify, 'service[postgresql]', :delayed
 end
 
-template "#{node['postgresql']['dir']}/pg_hba.conf" do
+template "#{node['postgresql']['dir']}/pg_hba.conf" do # ~FC037
   source "pg_hba.conf.erb"
   owner "postgres"
   group "postgres"
   mode 00600
-  notifies change_notify, 'service[postgresql]', :immediately
+  notifies change_notify, 'service[postgresql]', :delayed
 end
+
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
 # (1) Passing the "ALTER ROLE ..." through the psql command only works

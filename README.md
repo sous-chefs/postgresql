@@ -1,3 +1,6 @@
+chef-postgresql
+=========================
+
 Description
 ===========
 
@@ -198,6 +201,28 @@ manages the configuration for the server:
 * manages the `postgresql.conf` file.
 * manages the `pg_hba.conf` file.
 
+server\_streaming\_master
+-------------------------
+
+Only usable with postgres 9.3+
+Folds in attributes from node['postgresql']['streaming']['master']['config']
+and node['postgresq']['streaming']['master']['pg_hba'] before including
+the postgres::server recipe.  Also ensures node['postgresql']['shared_archive']
+exists if it is set.
+
+Note: ssl is turned off on debian with psql versions greater than 9.1
+
+server\_streaming\_slave
+------------------------
+
+Only usable with postgres 9.3+
+node['postgresql']['streaming']['master']['host'] MUST be set.
+Folds in attributes from node['postgresql']['streaming']['slave']['config']
+before including the postgres::server recipe.  Initializes slave using
+pg\_basebackup utility which also generates a minimal recovery.conf.
+
+Note: ssl is turned off on debian with psql versions greater than 9.1
+
 server\_debian
 --------------
 
@@ -371,6 +396,35 @@ values that will need to have embedded version numbers. For example:
 You may set `node['postgresql']['pgdg']['repo_rpm_url']` attributes
 to pick up recent [PGDG repo packages](http://yum.postgresql.org/repopackages.php).
 
+wal-e
+-----
+
+Enables wal-e backup to S3.  Taken from the wal-e cookbook and added here.
+Installs wal-e from git along with its dependancies.
+Adds a weekly cronjob to perform basebackups plus sets the archive command
+to enable WAL shipping.
+
+Requires the following attributes be set:
+  node['postgresql']['config']['archive\_mode']
+    Must be set to true.
+  node['postgresql']['wal_e']['aws\_access\_key']
+    Set this to your AWS access key.
+  node['postgresql']['wal_e']['aws\_sevret\_key']
+    Set this to your AWS secret key.
+  node['postgresql']['wal_e']['s3\_bucket']
+    Set this tot he bucket name in S3.  Do NOT include 's3://',
+    it is prepended automatically.
+
+Optional:
+  node['postgresql']['wal-e']['bkp\_folder']
+    This defaults to
+    #{node['hostname'] + '-pq-' + ( node['postgresql']['version'] || '-unknown' ).to_s}
+    It will be created inside the bucket provided by
+    node['postgresql']['wal_e']['s3_bucket'] if it doesn't already exist.
+
+This recipe can be combined with server or server\_streaming\_master
+
+
 Resources/Providers
 ===================
 
@@ -437,6 +491,18 @@ database if you have `postgres` access and want to use the same password:<br>
 * You can run this from a linux commandline:<br>
 `echo -n 'iloverandompasswordsbutthiswilldo''postgres' | openssl md5 | sed -e 's/.* /md5/'`
 
+Recovery
+========
+
+The server\_streaming\_\* and wal-e recipes introduce backups to this cookbook.
+But how to recover?  This will depend slightly on your postgresql version and how
+exactly backups were configured.  For a general discussion of restoring from backup
+with postgresql see here:
+  http://www.postgresql.org/docs/9.3/static/continuous-archiving.html
+  http://www.postgresql.org/docs/9.3/static/warm-standby.html
+  http://www.postgresql.org/docs/9.3/static/hot-standby.html
+
+
 License and Author
 ==================
 
@@ -444,6 +510,7 @@ License and Author
 - Author:: Lamont Granquist (<lamont@opscode.com>)
 - Author:: Chris Roberts (<chrisroberts.code@gmail.com>)
 - Author:: David Crane (<davidc@donorschoose.org>)
+- Author:: Jeff Harvey-Smith (<jeff@clearstorydata.com>)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
