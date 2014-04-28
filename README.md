@@ -1,4 +1,4 @@
-clearstorydata-postgresql
+chef-postgresql
 =========================
 
 Description
