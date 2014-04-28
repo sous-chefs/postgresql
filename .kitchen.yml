@@ -37,7 +37,7 @@ suites:
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: ["centos-5.9", "centos-6.4"]
+  excludes: ["centos-5.10", "centos-6.4"]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -47,7 +47,7 @@ suites:
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.4"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -76,7 +76,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["centos-5.9", "centos-6.4"]
+  excludes: ["centos-5.10", "centos-6.4"]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -92,7 +92,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.4"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -108,7 +108,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["centos-5.9", "centos-6.4"]
+  excludes: ["centos-5.10", "centos-6.4"]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -119,7 +119,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.4"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
