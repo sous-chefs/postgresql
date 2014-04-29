@@ -25,7 +25,14 @@ begin
   require 'pg'
 rescue LoadError
 
-  node.set['build_essential']['compiletime'] = true
+  if platform_family?('ubuntu', 'debian')
+    e = execute 'apt-get update' do
+      action :nothing
+    end
+    e.run_action(:run) unless ::File.exists?('/var/lib/apt/periodic/update-success-stamp')
+  end
+
+  node.set['build-essential']['compile_time'] = true
   include_recipe "build-essential"
   include_recipe "postgresql::client"
 
@@ -47,9 +54,9 @@ rescue LoadError
     resources("package[#{pg_pack}]").run_action(:install)
   end
 
-  if ["debian","ubuntu"].include? node['platform']  
+  if ["debian","ubuntu"].include? node['platform']
     package "libpq-dev" do
-        action :nothing
+      action :nothing
     end.run_action(:install)
   end
 
