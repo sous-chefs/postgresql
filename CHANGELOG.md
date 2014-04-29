@@ -2,6 +2,11 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.0
+------
+Updated CONTRIBUTING document.
+Refreshed test kitchen configuration.
+Merged Pull Requests: 122, 116, 104, 102, 99, 96, 93, 90.
 
 v3.3.4
 ------
