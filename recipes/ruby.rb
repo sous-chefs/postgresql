@@ -26,10 +26,16 @@ begin
 rescue LoadError
 
   if platform_family?('ubuntu', 'debian')
-    e = execute 'apt-get update' do
-      action :nothing
+    def apt_update?
+      stamp_file = '/var/lib/apt/periodic/update-success-stamp'
+      return true unless ::File.exist?(stamp_file)
+      return true if ::File.exist?(stamp_file) && ::File.mtime(stamp_file) < Time.now - 86_400
+      false
     end
-    e.run_action(:run) unless ::File.exists?('/var/lib/apt/periodic/update-success-stamp')
+
+    execute 'apt-get update' do
+      action :nothing
+    end.run_action(:run) if apt_update?
   end
 
   node.set['build-essential']['compile_time'] = true
