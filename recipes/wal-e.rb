@@ -21,8 +21,8 @@ if node['postgresql']['config']['archive_mode'] && node['postgresql']['wal_e']['
   include_recipe 'logrotate'
 
   # Save these in variables.
-  myuser = node['postgresql']['wal_e']['user']
-  mygroup= node['postgresql']['wal_e']['group']
+  myuser  = node['postgresql']['wal_e']['user']
+  mygroup = node['postgresql']['wal_e']['group']
 
   # This is needed for wal-e even with postgres version 9.1
   # This recipe doesn't normally pull it unless postgres is greater then 9.1
@@ -31,12 +31,12 @@ if node['postgresql']['config']['archive_mode'] && node['postgresql']['wal_e']['
   end
 
   #install packages
-  unless node['postgresql']['wal_e']['packages'].nil?
-    node['postgresql']['wal_e']['packages'].each do |pkg|
-      Chef::Log.debug("Install #{pkg} for wal-e recipe")
-      package pkg
-    end
+
+  Array(node['postgresql']['wal_e']['packages']).each do |pkg|
+    Chef::Log.debug("Install #{pkg} for wal-e recipe")
+    package pkg
   end
+
 
   #install python modules with pip unless overriden
   unless node['postgresql']['wal_e']['pips'].nil?
@@ -101,16 +101,22 @@ if node['postgresql']['config']['archive_mode'] && node['postgresql']['wal_e']['
   
   bb_cron = node['postgresql']['wal_e']['base_backup']
   if bb_cron
-
+    
+    # The cron command always contains the following.
     cron_cmd = "/usr/bin/envdir #{node['postgresql']['wal_e']['env_dir']} /usr/local/bin/wal-e backup-push #{node['postgresql']['config']['data_directory']}"
+    
+    # Optionally prepend the flock command if it is set.
+    cron_cmd.insert(0, "#{bb_cron['flock']} ") if bb_cron['flock']
 
+    # If we want to log this, ensure the log dir exists.
     if bb_cron['log_path']
       directory bb_cron['log_path'] do
         user    myuser
         group   mygroup
         mode    "0755"
       end
-
+      
+      # Rotate the wal-e backup logs once a week, keep seven of them.
       logrotate_app 'wal_e-base-backup-logrotate' do
         cookbook  'logrotate'
         path      bb_cron['log_path']
@@ -118,10 +124,10 @@ if node['postgresql']['config']['archive_mode'] && node['postgresql']['wal_e']['
         rotate    7
         create    "644 #{myuser} #{mygroup}"
       end
+
+      # Finally, append a redirect to the log to the end of the cron command.
       cron_cmd += " > #{bb_cron['log_path']}/wal_e-base-backup.log 2>&1"
     end
-
-    cron_cmd.insert(0, "#{bb_cron['flock']} ") if bb_cron['flock']
 
     cron "wal_e_base_backup" do
       user    myuser
