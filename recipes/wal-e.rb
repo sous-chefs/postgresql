@@ -2,9 +2,8 @@
 # Cookbook Name:: postgresql
 # Recipe:: wal-e
 
-# only install the cron entry if we have archive mode turned on
-archive_mode = node['postgresql']['config']['archive_mode']
-if archive_mode
+# only install the wal-e entry if we have archive mode turned on and wal-e enabled
+if node['postgresql']['config']['archive_mode'] && node['postgresql']['wal_e']['enabled']
   Chef::Log.info("set up our wal-e shipper")
 
   missing_attrs = %w{
@@ -19,6 +18,12 @@ if archive_mode
     Chef::Application.fatal!( "You must set #{missing_attrs.join(', ')}.")
   end
 
+  include_recipe 'logrotate'
+
+  # Save these in variables.
+  myuser = node['postgresql']['wal_e']['user']
+  mygroup= node['postgresql']['wal_e']['group']
+
   # This is needed for wal-e even with postgres version 9.1
   # This recipe doesn't normally pull it unless postgres is greater then 9.1
   if platform_family?('ubuntu', 'debian')
@@ -26,16 +31,19 @@ if archive_mode
   end
 
   #install packages
-  node['postgresql']['wal_e']['packages'].each do |pkg|
-    Chef::Log.debug("Install #{pkg} for wal-e recipe")
-    package pkg
+  unless node['postgresql']['wal_e']['packages'].nil?
+    node['postgresql']['wal_e']['packages'].each do |pkg|
+      Chef::Log.debug("Install #{pkg} for wal-e recipe")
+      package pkg
+    end
   end
 
   #install python modules with pip unless overriden
   unless node['postgresql']['wal_e']['pips'].nil?
     include_recipe "python::pip"
-    node['postgresql']['wal_e']['pips'].each do |pp|
-      python_pip "gevent"
+    node['postgresql']['wal_e']['pips'].each do |pip|
+      Chef::Log.debug("Install pip #{pp} for wal-e recipe")
+      python_pip pip
     end
   end
 
@@ -51,26 +59,37 @@ if archive_mode
 
   git code_path do
     repository "https://github.com/wal-e/wal-e.git"
-    revision "v0.6.5"
+    revision node['postgresql']['wal_e']['git_version']
     notifies :run, "bash[install_wal_e]"
   end
 
   directory node['postgresql']['wal_e']['env_dir'] do
-    user    node['postgresql']['wal_e']['user']
-    group   node['postgresql']['wal_e']['group']
+    user    myuser
+    group   mygroup
     mode    "0550"
   end
 
+  # Determine the s3 path.
+  # Use s3path if it is set, else create one from s3_bucket and bkp_folder.
+  s3path = case
+    when node['postgresql']['wal_e']['s3_path'] && node['postgresql']['wal_e']['s3_path'][/^[sS]3:/]
+      node['postgresql']['wal_e']['s3_path']
+    when node['postgresql']['wal_e']['s3_path']
+      "s3://" + node['postgresql']['wal_e']['s3_path']
+    else
+      "s3://#{node['postgresql']['wal_e']['s3_bucket']}/#{node['postgresql']['wal_e']['bkp_folder']}"
+    end
+
   vars = {'AWS_ACCESS_KEY_ID'     => node['postgresql']['wal_e']['aws_access_key'],
           'AWS_SECRET_ACCESS_KEY' => node['postgresql']['wal_e']['aws_secret_key'],
-          'WALE_S3_PREFIX'        => "s3://#{node['postgresql']['wal_e']['s3_bucket']}/#{node['postgresql']['wal_e']['bkp_folder']}"
+          'WALE_S3_PREFIX'        => s3path
   }
 
   vars.each do |key, value|
     file "#{node['postgresql']['wal_e']['env_dir']}/#{key}" do
       content value
-      user    node['postgresql']['wal_e']['user']
-      group   node['postgresql']['wal_e']['group']
+      user    myuser
+      group   mygroup
       mode    "0440"
     end
   end
@@ -81,15 +100,38 @@ if archive_mode
   node.set['postgresql']['shared_archive'] = nil
   
   bb_cron = node['postgresql']['wal_e']['base_backup']
-  cron "wal_e_base_backup" do
-    user node['postgresql']['wal_e']['user']
-    command "/usr/bin/envdir #{node['postgresql']['wal_e']['env_dir']} /usr/local/bin/wal-e backup-push #{node['postgresql']['config']['data_directory']}"
+  if bb_cron
 
-    minute  bb_cron['minute']
-    hour    bb_cron['hour']
-    day     bb_cron['day']
-    month   bb_cron['month']
-    weekday bb_cron['weekday']
+    cron_cmd = "/usr/bin/envdir #{node['postgresql']['wal_e']['env_dir']} /usr/local/bin/wal-e backup-push #{node['postgresql']['config']['data_directory']}"
+
+    if bb_cron['log_path']
+      directory bb_cron['log_path'] do
+        user    myuser
+        group   mygroup
+        mode    "0755"
+      end
+
+      logrotate_app 'wal_e-base-backup-logrotate' do
+        cookbook  'logrotate'
+        path      bb_cron['log_path']
+        frequency 'weekly'
+        rotate    7
+        create    "644 #{myuser} #{mygroup}"
+      end
+      cron_cmd += " > #{bb_cron['log_path']}/wal_e-base-backup.log 2>&1"
+    end
+
+    cron_cmd.insert(0, "#{bb_cron['flock']} ") if bb_cron['flock']
+
+    cron "wal_e_base_backup" do
+      user    myuser
+      command cron_cmd
+      minute  bb_cron['minute']
+      hour    bb_cron['hour']
+      day     bb_cron['day']
+      month   bb_cron['month']
+      weekday bb_cron['weekday']
+    end
   end
 
 end

@@ -1,4 +1,5 @@
 default['postgresql']['wal_e'] = {
+  enabled: false,
   packages: %w(
     python-setuptools
     python-dev
@@ -13,7 +14,7 @@ default['postgresql']['wal_e'] = {
     argparse
     boto
   ),
-  git_version: 'v0.7.0',
+  git_version: 'v0.6.9',
   env_dir: '/etc/wal-e',
   aws_access_key: nil,
   aws_secret_key: nil,
@@ -25,6 +26,8 @@ default['postgresql']['wal_e'] = {
     day: '*',
     month: '*',
     weekday: '1',
+    log_path: '/var/log/wal-e',
+    flock: 'flock -x -n /tmp/wal-e_base_backup.lck'
   },
   user: 'postgres',
   group: 'postgres',

@@ -25,5 +25,6 @@ end
 
 depends "apt"
 depends "build-essential"
+depends "logrotate"
 depends "openssl"
 depends "python"
