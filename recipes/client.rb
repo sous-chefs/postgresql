@@ -20,7 +20,7 @@
 #
 
 if node['postgresql']['version'].to_f > 9.1
-  case node['platform_family']
+  case node['platform']
   when "debian"
     node.default['postgresql']['enable_pgdg_apt'] = true
   when "ubuntu"
