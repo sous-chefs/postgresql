@@ -2,6 +2,10 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.1
+------
+- In Ubuntu Trusty we have 9.3 version available (no need for pgdg repo).
+
 v3.4.0
 ------
 Updated CONTRIBUTING document.
