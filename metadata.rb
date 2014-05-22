@@ -7,6 +7,7 @@ long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version           "3.4.1"
 recipe            "postgresql", "Includes postgresql::client"
 recipe            "postgresql::ruby", "Installs pg gem for Ruby bindings"
+recipe            "postgresql::python", "Install python library packages"
 recipe            "postgresql::client", "Installs postgresql client package(s)"
 recipe            "postgresql::server", "Installs postgresql server packages, templates"
 recipe            "postgresql::server_redhat", "Installs postgresql server packages, redhat family style"
