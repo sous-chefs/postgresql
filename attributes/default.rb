@@ -123,14 +123,17 @@ when "suse"
 
   if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
+    default['postgresql']['client']['packages'] = ['postgresql', 'rubygem-pg']
+    default['postgresql']['server']['packages'] = ['postgresql-server']
+    default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
   else
-    default['postgresql']['version'] = "9.0"
+    default['postgresql']['version'] = "9.1"
+    default['postgresql']['client']['packages'] = ['postgresql91', 'rubygem-pg']
+    default['postgresql']['server']['packages'] = ['postgresql91-server']
+    default['postgresql']['contrib']['packages'] = ['postgresql91-contrib']
   end
 
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
 
 else
