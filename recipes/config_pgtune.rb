@@ -125,7 +125,7 @@ total_memory = node['memory']['total']
 # For example, on a system *not* dedicated to Postgresql.
 if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('total_memory'))
   total_memory = node['postgresql']['config_pgtune']['total_memory']
-  if (total_memory.match(/\A[1-9]\d*kB\Z/) == nil)
+  if (total_memory.match(/\A[1-9]\d*kB\z/) == nil)
     Chef::Application.fatal!([
         "Bad value (#{total_memory})",
         "for node['postgresql']['config_pgtune']['total_memory'] attribute.",
