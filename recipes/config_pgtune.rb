@@ -108,7 +108,7 @@ con =
 
 if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('max_connections'))
   max_connections = node['postgresql']['config_pgtune']['max_connections']
-  if (max_connections.match(/\A[1-9]\d*\Z/) == nil)
+  if (max_connections.match(/\A[1-9]\d*\z/) == nil)
     Chef::Application.fatal!([
         "Bad value (#{max_connections})",
         "for node['postgresql']['config_pgtune']['max_connections'] attribute.",
