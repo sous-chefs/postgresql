@@ -2,6 +2,10 @@
 driver_plugin: vagrant
 
 platforms:
+- name: ubuntu-14.04
+  run_list:
+  - recipe[apt]
+
 - name: ubuntu-12.04
   run_list:
   - recipe[apt]
@@ -47,7 +51,7 @@ suites:
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.4"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -92,7 +96,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.4"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -119,7 +123,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.4"]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
