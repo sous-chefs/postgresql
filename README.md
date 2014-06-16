@@ -185,6 +185,11 @@ in other recipes. The build-essential packages and postgresql client
 packages will be installed during the compile phase, so that the
 native extensions of `pg` can be compiled.
 
+python
+------
+
+Install the python client library packages.
+
 server
 ------
 
