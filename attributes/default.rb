@@ -163,7 +163,6 @@ when 'debian'
   default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
   default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
   default['postgresql']['config']['listen_addresses'] = 'localhost'
-  default['postgresql']['config']['port'] = 5432
   default['postgresql']['config']['max_connections'] = 100
   default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql' if node['postgresql']['version'].to_f < 9.3
   default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql' if node['postgresql']['version'].to_f >= 9.3
@@ -193,6 +192,8 @@ when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['lc_time'] = 'en_US.UTF-8'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
 end
+# set this as universal default
+default['postgresql']['config']['port'] = 5432
 
 default['postgresql']['pg_hba'] = [
   {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'},
