@@ -28,11 +28,11 @@ describe 'postgresql::apt_pgdg_postgresql' do
     file("/etc/apt/sources.list.d/apt.postgresql.org.list").must_exist
   end
 
-  it "installs postgresql-client-#{node['postgresql']['version']}" do
+  it "installs proper postgresql-client version" do
     package("postgresql-client-#{node['postgresql']['version']}").must_be_installed
   end
 
-  it "makes psql version #{node['postgresql']['version']} available" do
+  it "makes psql with proper version available" do
     psql = shell_out("psql --version")
     assert psql.stdout.include?("psql (PostgreSQL) #{node['postgresql']['version']}")
   end
