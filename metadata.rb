@@ -21,5 +21,5 @@ end
 end
 
 depends "apt", ">= 1.9.0"
-depends "build-essential"
+depends "build-essential", '>= 2.0.0'
 depends "openssl"
