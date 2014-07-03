@@ -22,9 +22,9 @@
 include_recipe "postgresql::client"
 
 ::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
-
-version = node['postgresql']['version']
-data_dir = node['postgresql']['dir']
+svc_name = node['postgresql']['server']['service_name']
+dir = node['postgresql']['dir']
+initdb_locale = node['postgresql']['initdb_locale']
 
 # Create a group and user like the package will.
 # Otherwise the templates fail.
@@ -44,7 +44,7 @@ if systemd?
     end
   end
 else
-  template "/etc/sysconfig/pgsql/#{node['postgresql']['server']['service_name']}" do
+  template "/etc/sysconfig/pgsql/#{svc_name}" do
     source "pgsql.sysconfig.erb"
     mode "0644"
     notifies :restart, "service[postgresql]", :delayed
@@ -57,5 +57,11 @@ setup_command = if systemd?
                   sysinit_initdb_cmd
                 end
 execute setup_command do
-  not_if { ::FileTest.exist?(File.join(data_dir, "PG_VERSION")) }
+  not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+end
+
+service "postgresql" do
+  service_name svc_name
+  supports :restart => true, :status => true, :reload => true
+  action [:enable, :start]
 end
