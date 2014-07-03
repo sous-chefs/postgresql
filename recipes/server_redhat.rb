@@ -21,6 +21,10 @@
 
 include_recipe "postgresql::client"
 
+svc_name = node['postgresql']['server']['service_name']
+dir = node['postgresql']['dir']
+initdb_locale = node['postgresql']['initdb_locale']
+
 # Create a group and user like the package will.
 # Otherwise the templates fail.
 
@@ -38,7 +42,7 @@ user "postgres" do
   supports :manage_home => false
 end
 
-directory node['postgresql']['dir'] do
+directory dir do
   owner "postgres"
   group "postgres"
   recursive true
@@ -57,7 +61,7 @@ end
 
 unless platform_family?("fedora") and node['platform_version'].to_i >= 16
   
-  template "/etc/sysconfig/pgsql/#{node['postgresql']['server']['service_name']}" do
+  template "/etc/sysconfig/pgsql/#{svc_name}" do
     source "pgsql.sysconfig.erb"
     mode "0644"
     notifies :restart, "service[postgresql]", :delayed
@@ -67,21 +71,20 @@ end
 
 if platform_family?("fedora") and node['platform_version'].to_i >= 16
 
-  bash "postgresql initdb" do
-    code "postgresql-setup initdb"
-    not_if { ::FileTest.exist?(File.join(node['postgresql']['dir'], "PG_VERSION")) }
+  execute "postgresql-setup initdb #{svc_name}" do
+    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
 else !platform_family?("suse") 
 
-  execute "/sbin/service #{node['postgresql']['server']['service_name']} initdb #{node['postgresql']['initdb_locale']}" do
-    not_if { ::FileTest.exist?(File.join(node['postgresql']['dir'], "PG_VERSION")) }
+  execute "/sbin/service #{svc_name} initdb #{initdb_locale}" do
+    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
 end
 
 service "postgresql" do
-  service_name node['postgresql']['server']['service_name']
+  service_name svc_name
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
 end
