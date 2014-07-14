@@ -208,7 +208,7 @@ module Opscode
         # (There are many duplicates under tzdir, with the same timezone
         # content appearing as an average of 2-3 different file names.)
         path = ::File.readlink("/etc/localtime")
-        bestzonename = ::File.basename(path)
+        bestzonename = path.gsub("#{tzdir}/", "")
       else # /etc/localtime is a file, so scan for it under tzdir
         localtime_content = File.read("/etc/localtime")
 
@@ -384,12 +384,12 @@ module Opscode
 
     def systemd_initdb_cmd
       cmd = if node['postgresql']['enable_pgdg_yum']
-              version = node['postgresql']['version']
-              version_str = version.split('.').join
-              "/usr/pgsql-#{version}/bin/postgresql#{version_str}-setup"
-            else
-              '/usr/bin/postgresql-setup'
-            end
+        version = node['postgresql']['version']
+        version_str = version.split('.').join
+        "/usr/pgsql-#{version}/bin/postgresql#{version_str}-setup"
+      else
+        '/usr/bin/postgresql-setup'
+      end
       "#{cmd} initdb"
     end
 

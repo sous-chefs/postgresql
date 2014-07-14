@@ -16,11 +16,11 @@
 #
 
 include_recipe "postgresql::client"
-
 ::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
 svc_name = node['postgresql']['server']['service_name']
 dir = node['postgresql']['dir']
 initdb_locale = node['postgresql']['initdb_locale']
+version = node['postgresql']['version']
 
 # Create a group and user like the package will.
 # Otherwise the templates fail.
@@ -30,7 +30,7 @@ create_data_dir
 install_server_packages
 
 if systemd?
-  unless data_dir == "/var/lib/pgsql/#{version}/data"
+  unless dir == "/var/lib/pgsql/#{version}/data"
     path = 'postgresql'
     path << "-#{version}" if node['postgresql']['enable_pgdg_yum']
     template "/etc/systemd/system/#{path}.service" do
