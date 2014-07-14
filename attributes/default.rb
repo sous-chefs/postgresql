@@ -59,7 +59,7 @@ when "ubuntu"
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   case
-  when (node['platform_version'].to_f <= 10.04) && (! node['postgresql']['enable_pgdg_apt'])
+  when (node['platform_version'].to_f <= 10.04) && (!node['postgresql']['enable_pgdg_apt'])
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
   else
     default['postgresql']['server']['service_name'] = "postgresql"
@@ -276,7 +276,12 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       }
     },
     "fedora" => {
+      "20" => {
+        "i386" => "http://yum.postgresql.org/9.3/fedora/fedora-20-i386/pgdg-fedora93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-20-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
+      },
       "19" => {
+        "i386" => "http://yum.postgresql.org/9.3/fedora/fedora-19-i386/pgdg-fedora93-9.3-1.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-19-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
       },
       "18" => {

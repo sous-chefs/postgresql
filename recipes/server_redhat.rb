@@ -21,6 +21,11 @@
 
 include_recipe "postgresql::client"
 
+::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
+
+version = node['postgresql']['version']
+data_dir = node['postgresql']['dir']
+
 # Create a group and user like the package will.
 # Otherwise the templates fail.
 
@@ -38,7 +43,7 @@ user "postgres" do
   supports :manage_home => false
 end
 
-directory node['postgresql']['dir'] do
+directory data_dir do
   owner "postgres"
   group "postgres"
   recursive true
@@ -51,18 +56,30 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
-template "/etc/sysconfig/pgsql/#{node['postgresql']['server']['service_name']}" do
-  source "pgsql.sysconfig.erb"
-  mode "0644"
-  notifies :restart, "service[postgresql]", :delayed
+if systemd?
+  unless data_dir == "/var/lib/pgsql/#{version}/data"
+    template "/etc/systemd/system/postgresql-#{version}.service" do
+      source "postgresql.service.erb"
+      mode "0644"
+    end
+  end
+else
+  template "/etc/sysconfig/pgsql/#{node['postgresql']['server']['service_name']}" do
+    source "pgsql.sysconfig.erb"
+    mode "0644"
+    notifies :restart, "service[postgresql]", :delayed
+  end
 end
 
 unless platform_family?("suse")
-
-  execute "/sbin/service #{node['postgresql']['server']['service_name']} initdb #{node['postgresql']['initdb_locale']}" do
+  setup_command = if systemd?
+                    systemd_initdb_cmd
+                  else
+                    sysinit_initdb_cmd
+                  end
+  execute setup_command do
     not_if { ::FileTest.exist?(File.join(node['postgresql']['dir'], "PG_VERSION")) }
   end
-
 end
 
 service "postgresql" do
