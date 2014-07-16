@@ -102,11 +102,12 @@ if node['postgresql']['config']['archive_mode'] && node['postgresql']['wal_e']['
   bb_cron = node['postgresql']['wal_e']['base_backup']
   if bb_cron
     
-    # The cron command always contains the following.
-    cron_cmd = "/usr/bin/envdir #{node['postgresql']['wal_e']['env_dir']} /usr/local/bin/wal-e backup-push #{node['postgresql']['config']['data_directory']}"
-    
-    # Optionally prepend the flock command if it is set.
-    cron_cmd.insert(0, "#{bb_cron['flock']} ") if bb_cron['flock']
+    cron_cmd = [
+      bb_cron['flock_cmd'],   # This can be empty
+      bb_cron['timeout_cmd'], # This can be empty
+      # The cron command always contains the following.
+      "/usr/bin/envdir #{node['postgresql']['wal_e']['env_dir']} /usr/local/bin/wal-e backup-push #{node['postgresql']['config']['data_directory']}"
+    ].join(' ')
 
     # If we want to log this, ensure the log dir exists.
     if bb_cron['log_path']
