@@ -107,7 +107,7 @@ if node['postgresql']['config']['archive_mode'] && node['postgresql']['wal_e']['
       bb_cron['timeout_cmd'], # This can be empty
       # The cron command always contains the following.
       "/usr/bin/envdir #{node['postgresql']['wal_e']['env_dir']} /usr/local/bin/wal-e backup-push #{node['postgresql']['config']['data_directory']}"
-    ].join(' ')
+    ].join(' ').strip
 
     # If we want to log this, ensure the log dir exists.
     if bb_cron['log_path']
