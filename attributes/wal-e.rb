@@ -27,7 +27,8 @@ default['postgresql']['wal_e'] = {
     month: '*',
     weekday: '1',
     log_path: '/var/log/wal-e',
-    flock: 'flock -x -n /tmp/wal-e_base_backup.lck'
+    flock_cmd: 'flock -x -n /tmp/wal-e_base_backup.lck',
+    timeout_cmd: 'timeout --preserve-status -k 5 2h'
   },
   user: 'postgres',
   group: 'postgres',
