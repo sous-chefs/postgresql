@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: postgresql
-# Recipe:: server
+# Recipe:: server_redhat
 #
 # Author:: Joshua Timberman (<joshua@opscode.com>)
 # Author:: Lamont Granquist (<lamont@opscode.com>)
@@ -28,39 +28,19 @@ data_dir = node['postgresql']['dir']
 
 # Create a group and user like the package will.
 # Otherwise the templates fail.
+create_rpm_user_and_group
+create_data_dir
 
-group "postgres" do
-  gid 26
-end
-
-user "postgres" do
-  shell "/bin/bash"
-  comment "PostgreSQL Server"
-  home "/var/lib/pgsql"
-  gid "postgres"
-  system true
-  uid 26
-  supports :manage_home => false
-end
-
-directory data_dir do
-  owner "postgres"
-  group "postgres"
-  recursive true
-  action :create
-end
-
-node['postgresql']['server']['packages'].each do |pg_pack|
-
-  package pg_pack
-
-end
+install_server_packages
 
 if systemd?
   unless data_dir == "/var/lib/pgsql/#{version}/data"
-    template "/etc/systemd/system/postgresql-#{version}.service" do
+    path = 'postgresql'
+    path << "-#{version}" if node['postgresql']['enable_pgdg_yum']
+    template "/etc/systemd/system/#{path}.service" do
       source "postgresql.service.erb"
       mode "0644"
+      variables path: path
     end
   end
 else
@@ -71,19 +51,11 @@ else
   end
 end
 
-unless platform_family?("suse")
-  setup_command = if systemd?
-                    systemd_initdb_cmd
-                  else
-                    sysinit_initdb_cmd
-                  end
-  execute setup_command do
-    not_if { ::FileTest.exist?(File.join(node['postgresql']['dir'], "PG_VERSION")) }
-  end
-end
-
-service "postgresql" do
-  service_name node['postgresql']['server']['service_name']
-  supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
+setup_command = if systemd?
+                  systemd_initdb_cmd
+                else
+                  sysinit_initdb_cmd
+                end
+execute setup_command do
+  not_if { ::FileTest.exist?(File.join(data_dir, "PG_VERSION")) }
 end

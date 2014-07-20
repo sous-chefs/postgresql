@@ -1,3 +1,3 @@
-.include /lib/systemd/system/postgresql-<%= node['postgresql']['version'] %>.service
+.include /lib/systemd/system/<%= @path %>.service
 [Service]
 Environment=PGDATA=<%= node['postgresql']['dir'] %>

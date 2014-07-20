@@ -384,17 +384,48 @@ module Opscode
 
     def systemd_initdb_cmd
       cmd = if node['postgresql']['enable_pgdg_yum']
-        version = node['postgresql']['version']
-        version_str = version.split('.').join
-        "/usr/pgsql-#{version}/bin/postgresql#{version_str}-setup"
-      else
-        '/usr/bin/postgresql-setup'
-      end
+              version = node['postgresql']['version']
+              version_str = version.split('.').join
+              "/usr/pgsql-#{version}/bin/postgresql#{version_str}-setup"
+            else
+              '/usr/bin/postgresql-setup'
+            end
       "#{cmd} initdb"
     end
 
     def sysinit_initdb_cmd
       "/sbin/service #{node['postgresql']['server']['service_name']} initdb #{node['postgresql']['initdb_locale']}"
+    end
+
+    def install_server_packages
+      node['postgresql']['server']['packages'].each do |pg_pack|
+        package pg_pack
+      end
+    end
+
+    def create_rpm_user_and_group
+      group "postgres" do
+        gid 26
+      end
+
+      user "postgres" do
+        shell "/bin/bash"
+        comment "PostgreSQL Server"
+        home "/var/lib/pgsql"
+        gid "postgres"
+        system true
+        uid 26
+        supports :manage_home => false
+      end
+    end
+
+    def create_data_dir
+      directory node['postgresql']['dir'] do
+        owner "postgres"
+        group "postgres"
+        recursive true
+        action :create
+      end
     end
 
 # End the Opscode::PostgresqlHelpers module
