@@ -384,12 +384,12 @@ module Opscode
 
     def systemd_initdb_cmd
       cmd = if node['postgresql']['enable_pgdg_yum']
-        version = node['postgresql']['version']
-        version_str = version.split('.').join
-        "/usr/pgsql-#{version}/bin/postgresql#{version_str}-setup"
-      else
-        '/usr/bin/postgresql-setup'
-      end
+              version = node['postgresql']['version']
+              version_str = version.split('.').join
+              "/usr/pgsql-#{version}/bin/postgresql#{version_str}-setup"
+            else
+              '/usr/bin/postgresql-setup'
+            end
       "#{cmd} initdb"
     end
 
