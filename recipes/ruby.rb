@@ -56,7 +56,7 @@ rescue LoadError
 
   begin
     chef_gem "pg"
-  rescue Gem::Installer::ExtensionBuildError => e
+  rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
     # Are we an omnibus install?
     raise if RbConfig.ruby.scan(%r{(chef|opscode)}).empty?
     # Still here, must be omnibus. Lets make this thing install!
