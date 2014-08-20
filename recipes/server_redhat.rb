@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: postgresql
-# Recipe:: server
+# Recipe:: server_redhat
 #
 # Author:: Joshua Timberman (<joshua@opscode.com>)
 # Author:: Lamont Granquist (<lamont@opscode.com>)
@@ -21,52 +21,41 @@
 
 include_recipe "postgresql::client"
 
+::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
+
+version = node['postgresql']['version']
+data_dir = node['postgresql']['dir']
+
 # Create a group and user like the package will.
 # Otherwise the templates fail.
+create_rpm_user_and_group
+create_data_dir
 
-group "postgres" do
-  gid 26
-end
+install_server_packages
 
-user "postgres" do
-  shell "/bin/bash"
-  comment "PostgreSQL Server"
-  home "/var/lib/pgsql"
-  gid "postgres"
-  system true
-  uid 26
-  supports :manage_home => false
-end
-
-directory node['postgresql']['dir'] do
-  owner "postgres"
-  group "postgres"
-  recursive true
-  action :create
-end
-
-node['postgresql']['server']['packages'].each do |pg_pack|
-
-  package pg_pack
-
-end
-
-template "/etc/sysconfig/pgsql/#{node['postgresql']['server']['service_name']}" do
-  source "pgsql.sysconfig.erb"
-  mode "0644"
-  notifies :restart, "service[postgresql]", :delayed
-end
-
-unless platform_family?("suse")
-
-  execute "/sbin/service #{node['postgresql']['server']['service_name']} initdb #{node['postgresql']['initdb_locale']}" do
-    not_if { ::FileTest.exist?(File.join(node['postgresql']['dir'], "PG_VERSION")) }
+if systemd?
+  unless data_dir == "/var/lib/pgsql/#{version}/data"
+    path = 'postgresql'
+    path << "-#{version}" if node['postgresql']['enable_pgdg_yum']
+    template "/etc/systemd/system/#{path}.service" do
+      source "postgresql.service.erb"
+      mode "0644"
+      variables path: path
+    end
   end
-
+else
+  template "/etc/sysconfig/pgsql/#{node['postgresql']['server']['service_name']}" do
+    source "pgsql.sysconfig.erb"
+    mode "0644"
+    notifies :restart, "service[postgresql]", :delayed
+  end
 end
 
-service "postgresql" do
-  service_name node['postgresql']['server']['service_name']
-  supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
+setup_command = if systemd?
+                  systemd_initdb_cmd
+                else
+                  sysinit_initdb_cmd
+                end
+execute setup_command do
+  not_if { ::FileTest.exist?(File.join(data_dir, "PG_VERSION")) }
 end

@@ -59,7 +59,7 @@ when "ubuntu"
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   case
-  when (node['platform_version'].to_f <= 10.04) && (! node['postgresql']['enable_pgdg_apt'])
+  when (node['platform_version'].to_f <= 10.04) && (!node['postgresql']['enable_pgdg_apt'])
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
   else
     default['postgresql']['server']['service_name'] = "postgresql"
@@ -124,11 +124,29 @@ when "redhat", "centos", "scientific", "oracle"
 when "suse"
 
   if node['platform_version'].to_f <= 11.1
-    default['postgresql']['version'] = "8.3"
+    default['postgresql']['client']['packages'] = %w{postgresql-devel}
+    default['postgresql']['server']['packages'] = %w{postgresql-server}
+    default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   else
-    default['postgresql']['version'] = "9.0"
+    default['postgresql']['version'] = "9.1"
+    default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
+    default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
+    default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
   end
 
+  default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['server']['service_name'] = "postgresql"
+
+when "opensuse"
+  platform_version = node['platform_version'].to_f
+  default['postgresql']['version'] = case
+  when platform_version <= 11.4
+    "9.0"
+  when platform_version <= 12.2
+    "9.1"
+  else
+    "9.2"
+  end
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
@@ -228,6 +246,9 @@ default['postgresql']['initdb_locale'] = nil
 default['postgresql']['pgdg']['repo_rpm_url'] = {
   "9.3" => {
     "centos" => {
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/pgdg-centos93-9.3-1.noarch.rpm"
+      },
       "6" => {
         "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-centos93-9.3-1.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm"
@@ -238,6 +259,9 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       }
     },
     "redhat" => {
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/pgdg-redhat93-9.3-2.noarch.rpm"
+      },
       "6" => {
         "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-redhat93-9.3-1.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm"
@@ -248,16 +272,18 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       }
     },
     "oracle" => {
-      "6" => {
-        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-redhat93-9.3-1.noarch.rpm",
-        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm"
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/pgdg-oraclelinux93-9.3-1.noarch.rpm"
       },
-      "5" => {
-        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-5-i386/pgdg-redhat93-9.3-1.noarch.rpm",
-        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-5-x86_64/pgdg-redhat93-9.3-1.noarch.rpm"
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-oraclelinux93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-oraclelinux93-9.3-1.noarch.rpm"
       }
     },
     "scientific" => {
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/pgdg-sl93-9.3-1.noarch.rpm"
+      },
       "6" => {
         "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-sl93-9.3-1.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-sl93-9.3-1.noarch.rpm"
@@ -268,7 +294,12 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       }
     },
     "fedora" => {
+      "20" => {
+        "i386" => "http://yum.postgresql.org/9.3/fedora/fedora-20-i386/pgdg-fedora93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-20-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
+      },
       "19" => {
+        "i386" => "http://yum.postgresql.org/9.3/fedora/fedora-19-i386/pgdg-fedora93-9.3-1.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-19-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
       },
       "18" => {

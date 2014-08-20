@@ -51,8 +51,10 @@ end
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
 case node['platform_family']
-when "rhel", "fedora", "suse"
+when "rhel", "fedora"
   include_recipe "postgresql::server_redhat"
+when "suse", "opensuse"
+  include_recipe "postgresql::server_suse"
 when "debian"
   include_recipe "postgresql::server_debian"
 end
@@ -73,6 +75,12 @@ template "#{node['postgresql']['dir']}/pg_hba.conf" do
   group "postgres"
   mode 00600
   notifies change_notify, 'service[postgresql]', :immediately
+end
+
+service "postgresql" do
+  service_name node['postgresql']['server']['service_name']
+  supports :restart => true, :status => true, :reload => true
+  action [:enable, :start]
 end
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
