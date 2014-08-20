@@ -2,6 +2,10 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.2
+------
+- Changed the Gem::Installer::ExtensionBuildError to a Mixlib::ShellOut::ShellCommandFailed
+
 v3.4.1
 ------
 - Added support for Ubuntu 14.04 and Postgresql 9.3
