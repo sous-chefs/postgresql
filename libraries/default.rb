@@ -389,6 +389,7 @@ def versioned_package(pg_pack)
     pg_pack.each_pair do |p, v|
       package p do
         version v
+        allow_downgrade true
       end
     end
   else
