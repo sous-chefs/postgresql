@@ -127,7 +127,7 @@ if node['postgresql']['config']['archive_mode'] && node['postgresql']['wal_e']['
       end
 
       # Finally, append a redirect to the log to the end of the cron command.
-      cron_cmd += " > #{bb_cron['log_path']}/wal_e-base-backup.log 2>&1"
+      cron_cmd += " >> #{bb_cron['log_path']}/wal_e-base-backup.log 2>&1"
     end
 
     cron "wal_e_base_backup" do
