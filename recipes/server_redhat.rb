@@ -47,7 +47,7 @@ end
 
 node['postgresql']['server']['packages'].each do |pg_pack|
 
-  package pg_pack
+  versioned_package pg_pack
 
 end
 
