@@ -371,6 +371,19 @@ def pgdgrepo_rpm_info
   return [ repo_rpm_url, repo_rpm_filename, repo_rpm_package ]
 end
 
+######################################
+# Function to install specified packages
+# with possibility to specify exact package versions.
+# Example:
+#   "postgresql" => {
+#     "client" => {
+#       "packages" => [
+#         { "postgresql93"         => "9.3.4-1PGDG.rhel6" },
+#         { "postgresql93-libs"    => "9.3.4-1PGDG.rhel6" },
+#         { "postgresql93-devel"   => "9.3.4-1PGDG.rhel6" }
+#       ]
+#     }
+#   }
 def versioned_package(pg_pack)
   if pg_pack.is_a? Hash
     pg_pack.each_pair do |p, v|
