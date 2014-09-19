@@ -107,15 +107,15 @@ con =
 }.fetch(db_type)
 
 if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('max_connections'))
-  max_connections = node['postgresql']['config_pgtune']['max_connections']
-  if (max_connections.match(/\A[1-9]\d*\Z/) == nil)
+  max_connections = node['postgresql']['config_pgtune']['max_connections'].to_i
+  if max_connections <= 0
     Chef::Application.fatal!([
         "Bad value (#{max_connections})",
         "for node['postgresql']['config_pgtune']['max_connections'] attribute.",
         "Valid values are non-zero integers only."
       ].join(' '))
   end
-  con = max_connections.to_i
+  con = max_connections
 end
 
 # Parse out total_memory option, or use value detected by Ohai.
