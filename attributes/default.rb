@@ -231,6 +231,16 @@ default['postgresql']['initdb_locale'] = nil
 #   node['kernel']['machine']            e.g., "i386" or "x86_64"
 default['postgresql']['pgdg']['repo_rpm_url'] = {
   "9.3" => {
+    "amazon" => {
+      "2014" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-redhat93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm"
+      },
+      "2013" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-redhat93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm"
+      }
+    },
     "centos" => {
       "6" => {
         "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-centos93-9.3-1.noarch.rpm",
