@@ -2,6 +2,15 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.4
+------
+- fix packages on SLES11SP2 and higher
+- [COOK-4737] Add flag to control database user password behavior
+- add amazon platform rpm info
+- Fix issues with the server_redhat recipe on Fedora 16 and later
+- attribute typo correction
+- correctly check and set max_connections to an integer
+
 v3.4.2
 ------
 - Changed the Gem::Installer::ExtensionBuildError to a Mixlib::ShellOut::ShellCommandFailed

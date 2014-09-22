@@ -89,4 +89,5 @@ bash "assign-postgres-password" do
 echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql -p #{node['postgresql']['config']['port']}
   EOH
   action :run
+  only_if { node['postgresql']['assign_postgres_password'] }
 end
