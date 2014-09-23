@@ -44,12 +44,18 @@ The following attributes are set based on the platform, see the
 
 * `node['postgresql']['client']['packages']` - An array of package names
   that should be installed on "client" systems.
+  It's also possible to specify `{ "package" => "version" }` hashes instead of
+  package names to have specific package version installed
 * `node['postgresql']['server']['packages']` - An array of package names
   that should be installed on "server" systems.
+  It's also possible to specify `{ "package" => "version" }` hashes instead of
+  package names to have specific package version installed
 * `node['postgresql']['server']['config_change_notify']` - Type of
   notification triggered when a config file changes.
 * `node['postgresql']['contrib']['packages']` - An array of package names
   that could be installed on "server" systems for useful sysadmin tools.
+  It's also possible to specify `{ "package" => "version" }` hashes instead of
+  package names to have specific package version installed
 
 * `node['postgresql']['enable_pgdg_apt']` - Whether to enable the apt repo
   by the PostgreSQL Global Development Group, which contains newer versions

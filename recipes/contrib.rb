@@ -21,7 +21,7 @@ include_recipe "postgresql::server"
 # as specified by the node attributes.
 node['postgresql']['contrib']['packages'].each do |pg_pack|
 
-  package pg_pack
+  versioned_package pg_pack
 
 end
 
