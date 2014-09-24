@@ -23,6 +23,7 @@ describe 'postgresql::apt_pgdg_postgresql' do
     skip unless %w{debian}.include?(node['platform_family'])
     file("/etc/apt/sources.list.d/pitti-postgresql-ppa").wont_exist
   end
+
   it 'creates the PGDG apt sources.list' do
     skip unless %w{debian}.include?(node['platform_family'])
     file("/etc/apt/sources.list.d/apt.postgresql.org.list").must_exist

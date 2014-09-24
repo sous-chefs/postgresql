@@ -60,7 +60,9 @@ when "ubuntu"
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   case
-  when (node['platform_version'].to_f <= 10.04) && (! node['postgresql']['enable_pgdg_apt'])
+  when node['postgresql']['enable_pgdg_apt']
+    default['postgresql']['server']['service_name'] = "postgresql"
+  when node['platform_version'].to_f <= 10.04
     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
   else
     default['postgresql']['server']['service_name'] = "postgresql"

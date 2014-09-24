@@ -340,14 +340,10 @@ loads its shared library, which can be done with this node attribute:
 apt\_pgdg\_postgresql
 ----------------------
 
-Enables the PostgreSQL Global Development Group yum repository
-maintained by Devrim G&#252;nd&#252;z for updated PostgreSQL packages.
-(The PGDG is the groups that develops PostgreSQL.)
+Enables the PostgreSQL Global Development Group [apt repository](http://apt.postgresql.org/)
+for updated PostgreSQL packages. (The PGDG is the group that develops PostgreSQL.)
 Automatically included if the `node['postgresql']['enable_pgdg_apt']`
-attribute is true. Also set the
-`node['postgresql']['client']['packages']` and
-`node['postgresql']['server]['packages']` to the list of packages to
-use from this repository, and set the `node['postgresql']['version']`
+attribute is true. Also set the `node['postgresql']['version']`
 attribute to the version to use (e.g., "9.2").
 
 yum\_pgdg\_postgresql
