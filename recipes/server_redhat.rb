@@ -44,6 +44,11 @@ if systemd?
     end
   end
 else
+  directory "/etc/sysconfig/pgsql" do
+    mode "0644"
+    recursive true
+    action :create
+  end
   template "/etc/sysconfig/pgsql/#{svc_name}" do
     source "pgsql.sysconfig.erb"
     mode "0644"
