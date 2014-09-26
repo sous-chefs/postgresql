@@ -61,6 +61,12 @@ end
 
 unless platform_family?("fedora") and node['platform_version'].to_i >= 16
   
+  directory "/etc/sysconfig/pgsql" do
+    mode "0644"
+    recursive true
+    action :create
+  end
+
   template "/etc/sysconfig/pgsql/#{svc_name}" do
     source "pgsql.sysconfig.erb"
     mode "0644"
