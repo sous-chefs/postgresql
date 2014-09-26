@@ -60,7 +60,7 @@ end
 # Use the postgresql-setup script instead.
 
 unless platform_family?("fedora") and node['platform_version'].to_i >= 16
-  
+
   template "/etc/sysconfig/pgsql/#{svc_name}" do
     source "pgsql.sysconfig.erb"
     mode "0644"
@@ -75,16 +75,10 @@ if platform_family?("fedora") and node['platform_version'].to_i >= 16
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
-else !platform_family?("suse") 
+else !platform_family?("suse")
 
   execute "/sbin/service #{svc_name} initdb #{initdb_locale}" do
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
-end
-
-service "postgresql" do
-  service_name svc_name
-  supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
 end
