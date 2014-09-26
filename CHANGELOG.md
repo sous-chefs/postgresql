@@ -2,6 +2,12 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.6
+------
+- Don't include the pgdg recipes on the wrong machine types
+- Add missing dir /etc/sysconfig/pgsl for centos7
+- CentOS 7 package support
+
 v3.4.4
 ------
 - fix packages on SLES11SP2 and higher
