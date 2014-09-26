@@ -242,6 +242,9 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       }
     },
     "centos" => {
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/pgdg-centos93-9.3-1.noarch.rpm"
+      },
       "6" => {
         "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-centos93-9.3-1.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm"
