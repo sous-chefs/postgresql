@@ -2,6 +2,11 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.8
+------
+- Correct scenario where work_mem could be set to 0 if con is greater than mem Issue #185
+- Add Centos7 suites to kitchen configuration
+
 v3.4.6
 ------
 - Don't include the pgdg recipes on the wrong machine types
