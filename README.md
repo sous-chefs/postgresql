@@ -444,6 +444,7 @@ License and Author
 - Author:: Lamont Granquist (<lamont@opscode.com>)
 - Author:: Chris Roberts (<chrisroberts.code@gmail.com>)
 - Author:: David Crane (<davidc@donorschoose.org>)
+- Author:: Aaron Baer (<aaron@hw-ops.com>)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
