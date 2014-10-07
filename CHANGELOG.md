@@ -2,6 +2,10 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.10
+-------
+- correct conditional error created in 3.4.8.
+
 v3.4.8
 ------
 - Correct scenario where work_mem could be set to 0 if con is greater than mem Issue #185
