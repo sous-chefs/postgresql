@@ -13,7 +13,7 @@ recipe            "postgresql::server_redhat", "Installs postgresql server packa
 recipe            "postgresql::server_debian", "Installs postgresql server packages, debian family style"
 
 
-supports ubuntu, "< 14.04"
+supports "ubuntu", "< 14.04"
 
 %w{debian fedora suse amazon}.each do |os|
   supports os
