@@ -2,10 +2,6 @@
 # Cookbook Name:: postgresql
 # Recipe:: client
 #
-# Author:: Joshua Timberman (<joshua@opscode.com>)
-# Author:: Lamont Granquist (<lamont@opscode.com>)
-# Copyright 2009-2011 Opscode, Inc.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -19,20 +15,18 @@
 # limitations under the License.
 #
 
-if platform_family?('ubuntu', 'debian') && node['postgresql']['version'].to_f > 9.3
+if platform_family?('debian') && node['postgresql']['version'].to_f > 9.3
   node.default['postgresql']['enable_pgdg_apt'] = true
 end
 
-if(node['postgresql']['enable_pgdg_apt'])
+if(node['postgresql']['enable_pgdg_apt']) and platform_family?('debian')
   include_recipe 'postgresql::apt_pgdg_postgresql'
 end
 
-if(node['postgresql']['enable_pgdg_yum'])
+if(node['postgresql']['enable_pgdg_yum']) and platform_family?('rhel')
   include_recipe 'postgresql::yum_pgdg_postgresql'
 end
 
 node['postgresql']['client']['packages'].each do |pg_pack|
-
   package pg_pack
-
 end

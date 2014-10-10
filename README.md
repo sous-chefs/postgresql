@@ -109,7 +109,7 @@ is. So for example:
     node.default['postgresql']['config']['logging_collector'] = true
     node.default['postgresql']['config']['datestyle'] = 'iso, mdy'
     node.default['postgresql']['config']['ident_file'] = nil
-    node.default['postgresql']['config']['port] = 5432
+    node.default['postgresql']['config']['port'] = 5432
 
 Will result in the following config lines:
 
@@ -444,6 +444,7 @@ License and Author
 - Author:: Lamont Granquist (<lamont@opscode.com>)
 - Author:: Chris Roberts (<chrisroberts.code@gmail.com>)
 - Author:: David Crane (<davidc@donorschoose.org>)
+- Author:: Aaron Baer (<aaron@hw-ops.com>)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -2,10 +2,6 @@
 # Cookbook Name:: postgresql
 # Recipe:: server
 #
-# Author:: Joshua Timberman (<joshua@opscode.com>)
-# Author:: Lamont Granquist (<lamont@opscode.com>)
-# Copyright 2009-2011, Opscode, Inc.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -88,5 +84,7 @@ bash "assign-postgres-password" do
   code <<-EOH
   echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql -p #{node['postgresql']['config']['port']}
   EOH
+  action :run
   not_if "ls #{node['postgresql']['config']['data_directory']}/recovery.conf"
+  only_if { node['postgresql']['assign_postgres_password'] }
 end
