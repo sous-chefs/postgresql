@@ -23,6 +23,32 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
+directory node['postgresql']['config']['data_directory'] do
+  recursive true
+  owner 'postgres'
+  group 'postgres'
+  mode '0700'
+end
+
+ruby_block "creating initial data directory" do
+  block do
+    FileUtils.cp_r(Dir["/var/lib/postgresql/#{node['postgresql']['version']}/main/*"], node['postgresql']['config']['data_directory'])
+  end
+  only_if { Dir["#{node['postgresql']['config']['data_directory']}/*"].empty? }
+end
+
+execute "chown data dir to postgres" do
+  command "chown -R postgres:postgres #{node['postgresql']['config']['data_directory']}"
+  user "root"
+  action :run
+end
+
+execute "chmod data dir to postgres" do
+  command "chmod -R 700 #{node['postgresql']['config']['data_directory']}"
+  user "root"
+  action :run
+end
+
 service "postgresql" do
   service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
