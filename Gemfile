@@ -3,6 +3,10 @@ source 'https://rubygems.org'
 gem 'emeril', :group => :release
 gem 'rake'
 
-gem 'test-kitchen'
-gem 'kitchen-vagrant'
-gem 'berkshelf'
+group :integration do
+  gem 'test-kitchen'
+  gem 'kitchen-vagrant'
+  gem 'kitchen-docker'
+end
+gem 'chefspec'
+gem 'librarian-chef'

@@ -1,0 +1,6 @@
+site "https://supermarket.getchef.com/api/v1"
+
+cookbook 'postgresql', :path => '.'
+
+cookbook 'build-essential'
+cookbook 'minitest-handler'
