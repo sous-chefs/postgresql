@@ -28,9 +28,12 @@ describe 'postgresql::default' do
           end.converge(described_recipe)
         }
 
-        it 'runs no tests' do
-          expect(chef_run)
+        it 'installs the postgresql client packages' do
+          chef_run.node['postgresql']['client']['packages'].each do |pkg|
+            expect(chef_run).to install_package(pkg)
+          end
         end
+
       end
     end
   end
