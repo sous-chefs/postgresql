@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 
+include_recipe 'postgresql::config_version'
 include_recipe "postgresql::client"
 
 svc_name = node['postgresql']['server']['service_name']
