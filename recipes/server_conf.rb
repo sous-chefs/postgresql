@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: postgresql
-# Recipe:: server_debian
+# Recipe:: server
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,18 +15,20 @@
 # limitations under the License.
 #
 
-include_recipe "postgresql::client"
+change_notify = node['postgresql']['server']['config_change_notify']
 
-::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
+template "#{node['postgresql']['dir']}/postgresql.conf" do
+  source "postgresql.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 0600
+  notifies change_notify, 'service[postgresql]', :delayed
+end
 
-install_server_packages
-
-create_data_dir
-
-include_recipe "postgresql::server_conf"
-
-service "postgresql" do
-  service_name node['postgresql']['server']['service_name']
-  supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
+template "#{node['postgresql']['dir']}/pg_hba.conf" do
+  source "pg_hba.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 00600
+  notifies change_notify, 'service[postgresql]', :delayed
 end
