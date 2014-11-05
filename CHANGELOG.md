@@ -6,6 +6,7 @@ v3.4.12
 ------
 - Create configuration templates at the appropriate time
 - If template is updated restart service changed to default of :delayed
+- Fix SSL for PostgreSQL versions < 9.2
 
 v3.4.10
 -------
