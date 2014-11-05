@@ -178,6 +178,7 @@ when 'debian'
   default['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
   default['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key'if node['postgresql']['version'].to_f >= 9.2
 when 'rhel', 'fedora', 'suse'
+  default['postgresql']['config']['data_directory'] = node['postgresql']['dir']
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432
   default['postgresql']['config']['max_connections'] = 100

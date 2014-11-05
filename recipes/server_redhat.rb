@@ -56,7 +56,7 @@ end
 # Use the postgresql-setup script instead.
 
 unless platform_family?("fedora") and node['platform_version'].to_i >= 16
-  
+
   directory "/etc/sysconfig/pgsql" do
     mode "0644"
     recursive true
@@ -84,6 +84,8 @@ else !platform_family?("suse")
   end
 
 end
+
+include_recipe "postgresql::server_conf"
 
 service "postgresql" do
   service_name svc_name

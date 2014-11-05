@@ -89,11 +89,12 @@ db_type = 'mixed'
 if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('db_type'))
   db_type = node['postgresql']['config_pgtune']['db_type']
   if (!(["dw","oltp","web","mixed","desktop"].include?(db_type)))
-    Chef::Application.fatal!([
+    Chef::Log.fatal([
         "Bad value (#{db_type})",
         "for node['postgresql']['config_pgtune']['db_type'] attribute.",
         "Valid values are one of dw, oltp, web, mixed, desktop."
       ].join(' '))
+    raise
   end
 end
 
@@ -109,11 +110,12 @@ con =
 if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('max_connections'))
   max_connections = node['postgresql']['config_pgtune']['max_connections'].to_i
   if max_connections <= 0
-    Chef::Application.fatal!([
+    Chef::Log.fatal([
         "Bad value (#{max_connections})",
         "for node['postgresql']['config_pgtune']['max_connections'] attribute.",
         "Valid values are non-zero integers only."
       ].join(' '))
+    raise
   end
   con = max_connections
 end

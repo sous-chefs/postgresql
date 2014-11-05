@@ -28,10 +28,11 @@ if Chef::Config[:solo]
   end.map { |attr| "node['postgresql']['password']['#{attr}']" }
 
   if !missing_attrs.empty?
-    Chef::Application.fatal!([
+    Chef::Log.fatal([
         "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
         "For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note"
       ].join(' '))
+    raise
   end
 else
   # TODO: The "secure_password" is randomly generated plain text, so it
@@ -53,22 +54,18 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
-change_notify = node['postgresql']['server']['config_change_notify']
-
-template "#{node['postgresql']['dir']}/postgresql.conf" do
-  source "postgresql.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 0600
-  notifies change_notify, 'service[postgresql]', :immediately
+# Versions prior to 9.2 do not have a config file option to set the SSL
+# key and cert path, and instead expect them to be in a specific location.
+if node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_cert_file')
+  link ::File.join(node['postgresql']['config']['data_directory'], 'server.crt') do
+    to node['postgresql']['config']['ssl_cert_file']
+  end
 end
 
-template "#{node['postgresql']['dir']}/pg_hba.conf" do
-  source "pg_hba.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 00600
-  notifies change_notify, 'service[postgresql]', :immediately
+if node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_key_file')
+  link ::File.join(node['postgresql']['config']['data_directory'], 'server.key') do
+    to node['postgresql']['config']['ssl_key_file']
+  end
 end
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
