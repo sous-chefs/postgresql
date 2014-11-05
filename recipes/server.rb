@@ -45,24 +45,6 @@ else
   node.save
 end
 
-change_notify = node['postgresql']['server']['config_change_notify']
-
-template "#{node['postgresql']['dir']}/postgresql.conf" do
-  source "postgresql.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 0600
-  notifies change_notify, 'service[postgresql]', :immediately
-end
-
-template "#{node['postgresql']['dir']}/pg_hba.conf" do
-  source "pg_hba.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 00600
-  notifies change_notify, 'service[postgresql]', :immediately
-end
-
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
 case node['platform_family']
