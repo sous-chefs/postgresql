@@ -15,18 +15,20 @@
 # limitations under the License.
 #
 
-include_recipe "postgresql::client"
+change_notify = node['postgresql']['server']['config_change_notify']
 
-node['postgresql']['server']['packages'].each do |pg_pack|
-
-  package pg_pack
-
+template "#{node['postgresql']['dir']}/postgresql.conf" do
+  source "postgresql.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 0600
+  notifies change_notify, 'service[postgresql]', :delayed
 end
 
-include_recipe "postgresql::server_conf"
-
-service "postgresql" do
-  service_name node['postgresql']['server']['service_name']
-  supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
+template "#{node['postgresql']['dir']}/pg_hba.conf" do
+  source "pg_hba.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 00600
+  notifies change_notify, 'service[postgresql]', :delayed
 end
