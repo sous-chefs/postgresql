@@ -15,7 +15,7 @@ Requirements
 
 Tested on:
 
-* Ubuntu 10.04, 11.10, 12.04, 14.04
+* Ubuntu 10.04, 11.10, 12.04, 14.04, 14.10
 * Red Hat 6.1, Scientific 6.1, CentOS 6.3
 
 ## Cookbooks
