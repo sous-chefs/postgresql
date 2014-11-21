@@ -38,12 +38,24 @@ describe 'postgresql::server' do
           end
         end
 
-        it 'runs the postgresql service' do
+        it 'configures postgresql.conf' do
           pgsql_conf = chef_run.template(::File.join(chef_run.node['postgresql']['dir'], 'postgresql.conf'))
-          hba_conf = chef_run.template(::File.join(chef_run.node['postgresql']['dir'], 'pg_hba.conf'))
+          expect(chef_run).to create_template(::File.join(chef_run.node['postgresql']['dir'], 'postgresql.conf')).with(
+            user:   'postgres',
+            group:  'postgres',
+            mode:   0600
+          )
+          expect(pgsql_conf).to notify('service[postgresql]').to(chef_run.node['postgresql']['server']['config_change_notify']).immediately
+        end
 
-          expect(pgsql_conf).to notify('service[postgresql]').to(:restart).immediately
-          expect(hba_conf).to notify('service[postgresql]').to(:restart).immediately
+        it 'configures pg_hba.conf' do
+          hba_conf = chef_run.template(::File.join(chef_run.node['postgresql']['dir'], 'pg_hba.conf'))
+          expect(chef_run).to create_template(::File.join(chef_run.node['postgresql']['dir'], 'pg_hba.conf')).with(
+            user:   'postgres',
+            group:  'postgres',
+            mode:   00600
+          )
+          expect(hba_conf).to notify('service[postgresql]').to(chef_run.node['postgresql']['server']['config_change_notify']).immediately
         end
 
         it 'symlinks the ssl_cert_file and ssl_key_file when the postgresql version is < 9.2' do
@@ -64,6 +76,10 @@ describe 'postgresql::server' do
             expect(chef_run).to render_file("#{::File.join(chef_run.node['postgresql']['dir'], 'postgresql.conf')}").with_content(/^ssl_cert_file/)
             expect(chef_run).to render_file("#{::File.join(chef_run.node['postgresql']['dir'], 'postgresql.conf')}").with_content(/^ssl_key_file/)
           end
+        end
+
+        it 'sets the password for the postgres role' do
+          expect(chef_run).to run_bash('assign-postgres-password').with(:user => 'postgres')
         end
 
       end
