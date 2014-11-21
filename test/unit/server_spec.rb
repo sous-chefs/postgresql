@@ -38,10 +38,13 @@ describe 'postgresql::server' do
           end
         end
 
-        # Broken test.
-        #it 'runs the postgresql service' do
-        #  expect(chef_run).to notify('service[postgresql]')
-        #end
+        it 'runs the postgresql service' do
+          pgsql_conf = chef_run.template(::File.join(chef_run.node['postgresql']['dir'], 'postgresql.conf'))
+          hba_conf = chef_run.template(::File.join(chef_run.node['postgresql']['dir'], 'pg_hba.conf'))
+
+          expect(pgsql_conf).to notify('service[postgresql]').to(:restart).immediately
+          expect(hba_conf).to notify('service[postgresql]').to(:restart).immediately
+        end
 
         it 'symlinks the ssl_cert_file and ssl_key_file when the postgresql version is < 9.2' do
           if chef_run.node['postgresql']['version'].to_f < 9.2
