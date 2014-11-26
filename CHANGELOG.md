@@ -2,6 +2,48 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.3.5
+------
+Update the pgdg apt key location
+
+v3.3.4
+------
+Testing
+
+
+v3.3.2
+------
+- Testing maintainer transfer to Heavywater with Opscode as collaborator
+
+
+v3.3.0
+------
+### Bug
+- **[COOK-3851](https://tickets.opscode.com/browse/COOK-3851)** - Postgresql: reload after config change does not pick up certain configuration changes
+- **[COOK-3611](https://tickets.opscode.com/browse/COOK-3611)** - unix_socket_directory does not exists in 9.3
+- **[COOK-2954](https://tickets.opscode.com/browse/COOK-2954)** - PostgreSQL installation ignores version attribute on CentOS >= 6
+
+
+v3.2.0
+------
+- [COOK-3717] Pgdg repositories improvements
+- [COOK-3756] Change postgresql.conf mode from 0600 to 0644
+
+
+v3.1.0
+------
+### Improvement
+- **[COOK-3685](https://tickets.opscode.com/browse/COOK-3685)** - Upgrade Repo Attributes for Postgresql 9.3
+- **[COOK-3597](https://tickets.opscode.com/browse/COOK-3597)** - Fix implementation of `initdb_locale` attribute for RHEL
+- **[COOK-3566](https://tickets.opscode.com/browse/COOK-3566)** - Give the user's rules more priority than the default ones in pg_hba
+- **[COOK-3553](https://tickets.opscode.com/browse/COOK-3553)** - Remove automatic `apt-get update`
+
+### Bug
+- **[COOK-3611](https://tickets.opscode.com/browse/COOK-3611)** - Remove `unix_socket_directory` (it does not exists in 9.3)
+- **[COOK-3599](https://tickets.opscode.com/browse/COOK-3599)** - Automatically add PGDG apt repo dependency on PostgreSQL version
+- **[COOK-3555](https://tickets.opscode.com/browse/COOK-3555)** - Documentation Fix
+- **[COOK-2383](https://tickets.opscode.com/browse/COOK-2383)** - Update Postgres version in attributes
+
 
 v3.0.4
 ------

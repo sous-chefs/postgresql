@@ -17,113 +17,129 @@
 # limitations under the License.
 #
 
+default['postgresql']['enable_pgdg_apt'] = false
+default['postgresql']['server']['config_change_notify'] = :restart
+
 case node['platform']
 when "debian"
 
-  case
-  when node['platform_version'].to_f < 6.0 # All 5.X
-    default['postgresql']['version'] = "8.3"
-  when node['platform_version'].to_f < 7.0 # All 6.X
-    default['postgresql']['version'] = "8.4"
-  else
-    default['postgresql']['version'] = "9.1"
-  end
+  # case
+  # when node['platform_version'].to_f < 6.0 # All 5.X
+  #   default['postgresql']['version'] = "8.3"
+  # when node['platform_version'].to_f < 7.0 # All 6.X
+  #   default['postgresql']['version'] = "8.4"
+  # else
+  #   default['postgresql']['version'] = "9.1"
+  # end
 
-  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
-  case
-  when node['platform_version'].to_f < 6.0 # All 5.X
-    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-  else
-    default['postgresql']['server']['service_name'] = "postgresql"
-  end
+  # default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  # case
+  # when node['platform_version'].to_f < 6.0 # All 5.X
+  #   default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+  # else
+  #   default['postgresql']['server']['service_name'] = "postgresql"
+  # end
 
-  default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
-  default['postgresql']['server']['packages'] = %w{postgresql}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  # default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
+  # default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
+  # default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
 
 when "ubuntu"
 
-  case
-  when node['platform_version'].to_f <= 9.04
-    default['postgresql']['version'] = "8.3"
-  when node['platform_version'].to_f <= 11.04
-    default['postgresql']['version'] = "8.4"
-  else
-    default['postgresql']['version'] = "9.1"
-  end
+  # case
+  # when node['platform_version'].to_f <= 9.04
+  #   default['postgresql']['version'] = "8.3"
+  # when node['platform_version'].to_f <= 11.04
+  #   default['postgresql']['version'] = "8.4"
+  # else
+  #   default['postgresql']['version'] = "9.1"
+  # end
 
-  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
-  case
-  when (node['platform_version'].to_f <= 10.04) && (! node['postgresql']['enable_pgdg_apt'])
-    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-  else
-    default['postgresql']['server']['service_name'] = "postgresql"
-  end
+  # default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  # case
+  # when (node['platform_version'].to_f <= 10.04) && (! node['postgresql']['enable_pgdg_apt'])
+  #   default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+  # else
+  #   default['postgresql']['server']['service_name'] = "postgresql"
+  # end
 
-  default['postgresql']['client']['packages'] = %w{postgresql-client libpq-dev}
-  default['postgresql']['server']['packages'] = %w{postgresql}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  # default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
+  # default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
+  # default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
 
 when "fedora"
 
-  if node['platform_version'].to_f <= 12
-    default['postgresql']['version'] = "8.3"
-  else
-    default['postgresql']['version'] = "8.4"
-  end
+  # if node['platform_version'].to_f <= 12
+  #   default['postgresql']['version'] = "8.3"
+  # else
+  #   default['postgresql']['version'] = "8.4"
+  # end
 
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  default['postgresql']['server']['service_name'] = "postgresql"
+  # default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  # default['postgresql']['client']['packages'] = %w{postgresql-devel}
+  # default['postgresql']['server']['packages'] = %w{postgresql-server}
+  # default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  # default['postgresql']['server']['service_name'] = "postgresql"
 
 when "amazon"
 
-  default['postgresql']['version'] = "8.4"
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  default['postgresql']['server']['service_name'] = "postgresql"
+  # if node['platform_version'].to_f >= 2012.03
+  #   default['postgresql']['version'] = "9.0"
+  #   default['postgresql']['dir'] = "/var/lib/pgsql9/data"
+  # else
+  #   default['postgresql']['version'] = "8.4"
+  #   default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  # end
+
+  # default['postgresql']['client']['packages'] = %w{postgresql-devel}
+  # default['postgresql']['server']['packages'] = %w{postgresql-server}
+  # default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  # default['postgresql']['server']['service_name'] = "postgresql"
 
 when "redhat", "centos", "scientific", "oracle"
 
-  default['postgresql']['version'] = "8.4"
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  # default['postgresql']['version'] = "8.4"
+  # default['postgresql']['dir'] = "/var/lib/pgsql/data"
 
-  if node['platform_version'].to_f >= 6.0
-    default['postgresql']['client']['packages'] = %w{postgresql-devel}
-    default['postgresql']['server']['packages'] = %w{postgresql-server}
-    default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  else
-    default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
-    default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
-    default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
-  end
-  default['postgresql']['server']['service_name'] = "postgresql"
+  # if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] == '8.4'
+  #   default['postgresql']['client']['packages'] = %w{postgresql-devel}
+  #   default['postgresql']['server']['packages'] = %w{postgresql-server}
+  #   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  # else
+  #   default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
+  #   default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
+  #   default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
+  # end
+
+  # if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] != '8.4'
+  #    default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  #    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+  # else
+  #   default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  #   default['postgresql']['server']['service_name'] = "postgresql"
+  # end
 
 when "suse"
 
-  if node['platform_version'].to_f <= 11.1
-    default['postgresql']['version'] = "8.3"
-  else
-    default['postgresql']['version'] = "9.0"
-  end
+#   if node['platform_version'].to_f <= 11.1
+#     default['postgresql']['version'] = "8.3"
+#   else
+#     default['postgresql']['version'] = "9.0"
+#   end
 
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  default['postgresql']['server']['service_name'] = "postgresql"
+#   default['postgresql']['dir'] = "/var/lib/pgsql/data"
+#   default['postgresql']['client']['packages'] = %w{postgresql-devel}
+#   default['postgresql']['server']['packages'] = %w{postgresql-server}
+#   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+#   default['postgresql']['server']['service_name'] = "postgresql"
 
-else
-  default['postgresql']['version'] = "8.4"
-  default['postgresql']['dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
-  default['postgresql']['client']['packages'] = ["postgresql"]
-  default['postgresql']['server']['packages'] = ["postgresql"]
-  default['postgresql']['contrib']['packages'] = ["postgresql"]
-  default['postgresql']['server']['service_name'] = "postgresql"
+# else
+#   default['postgresql']['version'] = "8.4"
+#   default['postgresql']['dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
+#   default['postgresql']['client']['packages'] = ["postgresql"]
+#   default['postgresql']['server']['packages'] = ["postgresql"]
+#   default['postgresql']['contrib']['packages'] = ["postgresql"]
+#   default['postgresql']['server']['service_name'] = "postgresql"
 end
 
 # These defaults have disparity between which postgresql configuration
@@ -140,16 +156,17 @@ end
 # merge/precedence order during the Chef run.
 case node['platform_family']
 when 'debian'
-  default['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
-  default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
-  default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
-  default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
+  # default['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  # default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
+  # default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
+  # default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432
   default['postgresql']['config']['max_connections'] = 100
-  default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql'
+  # default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql' if node['postgresql']['version'].to_f < 9.3
+  # default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql' if node['postgresql']['version'].to_f >= 9.3
   default['postgresql']['config']['shared_buffers'] = '24MB'
-  default['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
+  # default['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
   default['postgresql']['config']['log_line_prefix'] = '%t '
   default['postgresql']['config']['datestyle'] = 'iso, mdy'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
@@ -181,8 +198,6 @@ default['postgresql']['pg_hba'] = [
 
 default['postgresql']['password'] = Hash.new
 
-default['postgresql']['enable_pgdg_apt'] = false
-
 case node['platform_family']
 when 'debian'
   default['postgresql']['pgdg']['release_apt_codename'] = node['lsb']['codename']
@@ -190,11 +205,13 @@ end
 
 default['postgresql']['enable_pgdg_yum'] = false
 
+default['postgresql']['initdb_locale'] = nil
+
 # The PostgreSQL RPM Building Project built repository RPMs for easy
 # access to the PGDG yum repositories. Links to RPMs for installation
 # on the supported version/platform combinations are listed at
 # http://yum.postgresql.org/repopackages.php, and the links for
-# PostgreSQL 8.4, 9.0, 9.1 and 9.2 (from 2013-01-15) are captured below.
+# PostgreSQL 8.4, 9.0, 9.1, 9.2 and 9.3 are captured below.
 #
 # The correct RPM for installing /etc/yum.repos.d is based on:
 # * the attribute configuring the desired Postgres Software:
@@ -204,6 +221,51 @@ default['postgresql']['enable_pgdg_yum'] = false
 #   node['platform_version']             e.g., "5.7", truncated as "5"
 #   node['kernel']['machine']            e.g., "i386" or "x86_64"
 default['postgresql']['pgdg']['repo_rpm_url'] = {
+  "9.3" => {
+    "centos" => {
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-centos93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm"
+      },
+      "5" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-5-i386/pgdg-centos93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-5-x86_64/pgdg-centos93-9.3-1.noarch.rpm"
+      }
+    },
+    "redhat" => {
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-redhat93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm"
+      },
+      "5" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-5-i386/pgdg-redhat93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-5-x86_64/pgdg-redhat93-9.3-1.noarch.rpm"
+      }
+    },
+    "scientific" => {
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/pgdg-sl93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-sl93-9.3-1.noarch.rpm"
+      },
+      "5" => {
+        "i386" => "http://yum.postgresql.org/9.3/redhat/rhel-5-i386/pgdg-sl93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/redhat/rhel-5-x86_64/pgdg-sl93-9.3-1.noarch.rpm"
+      }
+    },
+    "fedora" => {
+      "19" => {
+        "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-19-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
+      },
+      "18" => {
+        "i386" => "http://yum.postgresql.org/9.3/fedora/fedora-18-i386/pgdg-fedora93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-18-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
+      },
+      "17" => {
+        "i386" => "http://yum.postgresql.org/9.3/fedora/fedora-17-i386/pgdg-fedora93-9.3-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-17-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
+      }
+    }
+  },
   "9.2" => {
     "centos" => {
       "6" => {
@@ -236,16 +298,21 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       }
     },
     "fedora" => {
+      "19" => {
+        "i386" => "http://yum.postgresql.org/9.2/fedora/fedora-19-i386/pgdg-fedora92-9.2-6.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.2/fedora/fedora-19-x86_64/pgdg-fedora92-9.2-6.noarch.rpm"
+      },
+      "18" => {
+        "i386" => "http://yum.postgresql.org/9.2/fedora/fedora-18-i386/pgdg-fedora92-9.2-6.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.2/fedora/fedora-18-x86_64/pgdg-fedora92-9.2-6.noarch.rpm"
+      },
       "17" => {
+        "i386" => "http://yum.postgresql.org/9.2/fedora/fedora-17-i386/pgdg-fedora92-9.2-6.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.2/fedora/fedora-17-x86_64/pgdg-fedora92-9.2-5.noarch.rpm"
       },
       "16" => {
         "i386" => "http://yum.postgresql.org/9.2/fedora/fedora-16-i386/pgdg-fedora92-9.2-5.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.2/fedora/fedora-16-x86_64/pgdg-fedora92-9.2-5.noarch.rpm"
-      },
-      "15" => {
-        "i386" => "http://yum.postgresql.org/9.2/fedora/fedora-15-i386/pgdg-fedora92-9.2-5.noarch.rpm",
-        "x86_64" => "http://yum.postgresql.org/9.2/fedora/fedora-15-x86_64/pgdg-fedora92-9.2-5.noarch.rpm"
       }
     }
   },

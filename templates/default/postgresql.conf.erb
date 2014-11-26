@@ -3,7 +3,21 @@
 # Please refer to the PostgreSQL documentation for details on
 # configuration settings.
 
-<% node['postgresql']['config'].sort.each do |key, value| %>
+<% @config = node['postgresql']['config'].dup -%>
+<% @config.delete('include') -%>
+
+<% # postgresql.conf configuration parameter -%>
+<% # 9.2 supports  unix_socket_directory -%>
+<% # 9.3 supports  unix_socket_directories -%>
+<% case node['postgresql']['version'] -%>
+<% when '9.2' -%>
+<% @config.delete('unix_socket_directories') -%>
+<% when '9.3' -%>
+<% @config.delete('unix_socket_directory') -%>
+<% end -%> 
+
+
+<% @config.sort.each do |key, value| -%>
 <% next if value.nil? -%>
 <%= key %> = <%=
   case value
@@ -17,4 +31,7 @@
     value
   end
 %>
-<% end %>
+<% end -%>
+<% unless node['postgresql']['config']['include'].to_s.empty? -%>
+include <%= "'#{node['postgresql']['config']['include']}'" %>
+<% end -%>
