@@ -2,6 +2,11 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.14
+------
+- Support apt repository for Ubuntu Utopic 14.10
+- Do not try and set password on standby hosts
+
 v3.4.12
 ------
 - Create configuration templates at the appropriate time
