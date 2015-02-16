@@ -307,17 +307,18 @@ def get_result_orig(query)
 end
 
 #######
-# Function to execute an SQL statement in the template1 database.
+# Function to execute an SQL statement in the default database.
 #   Input: Query could be a single String or an Array of String.
 #   Output: A String with |-separated columns and \n-separated rows.
 #           Note an empty output could mean psql couldn't connect.
 # This is easiest for 1-field (1-row, 1-col) results, otherwise
 # it will be complex to parse the results.
 def execute_sql(query)
+  db_name = node['postgresql']['database_name']
   # query could be a String or an Array of String
   statement = query.is_a?(String) ? query : query.join("\n")
   @execute_sql ||= begin
-    cmd = shell_out("psql -q --tuples-only --no-align -d template1 -f -",
+    cmd = shell_out("psql -q --tuples-only --no-align -d #{db_name} -f -",
           :user => "postgres",
           :input => statement
     )
