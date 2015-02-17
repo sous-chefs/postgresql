@@ -31,9 +31,8 @@ service "postgresql" do
   action [:enable, :start]
 end
 
-unless ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main')
-  execute 'Set locale and Create cluster' do
-    command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + ' main'
-    action :run
-  end
+execute 'Set locale and Create cluster' do
+  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + ' main'
+  action :run
+  not_if { ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main') }
 end
