@@ -2,6 +2,13 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.16
+------
+- Changed hard coded value to attribute #219
+- Correction for directory creation under debian, etc. #222
+- Fedora 20 yum support #223
+- Define version-sensitive attributes in a recipe #201
+
 v3.4.14
 ------
 - Support apt repository for Ubuntu Utopic 14.10
