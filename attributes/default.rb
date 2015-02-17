@@ -19,6 +19,9 @@ default['postgresql']['enable_pgdg_apt'] = false
 default['postgresql']['server']['config_change_notify'] = :restart
 default['postgresql']['assign_postgres_password'] = true
 
+# Establish default database name
+default['postgresql']['database_name'] = 'template1'
+
 case node['platform']
 when "debian"
 
@@ -30,18 +33,6 @@ when "debian"
   else
     default['postgresql']['version'] = "9.1"
   end
-
-  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
-  case
-  when node['platform_version'].to_f < 6.0 # All 5.X
-    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-  else
-    default['postgresql']['server']['service_name'] = "postgresql"
-  end
-
-  default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
-  default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
-  default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
 
 when "ubuntu"
 
@@ -56,18 +47,6 @@ when "ubuntu"
     default['postgresql']['version'] = "9.3"
   end
 
-  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
-  case
-  when (node['platform_version'].to_f <= 10.04) && (! node['postgresql']['enable_pgdg_apt'])
-    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-  else
-    default['postgresql']['server']['service_name'] = "postgresql"
-  end
-
-  default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
-  default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
-  default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
-
 when "fedora"
 
   if node['platform_version'].to_f <= 12
@@ -76,62 +55,24 @@ when "fedora"
     default['postgresql']['version'] = "8.4"
   end
 
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  default['postgresql']['server']['service_name'] = "postgresql"
-
 when "amazon"
 
   if node['platform_version'].to_f >= 2012.03
     default['postgresql']['version'] = "9.0"
-    default['postgresql']['dir'] = "/var/lib/pgsql9/data"
   else
     default['postgresql']['version'] = "8.4"
-    default['postgresql']['dir'] = "/var/lib/pgsql/data"
   end
-
-  default['postgresql']['client']['packages'] = %w{postgresql-devel}
-  default['postgresql']['server']['packages'] = %w{postgresql-server}
-  default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  default['postgresql']['server']['service_name'] = "postgresql"
 
 when "redhat", "centos", "scientific", "oracle"
 
   default['postgresql']['version'] = "8.4"
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
-
-  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] == '8.4'
-    default['postgresql']['client']['packages'] = %w{postgresql-devel}
-    default['postgresql']['server']['packages'] = %w{postgresql-server}
-    default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  else
-    default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
-    default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
-    default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
-  end
-
-  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] != '8.4'
-     default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-  else
-    default['postgresql']['dir'] = "/var/lib/pgsql/data"
-    default['postgresql']['server']['service_name'] = "postgresql"
-  end
 
 when "suse"
 
   if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
-    default['postgresql']['client']['packages'] = ['postgresql', 'rubygem-pg']
-    default['postgresql']['server']['packages'] = ['postgresql-server']
-    default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
   else
     default['postgresql']['version'] = "9.1"
-    default['postgresql']['client']['packages'] = ['postgresql91', 'rubygem-pg']
-    default['postgresql']['server']['packages'] = ['postgresql91-server']
-    default['postgresql']['contrib']['packages'] = ['postgresql91-contrib']
   end
 
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
@@ -139,11 +80,6 @@ when "suse"
 
 else
   default['postgresql']['version'] = "8.4"
-  default['postgresql']['dir']         = "/etc/postgresql/#{node['postgresql']['version']}/main"
-  default['postgresql']['client']['packages'] = ["postgresql"]
-  default['postgresql']['server']['packages'] = ["postgresql"]
-  default['postgresql']['contrib']['packages'] = ["postgresql"]
-  default['postgresql']['server']['service_name'] = "postgresql"
 end
 
 # These defaults have disparity between which postgresql configuration
@@ -160,23 +96,14 @@ end
 # merge/precedence order during the Chef run.
 case node['platform_family']
 when 'debian'
-  default['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
-  default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
-  default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
-  default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432
   default['postgresql']['config']['max_connections'] = 100
-  default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql' if node['postgresql']['version'].to_f < 9.3
-  default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql' if node['postgresql']['version'].to_f >= 9.3
   default['postgresql']['config']['shared_buffers'] = '24MB'
-  default['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
   default['postgresql']['config']['log_line_prefix'] = '%t '
   default['postgresql']['config']['datestyle'] = 'iso, mdy'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
   default['postgresql']['config']['ssl'] = true
-  default['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
-  default['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key'if node['postgresql']['version'].to_f >= 9.2
 when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['data_directory'] = node['postgresql']['dir']
   default['postgresql']['config']['listen_addresses'] = 'localhost'
@@ -284,6 +211,9 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       }
     },
     "fedora" => {
+      "20" => {
+        "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-20-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
+      },
       "19" => {
         "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-19-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
       },
