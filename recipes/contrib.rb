@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 
+include_recipe 'postgresql::config_version'
 include_recipe "postgresql::server"
 
 db_name = node['postgresql']['database_name']
