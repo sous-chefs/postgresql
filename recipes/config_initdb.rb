@@ -16,8 +16,6 @@
 # limitations under the License.
 #
 
-include_recipe 'postgresql::config_version'
-
 #######
 # Load the locale_date_order() and select_default_timezone(tzdir)
 # methods from libraries/default.rb
