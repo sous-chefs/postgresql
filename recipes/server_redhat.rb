@@ -85,10 +85,11 @@ elsif !platform_family?("suse")
 
 end
 
-include_recipe "postgresql::server_conf"
 
 service "postgresql" do
   service_name svc_name
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
 end
+
+include_recipe "postgresql::server_conf"
