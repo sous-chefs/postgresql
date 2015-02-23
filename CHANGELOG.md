@@ -2,6 +2,11 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.18
+------
+- Revert changes from #201 with the intention of revisiting these changes as part of the next major version release.
+- Specify version constraint on openssl cookbook due to an upstream release mishap
+
 v3.4.16
 ------
 - Changed hard coded value to attribute #219
