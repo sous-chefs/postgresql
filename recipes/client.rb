@@ -19,7 +19,7 @@ include_recipe 'postgresql::ca_certificates'
 
 case node['platform_family']
 when 'debian'
-  if node['postgresql']['version'].to_f > 9.3
+  if node['postgresql']['version'].to_f > 9.4
     node.normal['postgresql']['enable_pgdg_apt'] = true
   end
 
