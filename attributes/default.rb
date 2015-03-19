@@ -31,7 +31,7 @@ when "debian"
   when node['platform_version'].to_f < 7.0 # All 6.X
     default['postgresql']['version'] = "8.4"
   else
-    default['postgresql']['version'] = "9.1"
+    default['postgresql']['version'] = "9.4"
   end
 
   default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
