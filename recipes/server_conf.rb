@@ -32,3 +32,13 @@ template "#{node['postgresql']['dir']}/pg_hba.conf" do
   mode 00600
   notifies change_notify, 'service[postgresql]', :delayed
 end
+
+template node['postgresql']['config']['ident_file'] do
+  source "pg_ident.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 00600
+  notifies change_notify, 'service[postgresql]', :delayed
+
+  not_if { node['postgresql']['ident_maps'].nil? }
+end
