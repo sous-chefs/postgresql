@@ -232,6 +232,81 @@ default['postgresql']['initdb_locale'] = nil
 #   node['platform_version']             e.g., "5.7", truncated as "5"
 #   node['kernel']['machine']            e.g., "i386" or "x86_64"
 default['postgresql']['pgdg']['repo_rpm_url'] = {
+  "9.4" => {
+    "amazon" => {
+      "2014" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-6-i386/pgdg-redhat94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm"
+      },
+      "2013" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-6-i386/pgdg-redhat94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm"
+      }
+    },
+    "centos" => {
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm"
+      },
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-6-i386/pgdg-centos94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-centos94-9.4-1.noarch.rpm"
+      },
+      "5" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-5-i386/pgdg-centos94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-5-x86_64/pgdg-centos94-9.4-1.noarch.rpm"
+      }
+    },
+    "redhat" => {
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-redhat94-9.4-1.noarch.rpm"
+      },
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-6-i386/pgdg-redhat94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm"
+      },
+      "5" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-5-i386/pgdg-redhat94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-5-x86_64/pgdg-redhat94-9.4-1.noarch.rpm"
+      }
+    },
+    "oracle" => {
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-redhat94-9.4-1.noarch.rpm"
+      },
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-6-i386/pgdg-redhat94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm"
+      },
+      "5" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-5-i386/pgdg-redhat94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-5-x86_64/pgdg-redhat94-9.4-1.noarch.rpm"
+      }
+    },
+    "scientific" => {
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-6-i386/pgdg-sl94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-sl94-9.4-1.noarch.rpm"
+      },
+      "5" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-5-i386/pgdg-sl94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-5-x86_64/pgdg-sl94-9.4-1.noarch.rpm"
+      }
+    },
+    "fedora" => {
+      "21" => {
+        "i386" => "http://yum.postgresql.org/9.4/fedora/fedora-21-i686/pgdg-fedora94-9.4-2.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/fedora/fedora-21-x86_64/pgdg-fedora94-9.4-2.noarch.rpm"
+      },
+      "20" => {
+        "i386" => "http://yum.postgresql.org/9.4/fedora/fedora-20-i686/pgdg-fedora94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/fedora/fedora-20-x86_64/pgdg-fedora94-9.4-1.noarch.rpm"
+      },
+      "19" => {
+        "i386" => "http://yum.postgresql.org/9.4/fedora/fedora-19-i686/pgdg-fedora94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/fedora/fedora-19-x86_64/pgdg-fedora94-9.4-1.noarch.rpm"
+      },
+    }
+  },
   "9.3" => {
     "amazon" => {
       "2014" => {
