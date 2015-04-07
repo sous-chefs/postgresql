@@ -67,11 +67,12 @@ if node['postgresql']['enable_pgdg_yum'] == true
   end
 end
 
-# Starting with Fedora 16, the pgsql sysconfig files are no longer used.
+# Starting with Fedora 16, the pgsql sysconfig files are no longer used,
+# its use is discouraged if using systemd
 # The systemd unit file does not support 'initdb' or 'upgrade' actions.
 # Use the postgresql-setup script instead.
 
-unless platform_family?("fedora") and node['platform_version'].to_i >= 16
+unless node['postgresql']['server']['init_package'] == 'systemd'
 
   directory "/etc/sysconfig/pgsql" do
     mode "0644"
@@ -87,15 +88,9 @@ unless platform_family?("fedora") and node['platform_version'].to_i >= 16
 
 end
 
-if platform_family?("fedora") and node['platform_version'].to_i >= 16
+if node['postgresql']['server']['init_package'] == 'systemd'
 
-  execute "postgresql-setup initdb #{svc_name}" do
-    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
-  end
-
-elsif ( platform?("redhat") or platform?("centos") ) and node['platform_version'].to_i >= 7
-
-  execute "postgresql#{shortver}-setup initdb #{svc_name}" do
+  execute "#{node['postgresql']['setup_script']} initdb #{svc_name}" do
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
