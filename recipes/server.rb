@@ -58,6 +58,8 @@ end
 #     setting the same password. This chef recipe doesn't have access to
 #     the plain text password, and testing the encrypted (md5 digest)
 #     version is not straight-forward.
+# NOTE 2: The random password being generated is not actually a hash.
+# It is simply a random string, and is used as is for the password.
 bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
