@@ -25,7 +25,7 @@ initdb_locale = node['postgresql']['initdb_locale']
 # Otherwise the templates fail.
 
 group "postgres" do
-  gid 26
+  gid node['postgresql']['gid']
 end
 
 user "postgres" do
@@ -34,7 +34,7 @@ user "postgres" do
   home "/var/lib/pgsql"
   gid "postgres"
   system true
-  uid 26
+  uid node['postgresql']['uid']
   supports :manage_home => false
 end
 

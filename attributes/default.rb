@@ -73,6 +73,9 @@ when "ubuntu"
 
 when "fedora"
 
+  default['postgresql']['uid'] = "26"
+  default['postgresql']['gid'] = "26"
+
   if node['platform_version'].to_f <= 12
     default['postgresql']['version'] = "8.3"
   else
@@ -102,6 +105,8 @@ when "amazon"
 
 when "redhat", "centos", "scientific", "oracle"
 
+  default['postgresql']['uid'] = "26"
+  default['postgresql']['gid'] = "26"
   default['postgresql']['version'] = "8.4"
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
 
@@ -124,6 +129,9 @@ when "redhat", "centos", "scientific", "oracle"
   end
 
 when "suse"
+
+  default['postgresql']['uid'] = "26"
+  default['postgresql']['gid'] = "26"
 
   if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
