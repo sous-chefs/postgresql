@@ -337,6 +337,10 @@ loads its shared library, which can be done with this node attribute:
 
     node['postgresql']['config']['shared_preload_libraries'] = 'pg_stat_statements'
 
+If using `shared_preload_libraries` in combination with the `contrib` recipe,
+make sure that the `contrib` recipe is called before the `server` recipe (to
+ensure the dependencies are installed and setup in order).
+
 apt\_pgdg\_postgresql
 ----------------------
 
