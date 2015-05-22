@@ -28,7 +28,7 @@ include_recipe "postgresql::server_conf"
 service "postgresql" do
   service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
+  action [:enable, :start, :restart]
 end
 
 execute 'Set locale and Create cluster' do
