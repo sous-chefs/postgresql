@@ -2,6 +2,19 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.19
+-------
+- node.save could better not be run on every chef run since it causes node.default attributes stored to the node objects to differ during a chef run and when
+- Missing attribute in docs for yum_pgdg_postgresql
+- restart postgres service immediately on config change
+- Run restart command right away on the postgresql service.
+- Add kitchen test for shared_preload_libraries & extension setup.
+- Fix install order of contrib packages to fix pg_stat_statements issues.
+- Add Debian Jessie to whitelist for apt.postgresql.org repo
+- Install version 9.4 on Debian Jessie
+- add amazon 2015
+- add rhel7 support
+
 v3.4.18
 ------
 - Revert changes from #201 with the intention of revisiting these changes as part of the next major version release.
