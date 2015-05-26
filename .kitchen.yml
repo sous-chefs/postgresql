@@ -132,3 +132,44 @@ suites:
       version: "9.3"
       client:
         packages: ["postgresql93", "postgresql93-devel"]
+
+- name: apt-pgdg-server-pg_stat_statements
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
+  - recipe[postgresql::contrib]
+  excludes: ["centos-5.9", "centos-6.4"]
+  attributes:
+    postgresql:
+      enable_pgdg_apt: true
+      version: "9.3"
+      password:
+        postgres: "iloverandompasswordsbutthiswilldo"
+      config:
+        shared_preload_libraries: "pg_stat_statements"
+        ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+        ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+      contrib:
+        extensions:
+          - pg_stat_statements
+
+- name: yum-pgdg-server-pg_stat_statements
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
+  - recipe[postgresql::contrib]
+  excludes: ["ubuntu-10.04", "ubuntu-12.04", "debian-7.1.0"]
+  attributes:
+    postgresql:
+      enable_pgdg_yum: true
+      version: "9.3"
+      server:
+        packages: ["postgresql93-server"]
+        service_name: "postgresql-9.3"
+      password:
+        postgres: "iloverandompasswordsbutthiswilldo"
+      config:
+        shared_preload_libraries: "pg_stat_statements"
+      contrib:
+        extensions:
+          - pg_stat_statements
