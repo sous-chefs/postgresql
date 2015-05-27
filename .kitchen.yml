@@ -27,7 +27,6 @@ platforms:
 suites:
 - name: default
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql]
   attributes: {}
 
@@ -41,7 +40,6 @@ suites:
 
 - name: apt-pgdg-client
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql]
   excludes: ["centos-5.10", "centos-6.4", "centos-7.0"]
   attributes:
@@ -51,7 +49,6 @@ suites:
 
 - name: yum-pgdg-client
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql]
   excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
   attributes:
@@ -64,13 +61,11 @@ suites:
 - name: ruby
   run_list:
   - recipe[postgresql::ruby]
-  - recipe[minitest-handler]
   attributes: {}
 
 - name: server
   run_list:
   - recipe[postgresql::ruby]
-  - recipe[minitest-handler]
   - recipe[postgresql::server]
   attributes:
     postgresql:
@@ -79,7 +74,6 @@ suites:
 
 - name: apt-pgdg-server
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   excludes: ["centos-5.10", "centos-6.4", "centos-7.0"]
@@ -95,7 +89,6 @@ suites:
 
 - name: yum-pgdg-server
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
@@ -111,7 +104,6 @@ suites:
 
 - name: apt-pgdg-client-ruby
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
   excludes: ["centos-5.10", "centos-6.4", "centos-7.0"]
@@ -122,7 +114,6 @@ suites:
 
 - name: yum-pgdg-client-ruby
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
   excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
