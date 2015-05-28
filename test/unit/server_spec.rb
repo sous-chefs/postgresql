@@ -28,6 +28,10 @@ describe 'postgresql::server' do
           end.converge(described_recipe)
         }
 
+        before do
+          stub_command(/ls \/.*\/recovery.conf/).and_return(false)
+        end
+
         it 'runs no tests' do
           expect(chef_run)
         end

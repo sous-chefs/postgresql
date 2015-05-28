@@ -1,25 +1,22 @@
-This cookbook includes support for running tests via Test Kitchen (1.0). This has some requirements.
+This cookbook includes support for running unit tests under ChefSpec and integration tests under Test Kitchen.
+
+Before you can run these tests:
 
 1. You must be using the Git repository, rather than the downloaded cookbook from the Chef Community Site.
 2. You must have Vagrant 1.1 installed.
-3. You must have a "sane" Ruby 1.9.3 environment.
+3. You must have a "sane" Ruby 1.9.3 environment with `bundler`
 
-Once the above requirements are met, install the additional requirements:
+Once the above requirements are met, install the gem dependenies:
 
-Install the berkshelf plugin for vagrant, and berkshelf to your local Ruby environment.
+    bundle install
 
-    vagrant plugin install vagrant-berkshelf
-    gem install berkshelf
+With the bundle installed, you should be able to run Test Kitchen:
 
-Install Test Kitchen 1.0 (unreleased yet, use the alpha / prerelease version).
+    bundle exec kitchen list
+    bundle exec kitchen test
 
-    gem install test-kitchen --pre
+You can use the tasks defined in the Rakefile for running tests. For example, the following commands will run
+the ChefSpec unit tests and all of the configured Test Kitchen platform/suite permuations:
 
-Install the Vagrant driver for Test Kitchen.
-
-    gem install kitchen-vagrant
-
-Once the above are installed, you should be able to run Test Kitchen:
-
-    kitchen list
-    kitchen test
+   bundle exec rake spec
+   bundle exec rake kitchen:all
