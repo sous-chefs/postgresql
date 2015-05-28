@@ -6,7 +6,7 @@ v3.4.20
 -------
 - Revert [#251](https://github.com/hw-cookbooks/postgresql/pull/251), a change which caused the postgresql service to restart every Chef run.
 
-v3.4.19 [YANKED]
+v3.4.19
 -------
 - node.save could better not be run on every chef run since it causes node.default attributes stored to the node objects to differ during a chef run and when
 - Missing attribute in docs for yum_pgdg_postgresql
