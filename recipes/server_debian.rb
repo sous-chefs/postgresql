@@ -26,7 +26,7 @@ end
 execute 'Set locale and Create cluster' do
   command 'export LC_ALL=C; /usr/bin/pg_createcluster ' + node['postgresql']['version'] + ' main'
   action :run
-  not_if { ::File.directory?('/var/lib/postgresql/' + node['postgresql']['version'] + '/main') }
+  not_if { ::File.directory?(node['postgresql']['config']['data_directory']) }
 end
 
 include_recipe "postgresql::server_conf"
