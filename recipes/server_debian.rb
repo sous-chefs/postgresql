@@ -23,16 +23,16 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
+execute 'Set locale and Create cluster' do
+  command 'export LC_ALL=C; /usr/bin/pg_createcluster ' + node['postgresql']['version'] + ' main'
+  action :run
+  not_if { ::File.directory?('/var/lib/postgresql/' + node['postgresql']['version'] + '/main') }
+end
+
 include_recipe "postgresql::server_conf"
 
 service "postgresql" do
   service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
-end
-
-execute 'Set locale and Create cluster' do
-  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + ' main'
-  action :run
-  not_if { ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main') }
 end
