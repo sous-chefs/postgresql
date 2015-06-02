@@ -13,7 +13,10 @@ describe 'postgresql::server' do
      },
     'debian' => {
        'versions' => ['7.6']
-     }
+     },
+    'opensuse' => {
+      'versions' => ['13.1', '13.2']
+    }
   }
 
   platforms.each do |platform, config|
