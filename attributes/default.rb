@@ -125,7 +125,7 @@ when "redhat", "centos", "scientific", "oracle"
     default['postgresql']['server']['service_name'] = "postgresql"
   end
 
-when "suse"
+when "opensuse"
 
   if node['platform_version'].to_f == 13.2
     default['postgresql']['version'] = '9.3'
@@ -137,7 +137,13 @@ when "suse"
     default['postgresql']['client']['packages'] = ['postgresql92', 'postgresql92-devel']
     default['postgresql']['server']['packages'] = ['postgresql92-server']
     default['postgresql']['contrib']['packages'] = ['postgresql92-contrib']
-  elsif node['platform_version'].to_f <= 11.1
+  end
+
+  default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['server']['service_name'] = "postgresql"
+
+when "suse"
+    if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
     default['postgresql']['client']['packages'] = ['postgresql', 'rubygem-pg']
     default['postgresql']['server']['packages'] = ['postgresql-server']
