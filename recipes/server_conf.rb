@@ -17,7 +17,10 @@
 
 change_notify = node['postgresql']['server']['config_change_notify']
 
+cb_postgresql = node['postgresql']['server_conf'].fetch('postgresql', nil)
+
 template "#{node['postgresql']['dir']}/postgresql.conf" do
+  cookbook cb_postgresql if cb_postgresql
   source "postgresql.conf.erb"
   owner "postgres"
   group "postgres"
@@ -25,7 +28,10 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   notifies change_notify, 'service[postgresql]', :immediately
 end
 
+cb_pg_hba = node['postgresql']['server_conf'].fetch('pg_hba', nil)
+
 template "#{node['postgresql']['dir']}/pg_hba.conf" do
+  cookbook cb_pg_hba if cb_pg_hba
   source "pg_hba.conf.erb"
   owner "postgres"
   group "postgres"
