@@ -15,7 +15,6 @@
 # limitations under the License.
 #
 
-i#::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 ::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
 
 include_recipe "postgresql::client"
