@@ -357,7 +357,7 @@ end
 def pgdgrepo_rpm_info
   repo_rpm_url = node['postgresql']['pgdg']['repo_rpm_url'].
     fetch(node['postgresql']['version']).            # e.g., fetch for "9.1"
-    fetch(node['platform']).                         # e.g., fetch for "centos"
+    fetch((node['platform'].eql? "centos" )? "redhat" : node['platform']).                         # e.g., fetch for "centos"
     fetch(node['platform_version'].to_f.to_i.to_s).  # e.g., fetch for "5" (truncated "5.7")
     fetch(node['kernel']['machine'])                 # e.g., fetch for "i386" or "x86_64"
 
