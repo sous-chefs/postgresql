@@ -77,11 +77,18 @@ if platform_family?("fedora") and node['platform_version'].to_i >= 16
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
-elsif platform?("redhat") and node['platform_version'].to_i >= 7
+elsif (platform?("redhat") || platform?("centos")) and node['platform_version'].to_i >= 7
 
-  execute "postgresql#{node['postgresql']['version'].split('.').join}-setup initdb #{svc_name}" do
-    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+  if node['postgresql']['enable_pgdg_yum']
+    execute "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup initdb #{svc_name}" do
+      not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+    end
+  else
+    execute "postgresql#{node['postgresql']['version'].split('.').join}-setup initdb #{svc_name}" do
+      not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+    end
   end
+
 
 else !platform_family?("suse")
 
