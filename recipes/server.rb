@@ -42,7 +42,7 @@ else
   # useful if it weren't saved as clear text in Chef Server for later
   # retrieval.
   unless node.key?('postgresql') && node['postgresql'].key?('password') && node['postgresql']['password'].key?('postgres')
-    node.set_unless['postgresql']['password']['postgres'] = random_password
+    node.set_unless['postgresql']['password']['postgres'] = random_password(length: 20, mode: :base64)
     node.save
   end
 end
