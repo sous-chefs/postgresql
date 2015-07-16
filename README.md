@@ -337,6 +337,10 @@ loads its shared library, which can be done with this node attribute:
 
     node['postgresql']['config']['shared_preload_libraries'] = 'pg_stat_statements'
 
+If using `shared_preload_libraries` in combination with the `contrib` recipe,
+make sure that the `contrib` recipe is called before the `server` recipe (to
+ensure the dependencies are installed and setup in order).
+
 apt\_pgdg\_postgresql
 ----------------------
 
@@ -363,6 +367,7 @@ values that will need to have embedded version numbers. For example:
     node['postgresql']['enable_pgdg_yum'] = true
     node['postgresql']['version'] = "9.2"
     node['postgresql']['dir'] = "/var/lib/pgsql/9.2/data"
+    node['postgresql']['config']['data_directory'] = node['postgresql']['dir']
     node['postgresql']['client']['packages'] = ["postgresql92", "postgresql92-devel"]
     node['postgresql']['server']['packages'] = ["postgresql92-server"]
     node['postgresql']['server']['service_name'] = "postgresql-9.2"
