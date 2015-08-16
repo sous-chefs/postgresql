@@ -83,6 +83,12 @@ elsif platform?("redhat") and node['platform_version'].to_i >= 7
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
+elsif platform?("centos") and node['platform_version'].to_i >= 7
+
+  execute "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup initdb #{svc_name}" do
+    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+  end
+
 else !platform_family?("suse")
 
   execute "/sbin/service #{svc_name} initdb #{initdb_locale}" do
