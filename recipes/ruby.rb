@@ -105,6 +105,11 @@ EOS
     end
     lib_installer.run_action(:run)
 
+    unless File.exist?(File.join(gem_dir, '..', '..', "cache/#{gem_name}.gem"))
+      gem_file = Gem.path.map { |p| File.join(p, "cache/#{gem_name}.gem") }.find { |f| File.exist?(f) }
+      FileUtils.cp(gem_file, File.join(gem_dir, '..', '..', 'cache')) unless gem_file.nil?
+    end
+
     spec_installer = execute 'install pg spec' do
       command "#{gem_exec} spec ./cache/#{gem_name}.gem --ruby > ./specifications/#{gem_name}.gemspec"
       cwd File.join(gem_dir, '..', '..')
