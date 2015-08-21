@@ -32,7 +32,7 @@ service "postgresql" do
 end
 
 execute 'Set locale and Create cluster' do
-  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + ' main'
+  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'].split('.')[0..1].join('.') + ' main'
   action :run
   not_if { ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main') }
 end
