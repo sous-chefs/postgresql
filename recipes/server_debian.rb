@@ -31,8 +31,10 @@ service "postgresql" do
   action [:enable, :start]
 end
 
+two_digit_version = node['postgresql']['version'].split('.')[0..1].join('.')
+
 execute 'Set locale and Create cluster' do
-  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'].split('.')[0..1].join('.') + ' main'
+  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + two_digit_version + ' main'
   action :run
-  not_if { ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main') }
+  not_if { ::File.directory?('/etc/postgresql/' + two_digit_version + '/main') }
 end
