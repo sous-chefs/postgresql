@@ -36,5 +36,5 @@ two_digit_version = node['postgresql']['version'].split('.')[0..1].join('.')
 execute 'Set locale and Create cluster' do
   command "export LC_ALL=C; /usr/bin/pg_createcluster --start --datadir='#{node['postgresql']['config']['data_directory']}' #{two_digit_version} main"
   action :run
-  not_if { ::File.directory?('/etc/postgresql/' + two_digit_version + '/main') }
+  not_if { ::File.directory?(node['postgresql']['config']['data_directory'] + '/PG_VERSION') }
 end
