@@ -25,16 +25,19 @@ end
 
 include_recipe "postgresql::server_conf"
 
+two_digit_version = node['postgresql']['version'].split('.')[0..1].join('.')
+
+# So... you probably want to create the DB cluster BEFORE you start it... Juuuust a thought
+execute 'Set locale and Create cluster' do
+  command "export LC_ALL=C; /usr/bin/pg_createcluster --datadir='#{node['postgresql']['config']['data_directory']}' #{two_digit_version} main"
+  action :run
+  not_if { ::File.directory?(node['postgresql']['config']['data_directory'] + '/PG_VERSION') }
+end
+
+# Create the service, enable it, start it (after the cluster is configured)
 service "postgresql" do
   service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
 end
 
-two_digit_version = node['postgresql']['version'].split('.')[0..1].join('.')
-
-execute 'Set locale and Create cluster' do
-  command "export LC_ALL=C; /usr/bin/pg_createcluster --start --datadir='#{node['postgresql']['config']['data_directory']}' #{two_digit_version} main"
-  action :run
-  not_if { ::File.directory?(node['postgresql']['config']['data_directory'] + '/PG_VERSION') }
-end
