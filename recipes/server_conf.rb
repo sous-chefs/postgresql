@@ -17,8 +17,17 @@
 
 change_notify = node['postgresql']['server']['config_change_notify']
 
-
+# Create the data directory
 directory node['postgresql']['config']['data_directory'] do
+	recursive true
+	owner "postgres"
+	group "postgres"
+	mode 00700
+	action :create
+end
+
+# Create the config directory
+directory node['postgresql']['dir'] do
 	recursive true
 	owner "postgres"
 	group "postgres"
