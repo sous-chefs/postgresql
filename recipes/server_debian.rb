@@ -23,16 +23,34 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
-include_recipe "postgresql::server_conf"
 
+two_digit_version = node['postgresql']['version'].split('.')[0..1].join('.')
+
+# Create the service, enable it, stop it
 service "postgresql" do
   service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
+  action [:enable,:stop]
 end
 
-execute 'Set locale and Create cluster' do
-  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + ' main'
-  action :run
-  not_if { ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main') }
+execute "Drop the default cluster" do
+	command "pg_dropcluster #{two_digit_version} main"
+	only_if { `pg_lsclusters | awk -v ver=#{two_digit_version} -v name=main 'NR>1 { if(ver==$1 && name==$2) { print $6 } }'`.chomp.eql?('/var/lib/postgresql/9.1/main') }
+	action :run
 end
+
+include_recipe "postgresql::server_conf"
+
+# Create the cluster
+execute 'Set locale and Create cluster' do
+  command "export LC_ALL=C; /usr/bin/pg_createcluster --datadir='#{node['postgresql']['config']['data_directory']}' #{two_digit_version} main"
+  action :run
+  not_if { ::File.directory?(node['postgresql']['config']['data_directory'] + '/PG_VERSION') }
+end
+
+# Start the server again
+service "postgresql" do
+  service_name node['postgresql']['server']['service_name']
+  action [:start]
+end
+
