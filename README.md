@@ -63,8 +63,8 @@ The following attributes are set based on the platform, see the
   database cluster. If this attribute is not specified, the locale is
   inherited from the environment that initdb runs in. Sometimes you must
   have a system locale that is not what you want for your database cluster,
-  and this attribute addresses that scenario. Valid only for EL-family
-  distros (RedHat/Centos/etc.).
+  and this attribute addresses that scenario. Valid for EL-family
+  distros (RedHat/Centos/etc.) and Debian, Ubuntu.
 
 The following attributes are generated in
 `recipe[postgresql::server]`.
