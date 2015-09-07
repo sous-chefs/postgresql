@@ -25,14 +25,6 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
-include_recipe "postgresql::server_conf"
-
-service "postgresql" do
-  service_name node['postgresql']['server']['service_name']
-  supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
-end
-
 # this is required as postgresql-9.3 (and later?) package creates a 'main' cluster for us, giving us
 # no opportunity to set the locale
 execute 'Drop main cluster' do
@@ -50,4 +42,12 @@ execute 'Set locale and Create cluster' do
   command initdb_locale.nil? ? default_cmd : locale_cmd
   action :run
   not_if { ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main') }
+end
+
+include_recipe "postgresql::server_conf"
+
+service "postgresql" do
+  service_name node['postgresql']['server']['service_name']
+  supports :restart => true, :status => true, :reload => true
+  action [:enable, :start]
 end
