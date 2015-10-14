@@ -1,6 +1,9 @@
 ---
 driver_plugin: vagrant
 
+provisioner:
+  require_chef_omnibus: 12.3
+
 platforms:
 - name: ubuntu-14.04
   run_list:
@@ -33,6 +36,7 @@ suites:
 
 - name: contrib
   run_list:
+  - recipe[minitest-handler]
   - recipe[postgresql::contrib]
   attributes:
     postgresql:
@@ -63,14 +67,14 @@ suites:
 
 - name: ruby
   run_list:
-  - recipe[postgresql::ruby]
   - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
   attributes: {}
 
 - name: server
   run_list:
-  - recipe[postgresql::ruby]
   - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   attributes:
     postgresql:
