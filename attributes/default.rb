@@ -609,3 +609,12 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
   },
 };
 
+
+#------------------------------------------------------------------------------
+# USERS AND DATABASES
+#------------------------------------------------------------------------------
+
+default["postgresql"]["users"]                           = []
+default["postgresql"]["databases"]                       = []
+default["postgresql"]["extensions"]                      = []
+default["postgresql"]["languages"]                       = []

@@ -1,3 +1,8 @@
+About this fork
+===============
+
+This fork is created specially for [from-scratch](https://github.com/sandrew/from-scratch) gem. It's feature is backported `setup_users` and `setup_databases` recipes from [another postgresql cookbook](https://github.com/phlipper/chef-postgresql) that, unfortunately, does not support YUM-based Linux distributions.
+
 Description
 ===========
 

@@ -11,6 +11,8 @@ recipe            "postgresql::client", "Installs postgresql client package(s)"
 recipe            "postgresql::server", "Installs postgresql server packages, templates"
 recipe            "postgresql::server_redhat", "Installs postgresql server packages, redhat family style"
 recipe            "postgresql::server_debian", "Installs postgresql server packages, debian family style"
+recipe            "postgresql::setup_users", "Operates with DB users"
+recipe            "postgresql::setup_databases", "Operates with DB schemas"
 
 
 supports "ubuntu", "< 14.10"
