@@ -30,6 +30,7 @@ describe 'postgresql::server' do
   end
 
   it 'can connect to postgresql' do
+    Gem.clear_paths
     require 'pg'
     conn = PG::Connection.new(
                                :host => 'localhost',
