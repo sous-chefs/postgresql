@@ -2,6 +2,10 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.23
+-------
+- Skipping 3.4.22 with Develop branch 3.4.23 to return to releasing cookbook from master on even numbers and develop on odd numbers.
+
 v3.4.21
 -------
 - Use more optimistic openssl version constraint
