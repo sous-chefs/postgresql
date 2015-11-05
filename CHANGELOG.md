@@ -2,6 +2,12 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.4.21
+-------
+- Use more optimistic openssl version constraint
+- Add Postgresql 9.4 package sources for RHEL platforms
+- Update testing infrastructure to address bit rot
+
 v3.4.20
 -------
 - Revert [#251](https://github.com/hw-cookbooks/postgresql/pull/251), a change which caused the postgresql service to restart every Chef run.
