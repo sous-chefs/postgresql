@@ -21,6 +21,8 @@ svc_name = node['postgresql']['server']['service_name']
 dir = node['postgresql']['dir']
 initdb_locale = node['postgresql']['initdb_locale']
 
+shortver = node['postgresql']['version'].split('.').join
+
 # Create a group and user like the package will.
 # Otherwise the templates fail.
 
@@ -51,6 +53,20 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
+# If using PGDG, add symlinks so that downstream commands all work
+if node['postgresql']['enable_pgdg_yum'] == true
+  [
+    "postgresql#{shortver}-setup",
+    "postgresql#{shortver}-check-db-dir"
+  ].each do |cmd|
+
+    link "/usr/bin/#{cmd}" do
+      to "/usr/pgsql-#{node['postgresql']['version']}/bin/#{cmd}"
+    end
+
+  end
+end
+
 # Starting with Fedora 16, the pgsql sysconfig files are no longer used.
 # The systemd unit file does not support 'initdb' or 'upgrade' actions.
 # Use the postgresql-setup script instead.
@@ -79,7 +95,7 @@ if platform_family?("fedora") and node['platform_version'].to_i >= 16
 
 elsif platform?("redhat") and node['platform_version'].to_i >= 7
 
-  execute "postgresql#{node['postgresql']['version'].split('.').join}-setup initdb #{svc_name}" do
+  execute "postgresql#{shortver}-setup initdb #{svc_name}" do
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
