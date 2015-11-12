@@ -41,7 +41,7 @@ else
   # login for user 'postgres'). However, a random password wouldn't be
   # useful if it weren't saved as clear text in Chef Server for later
   # retrieval.
-  unless node.key?('postgresql') && node['postgresql'].key?('password') && node['postgresql']['password'].key?('postgres')
+  unless node.fetch('postgresql', {}).fetch('password', {}).fetch('postgres', false)
     node.set_unless['postgresql']['password']['postgres'] = secure_password
     node.save
   end
@@ -74,16 +74,13 @@ end
 # (1) Passing the "ALTER ROLE ..." through the psql command only works
 #     if passwordless authorization was configured for local connections.
 #     For example, if pg_hba.conf has a "local all postgres ident" rule.
-# (2) It is probably fruitless to optimize this with a not_if to avoid
-#     setting the same password. This chef recipe doesn't have access to
-#     the plain text password, and testing the encrypted (md5 digest)
-#     version is not straight-forward.
-bash "assign-postgres-password" do
+execute "assign-postgres-password" do
+  action :run
+  sensitive true
   user 'postgres'
-  code <<-EOH
+  command <<-EOH
   echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql -p #{node['postgresql']['config']['port']}
   EOH
-  action :run
-  not_if "ls #{node['postgresql']['config']['data_directory']}/recovery.conf"
+  not_if "PGPASSWORD=#{node['postgresql']['password']['postgres']} psql -h localhost -p #{node['postgresql']['config']['port']} -c 'select 1' > /dev/null", :user => 'postgres'
   only_if { node['postgresql']['assign_postgres_password'] }
 end
