@@ -301,7 +301,20 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
         "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-6-i386/pgdg-oraclelinux94-9.4-1.noarch.rpm",
         "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-oraclelinux94-9.4-1.noarch.rpm"
       }
-    }
+    },
+    "centos" => {
+      "7" => {
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm"
+      },
+      "6" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-6-i386/pgdg-centos94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-centos94-9.4-1.noarch.rpm"
+      },
+      "5" => {
+        "i386" => "http://yum.postgresql.org/9.4/redhat/rhel-5-i386/pgdg-centos94-9.4-1.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.4/redhat/rhel-5-x86_64/pgdg-centos94-9.4-1.noarch.rpm"
+      }
+    },
   },
   "9.3" => {
     "amazon" => {
