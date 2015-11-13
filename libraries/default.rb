@@ -359,7 +359,7 @@ def pgdgrepo_rpm_info
     fetch(node['postgresql']['version']).            # e.g., fetch for "9.1"
     fetch(node['platform']).                         # e.g., fetch for "centos"
     fetch(node['platform_version'].to_f.to_i.to_s).  # e.g., fetch for "5" (truncated "5.7")
-    fetch(node['kernel']['machine'])                 # e.g., fetch for "i386" or "x86_64"
+    fetch(node['kernel']['machine'] =~ /x86_64/ ? "x86_64" : "i386") # e.g., fetch for "i386" or "x86_64"
 
   # Extract the filename portion from the URL for the PGDG repository RPM.
   # E.g., repo_rpm_filename = "pgdg-centos92-9.2-6.noarch.rpm"
