@@ -234,7 +234,7 @@ end
 
 default['postgresql']['enable_pgdg_yum'] = false
 
-default['postgresql']['initdb_locale'] = nil
+default['postgresql']['initdb_locale'] = 'UTF-8'
 
 # The PostgreSQL RPM Building Project built repository RPMs for easy
 # access to the PGDG yum repositories. Links to RPMs for installation
