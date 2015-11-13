@@ -24,6 +24,16 @@ platforms:
 
 - name: centos-5.10
 
+- name: opscode-opensuse-13.2
+  driver:
+    box: gsaslis/opensuse-13.2
+    box_url: https://atlas.hashicorp.com/gsaslis/boxes/opensuse-13.2
+
+- name: opscode-opensuse-13.1
+  driver:
+    box: opensuse-13.1
+    box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_opensuse-13.1-x86_64_chef-provisionerless.box
+
 suites:
 - name: default
   run_list:
