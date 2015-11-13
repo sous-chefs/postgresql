@@ -99,7 +99,7 @@ elsif platform?("redhat") and node['platform_version'].to_i >= 7
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
-else !platform_family?("suse")
+elsif !platform_family?("suse")
 
   execute "/sbin/service #{svc_name} initdb #{initdb_locale}" do
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
@@ -107,10 +107,10 @@ else !platform_family?("suse")
 
 end
 
-include_recipe "postgresql::server_conf"
-
 service "postgresql" do
   service_name svc_name
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
 end
+
+include_recipe "postgresql::server_conf"
