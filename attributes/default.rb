@@ -22,6 +22,51 @@ default['postgresql']['assign_postgres_password'] = true
 # Establish default database name
 default['postgresql']['database_name'] = 'template1'
 
+# Sets OS init system (upstart, systemd, ...), instead of relying on Ohai
+default['postgresql']['server']['init_package'] = case node['platform']
+  when 'debian'
+    case
+    when node['platform_version'].to_f < 7.0
+      'sysv'
+    else
+      'systemd'
+    end
+  when 'ubuntu'
+    case
+    when node['platform_version'].to_f < 15.04
+      'upstart'
+    else
+      'systemd'
+    end
+  when 'amazon'
+    'upstart'
+  when 'redhat', 'centos', 'scientific', 'oracle'
+    case
+    when node['platform_version'].to_f < 6.0
+      'sysv'
+    when node['platform_version'].to_f < 7.0
+      'upstart'
+    else
+      'systemd'
+    end
+  when 'fedora'
+    case
+    when node['platform_version'].to_f < 15
+      'upstart'
+    else
+      'systemd'
+    end
+  when 'opensuse'
+    case
+    when node['platform_version'].to_f < 13
+      'sysv'
+    else
+      'systemd'
+    end
+  else
+    'upstart'
+  end
+
 case node['platform']
 when "debian"
 
@@ -86,6 +131,11 @@ when "fedora"
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
+  default['postgresql']['setup_script'] = "postgresql-setup"
+
+  if node['postgresql']['version'] == '9.3'
+    default['postgresql']['setup_script'] = "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup"
+  end
 
 when "amazon"
 
@@ -106,6 +156,7 @@ when "redhat", "centos", "scientific", "oracle"
 
   default['postgresql']['version'] = "8.4"
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['setup_script'] = "postgresql-setup"
 
   if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] == '8.4'
     default['postgresql']['client']['packages'] = %w{postgresql-devel}
@@ -118,8 +169,17 @@ when "redhat", "centos", "scientific", "oracle"
   end
 
   if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] != '8.4'
-     default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+    default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+
+    if node['postgresql']['server']['init_package'] == 'systemd'
+      default['postgresql']['server']['service_name'] = "postgresql"
+    else
+      default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+    end
+
+    if node['postgresql']['version'] == '9.3'
+      default['postgresql']['setup_script'] = "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup"
+    end
   else
     default['postgresql']['dir'] = "/var/lib/pgsql/data"
     default['postgresql']['server']['service_name'] = "postgresql"
