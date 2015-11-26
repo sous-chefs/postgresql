@@ -35,6 +35,9 @@ rescue LoadError
 
   if node['postgresql']['enable_pgdg_yum']
     repo_rpm_url, repo_rpm_filename, repo_rpm_package = pgdgrepo_rpm_info
+    package "ca-certificates" do
+      action :nothing
+    end.run_action(:upgrade)
     include_recipe "postgresql::yum_pgdg_postgresql"
     resources("remote_file[#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}]").run_action(:create)
     resources("package[#{repo_rpm_package}]").run_action(:install)
