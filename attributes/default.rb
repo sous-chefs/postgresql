@@ -133,7 +133,7 @@ when "fedora"
   default['postgresql']['server']['service_name'] = "postgresql"
   default['postgresql']['setup_script'] = "postgresql-setup"
 
-  if node['postgresql']['version'] == '9.3'
+  if node['postgresql']['version'].to_f >= 9.3
     default['postgresql']['setup_script'] = "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup"
   end
 
@@ -177,7 +177,7 @@ when "redhat", "centos", "scientific", "oracle"
       default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
     end
 
-    if node['postgresql']['version'] == '9.3'
+    if node['postgresql']['version'].to_f >= 9.3
       default['postgresql']['setup_script'] = "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup"
     end
   else
