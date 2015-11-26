@@ -19,6 +19,7 @@ default['postgresql']['enable_pgdg_apt'] = false
 default['postgresql']['server']['config_change_notify'] = :restart
 default['postgresql']['assign_postgres_password'] = true
 
+
 # Establish default database name
 default['postgresql']['database_name'] = 'template1'
 
@@ -239,11 +240,14 @@ end
 #
 # The ssl config attribute is generated in the recipe to avoid awkward
 # merge/precedence order during the Chef run.
+
+default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
+default['postgresql']['ident_maps'] = nil
+
 case node['platform_family']
 when 'debian'
   default['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
   default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
-  default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
   default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432
