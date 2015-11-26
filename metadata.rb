@@ -4,7 +4,7 @@ maintainer_email  "support@hw-ops.com"
 license           "Apache 2.0"
 description       "Installs and configures postgresql for clients or servers"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           "3.4.21"
+version           "3.4.24"
 recipe            "postgresql", "Includes postgresql::client"
 recipe            "postgresql::ruby", "Installs pg gem for Ruby bindings"
 recipe            "postgresql::client", "Installs postgresql client package(s)"
@@ -15,7 +15,7 @@ recipe            "postgresql::server_debian", "Installs postgresql server packa
 
 supports "ubuntu", "< 14.10"
 
-%w{debian fedora suse amazon}.each do |os|
+%w{debian fedora suse opensuse amazon}.each do |os|
   supports os
 end
 

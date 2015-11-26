@@ -22,6 +22,51 @@ default['postgresql']['assign_postgres_password'] = true
 # Establish default database name
 default['postgresql']['database_name'] = 'template1'
 
+# Sets OS init system (upstart, systemd, ...), instead of relying on Ohai
+default['postgresql']['server']['init_package'] = case node['platform']
+  when 'debian'
+    case
+    when node['platform_version'].to_f < 7.0
+      'sysv'
+    else
+      'systemd'
+    end
+  when 'ubuntu'
+    case
+    when node['platform_version'].to_f < 15.04
+      'upstart'
+    else
+      'systemd'
+    end
+  when 'amazon'
+    'upstart'
+  when 'redhat', 'centos', 'scientific', 'oracle'
+    case
+    when node['platform_version'].to_f < 6.0
+      'sysv'
+    when node['platform_version'].to_f < 7.0
+      'upstart'
+    else
+      'systemd'
+    end
+  when 'fedora'
+    case
+    when node['platform_version'].to_f < 15
+      'upstart'
+    else
+      'systemd'
+    end
+  when 'opensuse'
+    case
+    when node['platform_version'].to_f < 13
+      'sysv'
+    else
+      'systemd'
+    end
+  else
+    'upstart'
+  end
+
 case node['platform']
 when "debian"
 
@@ -86,6 +131,11 @@ when "fedora"
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
+  default['postgresql']['setup_script'] = "postgresql-setup"
+
+  if node['postgresql']['version'].to_f >= 9.3
+    default['postgresql']['setup_script'] = "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup"
+  end
 
 when "amazon"
 
@@ -106,6 +156,7 @@ when "redhat", "centos", "scientific", "oracle"
 
   default['postgresql']['version'] = "8.4"
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['setup_script'] = "postgresql-setup"
 
   if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] == '8.4'
     default['postgresql']['client']['packages'] = %w{postgresql-devel}
@@ -118,16 +169,41 @@ when "redhat", "centos", "scientific", "oracle"
   end
 
   if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] != '8.4'
-     default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-     default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+    default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+
+    if node['postgresql']['server']['init_package'] == 'systemd'
+      default['postgresql']['server']['service_name'] = "postgresql"
+    else
+      default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+    end
+
+    if node['postgresql']['version'].to_f >= 9.3
+      default['postgresql']['setup_script'] = "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup"
+    end
   else
     default['postgresql']['dir'] = "/var/lib/pgsql/data"
     default['postgresql']['server']['service_name'] = "postgresql"
   end
 
-when "suse"
+when "opensuse"
 
-  if node['platform_version'].to_f <= 11.1
+  if node['platform_version'].to_f == 13.2
+    default['postgresql']['version'] = '9.3'
+    default['postgresql']['client']['packages'] = ['postgresql93', 'postgresql93-devel']
+    default['postgresql']['server']['packages'] = ['postgresql93-server']
+    default['postgresql']['contrib']['packages'] = ['postgresql93-contrib']
+  elsif node['platform_version'].to_f == 13.1
+    default['postgresql']['version'] = '9.2'
+    default['postgresql']['client']['packages'] = ['postgresql92', 'postgresql92-devel']
+    default['postgresql']['server']['packages'] = ['postgresql92-server']
+    default['postgresql']['contrib']['packages'] = ['postgresql92-contrib']
+  end
+
+  default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  default['postgresql']['server']['service_name'] = "postgresql"
+
+when "suse"
+    if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
     default['postgresql']['client']['packages'] = ['postgresql', 'rubygem-pg']
     default['postgresql']['server']['packages'] = ['postgresql-server']
@@ -218,7 +294,7 @@ end
 
 default['postgresql']['enable_pgdg_yum'] = false
 
-default['postgresql']['initdb_locale'] = nil
+default['postgresql']['initdb_locale'] = 'UTF-8'
 
 # The PostgreSQL RPM Building Project built repository RPMs for easy
 # access to the PGDG yum repositories. Links to RPMs for installation
@@ -384,12 +460,12 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
   "9.2" => {
     "centos" => {
       "6" => {
-        "i386" => "http://yum.postgresql.org/9.2/redhat/rhel-6-i386/pgdg-centos92-9.2-6.noarch.rpm",
-        "x86_64" => "http://yum.postgresql.org/9.2/redhat/rhel-6-x86_64/pgdg-centos92-9.2-6.noarch.rpm"
+        "i386" => "http://yum.postgresql.org/9.2/redhat/rhel-6-i386/pgdg-centos92-9.2-7.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.2/redhat/rhel-6-x86_64/pgdg-centos92-9.2-7.noarch.rpm"
       },
       "5" => {
-        "i386" => "http://yum.postgresql.org/9.2/redhat/rhel-5-i386/pgdg-centos92-9.2-6.noarch.rpm",
-        "x86_64" => "http://yum.postgresql.org/9.2/redhat/rhel-5-x86_64/pgdg-centos92-9.2-6.noarch.rpm"
+        "i386" => "http://yum.postgresql.org/9.2/redhat/rhel-5-i386/pgdg-centos92-9.2-7.noarch.rpm",
+        "x86_64" => "http://yum.postgresql.org/9.2/redhat/rhel-5-x86_64/pgdg-centos92-9.2-7.noarch.rpm"
       }
     },
     "redhat" => {

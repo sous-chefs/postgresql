@@ -21,6 +21,8 @@ svc_name = node['postgresql']['server']['service_name']
 dir = node['postgresql']['dir']
 initdb_locale = node['postgresql']['initdb_locale']
 
+shortver = node['postgresql']['version'].split('.').join
+
 # Create a group and user like the package will.
 # Otherwise the templates fail.
 
@@ -51,11 +53,26 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
-# Starting with Fedora 16, the pgsql sysconfig files are no longer used.
+# If using PGDG, add symlinks so that downstream commands all work
+if node['postgresql']['enable_pgdg_yum'] == true
+  [
+    "postgresql#{shortver}-setup",
+    "postgresql#{shortver}-check-db-dir"
+  ].each do |cmd|
+
+    link "/usr/bin/#{cmd}" do
+      to "/usr/pgsql-#{node['postgresql']['version']}/bin/#{cmd}"
+    end
+
+  end
+end
+
+# Starting with Fedora 16, the pgsql sysconfig files are no longer used,
+# its use is discouraged if using systemd
 # The systemd unit file does not support 'initdb' or 'upgrade' actions.
 # Use the postgresql-setup script instead.
 
-unless platform_family?("fedora") and node['platform_version'].to_i >= 16
+unless node['postgresql']['server']['init_package'] == 'systemd'
 
   directory "/etc/sysconfig/pgsql" do
     mode "0644"
@@ -71,19 +88,13 @@ unless platform_family?("fedora") and node['platform_version'].to_i >= 16
 
 end
 
-if platform_family?("fedora") and node['platform_version'].to_i >= 16
+if node['postgresql']['server']['init_package'] == 'systemd'
 
-  execute "postgresql-setup initdb #{svc_name}" do
+  execute "#{node['postgresql']['setup_script']} initdb #{svc_name}" do
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
-elsif platform?("redhat") and node['platform_version'].to_i >= 7
-
-  execute "postgresql#{node['postgresql']['version'].split('.').join}-setup initdb #{svc_name}" do
-    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
-  end
-
-else !platform_family?("suse")
+elsif !platform_family?("suse")
 
   execute "/sbin/service #{svc_name} initdb #{initdb_locale}" do
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
@@ -91,10 +102,10 @@ else !platform_family?("suse")
 
 end
 
-include_recipe "postgresql::server_conf"
-
 service "postgresql" do
   service_name svc_name
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
 end
+
+include_recipe "postgresql::server_conf"
