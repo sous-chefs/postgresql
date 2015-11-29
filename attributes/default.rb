@@ -296,6 +296,11 @@ default['postgresql']['enable_pgdg_yum'] = false
 
 default['postgresql']['initdb_locale'] = 'UTF-8'
 
+# Allow overriding which cookbook templates in server_conf.rb recipe can
+# come from. When nil, use this cookbook.
+default['postgresql']['server_conf']['postgresql'] = nil
+default['postgresql']['server_conf']['pg_hba'] = nil
+
 # The PostgreSQL RPM Building Project built repository RPMs for easy
 # access to the PGDG yum repositories. Links to RPMs for installation
 # on the supported version/platform combinations are listed at
@@ -684,4 +689,3 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
     }
   },
 };
-
