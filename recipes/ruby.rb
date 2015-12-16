@@ -34,10 +34,19 @@ rescue LoadError
   include_recipe "postgresql::client"
 
   if node['postgresql']['enable_pgdg_yum']
-    repo_rpm_url, repo_rpm_filename, repo_rpm_package = pgdgrepo_rpm_info
+    version = node['postgresql']['version']
+    rpm_platform = node['platform']
+    rpm_platform_version = node['platform_version'].to_f.to_i.to_s
+    arch = node['kernel']['machine']
+
+    repo_rpm_url = node[:postgresql][:pgdg][:repo_rpm_url][version][rpm_platform][rpm_platform_version][arch]
+    repo_rpm_filename = File.basename(repo_rpm_url)
+    repo_rpm_package = repo_rpm_filename.split(/-/,3)[0..1].join('-')
+
     package "ca-certificates" do
       action :nothing
     end.run_action(:upgrade)
+
     include_recipe "postgresql::yum_pgdg_postgresql"
     resources("remote_file[#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}]").run_action(:create)
     resources("package[#{repo_rpm_package}]").run_action(:install)

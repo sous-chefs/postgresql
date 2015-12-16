@@ -28,7 +28,14 @@
 # PGDG repository properly. Conflicts will arise if postgresql9X does
 # appear in your distro's repo and you want a more recent patch level.
 
-repo_rpm_url, repo_rpm_filename, repo_rpm_package = pgdgrepo_rpm_info
+version = node['postgresql']['version']
+rpm_platform = node['platform']
+rpm_platform_version = node['platform_version'].to_f.to_i.to_s
+arch = node['kernel']['machine']
+
+repo_rpm_url = node[:postgresql][:pgdg][:repo_rpm_url][version][rpm_platform][rpm_platform_version][arch]
+repo_rpm_filename = File.basename(repo_rpm_url)
+repo_rpm_package = repo_rpm_filename.split(/-/,3)[0..1].join('-')
 
 # Download the PGDG repository RPM as a local file
 remote_file "#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}" do
