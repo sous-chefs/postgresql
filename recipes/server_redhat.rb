@@ -94,9 +94,15 @@ if node['postgresql']['server']['init_package'] == 'systemd'
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
-elsif !platform_family?("suse")
+elsif (!platform_family?("suse") && node['postgresql']['version'].to_f <= 9.3)
 
   execute "/sbin/service #{svc_name} initdb #{initdb_locale}" do
+    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+  end
+
+else
+
+  execute "/sbin/service #{svc_name} initdb" do
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
