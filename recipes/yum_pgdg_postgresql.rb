@@ -15,10 +15,6 @@
 # limitations under the License.
 #
 
-#######
-# Load the pgdgrepo_rpm_info method from libraries/default.rb
-::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
-
 ######################################
 # Install the "PostgreSQL RPM Building Project - Yum Repository" through
 # the repo_rpm_url determined with pgdgrepo_rpm_info method from
@@ -28,25 +24,19 @@
 # PGDG repository properly. Conflicts will arise if postgresql9X does
 # appear in your distro's repo and you want a more recent patch level.
 
-version = node['postgresql']['version']
 rpm_platform = node['platform']
 rpm_platform_version = node['platform_version'].to_f.to_i.to_s
 arch = node['kernel']['machine']
 
-repo_rpm_url = node[:postgresql][:pgdg][:repo_rpm_url][version][rpm_platform][rpm_platform_version][arch]
-repo_rpm_filename = File.basename(repo_rpm_url)
-repo_rpm_package = repo_rpm_filename.split(/-/,3)[0..1].join('-')
-
 # Download the PGDG repository RPM as a local file
-remote_file "#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}" do
-  source repo_rpm_url
+remote_file "#{Chef::Config[:file_cache_path]}/#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}" do
+  source "#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:url]}#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}"
   mode "0644"
 end
 
 # Install the PGDG repository RPM from the local file
-# E.g., /etc/yum.repos.d/pgdg-91-centos.repo
-package repo_rpm_package do
+package "#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}" do
   provider Chef::Provider::Package::Rpm
-  source "#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}"
+  source "#{Chef::Config[:file_cache_path]}/#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}"
   action :install
 end
