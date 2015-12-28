@@ -18,7 +18,6 @@
 include_recipe "postgresql::client"
 
 svc_name = node['postgresql']['server']['service_name']
-dir = node['postgresql']['dir']
 initdb_locale = node['postgresql']['initdb_locale']
 
 shortver = node['postgresql']['version'].split('.').join
@@ -40,7 +39,7 @@ user "postgres" do
   supports :manage_home => false
 end
 
-directory dir do
+directory node['postgresql']['config']['data_directory'] do
   owner "postgres"
   group "postgres"
   recursive true
@@ -88,22 +87,24 @@ unless node['postgresql']['server']['init_package'] == 'systemd'
 
 end
 
+Chef::Log::warn("#{node['postgresql']['config']['data_directory']}/PG_VERSION")
+
 if node['postgresql']['server']['init_package'] == 'systemd'
 
   execute "#{node['postgresql']['setup_script']} initdb #{svc_name}" do
-    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+    not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
   end
 
 elsif (!platform_family?("suse") && node['postgresql']['version'].to_f <= 9.3)
 
   execute "/sbin/service #{svc_name} initdb #{initdb_locale}" do
-    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+    not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
   end
 
 else
 
   execute "/sbin/service #{svc_name} initdb" do
-    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+    not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
   end
 
 end
