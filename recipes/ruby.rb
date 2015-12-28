@@ -60,9 +60,22 @@ rescue LoadError
     include_recipe "postgresql::apt_pgdg_postgresql"
     resources("file[remove deprecated Pitti PPA apt repository]").run_action(:delete)
     resources("apt_repository[apt.postgresql.org]").run_action(:add)
+
+    node['postgresql']['client']['packages'].each do |pkg|
+      package pkg do
+        action :nothing
+      end.run_action(:install)
+    end
+
   end
 
   include_recipe "postgresql::client"
+
+  node['postgresql']['client']['packages'].each do |pkg|
+    package pkg do
+      action :nothing
+    end.run_action(:install)
+  end
 
   begin
     chef_gem "pg"
