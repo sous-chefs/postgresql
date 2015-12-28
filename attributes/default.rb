@@ -73,50 +73,70 @@ when "debian"
   case
   when node['platform_version'].to_f < 6.0 # All 5.X
     default['postgresql']['version'] = "8.3"
+    default['postgresql']['dir'] = "/etc/postgresql/8.3/main"
+    default['postgresql']['client']['packages'] = ["postgresql-client-8.3","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-8.3"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.3"]
   when node['platform_version'].to_f < 7.0 # All 6.X
     default['postgresql']['version'] = "8.4"
+    default['postgresql']['dir'] = "/etc/postgresql/8.4/main"
+    default['postgresql']['client']['packages'] = ["postgresql-client-8.4","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-8.4"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.4"]
   when node['platform_version'].to_f < 8.0 # All 7.X
     default['postgresql']['version'] = "9.1"
+    default['postgresql']['dir'] = "/etc/postgresql/9.1/main"
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.1","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-9.1"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.1"]
   else
     default['postgresql']['version'] = "9.4"
+    default['postgresql']['dir'] = "/etc/postgresql/9.4/main"
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.4","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-9.4"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.4"]
   end
 
-  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
   case
   when node['platform_version'].to_f < 6.0 # All 5.X
-    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+    default['postgresql']['server']['service_name'] = "postgresql-8.3"
   else
     default['postgresql']['server']['service_name'] = "postgresql"
   end
 
-  default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
-  default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
-  default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
 
 when "ubuntu"
 
   case
   when node['platform_version'].to_f <= 9.04
     default['postgresql']['version'] = "8.3"
+    default['postgresql']['dir'] = "/etc/postgresql/8.3/main"
+    default['postgresql']['server']['service_name'] = "postgresql-8.3"
+    default['postgresql']['client']['packages'] = ["postgresql-client-8.3","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-8.3"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.3"]
   when node['platform_version'].to_f <= 11.04
     default['postgresql']['version'] = "8.4"
+    default['postgresql']['dir'] = "/etc/postgresql/8.4/main"
+    default['postgresql']['server']['service_name'] = "postgresql"
+    default['postgresql']['client']['packages'] = ["postgresql-client-8.4","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-8.4"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.4"]
   when node['platform_version'].to_f <= 13.10
     default['postgresql']['version'] = "9.1"
+    default['postgresql']['dir'] = "/etc/postgresql/9.1/main"
+    default['postgresql']['server']['service_name'] = "postgresql"
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.1","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-9.1"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.1"]
   else
     default['postgresql']['version'] = "9.3"
-  end
-
-  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
-  case
-  when (node['platform_version'].to_f <= 10.04) && (! node['postgresql']['enable_pgdg_apt'])
-    default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-  else
+    default['postgresql']['dir'] = "/etc/postgresql/9.4/main"
     default['postgresql']['server']['service_name'] = "postgresql"
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.4","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-9.4"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.4"]
   end
-
-  default['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}","libpq-dev"]
-  default['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
-  default['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
 
 when "fedora"
 
@@ -126,22 +146,21 @@ when "fedora"
     default['postgresql']['version'] = "8.4"
   end
 
+  default['postgresql']['setup_script'] = "postgresql-setup"
+
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
   default['postgresql']['server']['packages'] = %w{postgresql-server}
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
 
-  if node['postgresql']['version'].to_f >= 9.3
-    default['postgresql']['setup_script'] = "/usr/pgsql-#{node['postgresql']['version']}/bin/postgresql#{node['postgresql']['version'].split('.').join}-setup"
-  else
-    default['postgresql']['setup_script'] = "postgresql-setup"
-  end
-
 when "amazon"
 
-  if node['platform_version'].to_f >= 2012.03
+  if node['platform_version'].to_f == 2012.03
     default['postgresql']['version'] = "9.0"
+    default['postgresql']['dir'] = "/var/lib/pgsql9/data"
+  elsif node['platform_version'].to_f >= 2015.03
+    default['postgresql']['version'] = "9.2"
     default['postgresql']['dir'] = "/var/lib/pgsql9/data"
   else
     default['postgresql']['version'] = "8.4"
@@ -157,30 +176,17 @@ when "redhat", "centos", "scientific", "oracle"
 
   default['postgresql']['version'] = "8.4"
 
-  if node['postgresql']['version'].to_f >= 9.3
-    default['postgresql']['setup_script'] = "postgresql#{node['postgresql']['version'].split('.').join}-setup"
-  else
-    default['postgresql']['setup_script'] = "postgresql-setup"
-  end
+  default['postgresql']['client']['packages'] = ["postgresql84-devel"]
+  default['postgresql']['server']['packages'] = ["postgresql84-server"]
+  default['postgresql']['contrib']['packages'] = ["postgresql84-contrib"]
+
+  default['postgresql']['setup_script'] = "postgresql-setup"
+  default['postgresql']['server']['service_name'] = "postgresql"
 
   if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'].to_f == 8.4
-    default['postgresql']['client']['packages'] = %w{postgresql-devel}
-    default['postgresql']['server']['packages'] = %w{postgresql-server}
-    default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  else
-    default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
-    default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
-    default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
-  end
-
-  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'].to_f != 8.4
-    if node['postgresql']['server']['init_package'] == 'systemd'
-      default['postgresql']['server']['service_name'] = "postgresql"
-    else
-      default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-    end
-  else
-    default['postgresql']['server']['service_name'] = "postgresql"
+    default['postgresql']['client']['packages'] = ['postgresql-devel']
+    default['postgresql']['server']['packages'] = ['postgresql-server']
+    default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
   end
 
 when "opensuse"
@@ -218,25 +224,13 @@ when "suse"
 
 else
   default['postgresql']['version'] = "8.4"
-  default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  default['postgresql']['dir'] = "/etc/postgresql/8.4/main"
   default['postgresql']['client']['packages'] = ["postgresql"]
   default['postgresql']['server']['packages'] = ["postgresql"]
   default['postgresql']['contrib']['packages'] = ["postgresql"]
   default['postgresql']['server']['service_name'] = "postgresql"
 end
 
-# These defaults have disparity between which postgresql configuration
-# settings are used because they were extracted from the original
-# configuration files that are now removed in favor of dynamic
-# generation.
-#
-# While the configuration ends up being the same as the default
-# in previous versions of the cookbook, the content of the rendered
-# template will change, and this will result in service notification
-# if you upgrade the cookbook on existing systems.
-#
-# The ssl config attribute is generated in the recipe to avoid awkward
-# merge/precedence order during the Chef run.
 case node['platform_family']
 when 'debian'
   default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
