@@ -31,26 +31,29 @@ rescue LoadError
 
   node.set['build-essential']['compile_time'] = true
   include_recipe "build-essential"
-  include_recipe "postgresql::client"
 
   if node['postgresql']['enable_pgdg_yum']
-    version = node['postgresql']['version']
-    rpm_platform = node['platform']
-    rpm_platform_version = node['platform_version'].to_f.to_i.to_s
-    arch = node['kernel']['machine']
-
-    repo_rpm_url = node[:postgresql][:pgdg][:repo_rpm_url][version][rpm_platform][rpm_platform_version][arch]
-    repo_rpm_filename = File.basename(repo_rpm_url)
-    repo_rpm_package = repo_rpm_filename.split(/-/,3)[0..1].join('-')
-
     package "ca-certificates" do
       action :nothing
     end.run_action(:upgrade)
 
     include_recipe "postgresql::yum_pgdg_postgresql"
-    resources("remote_file[#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}]").run_action(:create)
-    resources("package[#{repo_rpm_package}]").run_action(:install)
+
+    rpm_platform = node['platform']
+    rpm_platform_version = node['platform_version'].to_f.to_i.to_s
+    arch = node['kernel']['machine']
+
+    resources("remote_file[#{Chef::Config[:file_cache_path]}/#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}]").run_action(:create)
+    resources("package[#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}]").run_action(:install)
+
     ENV['PATH'] = "/usr/pgsql-#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
+
+    node['postgresql']['client']['packages'].each do |pkg|
+      package pkg do
+        action :nothing
+      end.run_action(:install)
+    end
+
   end
 
   if node['postgresql']['enable_pgdg_apt']
@@ -59,9 +62,7 @@ rescue LoadError
     resources("apt_repository[apt.postgresql.org]").run_action(:add)
   end
 
-  node['postgresql']['client']['packages'].each do |pg_pack|
-    resources("package[#{pg_pack}]").run_action(:install)
-  end
+  include_recipe "postgresql::client"
 
   begin
     chef_gem "pg"
