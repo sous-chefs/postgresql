@@ -2,6 +2,14 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v3.5.0
+-----
+* No more derived attributes in the attributes file
+* Correct issues which caused the inability to override installation version defaults
+* Start fixing things that are so old and crusty they need to be changed
+* Added more grey hair to my beard
+* Stopped doing things in ruby at compile time that have no place being evaluated at compile time
+
 v3.4.24
 -------
 * Corrections to address repositories signed with newer certificates that some distributions have in their default ca-certificates package
