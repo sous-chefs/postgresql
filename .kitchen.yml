@@ -51,7 +51,7 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.3"
+      version: "9.4"
 
 - name: yum-pgdg-client
   run_list:
@@ -61,9 +61,9 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.3"
+      version: "9.4"
       client:
-        packages: ["postgresql93"]
+        packages: ["postgresql94"]
 
 - name: ruby
   run_list:
@@ -73,8 +73,9 @@ suites:
 
 - name: server
   run_list:
-  - recipe[postgresql::ruby]
+  - recipe[apt]
   - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   attributes:
     postgresql:
@@ -90,7 +91,7 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.3"
+      version: "9.4"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
       config:
@@ -102,7 +103,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["ubuntu-12.04", "ubuntu-14.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2"]
+  excludes: ["ubuntu-12.04", "ubuntu-14.04", "debian-7.4", "opensuse-13.1", "opensuse-13.2"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -122,20 +123,20 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.3"
+      version: "9.4"
 
 - name: yum-pgdg-client-ruby
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["ubuntu-12.04", "ubuntu-14.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2"]
+  excludes: ["ubuntu-12.04", "ubuntu-14.04", "debian-7.4", "opensuse-13.1", "opensuse-13.2"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.3"
+      version: "9.4"
       client:
-        packages: ["postgresql93", "postgresql93-devel"]
+        packages: ["postgresql94", "postgresql94-devel"]
 
 - name: apt-pgdg-server-pg_stat_statements
   run_list:
@@ -146,7 +147,7 @@ suites:
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.3"
+      version: "9.4"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
       config:
@@ -162,14 +163,14 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: ["ubuntu-12.04", "ubuntu-14.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2"]
+  excludes: ["ubuntu-12.04", "ubuntu-14.04", "debian-7.4", "opensuse-13.1", "opensuse-13.2"]
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.3"
+      version: "9.4"
       server:
-        packages: ["postgresql93-server"]
-        service_name: "postgresql-9.3"
+        packages: ["postgresql94-server"]
+        service_name: "postgresql-9.4"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
       config:
