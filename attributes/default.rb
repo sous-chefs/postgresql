@@ -131,11 +131,11 @@ when "ubuntu"
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.1"]
   else
     default['postgresql']['version'] = "9.3"
-    default['postgresql']['dir'] = "/etc/postgresql/9.4/main"
+    default['postgresql']['dir'] = "/etc/postgresql/9.3/main"
     default['postgresql']['server']['service_name'] = "postgresql"
-    default['postgresql']['client']['packages'] = ["postgresql-client-9.4","libpq-dev"]
-    default['postgresql']['server']['packages'] = ["postgresql-9.4"]
-    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.4"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.3","libpq-dev"]
+    default['postgresql']['server']['packages'] = ["postgresql-9.3"]
+    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.3"]
   end
 
 when "fedora"
@@ -207,7 +207,7 @@ when "opensuse"
   default['postgresql']['server']['service_name'] = "postgresql"
 
 when "suse"
-    if node['platform_version'].to_f <= 11.1
+  if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
     default['postgresql']['client']['packages'] = ['postgresql', 'rubygem-pg']
     default['postgresql']['server']['packages'] = ['postgresql-server']
@@ -233,22 +233,14 @@ end
 
 case node['platform_family']
 when 'debian'
-  default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
-  default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
-  default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432
   default['postgresql']['config']['max_connections'] = 100
-  default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql' if node['postgresql']['version'].to_f < 9.3
-  default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql' if node['postgresql']['version'].to_f >= 9.3
   default['postgresql']['config']['shared_buffers'] = '24MB'
-  default['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
   default['postgresql']['config']['log_line_prefix'] = '%t '
   default['postgresql']['config']['datestyle'] = 'iso, mdy'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
   default['postgresql']['config']['ssl'] = true
-  default['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
-  default['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key'if node['postgresql']['version'].to_f >= 9.2
 when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432
