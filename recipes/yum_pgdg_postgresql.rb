@@ -16,13 +16,7 @@
 #
 
 ######################################
-# Install the "PostgreSQL RPM Building Project - Yum Repository" through
-# the repo_rpm_url determined with pgdgrepo_rpm_info method from
-# libraries/default.rb. The /etc/yum.repos.d/pgdg-*.repo
-# will provide postgresql9X packages, but you may need to exclude
-# postgresql packages from the repository of the distro in order to use
-# PGDG repository properly. Conflicts will arise if postgresql9X does
-# appear in your distro's repo and you want a more recent patch level.
+# Install the "PostgreSQL RPM Building Project - Yum Repository"
 
 rpm_platform = node['platform']
 rpm_platform_version = node['platform_version'].to_f.to_i.to_s
