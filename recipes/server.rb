@@ -53,8 +53,11 @@ end
 # since they do things slightly differently.
 case node['platform_family']
 when "rhel", "fedora", "suse"
+  node.set['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  node.set['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
   include_recipe "postgresql::server_redhat"
 when "debian"
+  node.set['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
   include_recipe "postgresql::server_debian"
 end
 
@@ -83,7 +86,7 @@ end
 bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
-  echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql -p #{node['postgresql']['config']['port']}
+  echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{node['postgresql']['password']['postgres']}\';" | psql -p #{node['postgresql']['config']['port']}
   EOH
   action :run
   not_if "ls #{node['postgresql']['config']['data_directory']}/recovery.conf"

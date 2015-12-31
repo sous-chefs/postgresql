@@ -2,6 +2,16 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v4.0.0
+-----
+* No more derived attributes in the attributes file
+* Correct issues which caused the inability to override installation version defaults
+* Remove method pgdgrepo_rpm_info compile time use of derived attributes case many issues
+* Use correct directory path and check for the correct not_if condition to determine if the database has been initialized
+* Ensure that correct packages are installed in all scenarios where pg gem is compiled
+* Updates to test-kitchen suite configuration
+* Added more grey hair to my beard
+
 v3.4.24
 -------
 * Corrections to address repositories signed with newer certificates that some distributions have in their default ca-certificates package
