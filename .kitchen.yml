@@ -111,6 +111,9 @@ suites:
       server:
         packages: ["postgresql94-server"]
         service_name: "postgresql-9.4"
+      client:
+        packages: ["postgresql94", "postgresql94-devel"]
+      setup_script: "postgresql94-setup"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
 
