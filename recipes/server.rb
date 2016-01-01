@@ -52,13 +52,16 @@ end
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
 case node['platform_family']
-when "rhel", "fedora", "suse"
+when "rhel", "fedora"
   node.set['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
   node.set['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
   include_recipe "postgresql::server_redhat"
 when "debian"
   node.set['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
   include_recipe "postgresql::server_debian"
+when 'suse'
+  node.set['postgresql']['config']['data_directory'] = node['postgresql']['dir']
+  include_recipe "postgresql::server_redhat"
 end
 
 # Versions prior to 9.2 do not have a config file option to set the SSL

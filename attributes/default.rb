@@ -16,6 +16,8 @@
 #
 
 default['postgresql']['enable_pgdg_apt'] = false
+default['postgresql']['enable_pgdg_yum'] = false
+
 default['postgresql']['server']['config_change_notify'] = :restart
 default['postgresql']['assign_postgres_password'] = true
 
@@ -191,6 +193,8 @@ when "redhat", "centos", "scientific", "oracle"
 
 when "opensuse"
 
+  default['postgresql']['dir'] = "/var/lib/pgsql/data"
+
   if node['platform_version'].to_f == 13.2
     default['postgresql']['version'] = '9.3'
     default['postgresql']['client']['packages'] = ['postgresql93', 'postgresql93-devel']
@@ -203,7 +207,6 @@ when "opensuse"
     default['postgresql']['contrib']['packages'] = ['postgresql92-contrib']
   end
 
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
   default['postgresql']['server']['service_name'] = "postgresql"
 
 when "suse"
@@ -273,8 +276,6 @@ case node['platform_family']
 when 'debian'
   default['postgresql']['pgdg']['release_apt_codename'] = node['lsb']['codename']
 end
-
-default['postgresql']['enable_pgdg_yum'] = false
 
 default['postgresql']['initdb_locale'] = 'UTF-8'
 
