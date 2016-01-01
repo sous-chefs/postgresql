@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'postgresql::default' do
   platforms = {
     'ubuntu' => {
-      'versions' => ['10.04', '12.04', '14.04']
+      'versions' => ['12.04', '14.04']
      },
     'centos' => {
        'versions' => ['6.4', '7.0']
