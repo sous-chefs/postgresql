@@ -2,6 +2,19 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v4.0.0
+-----
+* Potential breaking change: Restructured default attributes to avoid compile time deriving other attribute values from value of the `node[‘postgresql’][‘version’]`
+(#313, #302, #295, #288, #280, #261, #260, #254, #248, #217, #214, #167, #143)
+* Correct issues which caused the inability to override installation version defaults
+* Correct issues which caused configuration file entries with miss matching version numbers and incorrect file system paths being defined
+* Remove method pgdgrepo_rpm_info compile time use of derived attributes case many issues
+* Use correct directory path and check for the correct not_if condition to determine if the database has been initialized
+* Ensure that correct packages are installed in all scenarios where pg gem is compiled
+* Fix errors in configuration files for unix_socket_directory and unix_socket_directories
+* Updates to test-kitchen suite configuration
+* Added more grey hair to my beard
+
 v3.4.24
 -------
 * Corrections to address repositories signed with newer certificates that some distributions have in their default ca-certificates package

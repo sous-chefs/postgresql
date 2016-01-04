@@ -59,7 +59,7 @@ describe 'opensuse::postgresql::server' do
   end
 
   it 'Launch Cluster Creation' do
-    expect(chef_run).to run_execute('/sbin/service postgresql initdb UTF-8')
+    expect(chef_run).to run_execute('initdb -d /var/lib/pgsql/data')
   end
 
   context 'Directory /etc/sysconfig/pgsql exist' do
