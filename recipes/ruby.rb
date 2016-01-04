@@ -31,27 +31,50 @@ rescue LoadError
 
   node.set['build-essential']['compile_time'] = true
   include_recipe "build-essential"
-  include_recipe "postgresql::client"
 
   if node['postgresql']['enable_pgdg_yum']
-    repo_rpm_url, repo_rpm_filename, repo_rpm_package = pgdgrepo_rpm_info
     package "ca-certificates" do
       action :nothing
     end.run_action(:upgrade)
+
     include_recipe "postgresql::yum_pgdg_postgresql"
-    resources("remote_file[#{Chef::Config[:file_cache_path]}/#{repo_rpm_filename}]").run_action(:create)
-    resources("package[#{repo_rpm_package}]").run_action(:install)
+
+    rpm_platform = node['platform']
+    rpm_platform_version = node['platform_version'].to_f.to_i.to_s
+    arch = node['kernel']['machine']
+
+    resources("remote_file[#{Chef::Config[:file_cache_path]}/#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}]").run_action(:create)
+    resources("package[#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}]").run_action(:install)
+
     ENV['PATH'] = "/usr/pgsql-#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
+
+    node['postgresql']['client']['packages'].each do |pkg|
+      package pkg do
+        action :nothing
+      end.run_action(:install)
+    end
+
   end
 
   if node['postgresql']['enable_pgdg_apt']
     include_recipe "postgresql::apt_pgdg_postgresql"
     resources("file[remove deprecated Pitti PPA apt repository]").run_action(:delete)
     resources("apt_repository[apt.postgresql.org]").run_action(:add)
+
+    node['postgresql']['client']['packages'].each do |pkg|
+      package pkg do
+        action :nothing
+      end.run_action(:install)
+    end
+
   end
 
-  node['postgresql']['client']['packages'].each do |pg_pack|
-    resources("package[#{pg_pack}]").run_action(:install)
+  include_recipe "postgresql::client"
+
+  node['postgresql']['client']['packages'].each do |pkg|
+    package pkg do
+      action :nothing
+    end.run_action(:install)
   end
 
   begin

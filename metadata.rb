@@ -1,10 +1,10 @@
 name              "postgresql"
 maintainer        "Heavy Water Operations, LLC"
-maintainer_email  "support@hw-ops.com"
+maintainer_email  "helpdesk@heavywater.io"
 license           "Apache 2.0"
 description       "Installs and configures postgresql for clients or servers"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           "3.4.24"
+version           "4.0.0"
 recipe            "postgresql", "Includes postgresql::client"
 recipe            "postgresql::ruby", "Installs pg gem for Ruby bindings"
 recipe            "postgresql::client", "Installs postgresql client package(s)"
