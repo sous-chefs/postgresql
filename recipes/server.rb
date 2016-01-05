@@ -31,9 +31,9 @@ if Chef::Config[:solo]
 
   if !missing_attrs.empty?
     Chef::Log.fatal([
-        "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
-        "For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note"
-      ].join(' '))
+      "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
+      "For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note"
+    ].join(' '))
     raise
   end
 else

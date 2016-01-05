@@ -88,12 +88,12 @@ db_type = 'mixed'
 
 if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('db_type'))
   db_type = node['postgresql']['config_pgtune']['db_type']
-  if (!(["dw","oltp","web","mixed","desktop"].include?(db_type)))
+  if (!(["dw", "oltp", "web", "mixed", "desktop"].include?(db_type)))
     Chef::Log.fatal([
-        "Bad value (#{db_type})",
-        "for node['postgresql']['config_pgtune']['db_type'] attribute.",
-        "Valid values are one of dw, oltp, web, mixed, desktop."
-      ].join(' '))
+      "Bad value (#{db_type})",
+      "for node['postgresql']['config_pgtune']['db_type'] attribute.",
+      "Valid values are one of dw, oltp, web, mixed, desktop."
+    ].join(' '))
     raise
   end
 end
@@ -111,10 +111,10 @@ if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config
   max_connections = node['postgresql']['config_pgtune']['max_connections'].to_i
   if max_connections <= 0
     Chef::Log.fatal([
-        "Bad value (#{max_connections})",
-        "for node['postgresql']['config_pgtune']['max_connections'] attribute.",
-        "Valid values are non-zero integers only."
-      ].join(' '))
+      "Bad value (#{max_connections})",
+      "for node['postgresql']['config_pgtune']['max_connections'] attribute.",
+      "Valid values are non-zero integers only."
+    ].join(' '))
     raise
   end
   con = max_connections
@@ -129,10 +129,10 @@ if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config
   total_memory = node['postgresql']['config_pgtune']['total_memory']
   if (total_memory.match(/\A[1-9]\d*kB\Z/) == nil)
     Chef::Application.fatal!([
-        "Bad value (#{total_memory})",
-        "for node['postgresql']['config_pgtune']['total_memory'] attribute.",
-        "Valid values are non-zero integers followed by kB (e.g., 49416564kB)."
-      ].join(' '))
+      "Bad value (#{total_memory})",
+      "for node['postgresql']['config_pgtune']['total_memory'] attribute.",
+      "Valid values are non-zero integers followed by kB (e.g., 49416564kB)."
+    ].join(' '))
   end
 end
 
@@ -157,11 +157,11 @@ if (mem >= 256)
   # (2) shared_buffers
   #     Sets the number of shared memory buffers used by the server.
   shared_buffers =
-  { "web" => mem/4,
-    "oltp" => mem/4,
-    "dw" => mem/4,
-    "mixed" => mem/4,
-    "desktop" => mem/16
+  { "web" => mem / 4,
+    "oltp" => mem / 4,
+    "dw" => mem / 4,
+    "mixed" => mem / 4,
+    "desktop" => mem / 16
   }.fetch(db_type)
 
   # Robert Haas has advised to cap the size of shared_buffers based on
@@ -169,16 +169,16 @@ if (mem >= 256)
   # http://rhaas.blogspot.com/2012/03/tuning-sharedbuffers-and-walbuffers.html
   case node['kernel']['machine']
   when "i386" # 32-bit machines
-    if shared_buffers > 2*1024
-      shared_buffers = 2*1024
+    if shared_buffers > 2 * 1024
+      shared_buffers = 2 * 1024
     end
   when "x86_64" # 64-bit machines
-    if shared_buffers > 8*1024
-      shared_buffers = 8*1024
+    if shared_buffers > 8 * 1024
+      shared_buffers = 8 * 1024
     end
   end
 
-  node.default['postgresql']['config']['shared_buffers'] = binaryround(shared_buffers*1024*1024)
+  node.default['postgresql']['config']['shared_buffers'] = binaryround(shared_buffers * 1024 * 1024)
 
   # (3) effective_cache_size
   #     Sets the planner's assumption about the size of the disk cache.
@@ -192,7 +192,7 @@ if (mem >= 256)
     "desktop" => mem / 4
   }.fetch(db_type)
 
-  node.default['postgresql']['config']['effective_cache_size'] = binaryround(effective_cache_size*1024*1024)
+  node.default['postgresql']['config']['effective_cache_size'] = binaryround(effective_cache_size * 1024 * 1024)
 
   # (4) work_mem
   #     Sets the maximum memory to be used for query workspaces.
@@ -206,7 +206,7 @@ if (mem >= 256)
       "desktop" => mem_con_v / 6
     }.fetch(db_type)
 
-  node.default['postgresql']['config']['work_mem'] = binaryround(work_mem*1024*1024)
+  node.default['postgresql']['config']['work_mem'] = binaryround(work_mem * 1024 * 1024)
 
   # (5) maintenance_work_mem
   #     Sets the maximum memory to be used for maintenance operations.
@@ -220,11 +220,11 @@ if (mem >= 256)
   }.fetch(db_type)
 
   # Cap maintenence RAM at 1GB on servers with lots of memory
-  if (maintenance_work_mem > 1*1024)
-      maintenance_work_mem = 1*1024
+  if (maintenance_work_mem > 1 * 1024)
+    maintenance_work_mem = 1 * 1024
   end
 
-  node.default['postgresql']['config']['maintenance_work_mem'] = binaryround(maintenance_work_mem*1024*1024)
+  node.default['postgresql']['config']['maintenance_work_mem'] = binaryround(maintenance_work_mem * 1024 * 1024)
 
 end
 
@@ -264,7 +264,7 @@ node.default['postgresql']['config']['checkpoint_completion_target'] = checkpoin
 if node['postgresql']['version'].to_f < 9.1
   wal_buffers = 512 * checkpoint_segments
   # The pgtune seems to use 1kB units for wal_buffers
-  node.default['postgresql']['config']['wal_buffers'] = binaryround(wal_buffers*1024)
+  node.default['postgresql']['config']['wal_buffers'] = binaryround(wal_buffers * 1024)
 else
   node.default['postgresql']['config']['wal_buffers'] = "-1"
 end

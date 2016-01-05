@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'debian::postgresql::server' do
   let(:chef_application) do
-    double('Chef::Application',fatal!:false);
+    double('Chef::Application', fatal!: false);
   end
   let(:chef_run) do
     runner = ChefSpec::SoloRunner.new(
@@ -16,7 +16,7 @@ describe 'debian::postgresql::server' do
     runner.converge('postgresql::server')
   end
   before do
-    stub_const('Chef::Application',chef_application)
+    stub_const('Chef::Application', chef_application)
     allow(File).to receive(:directory?).and_call_original
     allow(File).to receive(:directory?).with('/etc/postgresql/9.1/main').and_return(false)
     stub_command("ls /var/lib/postgresql/9.1/main/recovery.conf").and_return(false)

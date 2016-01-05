@@ -20,9 +20,7 @@ db_name = node['postgresql']['database_name']
 # Install the PostgreSQL contrib package(s) from the distribution,
 # as specified by the node attributes.
 node['postgresql']['contrib']['packages'].each do |pg_pack|
-
   package pg_pack
-
 end
 
 include_recipe "postgresql::server"
@@ -38,7 +36,7 @@ if (node['postgresql']['contrib'].attribute?('extensions'))
       EOH
       action :run
       ::Chef::Resource.send(:include, Opscode::PostgresqlHelpers)
-      not_if {extension_installed?(pg_ext)}
+      not_if { extension_installed?(pg_ext) }
     end
   end
 end

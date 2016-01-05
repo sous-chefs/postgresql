@@ -73,7 +73,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
         "x86_64" => {
           "url" => "http://yum.postgresql.org/9.4/fedora/fedora-21-x86_64/",
           "package" => "pgdg-fedora94-9.4-2.noarch.rpm"
-      },
+        },
         "i386" => {
           "url" => "http://yum.postgresql.org/9.4/fedora/fedora-21-i686/",
           "package" => "pgdg-fedora94-9.4-2.noarch.rpm"
