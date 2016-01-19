@@ -32,11 +32,13 @@ rescue LoadError
   node.set['build-essential']['compile_time'] = true
   include_recipe "build-essential"
 
-  if node['postgresql']['enable_pgdg_yum']
+  if node['postgresql']['enable_pgdg_yum'] || node['postgresql']['use_pgdg_packages']
     package "ca-certificates" do
       action :nothing
     end.run_action(:upgrade)
-
+  end
+  
+  if node['postgresql']['enable_pgdg_yum']
     include_recipe "postgresql::yum_pgdg_postgresql"
 
     rpm_platform = node['platform']
