@@ -93,7 +93,7 @@ if node['postgresql']['server']['init_package'] == 'systemd'
       owner 'root'
       group 'root'
       mode '0644'
-      notifies :run, 'exec[systemctl-reload]', :immediately
+      notifies :run, 'execute[systemctl-reload]', :immediately
       notifies :reload, 'service[postgresql]', :delayed
     end
     execute 'systemctl-reload' do
