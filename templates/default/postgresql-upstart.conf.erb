@@ -27,15 +27,12 @@ post-start script
     get_versions
 
     for v in $versions; do
-      start $v
+        start $v || EXIT=$?
     done
-
-    initctl emit inn-postgresql-start
+    exit ${EXIT:-0}
 end script
 
-post-stop script
-    initctl emit inn-postgresql-stop
-
+pre-stop script
     [ -r /usr/share/postgresql-common/init.d-functions ] || exit 0
 
     . /usr/share/postgresql-common/init.d-functions
@@ -43,6 +40,7 @@ post-stop script
     get_versions
 
     for v in $versions; do
-        stop $v
+        stop $v || EXIT=$?
     done
+    exit ${EXIT:-0}
 end script

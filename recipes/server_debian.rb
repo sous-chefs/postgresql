@@ -31,8 +31,15 @@ if node[:platform_version].to_f == 12.04 || node[:platform_version].to_f == 14.0
     source 'postgresql-upstart.conf.erb'
   end
 
-  file '/etc/init.d/postgresql' do
+  initd_script = '/etc/init.d/postgresql'
+
+  file initd_script do
     action :delete
+    not_if { File.symlink? initd_script }
+  end
+
+  link initd_script do
+    to '/lib/init/upstart-job'
   end
 
   execute 'update-rc.d -f postgresql remove' do
