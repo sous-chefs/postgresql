@@ -24,8 +24,29 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
+if node[:platform_version].to_f == 12.04 || node[:platform_version].to_f == 14.04
+  # Install the upstart script for 12.04 and 14.04
+
+  template "/etc/init/postgresql.conf" do
+    source 'postgresql-upstart.conf.erb'
+  end
+
+  file '/etc/init.d/postgresql' do
+    action :delete
+  end
+
+  execute 'update-rc.d -f postgresql remove' do
+    only_if 'ls /etc/rc*.d/*postgresql'
+  end
+end
+
+
 service "postgresql" do
+  if node[:platform_version].to_f == 12.04 || node[:platform_version].to_f == 14.04
+    provider Chef::Provider::Service::Upstart
+  end
   service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
 end
+
