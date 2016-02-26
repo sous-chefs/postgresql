@@ -76,16 +76,16 @@ node.default['postgresql']['config']['datestyle'] = "iso, #{locale_date_order()}
 # LC_ALL > (LC_MESSAGES, LC_MONETARY, LC_NUMERIC, LC_TIME) > LANG.
 
 node.default['postgresql']['config']['lc_messages'] =
-  [ ENV['LC_ALL'], ENV['LC_MESSAGES'], ENV['LANG'] ].compact.first
+  [ENV['LC_ALL'], ENV['LC_MESSAGES'], ENV['LANG']].compact.first
 
 node.default['postgresql']['config']['lc_monetary'] =
-  [ ENV['LC_ALL'], ENV['LC_MONETARY'], ENV['LANG'] ].compact.first
+  [ENV['LC_ALL'], ENV['LC_MONETARY'], ENV['LANG']].compact.first
 
 node.default['postgresql']['config']['lc_numeric'] =
-  [ ENV['LC_ALL'], ENV['LC_NUMERIC'], ENV['LANG'] ].compact.first
+  [ENV['LC_ALL'], ENV['LC_NUMERIC'], ENV['LANG']].compact.first
 
 node.default['postgresql']['config']['lc_time'] =
-  [ ENV['LC_ALL'], ENV['LC_TIME'], ENV['LANG'] ].compact.first
+  [ENV['LC_ALL'], ENV['LC_TIME'], ENV['LANG']].compact.first
 
 node.default['postgresql']['config']['default_text_search_config'] =
   case ENV['LANG']
@@ -133,8 +133,8 @@ node.default['postgresql']['config']['default_text_search_config'] =
 tzdirpath = pg_TZDIR() # See libraries/default.rb
 default_timezone = select_default_timezone(tzdirpath) # See libraries/default.rb
 if !default_timezone.nil?
-    node.default['postgresql']['config']['log_timezone'] = default_timezone
-    node.default['postgresql']['config']['timezone'] = default_timezone
+  node.default['postgresql']['config']['log_timezone'] = default_timezone
+  node.default['postgresql']['config']['timezone'] = default_timezone
 end
 
 #######

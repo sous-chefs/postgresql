@@ -12,7 +12,6 @@ recipe            "postgresql::server", "Installs postgresql server packages, te
 recipe            "postgresql::server_redhat", "Installs postgresql server packages, redhat family style"
 recipe            "postgresql::server_debian", "Installs postgresql server packages, debian family style"
 
-
 supports "ubuntu", "< 14.10"
 
 %w{debian fedora suse opensuse amazon}.each do |os|
