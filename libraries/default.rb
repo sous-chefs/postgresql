@@ -317,23 +317,21 @@ def execute_sql(query)
   db_name = node['postgresql']['database_name']
   # query could be a String or an Array of String
   statement = query.is_a?(String) ? query : query.join("\n")
-  @execute_sql ||= begin
-    cmd = shell_out("psql -q --tuples-only --no-align -d #{db_name} -f -",
-          :user => "postgres",
-          :input => statement
-    )
-    # If psql fails, generally the postgresql service is down.
-    # Instead of aborting chef with a fatal error, let's just
-    # pass these non-zero exitstatus back as empty cmd.stdout.
-    if (cmd.exitstatus() == 0 and !cmd.stderr.empty?)
-      # An SQL failure is still a zero exitstatus, but then the
-      # stderr explains the error, so let's rais that as fatal.
-      Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
-      Chef::Log.fatal(cmd.stderr)
-      raise "SQL ERROR"
-    end
-    cmd.stdout.chomp
+  cmd = shell_out("psql -q --tuples-only --no-align -d #{db_name} -f -",
+        :user => "postgres",
+        :input => statement
+  )
+  # If psql fails, generally the postgresql service is down.
+  # Instead of aborting chef with a fatal error, let's just
+  # pass these non-zero exitstatus back as empty cmd.stdout.
+  if (cmd.exitstatus() == 0 and !cmd.stderr.empty?)
+    # An SQL failure is still a zero exitstatus, but then the
+    # stderr explains the error, so let's rais that as fatal.
+    Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
+    Chef::Log.fatal(cmd.stderr)
+    raise "SQL ERROR"
   end
+  cmd.stdout.chomp
 end
 
 #######
