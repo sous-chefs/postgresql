@@ -10,3 +10,4 @@ group :integration do
 end
 gem 'chefspec', '~> 4.5.0'
 gem 'librarian-chef'
+gem 'rubocop', '~> 0.35.1'
