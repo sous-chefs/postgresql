@@ -17,6 +17,7 @@
 
 default['postgresql']['enable_pgdg_apt'] = false
 default['postgresql']['enable_pgdg_yum'] = false
+default['postgresql']['use_pgdg_packages'] = false
 
 default['postgresql']['server']['config_change_notify'] = :restart
 default['postgresql']['assign_postgres_password'] = true
