@@ -38,13 +38,13 @@ module Opscode
       # Truncate value to 4 most significant bits
       while value >= 16
         value = (value / 2).floor
-        multiplier = multiplier * 2
+        multiplier *= 2
       end
 
       # Factor any remaining powers of 2 into the multiplier
       while value == 2 * ((value / 2).floor)
         value = (value / 2).floor
-        multiplier = multiplier * 2
+        multiplier *= 2
       end
 
       # Factor enough powers of 2 back into the value to
@@ -79,7 +79,7 @@ module Opscode
       end
 
       # Now we can return a nice human readable string.
-      return "#{multiplier * value}#{units}"
+      "#{multiplier * value}#{units}"
     end
 
     #######
@@ -96,9 +96,7 @@ module Opscode
       # %x - Preferred representation for the date alone, no time
       res = testtime.strftime("%x")
 
-      if res.nil?
-        return 'mdy'
-      end
+      return 'mdy' if res.nil?
 
       posM = res.index("11")
       posD = res.index("22")
@@ -106,9 +104,9 @@ module Opscode
 
       if (posM.nil? || posD.nil? || posY.nil?)
         return 'mdy'
-        elseif (posY < posM && posM < posD)
+      elsif (posY < posM && posM < posD)
         return 'ymd'
-        elseif (posD < posM)
+      elsif (posD < posM)
         return 'dmy'
       else
         return 'mdy'
@@ -122,7 +120,7 @@ module Opscode
     # Function to determine where the system stored shared timezone data.
     # Used in recipes/config_initdb.rb to detemine where it should have
     # select_default_timezone(tzdir) search.
-    def pg_TZDIR()
+    def pg_TZDIR
       # System time zone conversions are controlled by a timezone data file
       # identified through environment variables (TZ and TZDIR) and/or file
       # and directory naming conventions specific to the Linux distribution.
@@ -144,11 +142,9 @@ module Opscode
         tzdir = "/usr/lib/zoneinfo"
       else
         share_path = [ENV['TZDIR'], "/usr/share/zoneinfo"].compact.first
-        if ::File.directory?(share_path)
-          tzdir = share_path
-        end
+        tzdir = share_path if ::File.directory?(share_path)
       end
-      return tzdir
+      tzdir
     end
 
     #######
@@ -210,30 +206,23 @@ module Opscode
       else # /etc/localtime is a file, so scan for it under tzdir
         localtime_content = File.read("/etc/localtime")
 
-        Find.find(tzdir) do |path|
+        Find.find(tzdir) do |tzpath|
           # Only consider files (skip directories or symlinks)
-          if !::File.directory?(path) && !::File.symlink?(path)
-            # Ignore any file named "posixrules" or "localtime"
-            if ::File.basename(path) != "posixrules" && ::File.basename(path) != "localtime"
-              # Do consider if content exactly matches /etc/localtime.
-              if localtime_content == File.read(path)
-                tzname = path.gsub("#{tzdir}/", "")
-                if validate_zone(tzname)
-                  if (bestzonename.nil? ||
-                     tzname.length < bestzonename.length ||
-                     (tzname.length == bestzonename.length &&
-                     (tzname <=> bestzonename) < 0)
-                     )
-                    bestzonename = tzname
-                  end
-                end
-              end
-            end
-          end
+          next unless !::File.directory?(tzpath) && !::File.symlink?(tzpath)
+          next unless ::File.basename(tzpath) != "posixrules" && ::File.basename(tzpath) != "localtime"
+          next unless localtime_content == File.read(tzpath)
+          tzname = tzpath.gsub("#{tzdir}/", "")
+          next unless validate_zone(tzname)
+          next unless (bestzonename.nil? ||
+                         tzname.length < bestzonename.length ||
+                         (tzname.length == bestzonename.length &&
+                         (tzname <=> bestzonename) < 0)
+                      )
+          bestzonename = tzname
         end
       end
 
-      return bestzonename
+      bestzonename
     end
 
     # Function to support select_default_timezone(tzdir), which is
@@ -243,9 +232,7 @@ module Opscode
 
       if !resultbuf.nil?
         # Ignore Olson's rather silly "Factory" zone; use GMT instead
-        if (resultbuf <=> "Factory") == 0
-          resultbuf = nil
-        end
+        resultbuf = nil if (resultbuf <=> "Factory") == 0
 
       else
         # Did not find the timezone.  Fallback to use a GMT zone.  Note that the
@@ -261,7 +248,7 @@ module Opscode
         ].join('')
       end
 
-      return resultbuf
+      resultbuf
     end
 
     #######
@@ -280,12 +267,10 @@ module Opscode
       else
         # Nope, so try to identify system timezone from /etc/localtime
         tzname = identify_system_timezone(tzdir)
-        if validate_zone(tzname)
-          system_timezone = tzname
-        end
+        system_timezone = tzname if validate_zone(tzname)
       end
 
-      return system_timezone
+      system_timezone
     end
 
     #######
@@ -322,7 +307,7 @@ module Opscode
         # If psql fails, generally the postgresql service is down.
         # Instead of aborting chef with a fatal error, let's just
         # pass these non-zero exitstatus back as empty cmd.stdout.
-        if (cmd.exitstatus() == 0 and !cmd.stderr.empty?)
+        if (cmd.exitstatus == 0 && !cmd.stderr.empty?)
           # An SQL failure is still a zero exitstatus, but then the
           # stderr explains the error, so let's rais that as fatal.
           Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")

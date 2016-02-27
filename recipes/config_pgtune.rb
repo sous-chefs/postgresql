@@ -88,7 +88,7 @@ db_type = 'mixed'
 
 if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('db_type'))
   db_type = node['postgresql']['config_pgtune']['db_type']
-  if (!(["dw", "oltp", "web", "mixed", "desktop"].include?(db_type)))
+  unless ((["dw", "oltp", "web", "mixed", "desktop"].include?(db_type)))
     Chef::Log.fatal([
       "Bad value (#{db_type})",
       "for node['postgresql']['config_pgtune']['db_type'] attribute.",
@@ -127,7 +127,7 @@ total_memory = node['memory']['total']
 # For example, on a system *not* dedicated to Postgresql.
 if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('total_memory'))
   total_memory = node['postgresql']['config_pgtune']['total_memory']
-  if (total_memory.match(/\A[1-9]\d*kB\Z/) == nil)
+  if (total_memory.match(/\A[1-9]\d*kB\Z/).nil?)
     Chef::Application.fatal!([
       "Bad value (#{total_memory})",
       "for node['postgresql']['config_pgtune']['total_memory'] attribute.",
@@ -169,13 +169,9 @@ if (mem >= 256)
   # http://rhaas.blogspot.com/2012/03/tuning-sharedbuffers-and-walbuffers.html
   case node['kernel']['machine']
   when "i386" # 32-bit machines
-    if shared_buffers > 2 * 1024
-      shared_buffers = 2 * 1024
-    end
+    shared_buffers = 2 * 1024 if shared_buffers > 2 * 1024
   when "x86_64" # 64-bit machines
-    if shared_buffers > 8 * 1024
-      shared_buffers = 8 * 1024
-    end
+    shared_buffers = 8 * 1024 if shared_buffers > 8 * 1024
   end
 
   node.default['postgresql']['config']['shared_buffers'] = binaryround(shared_buffers * 1024 * 1024)
@@ -220,9 +216,7 @@ if (mem >= 256)
   }.fetch(db_type)
 
   # Cap maintenence RAM at 1GB on servers with lots of memory
-  if (maintenance_work_mem > 1 * 1024)
-    maintenance_work_mem = 1 * 1024
-  end
+  maintenance_work_mem = 1 * 1024 if (maintenance_work_mem > 1 * 1024)
 
   node.default['postgresql']['config']['maintenance_work_mem'] = binaryround(maintenance_work_mem * 1024 * 1024)
 
