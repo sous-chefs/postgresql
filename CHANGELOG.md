@@ -2,6 +2,15 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v4.0.2
+-----
+* Add Code of Conduct
+* Add Rubocop
+* Clean up of syntax in many places as result of adding and evaluating Rubocop
+* Updates to test-kitchen.yml
+* added additional attribute for people who are importing pgdg packages for internal repositories
+  * `default['postgresql']['use_pgdg_packages'] = false`
+
 v4.0.0
 -----
 
