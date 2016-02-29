@@ -111,7 +111,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "debian-7.4", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -143,7 +143,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "debian-7.4", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -182,7 +182,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "debian-7.4", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
