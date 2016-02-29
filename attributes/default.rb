@@ -101,6 +101,7 @@ when 'debian'
   default['postgresql']['config']['datestyle'] = 'iso, mdy'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
   default['postgresql']['config']['ssl'] = true
+  default['postgresql']['upstart'] = false
 when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432

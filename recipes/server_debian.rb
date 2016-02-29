@@ -24,7 +24,7 @@ node['postgresql']['server']['packages'].each do |pg_pack|
 
 end
 
-if node[:platform_version].to_f == 12.04 || node[:platform_version].to_f == 14.04
+if ( node[:platform_version].to_f == 12.04 || node[:platform_version].to_f == 14.04 ) && node[:postgresql][:upstart]
   # Install the upstart script for 12.04 and 14.04
 
   template "/etc/init/postgresql.conf" do
@@ -49,7 +49,7 @@ end
 
 
 service "postgresql" do
-  if node[:platform_version].to_f == 12.04 || node[:platform_version].to_f == 14.04
+  if ( node[:platform_version].to_f == 12.04 || node[:platform_version].to_f == 14.04 ) && node[:postgresql][:upstart]
     provider Chef::Provider::Service::Upstart
   end
   service_name node['postgresql']['server']['service_name']
