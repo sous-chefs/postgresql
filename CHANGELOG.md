@@ -2,10 +2,60 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v4.0.2
+-----
+* Add Code of Conduct
+* Add Rubocop
+* Clean up of syntax in many places as result of adding and evaluating Rubocop
+* Updates to test-kitchen.yml
+* added additional attribute for people who are importing pgdg packages for internal repositories
+  * `default['postgresql']['use_pgdg_packages'] = false`
+
 v4.0.0
 -----
+
+**WARNING: Please read carefully through the stated changes, as they probably will break your current setup and can result in duplicate postgresql versions being installed, configuration corruption and data loss! This list might not be complete, so be careful when using the 4.x version and make sure to test it extensively before production use!**
+
+When in doubt, put the following in your `Berksfile` until you are ready to upgrade:
+
+```ruby
+cookbook 'postgresql', '=~ 3.4.0'
+```
+
 * Potential breaking change: Restructured default attributes to avoid compile time deriving other attribute values from value of the `node[‘postgresql’][‘version’]`
-(#313, #302, #295, #288, #280, #261, #260, #254, #248, #217, #214, #167, #143)
+(#313, #302, #295, #288, #280, #261, #260, #254, #248, #217, #214, #167, #143). If you specify a custom postgresql version, make sure to adapt the following attributes as well:
+
+```ruby
+default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+default['postgresql']['client']['packages'] = [ "postgresql-client-#{node['postgresql']['version']}", 'libpq-dev' ]
+default['postgresql']['server']['packages'] = [ "postgresql-#{node['postgresql']['version']}" ]
+default['postgresql']['contrib']['packages'] = [ "postgresql-contrib-#{node['postgresql']['version']}" ]
+```
+
+* Potential breaking change: SSL configuration parameters. Due to the new structuring, make sure you set all SSL attributes to `override` when specifying them in a cookbook:
+
+```ruby
+override['postgresql']['config']['ssl'] = true
+override['postgresql']['config']['ssl_cert_file'] = "/path/to/cert.crt"
+override['postgresql']['config']['ssl_key_file']  = "/path/to/cert.key"
+override['postgresql']['config']['ssl_ciphers']  = "<my cipher suite>"
+```
+
+* Potential breaking change: Some node attributes are now persistet in your node configuration. This affects the following attributes:
+
+```json
+"config": {
+  "data_directory": "/var/lib/postgresql/9.4/main",
+  "hba_file": "/etc/postgresql/9.4/main/pg_hba.conf",
+  "ident_file": "/etc/postgresql/9.4/main/pg_ident.conf",
+  "external_pid_file": "/var/run/postgresql/9.4-main.pid",
+  "unix_socket_directories": "/var/run/postgresql",
+  "ssl_cert_file": "/etc/ssl/certs/ssl-cert-snakeoil.pem",
+  "ssl_key_file": "/etc/ssl/private/ssl-cert-snakeoil.key"
+}
+```
+
+* Potential breaking change: Parsing of attributes from node/ environment configuration. It has been reported that setting the `node['postgresql']['client']['packages']` attribute in a cookbook might result in the default version of the postgresql client package being installed alongside the required version. This might affect the server packages as well.
 * Correct issues which caused the inability to override installation version defaults
 * Correct issues which caused configuration file entries with miss matching version numbers and incorrect file system paths being defined
 * Remove method pgdgrepo_rpm_info compile time use of derived attributes case many issues

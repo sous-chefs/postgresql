@@ -352,13 +352,14 @@ attribute is true. Also use `override_attributes` to set a number of
 values that will need to have embedded version numbers. For example:
 
     node['postgresql']['enable_pgdg_yum'] = true
-    node['postgresql']['version'] = "9.2"
-    node['postgresql']['dir'] = "/var/lib/pgsql/9.2/data"
+    node['postgresql']['version'] = "9.4"
+    node['postgresql']['dir'] = "/var/lib/pgsql/9.4/data"
     node['postgresql']['config']['data_directory'] = node['postgresql']['dir']
-    node['postgresql']['client']['packages'] = ["postgresql92", "postgresql92-devel"]
-    node['postgresql']['server']['packages'] = ["postgresql92-server"]
-    node['postgresql']['server']['service_name'] = "postgresql-9.2"
-    node['postgresql']['contrib']['packages'] = ["postgresql92-contrib"]
+    node['postgresql']['client']['packages'] = ["postgresql94", "postgresql94-devel"]
+    node['postgresql']['server']['packages'] = ["postgresql94-server"]
+    node['postgresql']['server']['service_name'] = "postgresql-9.4"
+    node['postgresql']['contrib']['packages'] = ["postgresql94-contrib"]
+    node['postgresql']['setup_script'] = "postgresql94-setup"
 
 You may set `node['postgresql']['pgdg']['repo_rpm_url']` attributes
 to pick up recent [PGDG repo packages](http://yum.postgresql.org/repopackages.php).

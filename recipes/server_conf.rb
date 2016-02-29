@@ -34,7 +34,7 @@ if node['platform_family'] == 'debian'
 
   if node['postgresql']['config']['ssl']
     node.set['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
-    node.set['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key'if node['postgresql']['version'].to_f >= 9.2
+    node.set['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key' if node['postgresql']['version'].to_f >= 9.2
   end
 
 end

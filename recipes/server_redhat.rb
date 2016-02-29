@@ -47,22 +47,18 @@ directory node['postgresql']['config']['data_directory'] do
 end
 
 node['postgresql']['server']['packages'].each do |pg_pack|
-
   package pg_pack
-
 end
 
 # If using PGDG, add symlinks so that downstream commands all work
-if node['postgresql']['enable_pgdg_yum'] == true
+if node['postgresql']['enable_pgdg_yum'] == true || node['postgresql']['use_pgdg_packages'] == true
   [
     "postgresql#{shortver}-setup",
     "postgresql#{shortver}-check-db-dir"
   ].each do |cmd|
-
     link "/usr/bin/#{cmd}" do
       to "/usr/pgsql-#{node['postgresql']['version']}/bin/#{cmd}"
     end
-
   end
 end
 

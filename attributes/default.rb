@@ -17,6 +17,7 @@
 
 default['postgresql']['enable_pgdg_apt'] = false
 default['postgresql']['enable_pgdg_yum'] = false
+default['postgresql']['use_pgdg_packages'] = false
 
 default['postgresql']['server']['config_change_notify'] = :restart
 default['postgresql']['assign_postgres_password'] = true
@@ -25,7 +26,8 @@ default['postgresql']['assign_postgres_password'] = true
 default['postgresql']['database_name'] = 'template1'
 
 # Sets OS init system (upstart, systemd, ...), instead of relying on Ohai
-default['postgresql']['server']['init_package'] = case node['platform']
+default['postgresql']['server']['init_package'] =
+  case node['platform']
   when 'debian'
     case
     when node['platform_version'].to_f < 7.0
@@ -76,25 +78,25 @@ when "debian"
   when node['platform_version'].to_f < 6.0 # All 5.X
     default['postgresql']['version'] = "8.3"
     default['postgresql']['dir'] = "/etc/postgresql/8.3/main"
-    default['postgresql']['client']['packages'] = ["postgresql-client-8.3","libpq-dev"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-8.3", "libpq-dev"]
     default['postgresql']['server']['packages'] = ["postgresql-8.3"]
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.3"]
   when node['platform_version'].to_f < 7.0 # All 6.X
     default['postgresql']['version'] = "8.4"
     default['postgresql']['dir'] = "/etc/postgresql/8.4/main"
-    default['postgresql']['client']['packages'] = ["postgresql-client-8.4","libpq-dev"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-8.4", "libpq-dev"]
     default['postgresql']['server']['packages'] = ["postgresql-8.4"]
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.4"]
   when node['platform_version'].to_f < 8.0 # All 7.X
     default['postgresql']['version'] = "9.1"
     default['postgresql']['dir'] = "/etc/postgresql/9.1/main"
-    default['postgresql']['client']['packages'] = ["postgresql-client-9.1","libpq-dev"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.1", "libpq-dev"]
     default['postgresql']['server']['packages'] = ["postgresql-9.1"]
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.1"]
   else
     default['postgresql']['version'] = "9.4"
     default['postgresql']['dir'] = "/etc/postgresql/9.4/main"
-    default['postgresql']['client']['packages'] = ["postgresql-client-9.4","libpq-dev"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.4", "libpq-dev"]
     default['postgresql']['server']['packages'] = ["postgresql-9.4"]
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.4"]
   end
@@ -106,7 +108,6 @@ when "debian"
     default['postgresql']['server']['service_name'] = "postgresql"
   end
 
-
 when "ubuntu"
 
   case
@@ -114,28 +115,28 @@ when "ubuntu"
     default['postgresql']['version'] = "8.3"
     default['postgresql']['dir'] = "/etc/postgresql/8.3/main"
     default['postgresql']['server']['service_name'] = "postgresql-8.3"
-    default['postgresql']['client']['packages'] = ["postgresql-client-8.3","libpq-dev"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-8.3", "libpq-dev"]
     default['postgresql']['server']['packages'] = ["postgresql-8.3"]
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.3"]
   when node['platform_version'].to_f <= 11.04
     default['postgresql']['version'] = "8.4"
     default['postgresql']['dir'] = "/etc/postgresql/8.4/main"
     default['postgresql']['server']['service_name'] = "postgresql"
-    default['postgresql']['client']['packages'] = ["postgresql-client-8.4","libpq-dev"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-8.4", "libpq-dev"]
     default['postgresql']['server']['packages'] = ["postgresql-8.4"]
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.4"]
   when node['platform_version'].to_f <= 13.10
     default['postgresql']['version'] = "9.1"
     default['postgresql']['dir'] = "/etc/postgresql/9.1/main"
     default['postgresql']['server']['service_name'] = "postgresql"
-    default['postgresql']['client']['packages'] = ["postgresql-client-9.1","libpq-dev"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.1", "libpq-dev"]
     default['postgresql']['server']['packages'] = ["postgresql-9.1"]
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.1"]
   else
     default['postgresql']['version'] = "9.3"
     default['postgresql']['dir'] = "/etc/postgresql/9.3/main"
     default['postgresql']['server']['service_name'] = "postgresql"
-    default['postgresql']['client']['packages'] = ["postgresql-client-9.3","libpq-dev"]
+    default['postgresql']['client']['packages'] = ["postgresql-client-9.3", "libpq-dev"]
     default['postgresql']['server']['packages'] = ["postgresql-9.3"]
     default['postgresql']['contrib']['packages'] = ["postgresql-contrib-9.3"]
   end
@@ -264,10 +265,10 @@ when 'rhel', 'fedora', 'suse'
 end
 
 default['postgresql']['pg_hba'] = [
-  {:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident'},
-  {:type => 'local', :db => 'all', :user => 'all', :addr => nil, :method => 'ident'},
-  {:type => 'host', :db => 'all', :user => 'all', :addr => '127.0.0.1/32', :method => 'md5'},
-  {:type => 'host', :db => 'all', :user => 'all', :addr => '::1/128', :method => 'md5'}
+  { :type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'ident' },
+  { :type => 'local', :db => 'all', :user => 'all', :addr => nil, :method => 'ident' },
+  { :type => 'host', :db => 'all', :user => 'all', :addr => '127.0.0.1/32', :method => 'md5' },
+  { :type => 'host', :db => 'all', :user => 'all', :addr => '::1/128', :method => 'md5' }
 ]
 
 default['postgresql']['password'] = Hash.new
@@ -278,4 +279,3 @@ when 'debian'
 end
 
 default['postgresql']['initdb_locale'] = 'UTF-8'
-
