@@ -29,7 +29,7 @@ if Chef::Config[:solo]
     node['postgresql']['password'][attr].nil?
   end.map { |attr| "node['postgresql']['password']['#{attr}']" }
 
-  if !missing_attrs.empty?
+  unless missing_attrs.empty?
     Chef::Log.fatal([
       "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
       "For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note"

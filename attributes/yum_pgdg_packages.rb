@@ -220,7 +220,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       "6" => {
         "i386" => {
           "url" => "http://yum.postgresql.org/9.3/redhat/rhel-6-i386/",
-          "package" => "pgdg-redhat93-9.3-2.noarch.rpm",
+          "package" => "pgdg-redhat93-9.3-2.noarch.rpm"
         },
         "x86_64" => {
           "url" => "http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/",

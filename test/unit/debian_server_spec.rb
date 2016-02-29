@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'debian::postgresql::server' do
   let(:chef_application) do
-    double('Chef::Application', fatal!: false);
+    double('Chef::Application', fatal!: false)
   end
   let(:chef_run) do
     runner = ChefSpec::SoloRunner.new(
