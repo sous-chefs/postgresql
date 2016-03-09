@@ -32,7 +32,7 @@ post-start script
     exit ${EXIT:-0}
 end script
 
-pre-stop script
+post-stop script
     [ -r /usr/share/postgresql-common/init.d-functions ] || exit 0
 
     . /usr/share/postgresql-common/init.d-functions
