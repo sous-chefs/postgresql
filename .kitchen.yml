@@ -14,6 +14,8 @@ platforms:
   run_list:
   - recipe[apt]
 
+- name: centos-7.2
+
 - name: centos-7.0
 
 - name: centos-6.4
@@ -47,7 +49,7 @@ suites:
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: [ "centos-6.4", "centos-7.0", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -89,7 +91,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "centos-6.4", "centos-7.0", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -130,7 +132,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "centos-6.4", "centos-7.0", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -156,7 +158,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "centos-6.4", "centos-7.0", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
