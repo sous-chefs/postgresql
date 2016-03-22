@@ -192,6 +192,13 @@ when "redhat", "centos", "scientific", "oracle"
     default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
   end
 
+  if node['platform_version'].to_f >= 7.0
+    default['postgresql']['version'] = '9.2'
+    default['postgresql']['client']['packages'] = ['postgresql-devel']
+    default['postgresql']['server']['packages'] = ['postgresql-server']
+    default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
+  end
+
 when "opensuse"
 
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
