@@ -2,6 +2,15 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v4.0.4
+-----
+* Add leading pound symbol on pg_hba.conf template comment line
+* Update gem install for compile_time to correct deprication warning
+* Add support Ubuntu Wily Werewolf pgdg apt repository
+* test-kitchen platforms for Centos 7.2 and Ubuntu 15.04
+* Fixes PostgreSQL version & package name defaults for EL7 distros
+* Add appropriate systemd unit file overrides for EL7 distros
+
 v4.0.2
 -----
 * Add Code of Conduct

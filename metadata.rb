@@ -4,7 +4,9 @@ maintainer_email  "helpdesk@heavywater.io"
 license           "Apache 2.0"
 description       "Installs and configures postgresql for clients or servers"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           "4.0.3"
+version           "4.0.4"
+source_url        "https://github.com/hw-cookbooks/postgresql" if respond_to?(:source_url)
+issues_url        "https://github.com/hw-cookbooks/postgresql/issues" if respond_to?(:issues_url)
 recipe            "postgresql", "Includes postgresql::client"
 recipe            "postgresql::ruby", "Installs pg gem for Ruby bindings"
 recipe            "postgresql::client", "Installs postgresql client package(s)"
