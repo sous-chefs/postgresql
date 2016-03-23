@@ -18,7 +18,7 @@
 <% node['postgresql']['pg_hba'].each do |auth| -%>
 
 <%   if auth[:comment] %>
-<%= auth[:comment] %>
+# <%= auth[:comment] %>
 <%   end %>
 <%   if auth[:addr] %>
 <%= auth[:type].ljust(7) %> <%= auth[:db].ljust(15) %> <%= auth[:user].ljust(15) %> <%= auth[:addr].ljust(23) %> <%= auth[:method] %>

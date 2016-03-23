@@ -83,6 +83,21 @@ end
 
 if node['postgresql']['server']['init_package'] == 'systemd'
 
+  if node['platform_family'] == 'rhel'
+    template '/etc/systemd/system/postgresql.service' do
+      source 'postgresql.service.erb'
+      owner 'root'
+      group 'root'
+      mode '0644'
+      notifies :run, 'execute[systemctl-reload]', :immediately
+      notifies :reload, 'service[postgresql]', :delayed
+    end
+    execute 'systemctl-reload' do
+      command 'systemctl daemon-reload'
+      action :nothing
+    end
+  end
+
   case node['platform_family']
   when 'suse'
     execute "initdb -d #{node['postgresql']['dir']}" do
