@@ -22,15 +22,18 @@ rpm_platform = node['platform']
 rpm_platform_version = node['platform_version'].to_f.to_i.to_s
 arch = node['kernel']['machine']
 
+rpm_info = node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch]
+
 # Download the PGDG repository RPM as a local file
-remote_file "#{Chef::Config[:file_cache_path]}/#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}" do
-  source "#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:url]}#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}"
+remote_file "#{Chef::Config[:file_cache_path]}/#{rpm_info[:package]}" do
+  source "#{rpm_info[:url]}#{rpm_info[:package]}"
+  checksum rpm_info[:checksum]
   mode "0644"
 end
 
 # Install the PGDG repository RPM from the local file
-package "#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}" do
+package rpm_info[:package] do
   provider Chef::Provider::Package::Rpm
-  source "#{Chef::Config[:file_cache_path]}/#{node[:postgresql][:pgdg][:repo_rpm_url][node[:postgresql][:version]][rpm_platform][rpm_platform_version][arch][:package]}"
+  source "#{Chef::Config[:file_cache_path]}/#{rpm_info[:package]}"
   action :install
 end
