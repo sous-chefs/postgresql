@@ -19,6 +19,14 @@ include_recipe "postgresql::ca_certificates"
 
 ::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
 
+# Simply define the service but do not use it yet
+# This is to simply allow service restarts to properly have a service to reference
+service "postgresql" do
+  service_name node['postgresql']['server']['service_name']
+  supports :restart => true, :status => true, :reload => true
+  action :nothing
+end
+
 include_recipe "postgresql::client"
 
 # randomly generate postgres password, unless using solo - see README
