@@ -384,7 +384,7 @@ If you're using `chef server`, if the attribute
 `node['postgresql']['password']['postgres']` is not found,
 the recipe generates a random password and performs a node.save.
 (TODO: This is broken, as it disables the password.)
-If you're using `chef-solo`, you'll need
+If you're using `chef-solo` or `chef-zero`, you'll need
 to set the attribute `node['postgresql']['password']['postgres']` in
 your node's `json_attribs` file or in a role.
 
