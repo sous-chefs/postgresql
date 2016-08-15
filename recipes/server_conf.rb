@@ -20,9 +20,9 @@ change_notify = node['postgresql']['server']['config_change_notify']
 # There are some configuration items which depend on correctly evaluating the intended version being installed
 if node['platform_family'] == 'debian'
 
-  node.set['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
-  node.set['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
-  node.set['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
+  node.set['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/#{node['postgresql']['cluster_name']}/pg_hba.conf"
+  node.set['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/#{node['postgresql']['cluster_name']}/pg_ident.conf"
+  node.set['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-#{node['postgresql']['cluster_name']}.pid"
 
   if node['postgresql']['version'].to_f < 9.3
     node.set['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql'
@@ -37,6 +37,13 @@ if node['platform_family'] == 'debian'
     node.set['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key' if node['postgresql']['version'].to_f >= 9.2
   end
 
+end
+
+directory node['postgresql']['dir'] do
+  owner 'postgres'
+  group 'postgres'
+  recursive true
+  action :create
 end
 
 template "#{node['postgresql']['dir']}/postgresql.conf" do

@@ -21,16 +21,32 @@ node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack
 end
 
+case node['platform']
+when 'ubuntu'
+  directory node['postgresql']['config']['data_directory'] do
+    owner 'postgres'
+    group 'postgres'
+    recursive true
+    action :create
+  end
+
+  execute "initdb #{node['postgresql']['config']['data_directory']}" do
+    user 'postgres'
+    environment 'PATH' => "/usr/lib/postgresql/#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
+    not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
+  end
+end
+
 include_recipe "postgresql::server_conf"
+
+execute 'Set locale and Create cluster' do
+  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + node['postgresql']['cluster_name']
+  action :run
+  not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
+end
 
 service "postgresql" do
   service_name node['postgresql']['server']['service_name']
   supports :restart => true, :status => true, :reload => true
   action [:enable, :start]
-end
-
-execute 'Set locale and Create cluster' do
-  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + ' main'
-  action :run
-  not_if { ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main') }
 end
