@@ -2,6 +2,10 @@
 driver_plugin: vagrant
 
 platforms:
+- name: ubuntu-15.04
+  run_list:
+  - recipe[apt]
+
 - name: ubuntu-14.04
   run_list:
   - recipe[apt]
@@ -10,19 +14,25 @@ platforms:
   run_list:
   - recipe[apt]
 
-- name: ubuntu-10.04
+- name: debian-8.2
   run_list:
   - recipe[apt]
 
-- name: debian-7.4
-  run_list:
-  - recipe[apt]
+- name: centos-7.2
 
 - name: centos-7.0
 
 - name: centos-6.4
 
-- name: centos-5.10
+- name: opensuse-13.2
+  driver:
+    box: gsaslis/opensuse-13.2
+    box_url: https://atlas.hashicorp.com/gsaslis/boxes/opensuse-13.2
+
+- name: opensuse-13.1
+  driver:
+    box: opensuse-13.1
+    box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_opensuse-13.1-x86_64_chef-provisionerless.box
 
 suites:
 - name: default
@@ -43,23 +53,25 @@ suites:
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: ["centos-5.10", "centos-6.4", "centos-7.0"]
+  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.3"
+      version: "9.4"
+      client:
+        packages: [ "postgresql-client-9.4", "libpq-dev" ]
 
 - name: yum-pgdg-client
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.3"
+      version: "9.4"
       client:
-        packages: ["postgresql93"]
+        packages: [ "postgresql94" ]
 
 - name: ruby
   run_list:
@@ -69,8 +81,9 @@ suites:
 
 - name: server
   run_list:
-  - recipe[postgresql::ruby]
+  - recipe[apt]
   - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   attributes:
     postgresql:
@@ -82,11 +95,17 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["centos-5.10", "centos-6.4", "centos-7.0"]
+  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.3"
+      version: "9.4"
+      dir: '/etc/postgresql/9.4/main'
+      server:
+        service_name: "postgresql"
+        packages: [ "postgresql-9.4" ]
+      client:
+        packages: [ "postgresql-client-9.4", "libpq-dev" ]
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
       config:
@@ -98,14 +117,17 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.3"
+      version: "9.4"
       server:
-        packages: ["postgresql93-server"]
-        service_name: "postgresql-9.3"
+        packages: [ "postgresql94-server" ]
+        service_name: "postgresql-9.4"
+      client:
+        packages: [ "postgresql94", "postgresql94-devel" ]
+      setup_script: "postgresql94-setup"
       password:
         postgres: "iloverandompasswordsbutthiswilldo"
 
@@ -114,21 +136,70 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["centos-5.10", "centos-6.4", "centos-7.0"]
+  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.3"
+      version: "9.4"
+      client:
+        packages: [ "postgresql-client-9.4", "libpq-dev" ]
 
 - name: yum-pgdg-client-ruby
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: ["ubuntu-10.04", "ubuntu-12.04", "ubuntu-14.04", "debian-7.4"]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.3"
+      version: "9.4"
       client:
-        packages: ["postgresql93", "postgresql93-devel"]
+        packages: [ "postgresql94", "postgresql94-devel" ]
+
+- name: apt-pgdg-server-pg_stat_statements
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
+  - recipe[postgresql::contrib]
+  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
+  attributes:
+    postgresql:
+      enable_pgdg_apt: true
+      version: "9.4"
+      dir: '/etc/postgresql/9.4/main'
+      server:
+        service_name: "postgresql"
+        packages: [ "postgresql-9.4" ]
+      client:
+        packages: [ "postgresql-client-9.4", "libpq-dev" ]
+      password:
+        postgres: "iloverandompasswordsbutthiswilldo"
+      config:
+        shared_preload_libraries: "pg_stat_statements"
+        ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+        ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+      contrib:
+        extensions:
+          - pg_stat_statements
+
+- name: yum-pgdg-server-pg_stat_statements
+  run_list:
+  - recipe[minitest-handler]
+  - recipe[postgresql::ruby]
+  - recipe[postgresql::contrib]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  attributes:
+    postgresql:
+      enable_pgdg_yum: true
+      version: "9.4"
+      server:
+        packages: [ "postgresql94-server" ]
+        service_name: "postgresql-9.4"
+      password:
+        postgres: "iloverandompasswordsbutthiswilldo"
+      config:
+        shared_preload_libraries: "pg_stat_statements"
+      contrib:
+        extensions:
+          - pg_stat_statements

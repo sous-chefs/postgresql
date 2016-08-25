@@ -1,0 +1,5 @@
+.include /usr/lib/systemd/system/postgresql.service
+[Service]
+Environment=
+Environment=PGPORT=<%= node['postgresql']['config']['port'] %>
+Environment=PGDATA=<%= node['postgresql']['config']['data_directory'] %>
