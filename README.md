@@ -20,8 +20,8 @@ Requirements
 
 Tested on:
 
-* Ubuntu 10.04, 11.10, 12.04, 14.04, 14.10
-* Red Hat 6.1, Scientific 6.1, CentOS 6.3
+* Ubuntu 12.04, 14.04, 14.10
+* Red Hat 6.1, Scientific 6.1, CentOS 6.3, 7.0, OpenSuse
 
 ## Cookbooks
 
@@ -73,10 +73,6 @@ The following attributes are set based on the platform, see the
 
 The following attributes are generated in
 `recipe[postgresql::server]`.
-
-* `node['postgresql']['password']['postgres']` - randomly generated
-  password by the `openssl` cookbook's library.
-  (TODO: This is broken, as it disables the password.)
 
 Configuration
 -------------
@@ -177,14 +173,6 @@ Installs the packages defined in the
 ruby
 ----
 
-**NOTE** This recipe may not currently work when installing Chef with
-  the
-  ["Omnibus" full stack installer](http://opscode.com/chef/install) on
-  some platforms due to an incompatibility with OpenSSL. See
-  [COOK-1406](http://tickets.opscode.com/browse/COOK-1406). You can
-  build from source into the Chef omnibus installation to work around
-  this issue.
-
 Install the `pg` gem under Chef's Ruby environment so it can be used
 in other recipes. The build-essential packages and postgresql client
 packages will be installed during the compile phase, so that the
@@ -198,7 +186,6 @@ appropriate server packages installed and service managed. Also
 manages the configuration for the server:
 
 * generates a strong default password (via `openssl`) for `postgres`
-  (TODO: This is broken, as it disables the password.)
 * sets the password for postgres
 * manages the `postgresql.conf` file.
 * manages the `pg_hba.conf` file.
@@ -370,13 +357,14 @@ attribute is true. Also use `override_attributes` to set a number of
 values that will need to have embedded version numbers. For example:
 
     node['postgresql']['enable_pgdg_yum'] = true
-    node['postgresql']['version'] = "9.2"
-    node['postgresql']['dir'] = "/var/lib/pgsql/9.2/data"
+    node['postgresql']['version'] = "9.4"
+    node['postgresql']['dir'] = "/var/lib/pgsql/9.4/data"
     node['postgresql']['config']['data_directory'] = node['postgresql']['dir']
-    node['postgresql']['client']['packages'] = ["postgresql92", "postgresql92-devel"]
-    node['postgresql']['server']['packages'] = ["postgresql92-server"]
-    node['postgresql']['server']['service_name'] = "postgresql-9.2"
-    node['postgresql']['contrib']['packages'] = ["postgresql92-contrib"]
+    node['postgresql']['client']['packages'] = ["postgresql94", "postgresql94-devel"]
+    node['postgresql']['server']['packages'] = ["postgresql94-server"]
+    node['postgresql']['server']['service_name'] = "postgresql-9.4"
+    node['postgresql']['contrib']['packages'] = ["postgresql94-contrib"]
+    node['postgresql']['setup_script'] = "postgresql94-setup"
 
 You may set `node['postgresql']['pgdg']['repo_rpm_url']` attributes
 to pick up recent [PGDG repo packages](http://yum.postgresql.org/repopackages.php).
@@ -454,7 +442,7 @@ License and Author
 - Author:: Lamont Granquist (<lamont@opscode.com>)
 - Author:: Chris Roberts (<chrisroberts.code@gmail.com>)
 - Author:: David Crane (<davidc@donorschoose.org>)
-- Author:: Aaron Baer (<aaron@hw-ops.com>)
+- Author:: Aaron Baer (<aaron@heavywater.io>)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

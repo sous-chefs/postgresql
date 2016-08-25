@@ -2,6 +2,100 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v4.0.6
+-----
+* Add 16.04 Xenial to the allowed list
+
+v4.0.4
+-----
+* Add leading pound symbol on pg_hba.conf template comment line
+* Update gem install for compile_time to correct deprication warning
+* Add support Ubuntu Wily Werewolf pgdg apt repository
+* test-kitchen platforms for Centos 7.2 and Ubuntu 15.04
+* Fixes PostgreSQL version & package name defaults for EL7 distros
+* Add appropriate systemd unit file overrides for EL7 distros
+
+v4.0.2
+-----
+* Add Code of Conduct
+* Add Rubocop
+* Clean up of syntax in many places as result of adding and evaluating Rubocop
+* Updates to test-kitchen.yml
+* added additional attribute for people who are importing pgdg packages for internal repositories
+  * `default['postgresql']['use_pgdg_packages'] = false`
+
+v4.0.0
+-----
+
+**WARNING: Please read carefully through the stated changes, as they probably will break your current setup and can result in duplicate postgresql versions being installed, configuration corruption and data loss! This list might not be complete, so be careful when using the 4.x version and make sure to test it extensively before production use!**
+
+When in doubt, put the following in your `Berksfile` until you are ready to upgrade:
+
+```ruby
+cookbook 'postgresql', '=~ 3.4.0'
+```
+
+* Potential breaking change: Restructured default attributes to avoid compile time deriving other attribute values from value of the `node[‘postgresql’][‘version’]`
+(#313, #302, #295, #288, #280, #261, #260, #254, #248, #217, #214, #167, #143). If you specify a custom postgresql version, make sure to adapt the following attributes as well:
+
+```ruby
+default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+default['postgresql']['client']['packages'] = [ "postgresql-client-#{node['postgresql']['version']}", 'libpq-dev' ]
+default['postgresql']['server']['packages'] = [ "postgresql-#{node['postgresql']['version']}" ]
+default['postgresql']['contrib']['packages'] = [ "postgresql-contrib-#{node['postgresql']['version']}" ]
+```
+
+* Potential breaking change: SSL configuration parameters. Due to the new structuring, make sure you set all SSL attributes to `override` when specifying them in a cookbook:
+
+```ruby
+override['postgresql']['config']['ssl'] = true
+override['postgresql']['config']['ssl_cert_file'] = "/path/to/cert.crt"
+override['postgresql']['config']['ssl_key_file']  = "/path/to/cert.key"
+override['postgresql']['config']['ssl_ciphers']  = "<my cipher suite>"
+```
+
+* Potential breaking change: Some node attributes are now persistet in your node configuration. This affects the following attributes:
+
+```json
+"config": {
+  "data_directory": "/var/lib/postgresql/9.4/main",
+  "hba_file": "/etc/postgresql/9.4/main/pg_hba.conf",
+  "ident_file": "/etc/postgresql/9.4/main/pg_ident.conf",
+  "external_pid_file": "/var/run/postgresql/9.4-main.pid",
+  "unix_socket_directories": "/var/run/postgresql",
+  "ssl_cert_file": "/etc/ssl/certs/ssl-cert-snakeoil.pem",
+  "ssl_key_file": "/etc/ssl/private/ssl-cert-snakeoil.key"
+}
+```
+
+* Potential breaking change: Parsing of attributes from node/ environment configuration. It has been reported that setting the `node['postgresql']['client']['packages']` attribute in a cookbook might result in the default version of the postgresql client package being installed alongside the required version. This might affect the server packages as well.
+* Correct issues which caused the inability to override installation version defaults
+* Correct issues which caused configuration file entries with miss matching version numbers and incorrect file system paths being defined
+* Remove method pgdgrepo_rpm_info compile time use of derived attributes case many issues
+* Use correct directory path and check for the correct not_if condition to determine if the database has been initialized
+* Ensure that correct packages are installed in all scenarios where pg gem is compiled
+* Fix errors in configuration files for unix_socket_directory and unix_socket_directories
+* Updates to test-kitchen suite configuration
+* Added more grey hair to my beard
+
+v3.4.24
+-------
+* Corrections to address repositories signed with newer certificates that some distributions have in their default ca-certificates package
+* Updates to more accurately determine distributions service init systems adds better support for systemd systems
+* Correct how version attribute is evaluated in certain places
+* test-kitchen suite configuration corrections
+* Opensuse support
+
+v3.4.23
+-------
+- Skipping 3.4.22 with Develop branch 3.4.23 to return to releasing cookbook from master on even numbers and develop on odd numbers.
+
+v3.4.21
+-------
+- Use more optimistic openssl version constraint
+- Add Postgresql 9.4 package sources for RHEL platforms
+- Update testing infrastructure to address bit rot
+
 v3.4.20
 -------
 - Revert [#251](https://github.com/hw-cookbooks/postgresql/pull/251), a change which caused the postgresql service to restart every Chef run.

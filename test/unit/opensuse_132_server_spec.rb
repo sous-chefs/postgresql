@@ -1,37 +1,40 @@
 require 'spec_helper'
 
-describe 'debian::postgresql::server' do
+describe 'opensuse::postgresql::server' do
   let(:chef_application) do
     double('Chef::Application', fatal!: false);
   end
   let(:chef_run) do
     runner = ChefSpec::SoloRunner.new(
-      platform: 'debian', version: '7.4'
+      platform: 'opensuse', version: '13.2'
     ) do |node|
       node.automatic['memory']['total'] = '2048kB'
       node.automatic['ipaddress'] = '1.1.1.1'
-      node.set['postgresql']['version'] = '9.1'
+      node.set['postgresql']['version'] = '9.3'
       node.set['postgresql']['password']['postgres'] = 'password'
+      node.set['postgresql']['dir'] = '/var/lib/pgsql/data'
+      node.set['postgresql']['conf_dir'] = '/etc/sysconfig/pgsql'
+      node.set['postgresql']['initdb_locale'] = 'UTF-8'
     end
     runner.converge('postgresql::server')
   end
   before do
     stub_const('Chef::Application', chef_application)
     allow(File).to receive(:directory?).and_call_original
-    allow(File).to receive(:directory?).with('/etc/postgresql/9.1/main').and_return(false)
-    stub_command("ls /var/lib/postgresql/9.1/main/recovery.conf").and_return(false)
+    allow(File).to receive(:directory?).with('/etc/sysconfig/pgsql').and_return(false)
+    stub_command("ls /var/lib/pgsql/data/recovery.conf").and_return(false)
   end
 
-  it 'Install postgresql 9.1' do
-    expect(chef_run).to install_package('postgresql-9.1')
+  it 'Install postgresql 9.3' do
+    expect(chef_run).to install_package('postgresql93-server')
   end
 
-  it 'Install postgresql 9.1 client' do
-    expect(chef_run).to install_package('postgresql-client-9.1')
+  it 'Install postgresql 9.3 client' do
+    expect(chef_run).to install_package('postgresql93')
   end
 
-  it 'Install postgresql 9.1 dev files' do
-    expect(chef_run).to install_package('libpq-dev')
+  it 'Install postgresql 9.3 dev files' do
+    expect(chef_run).to install_package('postgresql93-devel')
   end
 
   it 'Enable and start service postgresql' do
@@ -40,8 +43,8 @@ describe 'debian::postgresql::server' do
   end
 
   it 'Create configuration files' do
-    expect(chef_run).to create_template('/etc/postgresql/9.1/main/postgresql.conf')
-    expect(chef_run).to create_template('/etc/postgresql/9.1/main/pg_hba.conf')
+    expect(chef_run).to create_template('/var/lib/pgsql/data/postgresql.conf')
+    expect(chef_run).to create_template('/var/lib/pgsql/data/pg_hba.conf')
   end
 
   it 'Assign Postgres Password' do
@@ -50,19 +53,19 @@ describe 'debian::postgresql::server' do
 
   context 'when running as a standby host' do
     it 'does not assign the Postgres password' do
-      stub_command("ls /var/lib/postgresql/9.1/main/recovery.conf").and_return(false)
+      stub_command("ls /var/lib/pgsql/main/recovery.conf").and_return(false)
       expect(chef_run).to_not run_bash('assign_postgres_password')
     end
   end
 
   it 'Launch Cluster Creation' do
-    expect(chef_run).to run_execute('Set locale and Create cluster')
+    expect(chef_run).to run_execute('initdb -d /var/lib/pgsql/data')
   end
 
-  context 'Directory /etc/postgresql/9.1/main exist' do
+  context 'Directory /etc/sysconfig/pgsql exist' do
     before do
       allow(File).to receive(:directory?).and_call_original
-      allow(File).to receive(:directory?).with('/etc/postgresql/9.1/main').and_return(true)
+      allow(File).to receive(:directory?).with('/etc/sysconfig/pgsql').and_return(true)
     end
 
     it 'Don\'t launch Cluster Creation' do

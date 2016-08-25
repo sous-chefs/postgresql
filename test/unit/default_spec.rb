@@ -3,17 +3,20 @@ require 'spec_helper'
 describe 'postgresql::default' do
   platforms = {
     'ubuntu' => {
-      'versions' => ['10.04', '12.04', '14.04']
-     },
+      'versions' => ['12.04', '14.04']
+    },
     'centos' => {
-       'versions' => ['6.4', '7.0']
-     },
+      'versions' => ['6.4', '7.0']
+    },
     'redhat' => {
-       'versions' => ['6.5', '7.0']
-     },
+      'versions' => ['6.5', '7.0']
+    },
     'debian' => {
-       'versions' => ['7.6']
-     }
+      'versions' => ['7.6']
+    },
+    'opensuse' => {
+      'versions' => ['13.1', '13.2']
+    }
   }
 
   platforms.each do |platform, config|
@@ -24,7 +27,7 @@ describe 'postgresql::default' do
             :platform => platform.to_s,
             :version => version.to_s
           ) do |node|
-          node.set['postgresql']['password']['postgres'] = 'ilikewaffles'
+            node.set['postgresql']['password']['postgres'] = 'ilikewaffles'
           end.converge(described_recipe)
         }
 

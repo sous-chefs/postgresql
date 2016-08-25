@@ -8,5 +8,6 @@ group :integration do
   gem 'kitchen-vagrant'
   gem 'kitchen-docker'
 end
-gem 'chefspec', '~> 4.2.0'
+gem 'chefspec', '~> 4.5.0'
 gem 'librarian-chef'
+gem 'rubocop', '~> 0.35.1'
