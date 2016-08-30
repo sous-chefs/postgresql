@@ -2,13 +2,13 @@
 # Cookbook Name:: postgresql
 # Recipe:: config_version
 #
-# Defines version-sensitive default attributes after all other attributes files
-# have been evaluated, allowing users of this cookbook to use default
+# Defines version-sensitive node.default attributes after all other attributes files
+# have been evaluated, allowing users of this cookbook to use node.default
 # attributes in attribute files to set the postgresql version and still have
-# sensible defaults for everything.
+# sensible node.defaults for everything.
 #
 # To override any attribute defined in this recipe using an attribute file,
-# you must use force_default or higher. See
+# you must use force_node.default or higher. See
 # https://docs.getchef.com/essentials_cookbook_attribute_files.html for info.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 case node['platform']
 when "debian"
 
-  node.default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  node.default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/#{node['postgresql']['cluster_name']}"
   case
   when node['platform_version'].to_f < 6.0 # All 5.X
     node.default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
@@ -41,7 +40,7 @@ when "debian"
 
 when "ubuntu"
 
-  node.default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  node.default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/#{node['postgresql']['cluster_name']}"
   case
   when (node['platform_version'].to_f <= 10.04) && (! node['postgresql']['enable_pgdg_apt'])
     node.default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
@@ -55,6 +54,7 @@ when "ubuntu"
 
 when "fedora"
 
+  node.default['postgresql']['setup_script'] = "postgresql-setup"
   node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
   node.default['postgresql']['client']['packages'] = %w{postgresql-devel}
   node.default['postgresql']['server']['packages'] = %w{postgresql-server}
@@ -63,8 +63,11 @@ when "fedora"
 
 when "amazon"
 
-  if node['platform_version'].to_f >= 2012.03
+  if node['platform_version'].to_f == 2012.03
     node.default['postgresql']['version'] = "9.0"
+    node.default['postgresql']['dir'] = "/var/lib/pgsql9/data"
+  elsif node['platform_version'].to_f >= 2015.03
+    node.default['postgresql']['version'] = "9.2"
     node.default['postgresql']['dir'] = "/var/lib/pgsql9/data"
   else
     node.default['postgresql']['version'] = "8.4"
@@ -78,58 +81,39 @@ when "amazon"
 
 when "redhat", "centos", "scientific", "oracle"
 
-  node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  node.default['postgresql']['client']['packages'] = ["postgresql84-devel"]
+  node.default['postgresql']['server']['packages'] = ["postgresql84-server"]
+  node.default['postgresql']['contrib']['packages'] = ["postgresql84-contrib"]
 
-  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] == '8.4'
-    node.default['postgresql']['client']['packages'] = %w{postgresql-devel}
-    node.default['postgresql']['server']['packages'] = %w{postgresql-server}
-    node.default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
-  else
-    node.default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
-    node.default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
-    node.default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
-  end
+  node.default['postgresql']['setup_script'] = "postgresql-setup"
+  node.default['postgresql']['server']['service_name'] = "postgresql"
 
-  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] != '8.4'
-     node.default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-     node.default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-  else
-    node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
-    node.default['postgresql']['server']['service_name'] = "postgresql"
-  end
-
-when "suse"
-
-  if node['postgresql']['version'] = '8.3'
-    node.default['postgresql']['client']['packages'] = ['postgresql', 'rubygem-pg']
+  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'].to_f == 8.4
+    node.default['postgresql']['client']['packages'] = ['postgresql-devel']
     node.default['postgresql']['server']['packages'] = ['postgresql-server']
     node.default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
-  elsif node['postgresql']['version'] == '9.1'
-    node.default['postgresql']['client']['packages'] = ['postgresql91', 'rubygem-pg']
-    node.default['postgresql']['server']['packages'] = ['postgresql91-server']
-    node.default['postgresql']['contrib']['packages'] = ['postgresql91-contrib']
+  end
+
+  if node['platform_version'].to_f >= 7.0
+    node.default['postgresql']['version'] = '9.2'
+    node.default['postgresql']['client']['packages'] = ['postgresql-devel']
+    node.default['postgresql']['server']['packages'] = ['postgresql-server']
+    node.default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
+  end
+
+when "opensuse"
+
+  if node['postgresql']['version'] == '9.3'
+    node.default['postgresql']['client']['packages'] = ['postgresql93', 'postgresql93-devel']
+    node.default['postgresql']['server']['packages'] = ['postgresql93-server']
+    node.default['postgresql']['contrib']['packages'] = ['postgresql93-contrib']
+  elsif node['postgresql']['version'] == '9.2'
+    node.default['postgresql']['client']['packages'] = ['postgresql92', 'postgresql92-devel']
+    node.default['postgresql']['server']['packages'] = ['postgresql92-server']
+    node.default['postgresql']['contrib']['packages'] = ['postgresql92-contrib']
   end
 
   node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
   node.default['postgresql']['server']['service_name'] = "postgresql"
 
-else
-  node.default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
-  node.default['postgresql']['client']['packages'] = ["postgresql"]
-  node.default['postgresql']['server']['packages'] = ["postgresql"]
-  node.default['postgresql']['contrib']['packages'] = ["postgresql"]
-  node.default['postgresql']['server']['service_name'] = "postgresql"
-end
-
-case node[:platform_family]
-when 'debian'
-  node.default['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
-  node.default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_hba.conf"
-  node.default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/main/pg_ident.conf"
-  node.default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-main.pid"
-  node.default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql' if node['postgresql']['version'].to_f < 9.3
-  node.default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql' if node['postgresql']['version'].to_f >= 9.3
-  node.default['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
-  node.default['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
-  node.default['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key'if node['postgresql']['version'].to_f >= 9.2
 end

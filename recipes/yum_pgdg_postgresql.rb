@@ -18,6 +18,8 @@
 ######################################
 # Install the "PostgreSQL RPM Building Project - Yum Repository"
 
+include_recipe 'postgresql::config_version'
+
 rpm_platform = node['platform']
 rpm_platform_version = node['platform_version'].to_f.to_i.to_s
 arch = node['kernel']['machine']

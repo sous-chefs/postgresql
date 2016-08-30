@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 
+include_recipe 'postgresql::config_version'
 db_name = node['postgresql']['database_name']
 
 # Install the PostgreSQL contrib package(s) from the distribution,

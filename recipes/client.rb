@@ -16,6 +16,7 @@
 #
 
 include_recipe "postgresql::ca_certificates"
+include_recipe 'postgresql::config_version'
 
 case node['platform_family']
 when 'debian'
