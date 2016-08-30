@@ -28,12 +28,12 @@ describe 'postgresql::apt_pgdg_postgresql' do
     file("/etc/apt/sources.list.d/apt.postgresql.org.list").must_exist
   end
 
-  it 'installs postgresql-client-9.4' do
-    package("postgresql-client-9.4").must_be_installed
+  it "installs postgresql-client-#{node['postgresql']['version']}" do
+    package("postgresql-client-#{node['postgresql']['version']}").must_be_installed
   end
 
-  it 'makes psql version 9.4 available' do
+  it "makes psql version #{node['postgresql']['version']} available" do
     psql = shell_out("psql --version")
-    assert psql.stdout.include?("psql (PostgreSQL) 9.4")
+    assert psql.stdout.include?("psql (PostgreSQL) #{node['postgresql']['version']}")
   end
 end
