@@ -81,24 +81,24 @@ when "amazon"
 
 when "redhat", "centos", "scientific", "oracle"
 
-  node.default['postgresql']['client']['packages'] = ["postgresql84-devel"]
-  node.default['postgresql']['server']['packages'] = ["postgresql84-server"]
-  node.default['postgresql']['contrib']['packages'] = ["postgresql84-contrib"]
+  node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
 
-  node.default['postgresql']['setup_script'] = "postgresql-setup"
-  node.default['postgresql']['server']['service_name'] = "postgresql"
-
-  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'].to_f == 8.4
-    node.default['postgresql']['client']['packages'] = ['postgresql-devel']
-    node.default['postgresql']['server']['packages'] = ['postgresql-server']
-    node.default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
+  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] == '8.4'
+    node.default['postgresql']['client']['packages'] = %w{postgresql-devel}
+    node.default['postgresql']['server']['packages'] = %w{postgresql-server}
+    node.default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
+  else
+    node.default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-devel"]
+    node.default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
+    node.default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
   end
 
-  if node['platform_version'].to_f >= 7.0
-    node.default['postgresql']['version'] = '9.2'
-    node.default['postgresql']['client']['packages'] = ['postgresql-devel']
-    node.default['postgresql']['server']['packages'] = ['postgresql-server']
-    node.default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
+  if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] != '8.4'
+     node.default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+     node.default['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+  else
+    node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
+    node.default['postgresql']['server']['service_name'] = "postgresql"
   end
 
 when "opensuse"
@@ -114,6 +114,29 @@ when "opensuse"
   end
 
   node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  node.default['postgresql']['server']['service_name'] = "postgresql"
+
+when "suse"
+
+  if node['postgresql']['version'] = '8.3'
+    node.default['postgresql']['client']['packages'] = ['postgresql', 'rubygem-pg']
+    node.default['postgresql']['server']['packages'] = ['postgresql-server']
+    node.default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
+  elsif node['postgresql']['version'] == '9.1'
+    node.default['postgresql']['client']['packages'] = ['postgresql91', 'rubygem-pg']
+    node.default['postgresql']['server']['packages'] = ['postgresql91-server']
+    node.default['postgresql']['contrib']['packages'] = ['postgresql91-contrib']
+  end
+
+  node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  node.default['postgresql']['server']['service_name'] = "postgresql"
+
+else
+
+  node.default['postgresql']['dir'] = "/etc/postgresql/#{node['postgresql']['version']}/main"
+  node.default['postgresql']['client']['packages'] = ["postgresql"]
+  node.default['postgresql']['server']['packages'] = ["postgresql"]
+  node.default['postgresql']['contrib']['packages'] = ["postgresql"]
   node.default['postgresql']['server']['service_name'] = "postgresql"
 
 end

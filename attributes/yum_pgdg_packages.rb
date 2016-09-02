@@ -2,9 +2,153 @@
 # access to the PGDG yum repositories. Links to RPMs for installation
 # on the supported version/platform combinations are listed at
 # http://yum.postgresql.org/repopackages.php, and the links for
-# PostgreSQL 9.2, 9.3 and 9.4 are captured below.
+# PostgreSQL 9.2, 9.3, 9.4, and 9.5 are captured below.
 #
 default['postgresql']['pgdg']['repo_rpm_url'] = {
+  "9.5" => {
+    "redhat" => {
+      "7" => {
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/",
+          "package" => "pgdg-redhat95-9.5-2.noarch.rpm"
+        }
+      },
+      "6" => {
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-i386/",
+          "package" => "pgdg-redhat95-9.5-2.noarch.rpm"
+        },
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/",
+          "package" => "pgdg-redhat95-9.5-2.noarch.rpm"
+        }
+      },
+      "5" => {
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-5-i386/",
+          "package" => "pgdg-redhat95-9.5-2.noarch.rpm"
+        },
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-5-x86_64/",
+          "package" => "pgdg-redhat95-9.5-2.noarch.rpm"
+        }
+      }
+    },
+    "centos" => {
+      "7" => {
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/",
+          "package" => "pgdg-centos95-9.5-2.noarch.rpm"
+        }
+      },
+      "6" => {
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-i386/",
+          "package" => "pgdg-centos95-9.5-2.noarch.rpm"
+        },
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/",
+          "package" => "pgdg-centos95-9.5-2.noarch.rpm"
+        }
+      },
+      "5" => {
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-5-x86_64/",
+          "package" => "pgdg-centos95-9.5-2.noarch.rpm"
+        },
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-5-i386/",
+          "package" => "pgdg-centos95-9.5-2.noarch.rpm"
+        }
+      }
+    },
+    "fedora" => {
+      "22" => {
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/fedora/fedora-22-x86_64/",
+          "package" => "pgdg-fedora95-9.5-3.noarch.rpm"
+        }
+      },
+      "21" => {
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/fedora/fedora-21-x86_64/",
+          "package" => "pgdg-fedora95-9.5-2.noarch.rpm"
+        },
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/fedora/fedora-21-i686/",
+          "package" => "pgdg-fedora95-9.5-2.noarch.rpm"
+        }
+      },
+      "20" => {
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/fedora/fedora-20-x86_64/",
+          "package" => "pgdg-fedora95-9.5-1.noarch.rpm"
+        },
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/fedora/fedora-20-i686/",
+          "package" => "pgdg-fedora95-9.5-1.noarch.rpm"
+        }
+      }
+    },
+    "amazon" => {
+      "2015" => {
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-i386/",
+          "package" => "pgdg-ami201503-95-9.5-2.noarch.rpm"
+        },
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/",
+          "package" => "pgdg-ami201503-95-9.5-2.noarch.rpm"
+        }
+      }
+    },
+    "scientific" => {
+      "7" => {
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/",
+          "package" => "pgdg-sl95-9.5-2.noarch.rpm"
+        }
+      },
+      "6" => {
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-i386/",
+          "package" => "pgdg-sl95-9.5-2.noarch.rpm"
+        },
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/",
+          "package" => "pgdg-sl95-9.5-2.noarch.rpm"
+        }
+      },
+      "5" => {
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-5-i386/",
+          "package" => "pgdg-sl95-9.5-2.noarch.rpm"
+        },
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-5-x86_64/",
+          "package" => "pgdg-sl95-9.5-2.noarch.rpm"
+        }
+      }
+    },
+    "oracle" => {
+      "7" => {
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/",
+          "package" => "pgdg-oraclelinux95-9.5-2.noarch.rpm"
+        }
+      },
+      "6" => {
+        "i386" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-i386/",
+          "package" => "pgdg-oraclelinux95-9.5-2.noarch.rpm"
+        },
+        "x86_64" => {
+          "url" => "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/",
+          "package" => "pgdg-oraclelinux95-9.5-2.noarch.rpm"
+        }
+      }
+    }
+  },
   "9.4" => {
     "redhat" => {
       "7" => {

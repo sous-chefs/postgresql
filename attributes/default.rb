@@ -18,6 +18,8 @@
 default['postgresql']['enable_pgdg_apt'] = false
 default['postgresql']['enable_pgdg_yum'] = false
 default['postgresql']['use_pgdg_packages'] = false
+default['postgresql']['service_action'] = [:enable, :start]
+default['postgresql']['password_action'] = :run
 
 default['postgresql']['server']['config_change_notify'] = :restart
 default['postgresql']['assign_postgres_password'] = true
@@ -121,6 +123,10 @@ when "redhat", "centos", "scientific", "oracle"
 
   default['postgresql']['version'] = "8.4"
 
+  if node['platform_version'].to_f >= 7.0
+    node.default['postgresql']['version'] = '9.2'
+  end
+
 when "opensuse"
 
   if node['platform_version'].to_f == 13.2
@@ -130,14 +136,12 @@ when "opensuse"
   end
 
 when "suse"
+
   if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
   else
     default['postgresql']['version'] = "9.1"
   end
-
-  default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  default['postgresql']['server']['service_name'] = "postgresql"
 
 else
   default['postgresql']['version'] = "8.4"

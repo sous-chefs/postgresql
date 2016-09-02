@@ -54,6 +54,12 @@ if node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attr
   end
 end
 
+service "postgresql" do
+  service_name node['postgresql']['server']['service_name']
+  supports :restart => true, :status => true, :reload => true
+  action node['postgresql']['service_action']
+end
+
 # NOTE: Consider two facts before modifying "assign-postgres-password":
 # (1) Passing the "ALTER ROLE ..." through the psql command only works
 #     if passwordless authorization was configured for local connections.
@@ -69,7 +75,7 @@ bash "assign-postgres-password" do
   code <<-EOH
   echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{node['postgresql']['password']['postgres']}\';" | psql -p #{node['postgresql']['config']['port']}
   EOH
-  action :run
+  action node['postgresql']['password_action']
   not_if "ls #{node['postgresql']['config']['data_directory']}/recovery.conf"
   only_if { node['postgresql']['assign_postgres_password'] }
 end

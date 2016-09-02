@@ -45,9 +45,3 @@ execute 'Set locale and Create cluster' do
   action :run
   not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
 end
-
-service "postgresql" do
-  service_name node['postgresql']['server']['service_name']
-  supports :restart => true, :status => true, :reload => true
-  action [:enable, :start]
-end
