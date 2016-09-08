@@ -1,0 +1,46 @@
+# This file was automatically generated and dropped off by Chef!
+description "PostgreSQL <%= node[:postgresql][:version] %> Server"
+author "PostgreSQL"
+
+start on runlevel [2345]
+stop on runlevel [016]
+expect fork
+
+respawn
+
+env POSTGRESQL_HOME="/var/lib/postgresql/<%= node[:postgresql][:version] %>/main"
+env POSTGRESQL_CONF="/etc/postgresql/<%= node[:postgresql][:version] %>/main/postgresql.conf"
+
+pre-start script
+    if [ -d /var/run/postgresql ]; then
+        chmod 2775 /var/run/postgresql
+    else
+        install -d -m 2775 -o postgres -g postgres /var/run/postgresql
+    fi
+end script
+
+post-start script
+    [ -r /usr/share/postgresql-common/init.d-functions ] || exit 0
+
+    . /usr/share/postgresql-common/init.d-functions
+
+    get_versions
+
+    for v in $versions; do
+        start $v || EXIT=$?
+    done
+    exit ${EXIT:-0}
+end script
+
+post-stop script
+    [ -r /usr/share/postgresql-common/init.d-functions ] || exit 0
+
+    . /usr/share/postgresql-common/init.d-functions
+
+    get_versions
+
+    for v in $versions; do
+        stop $v || EXIT=$?
+    done
+    exit ${EXIT:-0}
+end script

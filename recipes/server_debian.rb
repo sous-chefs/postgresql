@@ -22,26 +22,33 @@ node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack
 end
 
-case node['platform']
-when 'ubuntu'
-  directory node['postgresql']['config']['data_directory'] do
-    owner 'postgres'
-    group 'postgres'
-    recursive true
-    action :create
-  end
-
-  execute "initdb #{node['postgresql']['config']['data_directory']}" do
-    user 'postgres'
-    environment 'PATH' => "/usr/lib/postgresql/#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
-    not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
-  end
-end
-
 include_recipe "postgresql::server_conf"
 
 execute 'Set locale and Create cluster' do
   command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + node['postgresql']['cluster_name']
   action :run
   not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
+end
+
+if node['postgresql']['server']['init_package'] == 'upstart'
+  # Install the upstart script for 12.04 and 14.04
+
+  template "/etc/init/postgresql.conf" do
+    source 'postgresql-upstart.conf.erb'
+  end
+
+  initd_script = '/etc/init.d/postgresql'
+
+  file initd_script do
+    action :delete
+    not_if { File.symlink? initd_script }
+  end
+
+  link initd_script do
+    to '/lib/init/upstart-job'
+  end
+
+  execute 'update-rc.d -f postgresql remove' do
+    only_if 'ls /etc/rc*.d/*postgresql'
+  end
 end
