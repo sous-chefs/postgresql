@@ -22,14 +22,6 @@ node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack
 end
 
-include_recipe "postgresql::server_conf"
-
-execute 'Set locale and Create cluster' do
-  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + node['postgresql']['cluster_name']
-  action :run
-  not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
-end
-
 if node['postgresql']['server']['init_package'] == 'upstart'
   # Install the upstart script for 12.04 and 14.04
 
@@ -51,4 +43,12 @@ if node['postgresql']['server']['init_package'] == 'upstart'
   execute 'update-rc.d -f postgresql remove' do
     only_if 'ls /etc/rc*.d/*postgresql'
   end
+end
+
+include_recipe "postgresql::server_conf"
+
+execute 'Set locale and Create cluster' do
+  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + node['postgresql']['cluster_name']
+  action :run
+  not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
 end
