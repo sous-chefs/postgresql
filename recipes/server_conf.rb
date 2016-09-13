@@ -51,7 +51,11 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   owner "postgres"
   group "postgres"
   mode 0600
-  notifies change_notify, 'service[postgresql]'
+  if platform?("ubuntu") && node['platform_version'].to_f < 15.04
+    notifies :run, 'service[postgresql]', :immediately
+  else
+    notifies change_notify, 'service[postgresql]', :immediately
+  end
 end
 
 template "#{node['postgresql']['dir']}/pg_hba.conf" do
@@ -59,5 +63,5 @@ template "#{node['postgresql']['dir']}/pg_hba.conf" do
   owner "postgres"
   group "postgres"
   mode 00600
-  notifies change_notify, 'service[postgresql]'
+  notifies change_notify, 'service[postgresql]', :immediately
 end
