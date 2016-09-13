@@ -52,7 +52,7 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   group "postgres"
   mode 0600
   if platform?("ubuntu") && node['platform_version'].to_f < 15.04
-    notifies :run, 'service[postgresql]', :immediately
+    notifies :start, 'service[postgresql]', :immediately
   else
     notifies change_notify, 'service[postgresql]', :immediately
   end
