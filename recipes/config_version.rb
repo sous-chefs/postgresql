@@ -82,7 +82,11 @@ when "amazon"
 when "redhat", "centos", "scientific", "oracle"
 
   node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
-  node.default['postgresql']['setup_script'] = "postgresql-setup"
+  if node['postgresql']['enable_pgdg_yum']
+    node.default['postgresql']['setup_script'] = "postgresql#{node['postgresql']['version'].split('.').join}-setup"
+  else
+    node.default['postgresql']['setup_script'] = "postgresql-setup"
+  end
 
   if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'] == '8.4'
     node.default['postgresql']['client']['packages'] = %w{postgresql-devel}
