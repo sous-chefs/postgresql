@@ -48,7 +48,7 @@ end
 include_recipe "postgresql::server_conf"
 
 execute 'Set locale and Create cluster' do
-  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + node['postgresql']['cluster_name']
+  command "export LC_ALL=en_US.UTF-8; /usr/bin/pg_createcluster --start #{node['postgresql']['version']} #{node['postgresql']['cluster_name']}"
   action :run
   not_if { ::File.exist?("#{node['postgresql']['config']['data_directory']}/PG_VERSION") }
 end
