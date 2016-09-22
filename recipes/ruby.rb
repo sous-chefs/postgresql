@@ -82,6 +82,7 @@ rescue LoadError
   begin
     chef_gem "pg" do
       compile_time true if respond_to?(:compile_time)
+      version node['postgresql']['pg_gem_version'] if defined? node['postgresql']['pg_gem_version']
     end
   rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
     # Are we an omnibus install?
