@@ -55,7 +55,7 @@ if node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attr
 end
 
 service "postgresql" do
-  if node['postgresql']['server']['init_package'] == 'upstart'
+  if node['postgresql']['server']['init_package'] == 'upstart' && node['platform_family'] == 'debian'
     provider Chef::Provider::Service::Upstart
   end
   service_name node['postgresql']['server']['service_name']
