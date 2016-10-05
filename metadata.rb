@@ -17,7 +17,7 @@ recipe            "postgresql::server_debian", "Installs postgresql server packa
 
 supports "ubuntu", "<= 16.04"
 
-%w{debian fedora suse opensuse amazon}.each do |os|
+%w(debian fedora suse opensuse opensuseleap amazon).each do |os|
   supports os
 end
 
