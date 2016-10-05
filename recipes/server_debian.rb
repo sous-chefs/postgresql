@@ -22,6 +22,29 @@ node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack
 end
 
+if node['postgresql']['server']['init_package'] == 'upstart'
+  # Install the upstart script for 12.04 and 14.04
+
+  template "/etc/init/postgresql.conf" do
+    source 'postgresql-upstart.conf.erb'
+  end
+
+  initd_script = '/etc/init.d/postgresql'
+
+  file initd_script do
+    action :delete
+    not_if { File.symlink? initd_script }
+  end
+
+  link initd_script do
+    to '/lib/init/upstart-job'
+  end
+
+  execute 'update-rc.d -f postgresql remove' do
+    only_if 'ls /etc/rc*.d/*postgresql'
+  end
+end
+
 include_recipe "postgresql::server_conf"
 
 execute 'Set locale and Create cluster' do
