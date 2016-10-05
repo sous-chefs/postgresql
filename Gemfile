@@ -9,5 +9,5 @@ group :integration do
   gem 'kitchen-docker'
 end
 gem 'chefspec', '~> 4.5.0'
-gem 'librarian-chef'
+gem 'berkshelf', '>= 4.0'
 gem 'cookstyle'
