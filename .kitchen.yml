@@ -1,49 +1,26 @@
----
-driver_plugin: vagrant
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
 
 platforms:
-- name: ubuntu-16.04
-  run_list:
-  - recipe[apt]
-
-- name: ubuntu-15.04
-  run_list:
-  - recipe[apt]
-
-- name: ubuntu-14.04
-  run_list:
-  - recipe[apt]
-
-- name: ubuntu-12.04
-  run_list:
-  - recipe[apt]
-
-- name: debian-8.2
-  run_list:
-  - recipe[apt]
-
-- name: centos-7.2
-
-- name: centos-7.0
-
-- name: centos-6.4
-
-- name: opensuse-13.2
-  driver:
-    box: gsaslis/opensuse-13.2
-    box_url: https://atlas.hashicorp.com/gsaslis/boxes/opensuse-13.2
-
-- name: opensuse-13.1
-  driver:
-    box: opensuse-13.1
-    box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_opensuse-13.1-x86_64_chef-provisionerless.box
+  - name: centos-6.8
+  - name: centos-7.2
+  - name: debian-7.11
+  - name: debian-8.5
+  - name: fedora-24
+    run_list: yum::dnf_yum_compat
+  - name: opensuse-13.2
+  - name: opensuse-leap-42.1
+  - name: ubuntu-12.04
+  - name: ubuntu-14.04
+  - name: ubuntu-16.04
 
 suites:
 - name: default
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql]
-  attributes: {}
 
 - name: contrib
   run_list:
@@ -55,9 +32,9 @@ suites:
 
 - name: apt-pgdg-client
   run_list:
-  - recipe[minitest-handler]
+  - recipe[apt]
   - recipe[postgresql]
-  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-24" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -67,9 +44,8 @@ suites:
 
 - name: yum-pgdg-client
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "ubuntu-16.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-7.11", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -80,13 +56,10 @@ suites:
 - name: ruby
   run_list:
   - recipe[postgresql::ruby]
-  - recipe[minitest-handler]
-  attributes: {}
 
 - name: server
   run_list:
   - recipe[apt]
-  - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   attributes:
@@ -96,10 +69,10 @@ suites:
 
 - name: apt-pgdg-server
   run_list:
-  - recipe[minitest-handler]
+  - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-42.1", "fedora-24" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -118,10 +91,9 @@ suites:
 
 - name: yum-pgdg-server
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "ubuntu-16.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -137,10 +109,10 @@ suites:
 
 - name: apt-pgdg-client-ruby
   run_list:
-  - recipe[minitest-handler]
+  - recipe[apt]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-24" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -150,10 +122,9 @@ suites:
 
 - name: yum-pgdg-client-ruby
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "ubuntu-16.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -163,10 +134,10 @@ suites:
 
 - name: apt-pgdg-server-pg_stat_statements
   run_list:
-  - recipe[minitest-handler]
+  - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "centos-6.4", "centos-7.0", "centos-7.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-13.2", "fedora-24" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -189,10 +160,9 @@ suites:
 
 - name: yum-pgdg-server-pg_stat_statements
   run_list:
-  - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "ubuntu-16.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-8.5", "opensuse-13.2", "opensuse-leap-42-1" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
