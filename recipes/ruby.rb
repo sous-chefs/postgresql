@@ -27,10 +27,6 @@ rescue LoadError
       action :nothing
     end
     e.run_action(:run) unless ::File.exists?('/var/lib/apt/periodic/update-success-stamp')
-    
-    %w{automake gcc make}.each do |pkg|
-      package(pkg).run_action(:install)
-    end
   end
 
   node.set['build-essential']['compile_time'] = true
