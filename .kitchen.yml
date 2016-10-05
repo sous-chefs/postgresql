@@ -2,6 +2,10 @@
 driver_plugin: vagrant
 
 platforms:
+- name: ubuntu-16.04
+  run_list:
+  - recipe[apt]
+
 - name: ubuntu-15.04
   run_list:
   - recipe[apt]
@@ -65,7 +69,7 @@ suites:
   run_list:
   - recipe[minitest-handler]
   - recipe[postgresql]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "ubuntu-16.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -117,7 +121,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "ubuntu-16.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -149,7 +153,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "ubuntu-16.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
@@ -188,7 +192,7 @@ suites:
   - recipe[minitest-handler]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-15.04", "ubuntu-16.04", "debian-8.2", "opensuse-13.1", "opensuse-13.2" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
