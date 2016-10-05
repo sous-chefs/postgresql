@@ -7,6 +7,7 @@ long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version           "4.0.7"
 source_url        "https://github.com/hw-cookbooks/postgresql" if respond_to?(:source_url)
 issues_url        "https://github.com/hw-cookbooks/postgresql/issues" if respond_to?(:issues_url)
+chef_version      ">= 11.0"  if respond_to?(:chef_version)
 recipe            "postgresql", "Includes postgresql::client"
 recipe            "postgresql::ruby", "Installs pg gem for Ruby bindings"
 recipe            "postgresql::client", "Installs postgresql client package(s)"
