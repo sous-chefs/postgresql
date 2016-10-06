@@ -15,9 +15,12 @@ recipe            'postgresql::server', 'Installs postgresql server packages, te
 recipe            'postgresql::server_redhat', 'Installs postgresql server packages, redhat family style'
 recipe            'postgresql::server_debian', 'Installs postgresql server packages, debian family style'
 
-supports 'ubuntu', '<= 16.04'
+supports 'ubuntu', '>= 12.04'
+supports 'debian', '>= 7.0'
+supports 'opensuse', '>= 13.0'
+supports 'suse', '>= 12.0'
 
-%w(debian fedora suse opensuse opensuseleap amazon).each do |os|
+%w(fedora opensuseleap amazon).each do |os|
   supports os
 end
 
