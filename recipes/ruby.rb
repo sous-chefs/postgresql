@@ -26,18 +26,18 @@ rescue LoadError
     e = execute 'apt-get update' do
       action :nothing
     end
-    e.run_action(:run) unless ::File.exists?('/var/lib/apt/periodic/update-success-stamp')
+    e.run_action(:run) unless ::File.exist?('/var/lib/apt/periodic/update-success-stamp')
   end
 
-  node.set['build-essential']['compile_time'] = true
-  include_recipe "build-essential"
+  node.override['build-essential']['compile_time'] = true
+  include_recipe 'build-essential'
 
   if node['postgresql']['enable_pgdg_yum']
-    package "ca-certificates" do
+    package 'ca-certificates' do
       action :nothing
     end.run_action(:upgrade)
 
-    include_recipe "postgresql::yum_pgdg_postgresql"
+    include_recipe 'postgresql::yum_pgdg_postgresql'
 
     rpm_platform = node['platform']
     rpm_platform_version = node['platform_version'].to_f.to_i.to_s
@@ -57,9 +57,9 @@ rescue LoadError
   end
 
   if node['postgresql']['enable_pgdg_apt']
-    include_recipe "postgresql::apt_pgdg_postgresql"
-    resources("file[remove deprecated Pitti PPA apt repository]").run_action(:delete)
-    resources("apt_repository[apt.postgresql.org]").run_action(:add)
+    include_recipe 'postgresql::apt_pgdg_postgresql'
+    resources('file[remove deprecated Pitti PPA apt repository]').run_action(:delete)
+    resources('apt_repository[apt.postgresql.org]').run_action(:add)
 
     node['postgresql']['client']['packages'].each do |pkg|
       package pkg do
@@ -69,7 +69,7 @@ rescue LoadError
 
   end
 
-  include_recipe "postgresql::client"
+  include_recipe 'postgresql::client'
 
   node['postgresql']['client']['packages'].each do |pkg|
     package pkg do
@@ -78,15 +78,15 @@ rescue LoadError
   end
 
   begin
-    chef_gem "pg" do
+    chef_gem 'pg' do
       compile_time true if respond_to?(:compile_time)
     end
   rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
     # Are we an omnibus install?
-    raise if RbConfig.ruby.scan(%r{(chef|opscode)}).empty?
+    raise if RbConfig.ruby.scan(/(chef|opscode)/).empty?
     # Still here, must be omnibus. Lets make this thing install!
     Chef::Log.warn 'Failed to properly build pg gem. Forcing properly linking and retrying (omnibus fix)'
-    gem_dir = e.message.scan(%r{will remain installed in ([^ ]+)}).flatten.first
+    gem_dir = e.message.scan(/will remain installed in ([^ ]+)/).flatten.first
     raise unless gem_dir
     gem_name = File.basename(gem_dir)
     ext_dir = File.join(gem_dir, 'ext')

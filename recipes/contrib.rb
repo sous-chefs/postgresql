@@ -23,11 +23,11 @@ node['postgresql']['contrib']['packages'].each do |pg_pack|
   package pg_pack
 end
 
-include_recipe "postgresql::server"
+include_recipe 'postgresql::server'
 
 # Install PostgreSQL contrib extentions into the database, as specified by the
 # node attribute node['postgresql']['database_name'].
-if (node['postgresql']['contrib'].attribute?('extensions'))
+if node['postgresql']['contrib'].attribute?('extensions')
   node['postgresql']['contrib']['extensions'].each do |pg_ext|
     bash "install-#{pg_ext}-extension" do
       user 'postgres'

@@ -30,7 +30,7 @@ if node['platform_family'] == 'debian'
     node.set['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql'
   end
 
-  node.set['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
+  node.set['postgresql']['config']['max_fsm_pages'] = 153_600 if node['postgresql']['version'].to_f < 8.4
 
   if node['postgresql']['config']['ssl']
     node.set['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
@@ -40,17 +40,17 @@ if node['platform_family'] == 'debian'
 end
 
 template "#{node['postgresql']['dir']}/postgresql.conf" do
-  source "postgresql.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 0600
+  source 'postgresql.conf.erb'
+  owner 'postgres'
+  group 'postgres'
+  mode '0600'
   notifies change_notify, 'service[postgresql]', :immediately
 end
 
 template "#{node['postgresql']['dir']}/pg_hba.conf" do
-  source "pg_hba.conf.erb"
-  owner "postgres"
-  group "postgres"
-  mode 00600
+  source 'pg_hba.conf.erb'
+  owner 'postgres'
+  group 'postgres'
+  mode '0600'
   notifies change_notify, 'service[postgresql]', :immediately
 end
