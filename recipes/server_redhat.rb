@@ -36,7 +36,7 @@ user 'postgres' do
   gid 'postgres'
   system true
   uid 26
-  supports manage_home: false
+  manage_home: false
 end
 
 directory node['postgresql']['config']['data_directory'] do
