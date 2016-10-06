@@ -1,10 +1,12 @@
-# Description
+# postgresql cookbook
+
+[![Build Status](https://travis-ci.org/hw-cookbooks/postgresql.svg?branch=develop)](https://travis-ci.org/hw-cookbooks/postgresql) [![Cookbook Version](https://img.shields.io/cookbook/v/activemq.svg)](https://supermarket.chef.io/cookbooks/postgresql)
 
 Installs and configures PostgreSQL as a client or a server.
 
-# Requirements
+## Requirements
 
-## Platforms
+### Platforms
 
 - Debian 7+
 - Ubuntu 12.04+
@@ -13,13 +15,17 @@ Installs and configures PostgreSQL as a client or a server.
 - SLES 12+
 - openSUSE 13+ / openSUSE Leap
 
-## Cookbooks
+### Chef
+
+- Chef 11+
+
+### Cookbooks
 
 - `apt`
 - `openssl`
 - `build-essential`
 
-# Attributes
+## Attributes
 
 The following attributes are set based on the platform, see the `attributes/default.rb` file for default values.
 
@@ -39,13 +45,13 @@ The following attributes are generated in `recipe[postgresql::server]`.
 
 The `postgresql.conf` and `pg_hba.conf` files are dynamically generated from attributes. Each key in `node['postgresql']['config']` is a postgresql configuration directive, and will be rendered in the config file. For example, the attribute:
 
-```
+```ruby
 node['postgresql']['config']['listen_addresses'] = 'localhost'
 ```
 
 Will result in the following line in the `postgresql.conf` file:
 
-```
+```ruby
 listen_addresses = 'localhost'
 ```
 
@@ -55,7 +61,7 @@ See **Recipes** `config_initdb` and `config_pgtune` below to auto-generate many 
 
 For values that are "on" or "off", they should be specified as literal `true` or `false`. String values will be used with single quotes. Any configuration option set to the literal `nil` will be skipped entirely. All other values (e.g., numeric literals) will be used as is. So for example:
 
-```
+```ruby
 node.default['postgresql']['config']['logging_collector'] = true
 node.default['postgresql']['config']['datestyle'] = 'iso, mdy'
 node.default['postgresql']['config']['ident_file'] = nil
@@ -64,7 +70,7 @@ node.default['postgresql']['config']['port'] = 5432
 
 Will result in the following config lines:
 
-```
+```ruby
 logging_collector = 'on'
 datestyle = 'iso,mdy'
 port = 5432
@@ -99,21 +105,21 @@ local   all             all                                     ident
 
 (By the way, the template uses `peer` instead of `ident` for PostgreSQL-9.1 and above, which has the same effect.)
 
-# Recipes
+## Recipes
 
-## default
+### default
 
 Includes the client recipe.
 
-## client
+### client
 
 Installs the packages defined in the `node['postgresql']['client']['packages']` attribute.
 
-## ruby
+### ruby
 
 Install the `pg` gem under Chef's Ruby environment so it can be used in other recipes. The build-essential packages and postgresql client packages will be installed during the compile phase, so that the native extensions of `pg` can be compiled.
 
-## server
+### server
 
 Includes the `server_debian` or `server_redhat` recipe to get the appropriate server packages installed and service managed. Also manages the configuration for the server:
 
@@ -122,21 +128,13 @@ Includes the `server_debian` or `server_redhat` recipe to get the appropriate se
 - manages the `postgresql.conf` file.
 - manages the `pg_hba.conf` file.
 
-## server_debian
-
-Installs the postgresql server packages and sets up the service. You should include the `postgresql::server` recipe, which will include this on Debian platforms.
-
-## server_redhat
-
-Manages the postgres user and group (with UID/GID 26, per RHEL package conventions), installs the postgresql server packages, initializes the database, and manages the postgresql service. You should include the `postgresql::server` recipe, which will include this on RHEL/Fedora platforms.
-
-## config_initdb
+### config_initdb
 
 Takes locale and timezone settings from the system configuration. This recipe creates `node.default['postgresql']['config']` attributes that conform to the system's locale and timezone. In addition, this recipe creates the same error reporting and logging settings that `initdb` provided: a rotation of 7 days of log files named postgresql-Mon.log, etc.
 
 The default attributes created by this recipe are easy to override with normal attributes because of Chef attribute precedence. For example, suppose a DBA wanted to keep log files indefinitely, rolling over daily or when growing to 10MB. The Chef installation could include the `postgresql::config_initdb` recipe for the locale and timezone settings, but customize the logging settings with these node JSON attributes:
 
-```
+```javascript
 "postgresql": {
   "config": {
     "log_rotation_age": "1d",
@@ -148,7 +146,7 @@ The default attributes created by this recipe are easy to override with normal a
 
 Credits: This `postgresql::config_initdb` recipe is based on algorithms in the [source code](http://doxygen.postgresql.org/initdb_8c_source.html) for the PostgreSQL `initdb` utility.
 
-## config_pgtune
+### config_pgtune
 
 Performance tuning. Takes the wimpy default postgresql.conf and expands the database server to be as powerful as the hardware it's being deployed on. This recipe creates a baseline configuration of `node.default['postgresql']['config']` attributes in the right general range for a dedicated Postgresql system. Most installations won't need additional performance tuning.
 
@@ -170,7 +168,7 @@ This recipe uses a performance model with three input parameters. These node att
 
 The default attributes created by this recipe are easy to override with normal attributes because of Chef attribute precedence. For example, if you are running application benchmarks to try different buffer cache sizes, you would experiment with this node JSON attribute:
 
-```
+```javascript
 "postgresql": {
   "config": {
     "shared_buffers": "3GB"
@@ -182,13 +180,13 @@ Note that the recipe uses `max_connections` in its computations. If you want to 
 
 Credits: This `postgresql::config_pgtune` recipe is based on the [pgtune python script](https://github.com/gregs1104/pgtune) developed by [Greg Smith](http://notemagnet.blogspot.com/2008/11/automating-initial-postgresqlconf.html) and [other pgsql-hackers](http://www.postgresql.org/message-id/491C6CDC.8090506@agliodbs.com).
 
-## contrib
+### contrib
 
 Installs the packages defined in the `node['postgresql']['contrib']['packages']` attribute. The contrib directory of the PostgreSQL distribution includes porting tools, analysis utilities, and plug-in features that database engineers often require. Some (like `pgbench`) are executable. Others (like `pg_buffercache`) would need to be installed into the database.
 
 Also installs any contrib module extensions defined in the `node['postgresql']['contrib']['extensions']` attribute. These will be available in any subsequently created databases in the cluster, because they will be installed into the `template1` database using the `CREATE EXTENSION` command. For example, it is often necessary/helpful for problem troubleshooting and maintenance planning to install the views and functions in these [standard instrumentation extensions] ([http://www.postgresql.org/message-id/flat/4DC32600.6080900@pgexperts.com#4DD3D6C6.5060006@2ndquadrant.com](mailto:http://www.postgresql.org/message-id/flat/4DC32600.6080900@pgexperts.com#4DD3D6C6.5060006@2ndquadrant.com)):
 
-```
+```ruby
 node['postgresql']['contrib']['extensions'] = [
   "pageinspect",
   "pg_buffercache",
@@ -201,21 +199,21 @@ node['postgresql']['contrib']['extensions'] = [
 
 Note that the `pg_stat_statements` view only works if `postgresql.conf` loads its shared library, which can be done with this node attribute:
 
-```
+```ruby
 node['postgresql']['config']['shared_preload_libraries'] = 'pg_stat_statements'
 ```
 
 If using `shared_preload_libraries` in combination with the `contrib` recipe, make sure that the `contrib` recipe is called before the `server` recipe (to ensure the dependencies are installed and setup in order).
 
-## apt_pgdg_postgresql
+### apt_pgdg_postgresql
 
 Enables the PostgreSQL Global Development Group yum repository maintained by Devrim Gündüz for updated PostgreSQL packages. (The PGDG is the groups that develops PostgreSQL.) Automatically included if the `node['postgresql']['enable_pgdg_apt']` attribute is true. Also set the `node['postgresql']['client']['packages']` and `node['postgresql']['server]['packages']` to the list of packages to use from this repository, and set the `node['postgresql']['version']` attribute to the version to use (e.g., "9.2").
 
-## yum_pgdg_postgresql
+### yum_pgdg_postgresql
 
 Enables the PostgreSQL Global Development Group yum repository maintained by Devrim Gündüz for updated PostgreSQL packages. (The PGDG is the groups that develops PostgreSQL.) Automatically included if the `node['postgresql']['enable_pgdg_yum']` attribute is true. Also use `override_attributes` to set a number of values that will need to have embedded version numbers. For example:
 
-```
+```ruby
 node['postgresql']['enable_pgdg_yum'] = true
 node['postgresql']['version'] = "9.4"
 node['postgresql']['dir'] = "/var/lib/pgsql/9.4/data"
@@ -229,11 +227,7 @@ node['postgresql']['setup_script'] = "postgresql94-setup"
 
 You may set `node['postgresql']['pgdg']['repo_rpm_url']` attributes to pick up recent [PGDG repo packages](http://yum.postgresql.org/repopackages.php).
 
-# Resources/Providers
-
-See the [database](http://community.opscode.com/cookbooks/database) for resources and providers that can be used for managing PostgreSQL users and databases.
-
-# Usage
+## Usage
 
 On systems that need to connect to a PostgreSQL database, add to a run list `recipe[postgresql]` or `recipe[postgresql::client]`.
 
@@ -243,11 +237,11 @@ On Debian family systems, SSL will be enabled, as the packages on Debian/Ubuntu 
 
 On server systems, the postgres server is restarted when a configuration file changes. This can be changed to reload only by setting the following attribute:
 
-```
+```ruby
 node['postgresql']['server']['config_change_notify'] = :reload
 ```
 
-# Chef Solo Note
+## Chef Solo Note
 
 The following node attribute is stored on the Chef Server when using `chef-client`. Because `chef-solo` does not connect to a server or save the node object at all, to have the password persist across `chef-solo` runs, you must specify them in the `json_attribs` file used. For Example:
 
@@ -271,7 +265,7 @@ That should actually be the "encrypted password" instead of cleartext, so you sh
 - You can run this from a linux commandline:<br>
   `echo -n 'iloverandompasswordsbutthiswilldo''postgres' | openssl md5 | sed -e 's/.* /md5/'`
 
-# License and Author
+## License and Author
 
 - Author:: Joshua Timberman ([joshua@chef.io](mailto:joshua@chef.io))
 - Author:: Lamont Granquist ([lamont@chef.io](mailto:lamont@chef.io))
@@ -279,10 +273,16 @@ That should actually be the "encrypted password" instead of cleartext, so you sh
 - Author:: David Crane ([davidc@donorschoose.org](mailto:davidc@donorschoose.org))
 - Author:: Aaron Baer ([aaron@heavywater.io](mailto:aaron@heavywater.io))
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
-
 ```
-http://www.apache.org/licenses/LICENSE-2.0
-```
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
