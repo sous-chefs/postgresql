@@ -54,12 +54,7 @@ default['postgresql']['server']['init_package'] =
       'systemd'
     end
   when 'fedora'
-    case
-    when node['platform_version'].to_f < 15
-      'upstart'
-    else
-      'systemd'
-    end
+    'systemd'
   when 'opensuse', 'opensuseleap'
     'systemd'
   else
