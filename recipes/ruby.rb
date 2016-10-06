@@ -58,7 +58,6 @@ rescue LoadError
 
   if node['postgresql']['enable_pgdg_apt']
     include_recipe 'postgresql::apt_pgdg_postgresql'
-    resources('file[remove deprecated Pitti PPA apt repository]').run_action(:delete)
     resources('apt_repository[apt.postgresql.org]').run_action(:add)
 
     node['postgresql']['client']['packages'].each do |pkg|
