@@ -12,6 +12,7 @@ install: echo "skip bundle install"
 
 branches:
   only:
+    - develop
     - master
 
 # Ensure we make ChefDK's Ruby the default
