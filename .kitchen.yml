@@ -124,7 +124,7 @@ suites:
   run_list:
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
+  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-7.11", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
   attributes:
     postgresql:
       enable_pgdg_yum: true
