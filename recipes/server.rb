@@ -66,16 +66,15 @@ end
 
 # Versions prior to 9.2 do not have a config file option to set the SSL
 # key and cert path, and instead expect them to be in a specific location.
-if node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_cert_file')
-  link ::File.join(node['postgresql']['config']['data_directory'], 'server.crt') do
-    to node['postgresql']['config']['ssl_cert_file']
-  end
+
+link ::File.join(node['postgresql']['config']['data_directory'], 'server.crt') do
+  to node['postgresql']['config']['ssl_cert_file']
+  only_if { node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_cert_file') }
 end
 
-if node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_key_file')
-  link ::File.join(node['postgresql']['config']['data_directory'], 'server.key') do
-    to node['postgresql']['config']['ssl_key_file']
-  end
+link ::File.join(node['postgresql']['config']['data_directory'], 'server.key') do
+  to node['postgresql']['config']['ssl_key_file']
+  only_if { node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_key_file') }
 end
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
