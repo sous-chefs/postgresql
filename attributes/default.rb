@@ -130,17 +130,11 @@ when "fedora"
   default['postgresql']['contrib']['packages'] = %w{postgresql-contrib}
   default['postgresql']['server']['service_name'] = "postgresql"
 
-when "amazon"
+when 'amazon'
 
-  if node['platform_version'].to_f == 2012.03
-    default['postgresql']['version'] = "9.0"
-    default['postgresql']['dir'] = "/var/lib/pgsql9/data"
-  elsif node['platform_version'].to_f >= 2015.03
-    default['postgresql']['version'] = "9.2"
-    default['postgresql']['dir'] = "/var/lib/pgsql9/data"
-  else
-    default['postgresql']['version'] = "8.4"
-    default['postgresql']['dir'] = "/var/lib/pgsql/data"
+  if node['platform_version'].to_f >= 2015.03
+    default['postgresql']['version'] = '9.2'
+    default['postgresql']['dir'] = '/var/lib/pgsql9/data'
   end
 
   default['postgresql']['client']['packages'] = %w{postgresql-devel}
