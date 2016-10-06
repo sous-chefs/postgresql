@@ -9,6 +9,8 @@ platforms:
   - name: centos-7.2
   - name: debian-7.11
   - name: debian-8.5
+  - name: fedora-23
+    run_list: yum::dnf_yum_compat
   - name: fedora-24
     run_list: yum::dnf_yum_compat
   - name: opensuse-13.2
@@ -72,7 +74,7 @@ suites:
   - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-42.1", "fedora-24" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-42.1", "fedora-23", "fedora-24" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -112,7 +114,7 @@ suites:
   - recipe[apt]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-24" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-24" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -137,7 +139,7 @@ suites:
   - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-13.2", "fedora-24" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-13.2", "fedora-23", "fedora-24" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
