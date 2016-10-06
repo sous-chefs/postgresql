@@ -2,19 +2,19 @@ require 'spec_helper'
 
 describe 'opensuse::postgresql::server' do
   let(:chef_application) do
-    double('Chef::Application', fatal!: false);
+    double('Chef::Application', fatal!: false)
   end
   let(:chef_run) do
-    runner = ChefSpec::SoloRunner.new(
+    runner = ChefSpec::ServerRunner.new(
       platform: 'opensuse', version: '13.2'
     ) do |node|
       node.automatic['memory']['total'] = '2048kB'
       node.automatic['ipaddress'] = '1.1.1.1'
-      node.set['postgresql']['version'] = '9.3'
-      node.set['postgresql']['password']['postgres'] = 'password'
-      node.set['postgresql']['dir'] = '/var/lib/pgsql/data'
-      node.set['postgresql']['conf_dir'] = '/etc/sysconfig/pgsql'
-      node.set['postgresql']['initdb_locale'] = 'UTF-8'
+      node.normal['postgresql']['version'] = '9.3'
+      node.normal['postgresql']['password']['postgres'] = 'password'
+      node.normal['postgresql']['dir'] = '/var/lib/pgsql/data'
+      node.normal['postgresql']['conf_dir'] = '/etc/sysconfig/pgsql'
+      node.normal['postgresql']['initdb_locale'] = 'UTF-8'
     end
     runner.converge('postgresql::server')
   end
@@ -22,7 +22,7 @@ describe 'opensuse::postgresql::server' do
     stub_const('Chef::Application', chef_application)
     allow(File).to receive(:directory?).and_call_original
     allow(File).to receive(:directory?).with('/etc/sysconfig/pgsql').and_return(false)
-    stub_command("ls /var/lib/pgsql/data/recovery.conf").and_return(false)
+    stub_command('ls /var/lib/pgsql/data/recovery.conf').and_return(false)
   end
 
   it 'Install postgresql 9.3' do
@@ -53,7 +53,7 @@ describe 'opensuse::postgresql::server' do
 
   context 'when running as a standby host' do
     it 'does not assign the Postgres password' do
-      stub_command("ls /var/lib/pgsql/main/recovery.conf").and_return(false)
+      stub_command('ls /var/lib/pgsql/main/recovery.conf').and_return(false)
       expect(chef_run).to_not run_bash('assign_postgres_password')
     end
   end
