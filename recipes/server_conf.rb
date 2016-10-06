@@ -30,8 +30,6 @@ if node['platform_family'] == 'debian'
     node.set['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql'
   end
 
-  node.set['postgresql']['config']['max_fsm_pages'] = 153_600 if node['postgresql']['version'].to_f < 8.4
-
   if node['postgresql']['config']['ssl']
     node.set['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
     node.set['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key' if node['postgresql']['version'].to_f >= 9.2
