@@ -1,7 +1,3 @@
-unless %w(jessie squeeze wheezy sid lucid precise saucy trusty utopic wily xenial).include? node['postgresql']['pgdg']['release_apt_codename']
-  raise 'Not supported release by PGDG apt repository'
-end
-
 include_recipe 'apt::default'
 
 apt_repository 'apt.postgresql.org' do
