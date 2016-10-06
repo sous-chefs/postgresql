@@ -22,7 +22,7 @@ supports 'ubuntu', '<= 16.04'
 end
 
 %w(redhat centos scientific oracle).each do |el|
-  supports el, '~> 6.0'
+  supports el, '>= 6.0'
 end
 
 depends 'apt', '>= 1.9.0'
