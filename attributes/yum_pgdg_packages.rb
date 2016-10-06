@@ -40,7 +40,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/',
           'package' => 'pgdg-centos94-9.4-2.noarch.rpm'
         }
-      },
+      }
     },
     'fedora' => {
       '22' => {
@@ -78,7 +78,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/',
           'package' => 'pgdg-sl94-9.4-2.noarch.rpm'
         }
-      },
+      }
     },
     'oracle' => {
       '7' => {
@@ -227,7 +227,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-x86_64/',
           'package' => 'pgdg-redhat92-9.2-7.noarch.rpm'
-
+        }
       }
     },
     'scientific' => {
