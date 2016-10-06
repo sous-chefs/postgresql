@@ -112,14 +112,8 @@ when 'ubuntu'
 
 when 'fedora'
 
-  default['postgresql']['version'] = if node['platform_version'].to_f <= 12
-                                       '8.3'
-                                     else
-                                       '8.4'
-                                     end
-
+  default['postgresql']['version'] = '9.5'
   default['postgresql']['setup_script'] = 'postgresql-setup'
-
   default['postgresql']['dir'] = '/var/lib/pgsql/data'
   default['postgresql']['client']['packages'] = %w(postgresql-devel)
   default['postgresql']['server']['packages'] = %w(postgresql-server)
