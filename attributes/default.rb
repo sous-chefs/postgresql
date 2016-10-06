@@ -60,7 +60,7 @@ default['postgresql']['server']['init_package'] =
     else
       'systemd'
     end
-  when 'opensuse'
+  when 'opensuse', 'opensuseleap'
     case
     when node['platform_version'].to_f < 13
       'sysv'
@@ -213,7 +213,7 @@ when "redhat", "centos", "scientific", "oracle"
     default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
   end
 
-when "opensuse"
+when 'opensuse', 'opensuseleap'
 
   default['postgresql']['dir'] = "/var/lib/pgsql/data"
 
