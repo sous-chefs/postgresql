@@ -111,20 +111,6 @@ when "debian"
 when "ubuntu"
 
   case
-  when node['platform_version'].to_f <= 9.04
-    default['postgresql']['version'] = "8.3"
-    default['postgresql']['dir'] = "/etc/postgresql/8.3/main"
-    default['postgresql']['server']['service_name'] = "postgresql-8.3"
-    default['postgresql']['client']['packages'] = ["postgresql-client-8.3", "libpq-dev"]
-    default['postgresql']['server']['packages'] = ["postgresql-8.3"]
-    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.3"]
-  when node['platform_version'].to_f <= 11.04
-    default['postgresql']['version'] = "8.4"
-    default['postgresql']['dir'] = "/etc/postgresql/8.4/main"
-    default['postgresql']['server']['service_name'] = "postgresql"
-    default['postgresql']['client']['packages'] = ["postgresql-client-8.4", "libpq-dev"]
-    default['postgresql']['server']['packages'] = ["postgresql-8.4"]
-    default['postgresql']['contrib']['packages'] = ["postgresql-contrib-8.4"]
   when node['platform_version'].to_f <= 13.10
     default['postgresql']['version'] = "9.1"
     default['postgresql']['dir'] = "/etc/postgresql/9.1/main"
