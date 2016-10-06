@@ -61,12 +61,7 @@ default['postgresql']['server']['init_package'] =
       'systemd'
     end
   when 'opensuse', 'opensuseleap'
-    case
-    when node['platform_version'].to_f < 13
-      'sysv'
-    else
-      'systemd'
-    end
+    'systemd'
   else
     'upstart'
   end
