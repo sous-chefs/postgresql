@@ -15,13 +15,9 @@ Installs and configures PostgreSQL as a client or a server.
 
 ## Cookbooks
 
-Requires Opscode's `openssl` cookbook for secure password generation.
-
-Requires a C compiler and development headers in order to build the `pg` RubyGem to provide Ruby bindings in the `ruby` recipe.
-
-Opscode's `build-essential` cookbook provides this functionality on Debian, Ubuntu, and EL6-family.
-
-While not required, Opscode's `database` cookbook contains resources and providers that can interact with a PostgreSQL database. This cookbook is a dependency of database.
+- `apt`
+- `openssl`
+- `build-essential`
 
 # Attributes
 
