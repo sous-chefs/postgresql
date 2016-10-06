@@ -37,7 +37,7 @@ Style/Next:
 # SupportedStyles: slashes, percent_r, mixed
 Style/RegexpLiteral:
   Exclude:
-    - 'test/unit/server_spec.rb'
+    - 'spec/unit/server_spec.rb'
 
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: snake_case, camelCase
