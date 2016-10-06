@@ -191,14 +191,6 @@ when 'suse' # sles 12+
   default['postgresql']['contrib']['packages'] = ['postgresql91-contrib']
   default['postgresql']['dir'] = '/var/lib/pgsql/data'
   default['postgresql']['server']['service_name'] = 'postgresql'
-
-else
-  default['postgresql']['version'] = "8.4"
-  default['postgresql']['dir'] = "/etc/postgresql/8.4/main"
-  default['postgresql']['client']['packages'] = ["postgresql"]
-  default['postgresql']['server']['packages'] = ["postgresql"]
-  default['postgresql']['contrib']['packages'] = ["postgresql"]
-  default['postgresql']['server']['service_name'] = "postgresql"
 end
 
 case node['platform_family']
