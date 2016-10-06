@@ -160,16 +160,22 @@ when 'opensuse', 'opensuseleap'
 
   default['postgresql']['dir'] = '/var/lib/pgsql/data'
 
-  if node['platform_version'].to_f == 13.2
-    default['postgresql']['version'] = '9.3'
-    default['postgresql']['client']['packages'] = ['postgresql93', 'postgresql93-devel']
-    default['postgresql']['server']['packages'] = ['postgresql93-server']
-    default['postgresql']['contrib']['packages'] = ['postgresql93-contrib']
-  elsif node['platform_version'].to_f == 13.1
+  case node['platform_version'].to_f
+  when 13.1
     default['postgresql']['version'] = '9.2'
     default['postgresql']['client']['packages'] = ['postgresql92', 'postgresql92-devel']
     default['postgresql']['server']['packages'] = ['postgresql92-server']
     default['postgresql']['contrib']['packages'] = ['postgresql92-contrib']
+  when 13.2
+    default['postgresql']['version'] = '9.3'
+    default['postgresql']['client']['packages'] = ['postgresql93', 'postgresql93-devel']
+    default['postgresql']['server']['packages'] = ['postgresql93-server']
+    default['postgresql']['contrib']['packages'] = ['postgresql93-contrib']
+  when 42.1
+    default['postgresql']['version'] = '9.4'
+    default['postgresql']['client']['packages'] = ['postgresql94', 'postgresql94-devel']
+    default['postgresql']['server']['packages'] = ['postgresql94-server']
+    default['postgresql']['contrib']['packages'] = ['postgresql94-contrib']
   end
 
   default['postgresql']['server']['service_name'] = 'postgresql'
