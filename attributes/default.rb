@@ -45,11 +45,8 @@ default['postgresql']['server']['init_package'] =
   when 'amazon'
     'upstart'
   when 'redhat', 'centos', 'scientific', 'oracle'
-    case
-    when node['platform_version'].to_f < 6.0
+    if node['platform_version'].to_i < 7
       'sysv'
-    when node['platform_version'].to_f < 7.0
-      'upstart'
     else
       'systemd'
     end
@@ -57,13 +54,12 @@ default['postgresql']['server']['init_package'] =
     'systemd'
   when 'opensuse', 'opensuseleap'
     'systemd'
-  else
-    'upstart'
-  end
+    else
+      'upstart'
+    end
 
 case node['platform']
 when "debian"
-
   case
   when node['platform_version'].to_i == 7
     default['postgresql']['version'] = '9.1'
