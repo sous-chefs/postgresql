@@ -74,7 +74,7 @@ suites:
   - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-42.1", "fedora-23", "fedora-24" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-24" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
