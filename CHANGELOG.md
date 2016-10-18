@@ -32,7 +32,7 @@ v4.0.0
 When in doubt, put the following in your `Berksfile` until you are ready to upgrade:
 
 ```ruby
-cookbook 'postgresql', '=~ 3.4.0'
+cookbook 'postgresql', '~> 3.4.0'
 ```
 
 * Potential breaking change: Restructured default attributes to avoid compile time deriving other attribute values from value of the `node[‘postgresql’][‘version’]`
