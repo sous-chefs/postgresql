@@ -15,12 +15,12 @@
 # limitations under the License.
 #
 
-include_recipe "postgresql::ca_certificates"
+include_recipe 'postgresql::ca_certificates'
 
 case node['platform_family']
 when 'debian'
   if node['postgresql']['version'].to_f > 9.3
-    node.set['postgresql']['enable_pgdg_apt'] = true
+    node.normal['postgresql']['enable_pgdg_apt'] = true
   end
 
   if node['postgresql']['enable_pgdg_apt']

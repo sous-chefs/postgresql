@@ -38,13 +38,13 @@ module Opscode
       # Truncate value to 4 most significant bits
       while value >= 16
         value = (value / 2).floor
-        multiplier = multiplier * 2
+        multiplier *= 2
       end
 
       # Factor any remaining powers of 2 into the multiplier
-      while value == 2 * ((value / 2).floor)
+      while value == 2 * (value / 2).floor
         value = (value / 2).floor
-        multiplier = multiplier * 2
+        multiplier *= 2
       end
 
       # Factor enough powers of 2 back into the value to
@@ -56,7 +56,7 @@ module Opscode
           multiplier = (multiplier / 2).floor
         end
         multiplier = 1
-        units = "GB"
+        units = 'GB'
 
       elsif multiplier >= 1024 * 1024
         while multiplier > 1024 * 1024
@@ -64,7 +64,7 @@ module Opscode
           multiplier = (multiplier / 2).floor
         end
         multiplier = 1
-        units = "MB"
+        units = 'MB'
 
       elsif multiplier >= 1024
         while multiplier > 1024
@@ -72,14 +72,14 @@ module Opscode
           multiplier = (multiplier / 2).floor
         end
         multiplier = 1
-        units = "kB"
+        units = 'kB'
 
       else
-        units = ""
+        units = ''
       end
 
       # Now we can return a nice human readable string.
-      return "#{multiplier * value}#{units}"
+      "#{multiplier * value}#{units}"
     end
 
     #######
@@ -90,21 +90,19 @@ module Opscode
     #    node.default['postgresql']['config']['datestyle']
     def locale_date_order
       # Test locale conversion of mon=11, day=22, year=33
-      testtime = DateTime.new(2033, 11, 22, 0, 0, 0, "-00:00")
+      testtime = DateTime.new(2033, 11, 22, 0, 0, 0, '-00:00')
       #=> #<DateTime: 2033-11-22T00:00:00-0000 ...>
 
       # %x - Preferred representation for the date alone, no time
-      res = testtime.strftime("%x")
+      res = testtime.strftime('%x')
 
-      if res.nil?
-        return 'mdy'
-      end
+      return 'mdy' if res.nil?
 
-      posM = res.index("11")
-      posD = res.index("22")
-      posY = res.index("33")
+      posM = res.index('11')
+      posD = res.index('22')
+      posY = res.index('33')
 
-      if (posM.nil? || posD.nil? || posY.nil?)
+      if posM.nil? || posD.nil? || posY.nil?
         return 'mdy'
         elseif (posY < posM && posM < posD)
         return 'ymd'
@@ -122,7 +120,7 @@ module Opscode
     # Function to determine where the system stored shared timezone data.
     # Used in recipes/config_initdb.rb to detemine where it should have
     # select_default_timezone(tzdir) search.
-    def pg_TZDIR()
+    def pg_TZDIR
       # System time zone conversions are controlled by a timezone data file
       # identified through environment variables (TZ and TZDIR) and/or file
       # and directory naming conventions specific to the Linux distribution.
@@ -140,15 +138,13 @@ module Opscode
       # if specified by the environment variable TZDIR. The tzset(3) manpage
       # seems to indicate the following precedence:
       tzdir = nil
-      if ::File.directory?("/usr/lib/zoneinfo")
-        tzdir = "/usr/lib/zoneinfo"
+      if ::File.directory?('/usr/lib/zoneinfo')
+        tzdir = '/usr/lib/zoneinfo'
       else
-        share_path = [ENV['TZDIR'], "/usr/share/zoneinfo"].compact.first
-        if ::File.directory?(share_path)
-          tzdir = share_path
-        end
+        share_path = [ENV['TZDIR'], '/usr/share/zoneinfo'].compact.first
+        tzdir = share_path if ::File.directory?(share_path)
       end
-      return tzdir
+      tzdir
     end
 
     #######
@@ -171,7 +167,7 @@ module Opscode
       # LOG:  time zone "right/US/Eastern" appears to use leap seconds
       # DETAIL:  PostgreSQL does not support leap seconds.
 
-      if tzname.index("right/") == 0
+      if tzname.index('right/') == 0
         return false
       else
         return true
@@ -191,13 +187,13 @@ module Opscode
 
       bestzonename = nil
 
-      if (tzdir.nil?)
-        Chef::Log.error("The zoneinfo directory not found (looked for /usr/share/zoneinfo and /usr/lib/zoneinfo)")
-      elsif !::File.exists?("/etc/localtime")
-        Chef::Log.error("The system zoneinfo file not found (looked for /etc/localtime)")
-      elsif ::File.directory?("/etc/localtime")
-        Chef::Log.error("The system zoneinfo file not found (/etc/localtime is a directory instead)")
-      elsif ::File.symlink?("/etc/localtime")
+      if tzdir.nil?
+        Chef::Log.error('The zoneinfo directory not found (looked for /usr/share/zoneinfo and /usr/lib/zoneinfo)')
+      elsif !::File.exist?('/etc/localtime')
+        Chef::Log.error('The system zoneinfo file not found (looked for /etc/localtime)')
+      elsif ::File.directory?('/etc/localtime')
+        Chef::Log.error('The system zoneinfo file not found (/etc/localtime is a directory instead)')
+      elsif ::File.symlink?('/etc/localtime')
         # PostgreSQL initdb doesn't use the symlink target, but this
         # certainly will make sense to any system administrator. A full
         # scan of the tzdir to find the shortest filename could result
@@ -205,35 +201,31 @@ module Opscode
         # in spite of what the sysadmin had specified in the symlink.
         # (There are many duplicates under tzdir, with the same timezone
         # content appearing as an average of 2-3 different file names.)
-        path = ::File.readlink("/etc/localtime")
-        bestzonename = path.gsub("#{tzdir}/", "")
+        path = ::File.readlink('/etc/localtime')
+        bestzonename = path.gsub("#{tzdir}/", '')
       else # /etc/localtime is a file, so scan for it under tzdir
-        localtime_content = File.read("/etc/localtime")
+        localtime_content = File.read('/etc/localtime')
 
         Find.find(tzdir) do |path|
           # Only consider files (skip directories or symlinks)
-          if !::File.directory?(path) && !::File.symlink?(path)
-            # Ignore any file named "posixrules" or "localtime"
-            if ::File.basename(path) != "posixrules" && ::File.basename(path) != "localtime"
-              # Do consider if content exactly matches /etc/localtime.
-              if localtime_content == File.read(path)
-                tzname = path.gsub("#{tzdir}/", "")
-                if validate_zone(tzname)
-                  if (bestzonename.nil? ||
-                     tzname.length < bestzonename.length ||
-                     (tzname.length == bestzonename.length &&
-                     (tzname <=> bestzonename) < 0)
-                     )
-                    bestzonename = tzname
-                  end
-                end
-              end
-            end
+          next unless !::File.directory?(path) && !::File.symlink?(path)
+          # Ignore any file named "posixrules" or "localtime"
+          next unless ::File.basename(path) != 'posixrules' && ::File.basename(path) != 'localtime'
+          # Do consider if content exactly matches /etc/localtime.
+          next unless localtime_content == File.read(path)
+          tzname = path.gsub("#{tzdir}/", '')
+          next unless validate_zone(tzname)
+          if bestzonename.nil? ||
+             tzname.length < bestzonename.length ||
+             (tzname.length == bestzonename.length &&
+             (tzname <=> bestzonename) < 0)
+
+            bestzonename = tzname
           end
         end
       end
 
-      return bestzonename
+      bestzonename
     end
 
     # Function to support select_default_timezone(tzdir), which is
@@ -243,25 +235,23 @@ module Opscode
 
       if !resultbuf.nil?
         # Ignore Olson's rather silly "Factory" zone; use GMT instead
-        if (resultbuf <=> "Factory") == 0
-          resultbuf = nil
-        end
+        resultbuf = nil if (resultbuf <=> 'Factory') == 0
 
       else
         # Did not find the timezone.  Fallback to use a GMT zone.  Note that the
         # Olson timezone database names the GMT-offset zones in POSIX style: plus
         # is west of Greenwich.
         testtime = DateTime.now
-        std_ofs = testtime.strftime("%:z").split(":")[0].to_i
+        std_ofs = testtime.strftime('%:z').split(':')[0].to_i
 
         resultbuf = [
-          "Etc/GMT",
-          (-std_ofs > 0) ? "+" : "",
+          'Etc/GMT',
+          (-std_ofs > 0) ? '+' : '',
           (-std_ofs).to_s
         ].join('')
       end
 
-      return resultbuf
+      resultbuf
     end
 
     #######
@@ -280,25 +270,23 @@ module Opscode
       else
         # Nope, so try to identify system timezone from /etc/localtime
         tzname = identify_system_timezone(tzdir)
-        if validate_zone(tzname)
-          system_timezone = tzname
-        end
+        system_timezone = tzname if validate_zone(tzname)
       end
 
-      return system_timezone
+      system_timezone
     end
 
     #######
     # Function to determine the name of the system's default timezone.
     def get_result_orig(query)
       # query could be a String or an Array of String
-      if (query.is_a?(String))
-        stdin = query
-      else
-        stdin = query.join("\n")
-      end
+      stdin = if query.is_a?(String)
+                query
+              else
+                query.join("\n")
+              end
       @get_result ||= begin
-        cmd = shell_out("cat", :input => stdin)
+        cmd = shell_out('cat', input: stdin)
         cmd.stdout
       end
     end
@@ -316,18 +304,18 @@ module Opscode
       statement = query.is_a?(String) ? query : query.join("\n")
       @execute_sql ||= begin
         cmd = shell_out("psql -q --tuples-only --no-align -d #{db_name} -f -",
-                        :user => "postgres",
-                        :input => statement
+                        user: 'postgres',
+                        input: statement
                        )
         # If psql fails, generally the postgresql service is down.
         # Instead of aborting chef with a fatal error, let's just
         # pass these non-zero exitstatus back as empty cmd.stdout.
-        if (cmd.exitstatus() == 0 and !cmd.stderr.empty?)
+        if cmd.exitstatus == 0 && !cmd.stderr.empty?
           # An SQL failure is still a zero exitstatus, but then the
           # stderr explains the error, so let's rais that as fatal.
           Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
           Chef::Log.fatal(cmd.stderr)
-          raise "SQL ERROR"
+          raise 'SQL ERROR'
         end
         cmd.stdout.chomp
       end

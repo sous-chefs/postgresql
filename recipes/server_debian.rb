@@ -15,17 +15,17 @@
 # limitations under the License.
 #
 
-include_recipe "postgresql::client"
+include_recipe 'postgresql::client'
 
 node['postgresql']['server']['packages'].each do |pg_pack|
   package pg_pack
 end
 
-include_recipe "postgresql::server_conf"
+include_recipe 'postgresql::server_conf'
 
-service "postgresql" do
+service 'postgresql' do
   service_name node['postgresql']['server']['service_name']
-  supports :restart => true, :status => true, :reload => true
+  supports restart: true, status: true, reload: true
   action [:enable, :start]
 end
 

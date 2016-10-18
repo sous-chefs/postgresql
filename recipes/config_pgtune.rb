@@ -86,13 +86,13 @@
 # Parse out db_type option, or use default.
 db_type = 'mixed'
 
-if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('db_type'))
+if node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('db_type')
   db_type = node['postgresql']['config_pgtune']['db_type']
-  if (!(["dw", "oltp", "web", "mixed", "desktop"].include?(db_type)))
+  unless %w(dw oltp web mixed desktop).include?(db_type)
     Chef::Log.fatal([
       "Bad value (#{db_type})",
       "for node['postgresql']['config_pgtune']['db_type'] attribute.",
-      "Valid values are one of dw, oltp, web, mixed, desktop."
+      'Valid values are one of dw, oltp, web, mixed, desktop.'
     ].join(' '))
     raise
   end
@@ -100,20 +100,20 @@ end
 
 # Parse out max_connections option, or use a value based on db_type.
 con =
-{ "web" => 200,
-  "oltp" => 300,
-  "dw" => 20,
-  "mixed" => 80,
-  "desktop" => 5
-}.fetch(db_type)
+  { 'web' => 200,
+    'oltp' => 300,
+    'dw' => 20,
+    'mixed' => 80,
+    'desktop' => 5
+  }.fetch(db_type)
 
-if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('max_connections'))
+if node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('max_connections')
   max_connections = node['postgresql']['config_pgtune']['max_connections'].to_i
   if max_connections <= 0
     Chef::Log.fatal([
       "Bad value (#{max_connections})",
       "for node['postgresql']['config_pgtune']['max_connections'] attribute.",
-      "Valid values are non-zero integers only."
+      'Valid values are non-zero integers only.'
     ].join(' '))
     raise
   end
@@ -125,19 +125,19 @@ total_memory = node['memory']['total']
 
 # Override max_connections with a node attribute if DevOps desires.
 # For example, on a system *not* dedicated to Postgresql.
-if (node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('total_memory'))
+if node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('total_memory')
   total_memory = node['postgresql']['config_pgtune']['total_memory']
-  if (total_memory.match(/\A[1-9]\d*kB\Z/) == nil)
+  if total_memory.match(/\A[1-9]\d*kB\Z/).nil?
     Chef::Application.fatal!([
       "Bad value (#{total_memory})",
       "for node['postgresql']['config_pgtune']['total_memory'] attribute.",
-      "Valid values are non-zero integers followed by kB (e.g., 49416564kB)."
+      'Valid values are non-zero integers followed by kB (e.g., 49416564kB).'
     ].join(' '))
   end
 end
 
 # Ohai reports node[:memory][:total] in kB, as in "921756kB"
-mem = total_memory.split("kB")[0].to_i / 1024 # in MB
+mem = total_memory.split('kB')[0].to_i / 1024 # in MB
 
 #######
 # RAM-related settings computed as in Greg Smith's pgtune script.
@@ -152,30 +152,26 @@ node.default['postgresql']['config']['max_connections'] = con
 # for low memory systems. In that case, the calculation is skipped,
 # leaving the built-in Postgresql settings, which are actually
 # intended for those low memory systems.
-if (mem >= 256)
+if mem >= 256
 
   # (2) shared_buffers
   #     Sets the number of shared memory buffers used by the server.
   shared_buffers =
-  { "web" => mem / 4,
-    "oltp" => mem / 4,
-    "dw" => mem / 4,
-    "mixed" => mem / 4,
-    "desktop" => mem / 16
-  }.fetch(db_type)
+    { 'web' => mem / 4,
+      'oltp' => mem / 4,
+      'dw' => mem / 4,
+      'mixed' => mem / 4,
+      'desktop' => mem / 16
+    }.fetch(db_type)
 
   # Robert Haas has advised to cap the size of shared_buffers based on
   # the memory architecture: 2GB on 32-bit and 8GB on 64-bit machines.
   # http://rhaas.blogspot.com/2012/03/tuning-sharedbuffers-and-walbuffers.html
   case node['kernel']['machine']
-  when "i386" # 32-bit machines
-    if shared_buffers > 2 * 1024
-      shared_buffers = 2 * 1024
-    end
-  when "x86_64" # 64-bit machines
-    if shared_buffers > 8 * 1024
-      shared_buffers = 8 * 1024
-    end
+  when 'i386' # 32-bit machines
+    shared_buffers = 2 * 1024 if shared_buffers > 2 * 1024
+  when 'x86_64' # 64-bit machines
+    shared_buffers = 8 * 1024 if shared_buffers > 8 * 1024
   end
 
   node.default['postgresql']['config']['shared_buffers'] = binaryround(shared_buffers * 1024 * 1024)
@@ -185,12 +181,12 @@ if (mem >= 256)
   #     That is, the portion of the kernel's disk cache that will be
   #     used for PostgreSQL data files.
   effective_cache_size =
-  { "web" => mem * 3 / 4,
-    "oltp" => mem * 3 / 4,
-    "dw" => mem * 3 / 4,
-    "mixed" => mem * 3 / 4,
-    "desktop" => mem / 4
-  }.fetch(db_type)
+    { 'web' => mem * 3 / 4,
+      'oltp' => mem * 3 / 4,
+      'dw' => mem * 3 / 4,
+      'mixed' => mem * 3 / 4,
+      'desktop' => mem / 4
+    }.fetch(db_type)
 
   node.default['postgresql']['config']['effective_cache_size'] = binaryround(effective_cache_size * 1024 * 1024)
 
@@ -199,11 +195,11 @@ if (mem >= 256)
   mem_con_v = (mem.to_f / con).ceil
 
   work_mem =
-    { "web" => mem_con_v,
-      "oltp" => mem_con_v,
-      "dw" => mem_con_v / 2,
-      "mixed" => mem_con_v / 2,
-      "desktop" => mem_con_v / 6
+    { 'web' => mem_con_v,
+      'oltp' => mem_con_v,
+      'dw' => mem_con_v / 2,
+      'mixed' => mem_con_v / 2,
+      'desktop' => mem_con_v / 6
     }.fetch(db_type)
 
   node.default['postgresql']['config']['work_mem'] = binaryround(work_mem * 1024 * 1024)
@@ -212,17 +208,15 @@ if (mem >= 256)
   #     Sets the maximum memory to be used for maintenance operations.
   #     This includes operations such as VACUUM and CREATE INDEX.
   maintenance_work_mem =
-  { "web" => mem / 16,
-    "oltp" => mem / 16,
-    "dw" => mem / 8,
-    "mixed" => mem / 16,
-    "desktop" => mem / 16
-  }.fetch(db_type)
+    { 'web' => mem / 16,
+      'oltp' => mem / 16,
+      'dw' => mem / 8,
+      'mixed' => mem / 16,
+      'desktop' => mem / 16
+    }.fetch(db_type)
 
   # Cap maintenence RAM at 1GB on servers with lots of memory
-  if (maintenance_work_mem > 1 * 1024)
-    maintenance_work_mem = 1 * 1024
-  end
+  maintenance_work_mem = 1 * 1024 if maintenance_work_mem > 1 * 1024
 
   node.default['postgresql']['config']['maintenance_work_mem'] = binaryround(maintenance_work_mem * 1024 * 1024)
 
@@ -235,12 +229,12 @@ end
 # (6) checkpoint_segments
 #     Sets the maximum distance in log segments between automatic WAL checkpoints.
 checkpoint_segments =
-{ "web" => 8,
-  "oltp" => 16,
-  "dw" => 64,
-  "mixed" => 16,
-  "desktop" => 3
-}.fetch(db_type)
+  { 'web' => 8,
+    'oltp' => 16,
+    'dw' => 64,
+    'mixed' => 16,
+    'desktop' => 3
+  }.fetch(db_type)
 
 node.default['postgresql']['config']['checkpoint_segments'] = checkpoint_segments
 
@@ -248,12 +242,12 @@ node.default['postgresql']['config']['checkpoint_segments'] = checkpoint_segment
 #     Time spent flushing dirty buffers during checkpoint, as fraction
 #     of checkpoint interval.
 checkpoint_completion_target =
-{ "web" => "0.7",
-  "oltp" => "0.9",
-  "dw" => "0.9",
-  "mixed" => "0.9",
-  "desktop" => "0.5"
-}.fetch(db_type)
+  { 'web' => '0.7',
+    'oltp' => '0.9',
+    'dw' => '0.9',
+    'mixed' => '0.9',
+    'desktop' => '0.5'
+  }.fetch(db_type)
 
 node.default['postgresql']['config']['checkpoint_completion_target'] = checkpoint_completion_target
 
@@ -266,7 +260,7 @@ if node['postgresql']['version'].to_f < 9.1
   # The pgtune seems to use 1kB units for wal_buffers
   node.default['postgresql']['config']['wal_buffers'] = binaryround(wal_buffers * 1024)
 else
-  node.default['postgresql']['config']['wal_buffers'] = "-1"
+  node.default['postgresql']['config']['wal_buffers'] = '-1'
 end
 
 # (9) default_statistics_target
@@ -274,11 +268,11 @@ end
 #     that have not had a column-specific target set via
 #     ALTER TABLE SET STATISTICS.
 default_statistics_target =
-{ "web" => 100,
-  "oltp" => 100,
-  "dw" => 500,
-  "mixed" => 100,
-  "desktop" => 100
-}.fetch(db_type)
+  { 'web' => 100,
+    'oltp' => 100,
+    'dw' => 500,
+    'mixed' => 100,
+    'desktop' => 100
+  }.fetch(db_type)
 
 node.default['postgresql']['config']['default_statistics_target'] = default_statistics_target
