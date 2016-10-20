@@ -2,6 +2,10 @@ postgresql Cookbook CHANGELOG
 =============================
 This file is used to list changes made in each version of the postgresql cookbook.
 
+v4.0.8
+-----
+* Add attribute default['postgresql']['pg_gem']['version'] to set version of ruby gem pg
+
 v4.0.6
 -----
 * Add 16.04 Xenial to the allowed list

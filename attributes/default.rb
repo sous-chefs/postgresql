@@ -226,6 +226,7 @@ default['postgresql']['pg_hba'] = [
 ]
 
 default['postgresql']['password'] = {}
+default['postgresql']['pg_gem']['version'] = '0.19'
 
 case node['platform_family']
 when 'debian'
