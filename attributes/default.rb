@@ -226,7 +226,10 @@ default['postgresql']['pg_hba'] = [
 ]
 
 default['postgresql']['password'] = {}
-default['postgresql']['pg_gem']['version'] = '0.19'
+
+# set to install a specific version of the ruby gem p
+# if attribute is not defined, install will pick the latest available pg gem
+#default['postgresql']['pg_gem']['version'] = '0.19'
 
 case node['platform_family']
 when 'debian'
