@@ -78,12 +78,12 @@ rescue LoadError
 
   begin
     # allow optional attribute to install specific version of pg gem
-    if defined?(node['postgresql']['pg_gem']['version']) == nil 
-      chef_gem "pg" do
+    if defined?(node['postgresql']['pg_gem']['version']).nil?
+      chef_gem 'pg' do
         compile_time true if respond_to?(:compile_time)
       end
     else
-      chef_gem "pg" do
+      chef_gem 'pg' do
         compile_time true if respond_to?(:compile_time)
         version node['postgresql']['pg_gem']['version']
       end
