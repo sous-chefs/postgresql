@@ -23,7 +23,7 @@ include_recipe "postgresql::client"
 
 # randomly generate postgres password
 
-node.default_unless['postgresql']['password']['postgres'] = random_password
+node.normal_unless['postgresql']['password']['postgres'] = random_password
 
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
