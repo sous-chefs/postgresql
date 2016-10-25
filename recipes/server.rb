@@ -23,20 +23,20 @@ include_recipe "postgresql::client"
 
 # randomly generate postgres password
 
-node.set_unless['postgresql']['password']['postgres'] = random_password
+node.default_unless['postgresql']['password']['postgres'] = random_password
 
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
 case node['platform_family']
 when "rhel", "fedora"
-  node.set['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-  node.set['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  node.default['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  node.default['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
   include_recipe "postgresql::server_redhat"
 when "debian"
-  node.set['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  node.default['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
   include_recipe "postgresql::server_debian"
 when 'suse'
-  node.set['postgresql']['config']['data_directory'] = node['postgresql']['dir']
+  node.default['postgresql']['config']['data_directory'] = node['postgresql']['dir']
   include_recipe "postgresql::server_redhat"
 end
 

@@ -31,7 +31,7 @@ rescue LoadError
     e.run_action(:run) unless ::File.exists?('/var/lib/apt/periodic/update-success-stamp')
   end
 
-  node.set['build-essential']['compile_time'] = true
+  node.default['build-essential']['compile_time'] = true
   include_recipe "build-essential"
 
   if node['postgresql']['enable_pgdg_yum']

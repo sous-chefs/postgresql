@@ -21,7 +21,7 @@ include_recipe 'postgresql::config_version'
 case node['platform_family']
 when 'debian'
   if node['postgresql']['version'].to_f > 9.3
-    node.set['postgresql']['enable_pgdg_apt'] = true
+    node.default['postgresql']['enable_pgdg_apt'] = true
   end
 
   if node['postgresql']['enable_pgdg_apt']

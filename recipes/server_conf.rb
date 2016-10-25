@@ -20,22 +20,22 @@ change_notify = node['postgresql']['server']['config_change_notify']
 # There are some configuration items which depend on correctly evaluating the intended version being installed
 if node['platform_family'] == 'debian'
 
-  node.set['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/#{node['postgresql']['cluster_name']}/pg_hba.conf"
-  node.set['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/#{node['postgresql']['cluster_name']}/pg_ident.conf"
-  node.set['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-#{node['postgresql']['cluster_name']}.pid"
+  node.default['postgresql']['config']['hba_file'] = "/etc/postgresql/#{node['postgresql']['version']}/#{node['postgresql']['cluster_name']}/pg_hba.conf"
+  node.default['postgresql']['config']['ident_file'] = "/etc/postgresql/#{node['postgresql']['version']}/#{node['postgresql']['cluster_name']}/pg_ident.conf"
+  node.default['postgresql']['config']['external_pid_file'] = "/var/run/postgresql/#{node['postgresql']['version']}-#{node['postgresql']['cluster_name']}.pid"
 
   if node['postgresql']['version'].to_f < 9.3
-    node.set['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql'
+    node.default['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql'
   else
-    node.set['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql'
+    node.default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql'
   end
 
   if node['postgresql']['config']['ssl']
-    node.set['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
-    node.set['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key' if node['postgresql']['version'].to_f >= 9.2
+    node.default['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
+    node.default['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key' if node['postgresql']['version'].to_f >= 9.2
   end
 
-  node.set['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
+  node.default['postgresql']['config']['max_fsm_pages'] = 153600 if node['postgresql']['version'].to_f < 8.4
 
 end
 
