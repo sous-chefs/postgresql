@@ -26,7 +26,7 @@ shortver = node['postgresql']['version'].split('.').join
 # Otherwise the templates fail.
 
 group 'postgres' do
-  gid 26
+  gid node['postgresql']['gid']
 end
 
 user 'postgres' do
@@ -35,7 +35,7 @@ user 'postgres' do
   home '/var/lib/pgsql'
   gid 'postgres'
   system true
-  uid 26
+  uid node['postgresql']['uid']
   manage_home false
 end
 
