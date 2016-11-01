@@ -119,6 +119,8 @@ when 'fedora'
   default['postgresql']['server']['packages'] = %w(postgresql-server)
   default['postgresql']['contrib']['packages'] = %w(postgresql-contrib)
   default['postgresql']['server']['service_name'] = 'postgresql'
+  default['postgresql']['uid'] = '26'
+  default['postgresql']['gid'] = '26'
 
 when 'amazon'
 
@@ -131,6 +133,8 @@ when 'amazon'
   default['postgresql']['server']['packages'] = %w(postgresql-server)
   default['postgresql']['contrib']['packages'] = %w(postgresql-contrib)
   default['postgresql']['server']['service_name'] = 'postgresql'
+  default['postgresql']['uid'] = '26'
+  default['postgresql']['gid'] = '26'
 
 when 'redhat', 'centos', 'scientific', 'oracle'
 
@@ -142,6 +146,8 @@ when 'redhat', 'centos', 'scientific', 'oracle'
 
   default['postgresql']['setup_script'] = 'postgresql-setup'
   default['postgresql']['server']['service_name'] = 'postgresql'
+  default['postgresql']['uid'] = '26'
+  default['postgresql']['gid'] = '26'
 
   if node['platform_version'].to_f >= 6.0 && node['postgresql']['version'].to_f == 8.4
     default['postgresql']['client']['packages'] = ['postgresql-devel']
@@ -159,6 +165,9 @@ when 'redhat', 'centos', 'scientific', 'oracle'
 when 'opensuse', 'opensuseleap'
 
   default['postgresql']['dir'] = '/var/lib/pgsql/data'
+
+  default['postgresql']['uid'] = '26'
+  default['postgresql']['gid'] = '26'
 
   case node['platform_version'].to_f
   when 13.1
