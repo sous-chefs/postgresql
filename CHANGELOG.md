@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v5.1.0 (2016-11-01)
+
+- Add support for Chef-Zero (local mode)
+- Don't hardcode the UID / GID on RHEL/Amazon/Suse platforms
+- Add PGDG yum RPMs for 9.5 / 9.6
+
 ## v5.0.0 (2016-10-25)
 
 ### Breaking changes
