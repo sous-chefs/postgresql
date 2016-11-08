@@ -1,12 +1,12 @@
 name              'postgresql'
-maintainer        'Heavy Water Operations, LLC'
-maintainer_email  'helpdesk@heavywater.io'
+maintainer        'Chef Brigade '
+maintainer_email  'help@chefbrigade.io'
 license           'Apache 2.0'
 description       'Installs and configures postgresql for clients or servers'
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version           '5.1.0'
-source_url        'https://github.com/hw-cookbooks/postgresql' if respond_to?(:source_url)
-issues_url        'https://github.com/hw-cookbooks/postgresql/issues' if respond_to?(:issues_url)
+source_url        'https://github.com/chef-brigade/postgresql' if respond_to?(:source_url)
+issues_url        'https://github.com/chef-brigade/postgresql/issues' if respond_to?(:issues_url)
 chef_version      '>= 11.0' if respond_to?(:chef_version)
 recipe            'postgresql', 'Includes postgresql::client'
 recipe            'postgresql::ruby', 'Installs pg gem for Ruby bindings'
@@ -18,7 +18,7 @@ supports 'debian', '>= 7.0'
 supports 'opensuse', '>= 13.0'
 supports 'suse', '>= 12.0'
 
-%w(fedora opensuseleap opensuse amazon).each do |os|
+%w(fedora opensuseleap amazon).each do |os|
   supports os
 end
 
