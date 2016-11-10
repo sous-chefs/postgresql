@@ -1,6 +1,6 @@
 # postgresql cookbook
 
-[![Build Status](https://travis-ci.org/chef-brigade/postgresql.svg?branch=develop)](https://travis-ci.org/chef-brigade/postgresql) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
+[![Build Status](https://travis-ci.org/chef-brigade/postgresql-cookbook.svg?branch=develop)](https://travis-ci.org/chef-brigade/postgresql-cookbook) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
 
 Installs and configures PostgreSQL as a client or a server.
 
