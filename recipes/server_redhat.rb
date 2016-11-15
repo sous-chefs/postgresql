@@ -44,6 +44,7 @@ directory node['postgresql']['config']['data_directory'] do
   group 'postgres'
   recursive true
   action :create
+  mode "0700"
 end
 
 node['postgresql']['server']['packages'].each do |pg_pack|
