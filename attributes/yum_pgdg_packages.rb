@@ -278,11 +278,11 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '2015' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-i386/',
-          'package' => 'pgdg-ami201503-94-9.4-2.noarch.rpm'
+          'package' => 'pgdg-ami201503-94-9.4-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-ami201503-94-9.4-2.noarch.rpm'
+          'package' => 'pgdg-ami201503-94-9.4-3.noarch.rpm'
         }
       }
     },
@@ -290,17 +290,17 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '7' => {
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/',
-          'package' => 'pgdg-sl94-9.4-2.noarch.rpm'
+          'package' => 'pgdg-sl94-9.4-3.noarch.rpm'
         }
       },
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-i386/',
-          'package' => 'pgdg-sl94-9.4-2.noarch.rpm'
+          'package' => 'pgdg-sl94-9.4-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-sl94-9.4-2.noarch.rpm'
+          'package' => 'pgdg-sl94-9.4-3.noarch.rpm'
         }
       }
     },
@@ -308,17 +308,17 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '7' => {
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/',
-          'package' => 'pgdg-oraclelinux94-9.4-2.noarch.rpm'
+          'package' => 'pgdg-oraclelinux94-9.4-3.noarch.rpm'
         }
       },
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-i386/',
-          'package' => 'pgdg-oraclelinux94-9.4-2.noarch.rpm'
+          'package' => 'pgdg-oraclelinux94-9.4-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-oraclelinux94-9.4-2.noarch.rpm'
+          'package' => 'pgdg-oraclelinux94-9.4-3.noarch.rpm'
         }
       }
     }
@@ -328,21 +328,21 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '2015' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-i386/',
-          'package' => 'pgdg-redhat93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-redhat93-9.3-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-redhat93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-redhat93-9.3-3.noarch.rpm'
         }
       },
       '2014' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-i386/',
-          'package' => 'pgdg-redhat93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-redhat93-9.3-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-redhat93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-redhat93-9.3-3.noarch.rpm'
         }
       }
     },
@@ -350,17 +350,17 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '7' => {
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/',
-          'package' => 'pgdg-centos93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-centos93-9.3-3.noarch.rpm'
         }
       },
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-i386/',
-          'package' => 'pgdg-centos93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-centos93-9.3-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-centos93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-centos93-9.3-3.noarch.rpm'
         }
       }
     },
@@ -382,11 +382,11 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-i386/',
-          'package' => 'pgdg-redhat93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-redhat93-9.3-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-redhat93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-redhat93-9.3-3.noarch.rpm'
         }
       }
     },
@@ -394,11 +394,11 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-i386/',
-          'package' => 'pgdg-redhat93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-redhat93-9.3-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-redhat93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-redhat93-9.3-3.noarch.rpm'
         }
       }
     },
@@ -406,21 +406,21 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-i386/',
-          'package' => 'pgdg-sl93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-sl93-9.3-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-sl93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-sl93-9.3-3.noarch.rpm'
         }
       },
       '5' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-5-i386/',
-          'package' => 'pgdg-sl93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-sl93-9.3-3.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.3/redhat/rhel-5-x86_64/',
-          'package' => 'pgdg-sl93-9.3-2.noarch.rpm'
+          'package' => 'pgdg-sl93-9.3-3.noarch.rpm'
         }
       }
     }
@@ -430,11 +430,11 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-i386/',
-          'package' => 'pgdg-centos92-9.2-7.noarch.rpm'
+          'package' => 'pgdg-centos92-9.2-8.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-centos92-9.2-7.noarch.rpm'
+          'package' => 'pgdg-centos92-9.2-8.noarch.rpm'
         }
       }
     },
@@ -442,11 +442,11 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-i386/',
-          'package' => 'pgdg-redhat92-9.2-7.noarch.rpm'
+          'package' => 'pgdg-redhat92-9.2-9.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-redhat92-9.2-7.noarch.rpm'
+          'package' => 'pgdg-redhat92-9.2-9.noarch.rpm'
         }
       }
     },
@@ -454,11 +454,11 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-i386/',
-          'package' => 'pgdg-redhat92-9.2-7.noarch.rpm'
+          'package' => 'pgdg-redhat92-9.2-9.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-redhat92-9.2-7.noarch.rpm'
+          'package' => 'pgdg-redhat92-9.2-9.noarch.rpm'
         }
       }
     },
@@ -466,11 +466,11 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       '6' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-i386/',
-          'package' => 'pgdg-sl92-9.2-8.noarch.rpm'
+          'package' => 'pgdg-sl92-9.2-10.noarch.rpm'
         },
         'x86_64' => {
           'url' => 'http://yum.postgresql.org/9.2/redhat/rhel-6-x86_64/',
-          'package' => 'pgdg-sl92-9.2-8.noarch.rpm'
+          'package' => 'pgdg-sl92-9.2-10.noarch.rpm'
         }
       }
     }
