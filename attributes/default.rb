@@ -225,7 +225,7 @@ default['postgresql']['pg_hba'] = [
   { type: 'host', db: 'all', user: 'all', addr: '::1/128', method: 'md5' }
 ]
 
-default['postgresql']['password'] = {}
+default['postgresql']['password'] = nil
 
 # set to install a specific version of the ruby gem pg
 # if attribute is not defined, install will pick the latest available pg gem

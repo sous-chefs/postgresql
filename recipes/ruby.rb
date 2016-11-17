@@ -77,17 +77,12 @@ rescue LoadError
   end
 
   begin
-    # allow optional attribute to install specific version of pg gem
-    if defined?(node['postgresql']['pg_gem']['version']).nil?
-      chef_gem 'pg' do
-        compile_time true if respond_to?(:compile_time)
-      end
-    else
-      chef_gem 'pg' do
-        compile_time true if respond_to?(:compile_time)
-        version node['postgresql']['pg_gem']['version']
-      end
+    chef_gem 'pg' do
+      compile_time true if respond_to?(:compile_time)
+      # allow optional attribute to install specific version of pg gem
+      node['postgresql']['pg_gem']['version'] if node['postgresql']['pg_gem']['version']
     end
+  end
   rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
     # Are we an omnibus install?
     raise if RbConfig.ruby.scan(/(chef|opscode)/).empty?
