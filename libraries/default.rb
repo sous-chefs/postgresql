@@ -283,8 +283,7 @@ module Opscode
     #           Note an empty output could mean psql couldn't connect.
     # This is easiest for 1-field (1-row, 1-col) results, otherwise
     # it will be complex to parse the results.
-    def execute_sql(query)
-      db_name = node['postgresql']['database_name']
+    def execute_sql(query, db_name = node['postgresql']['database_name'])
       # query could be a String or an Array of String
       statement = query.is_a?(String) ? query : query.join("\n")
       @execute_sql ||= begin
@@ -303,18 +302,6 @@ module Opscode
           raise 'SQL ERROR'
         end
         cmd.stdout.chomp
-      end
-    end
-
-    #######
-    # Function to determine if a standard contrib extension is already installed.
-    #   Input: Extension name
-    #   Output: true or false
-    # Best use as a not_if gate on bash "install-#{pg_ext}-extension" resource.
-    def extension_installed?(pg_ext)
-      @extension_installed ||= begin
-        installed = execute_sql("select 'installed' from pg_extension where extname = '#{pg_ext}';")
-        installed =~ /^installed$/
       end
     end
 
