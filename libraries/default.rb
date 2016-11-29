@@ -277,21 +277,6 @@ module Opscode
     end
 
     #######
-    # Function to determine the name of the system's default timezone.
-    def get_result_orig(query)
-      # query could be a String or an Array of String
-      stdin = if query.is_a?(String)
-                query
-              else
-                query.join("\n")
-              end
-      @get_result ||= begin
-        cmd = shell_out('cat', input: stdin)
-        cmd.stdout
-      end
-    end
-
-    #######
     # Function to execute an SQL statement in the default database.
     #   Input: Query could be a single String or an Array of String.
     #   Output: A String with |-separated columns and \n-separated rows.
