@@ -123,14 +123,14 @@ when "opensuse"
 
 when "suse"
 
-  if node['postgresql']['version'] = '8.3'
+  if node['postgresql']['version'] == '8.3'
     node.default['postgresql']['client']['packages'] = ['postgresql', 'rubygem-pg']
     node.default['postgresql']['server']['packages'] = ['postgresql-server']
     node.default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
-  elsif node['postgresql']['version'] == '9.1'
-    node.default['postgresql']['client']['packages'] = ['postgresql91', 'rubygem-pg']
-    node.default['postgresql']['server']['packages'] = ['postgresql91-server']
-    node.default['postgresql']['contrib']['packages'] = ['postgresql91-contrib']
+  else
+    node.default['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}", "postgresql#{node['postgresql']['version'].split('.').join}-devel"]
+    node.default['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
+    node.default['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
   end
 
   node.default['postgresql']['dir'] = "/var/lib/pgsql/data"

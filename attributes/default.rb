@@ -139,8 +139,10 @@ when "suse"
 
   if node['platform_version'].to_f <= 11.1
     default['postgresql']['version'] = "8.3"
-  else
+  elsif node['platform_version'].to_f <= 11.3
     default['postgresql']['version'] = "9.1"
+  else
+    default['postgresql']['version'] = "9.4"
   end
 
 else
