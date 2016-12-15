@@ -70,6 +70,13 @@ default['postgresql']['server']['init_package'] =
     else
       'systemd'
     end
+  when 'suse'
+    case
+    when node['platform_version'].to_f > 12
+      'systemd'
+    else
+      'sysv'
+    end
   else
     'upstart'
   end
