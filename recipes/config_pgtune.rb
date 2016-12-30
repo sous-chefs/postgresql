@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: postgresql
+# Cookbook:: postgresql
 # Recipe:: config_pgtune
 # Author:: David Crane (<davidc@donorschoose.org>)
 #
@@ -92,7 +92,7 @@ if node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_
     Chef::Log.fatal([
       "Bad value (#{db_type})",
       "for node['postgresql']['config_pgtune']['db_type'] attribute.",
-      'Valid values are one of dw, oltp, web, mixed, desktop.'
+      'Valid values are one of dw, oltp, web, mixed, desktop.',
     ].join(' '))
     raise
   end
@@ -104,7 +104,7 @@ con =
     'oltp' => 300,
     'dw' => 20,
     'mixed' => 80,
-    'desktop' => 5
+    'desktop' => 5,
   }.fetch(db_type)
 
 if node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_pgtune'].attribute?('max_connections')
@@ -113,7 +113,7 @@ if node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_
     Chef::Log.fatal([
       "Bad value (#{max_connections})",
       "for node['postgresql']['config_pgtune']['max_connections'] attribute.",
-      'Valid values are non-zero integers only.'
+      'Valid values are non-zero integers only.',
     ].join(' '))
     raise
   end
@@ -131,7 +131,7 @@ if node['postgresql'].attribute?('config_pgtune') && node['postgresql']['config_
     Chef::Application.fatal!([
       "Bad value (#{total_memory})",
       "for node['postgresql']['config_pgtune']['total_memory'] attribute.",
-      'Valid values are non-zero integers followed by kB (e.g., 49416564kB).'
+      'Valid values are non-zero integers followed by kB (e.g., 49416564kB).',
     ].join(' '))
   end
 end
@@ -161,7 +161,7 @@ if mem >= 256
       'oltp' => mem / 4,
       'dw' => mem / 4,
       'mixed' => mem / 4,
-      'desktop' => mem / 16
+      'desktop' => mem / 16,
     }.fetch(db_type)
 
   # Robert Haas has advised to cap the size of shared_buffers based on
@@ -185,7 +185,7 @@ if mem >= 256
       'oltp' => mem * 3 / 4,
       'dw' => mem * 3 / 4,
       'mixed' => mem * 3 / 4,
-      'desktop' => mem / 4
+      'desktop' => mem / 4,
     }.fetch(db_type)
 
   node.default['postgresql']['config']['effective_cache_size'] = binaryround(effective_cache_size * 1024 * 1024)
@@ -199,7 +199,7 @@ if mem >= 256
       'oltp' => mem_con_v,
       'dw' => mem_con_v / 2,
       'mixed' => mem_con_v / 2,
-      'desktop' => mem_con_v / 6
+      'desktop' => mem_con_v / 6,
     }.fetch(db_type)
 
   node.default['postgresql']['config']['work_mem'] = binaryround(work_mem * 1024 * 1024)
@@ -212,7 +212,7 @@ if mem >= 256
       'oltp' => mem / 16,
       'dw' => mem / 8,
       'mixed' => mem / 16,
-      'desktop' => mem / 16
+      'desktop' => mem / 16,
     }.fetch(db_type)
 
   # Cap maintenence RAM at 1GB on servers with lots of memory
@@ -233,7 +233,7 @@ checkpoint_segments =
     'oltp' => 16,
     'dw' => 64,
     'mixed' => 16,
-    'desktop' => 3
+    'desktop' => 3,
   }.fetch(db_type)
 
 node.default['postgresql']['config']['checkpoint_segments'] = checkpoint_segments
@@ -246,7 +246,7 @@ checkpoint_completion_target =
     'oltp' => '0.9',
     'dw' => '0.9',
     'mixed' => '0.9',
-    'desktop' => '0.5'
+    'desktop' => '0.5',
   }.fetch(db_type)
 
 node.default['postgresql']['config']['checkpoint_completion_target'] = checkpoint_completion_target
@@ -272,7 +272,7 @@ default_statistics_target =
     'oltp' => 100,
     'dw' => 500,
     'mixed' => 100,
-    'desktop' => 100
+    'desktop' => 100,
   }.fetch(db_type)
 
 node.default['postgresql']['config']['default_statistics_target'] = default_statistics_target

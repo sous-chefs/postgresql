@@ -3,20 +3,20 @@ require 'spec_helper'
 describe 'postgresql::default' do
   platforms = {
     'ubuntu' => {
-      'versions' => ['12.04', '14.04', '16.04']
+      'versions' => ['12.04', '14.04', '16.04'],
     },
     'centos' => {
-      'versions' => ['6.8', '7.0']
+      'versions' => ['6.8', '7.0'],
     },
     'redhat' => {
-      'versions' => ['6.5', '7.0']
+      'versions' => ['6.5', '7.0'],
     },
     'debian' => {
-      'versions' => ['7.11']
+      'versions' => ['7.11'],
     },
     'opensuse' => {
-      'versions' => ['13.1', '13.2']
-    }
+      'versions' => ['13.1', '13.2'],
+    },
   }
 
   platforms.each do |platform, config|
