@@ -19,7 +19,8 @@ Style/GuardClause:
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: snake_case, camelCase
 Style/MethodName:
-  Enabled: false
+  Exclude:
+    - 'libraries/default.rb'
 
 Style/MultilineBlockChain:
   Exclude:
@@ -33,6 +34,14 @@ Style/Next:
     - 'libraries/default.rb'
 
 # Cop supports --auto-correct.
+# Configuration parameters: AutoCorrect, EnforcedStyle, SupportedStyles.
+# SupportedStyles: predicate, comparison
+Style/NumericPredicate:
+  Exclude:
+    - 'spec/**/*'
+    - 'libraries/default.rb'
+
+# Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, AllowInnerSlashes.
 # SupportedStyles: slashes, percent_r, mixed
 Style/RegexpLiteral:
@@ -42,4 +51,5 @@ Style/RegexpLiteral:
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: snake_case, camelCase
 Style/VariableName:
-  Enabled: false
+  Exclude:
+    - 'libraries/default.rb'
