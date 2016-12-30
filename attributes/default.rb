@@ -29,15 +29,13 @@ default['postgresql']['database_name'] = 'template1'
 default['postgresql']['server']['init_package'] =
   case node['platform']
   when 'debian'
-    case
-    when node['platform_version'].to_f < 7.0
+    if node['platform_version'].to_f < 7.0
       'sysv'
     else
       'systemd'
     end
   when 'ubuntu'
-    case
-    when node['platform_version'].to_f < 15.04
+    if node['platform_version'].to_f < 15.04
       'upstart'
     else
       'systemd'
@@ -60,8 +58,7 @@ default['postgresql']['server']['init_package'] =
 
 case node['platform']
 when 'debian'
-  case
-  when node['platform_version'].to_i == 7
+  if node['platform_version'].to_i == 7
     default['postgresql']['version'] = '9.1'
     default['postgresql']['dir'] = '/etc/postgresql/9.1/main'
     default['postgresql']['client']['packages'] = ['postgresql-client-9.1', 'libpq-dev']
@@ -79,22 +76,21 @@ when 'debian'
 
 when 'ubuntu'
 
-  case
-  when node['platform_version'].to_f <= 13.10
+  if node['platform_version'].to_f <= 13.10
     default['postgresql']['version'] = '9.1'
     default['postgresql']['dir'] = '/etc/postgresql/9.1/main'
     default['postgresql']['server']['service_name'] = 'postgresql'
     default['postgresql']['client']['packages'] = ['postgresql-client-9.1', 'libpq-dev']
     default['postgresql']['server']['packages'] = ['postgresql-9.1']
     default['postgresql']['contrib']['packages'] = ['postgresql-contrib-9.1']
-  when node['platform_version'].to_f <= 14.04
+  elsif node['platform_version'].to_f <= 14.04
     default['postgresql']['version'] = '9.3'
     default['postgresql']['dir'] = '/etc/postgresql/9.3/main'
     default['postgresql']['server']['service_name'] = 'postgresql'
     default['postgresql']['client']['packages'] = ['postgresql-client-9.3', 'libpq-dev']
     default['postgresql']['server']['packages'] = ['postgresql-9.3']
     default['postgresql']['contrib']['packages'] = ['postgresql-contrib-9.3']
-  when node['platform_version'].to_f <= 15.10
+  elsif node['platform_version'].to_f <= 15.10
     default['postgresql']['version'] = '9.4'
     default['postgresql']['dir'] = '/etc/postgresql/9.4/main'
     default['postgresql']['server']['service_name'] = 'postgresql'
@@ -231,7 +227,7 @@ default['postgresql']['pg_hba'] = [
   { type: 'local', db: 'all', user: 'postgres', addr: nil, method: 'ident' },
   { type: 'local', db: 'all', user: 'all', addr: nil, method: 'ident' },
   { type: 'host', db: 'all', user: 'all', addr: '127.0.0.1/32', method: 'md5' },
-  { type: 'host', db: 'all', user: 'all', addr: '::1/128', method: 'md5' }
+  { type: 'host', db: 'all', user: 'all', addr: '::1/128', method: 'md5' },
 ]
 
 default['postgresql']['password'] = {}

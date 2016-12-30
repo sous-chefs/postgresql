@@ -55,7 +55,7 @@ end
 if node['postgresql']['enable_pgdg_yum'] == true || node['postgresql']['use_pgdg_packages'] == true
   [
     "postgresql#{shortver}-setup",
-    "postgresql#{shortver}-check-db-dir"
+    "postgresql#{shortver}-check-db-dir",
   ].each do |cmd|
     link "/usr/bin/#{cmd}" do
       to "/usr/pgsql-#{node['postgresql']['version']}/bin/#{cmd}"

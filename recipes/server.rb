@@ -32,7 +32,7 @@ if Chef::Config[:solo] || Chef::Config.local_mode
   unless missing_attrs.empty?
     Chef::Log.fatal([
       "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
-      'For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note'
+      'For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note',
     ].join(' '))
     raise
   end

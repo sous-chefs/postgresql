@@ -168,9 +168,9 @@ module Opscode
       # DETAIL:  PostgreSQL does not support leap seconds.
 
       if tzname.index('right/') == 0
-        return false
+        false
       else
-        return true
+        true
       end
     end
 
@@ -247,7 +247,7 @@ module Opscode
         resultbuf = [
           'Etc/GMT',
           (-std_ofs > 0) ? '+' : '',
-          (-std_ofs).to_s
+          (-std_ofs).to_s,
         ].join('')
       end
 
