@@ -138,7 +138,7 @@ override['postgresql']['config']['ssl_ciphers']  = "<my cipher suite>"
 
 ## v3.4.20
 
-- Revert [#251](https://github.com/hw-cookbooks/postgresql/pull/251), a change which caused the postgresql service to restart every Chef run.
+- Revert [#251](https://github.com/sous-chefs/postgresql/pull/251), a change which caused the postgresql service to restart every Chef run.
 
 ## v3.4.19
 
