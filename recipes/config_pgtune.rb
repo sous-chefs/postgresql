@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: postgresql
+# Cookbook:: postgresql
 # Recipe:: config_pgtune
 # Author:: David Crane (<davidc@donorschoose.org>)
 #

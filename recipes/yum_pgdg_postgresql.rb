@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: postgresql
+# Cookbook:: postgresql
 # Recipe::yum_pgdg_postgresql
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

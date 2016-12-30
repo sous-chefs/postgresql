@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: postgresql
+# Cookbook:: postgresql
 # Library:: default
 # Author:: David Crane (<davidc@donorschoose.org>)
 #
