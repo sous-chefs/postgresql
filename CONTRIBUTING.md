@@ -1,6 +1,22 @@
-1. Fork the repository using GitHub.
-2. Checkout a named feature branch created from the `master` branch.
-3. Write tests using ChefSpec or Inspec as appropriate.
-4. Complete modifications or corrections.
-5. Run the tests, ensuring they all pass.
-6. Submit a Pull Request to the `master` branch using Github.
+# Contributing
+
+## Branches
+
+### `master` branch
+
+The master branch is the current comitted changes. These changes may not yet be released although we try to release often.
+
+## Tags
+
+All releases are tagged in git. To see the releases available to you see the changelog or the tags directly.
+
+
+## Pull requests
+
+- <https://github.com/sous-chefs/postgresql/pulls>
+
+## Issues
+
+Need to report an issue? Use the github issues:
+
+- <https://github.com/sous-chefs/postgresql/issues>

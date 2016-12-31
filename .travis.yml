@@ -7,12 +7,11 @@ addons:
     packages:
       - chefdk
 
-# Don't `bundle install`
+# Don't `bundle install` which takes about 1.5 mins
 install: echo "skip bundle install"
 
 branches:
   only:
-    - develop
     - master
 
 # Ensure we make ChefDK's Ruby the default
