@@ -8,7 +8,7 @@ version           '5.1.0'
 source_url        'https://github.com/chef-brigade/postgresql-cookbook' if respond_to?(:source_url)
 issues_url        'https://github.com/chef-brigade/postgresql-cookbook/issues' if respond_to?(:issues_url)
 chef_version      '>= 11.0' if respond_to?(:chef_version)
-recipe            'postgresql', 'Includes postgresql::client'
+recipe            'postgresql::default', 'Includes postgresql::client'
 recipe            'postgresql::ruby', 'Installs pg gem for Ruby bindings'
 recipe            'postgresql::client', 'Installs postgresql client package(s)'
 recipe            'postgresql::server', 'Installs postgresql server packages, templates'
