@@ -4,7 +4,7 @@ This file is used to list changes made in each version of the postgresql cookboo
 
 ## v5.1.0 (2016-11-01)
 
-- Maintenance of this cookbook has been migrated from Heavy Water to Chef Brigade - <https://chefbrigade.io/>
+- Maintenance of this cookbook has been migrated from Heavy Water to Sous Chefs - <https://sous-chefs.org/>
 - Add support for Chef-Zero (local mode)
 - Don't hardcode the UID / GID on RHEL/Amazon/Suse platforms
 - Add PGDG yum RPMs for 9.5 / 9.6
