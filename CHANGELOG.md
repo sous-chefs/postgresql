@@ -2,6 +2,18 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v5.2.0 (2016-12-30)
+
+- Updated contacts and links to point to Sous Chefs now
+- Added a Code of Conduct (the Chef CoC)
+- Removed duplicate platforms in the metadata
+- Fix Chef runs with local mode in the server recipe
+- Fix the ruby recipe to not fail when you specify enabling both the apt and yum repos for mixed distro environments
+- Set the postgresql data directory to 700 permissions
+- Added node['postgresql']['pg_gem']['version'] to specify the version of the pg gem to install
+- Cookstyle fixes for the latest cookstyle release
+- Removed test deps from the Gemfile. Rely on ChefDK for base testing deps instead
+
 ## v5.1.0 (2016-11-01)
 
 - Maintenance of this cookbook has been migrated from Heavy Water to Sous Chefs - <https://sous-chefs.org/>
