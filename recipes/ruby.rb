@@ -32,7 +32,7 @@ rescue LoadError
   node.override['build-essential']['compile_time'] = true
   include_recipe 'build-essential'
 
-  if node['postgresql']['enable_pgdg_yum']
+  if node['postgresql']['enable_pgdg_yum'] and platform_family? 'redhat'
     package 'ca-certificates' do
       action :nothing
     end.run_action(:upgrade)
@@ -56,7 +56,7 @@ rescue LoadError
 
   end
 
-  if node['postgresql']['enable_pgdg_apt']
+  if node['postgresql']['enable_pgdg_apt'] and platform_family? 'debian'
     include_recipe 'postgresql::apt_pgdg_postgresql'
     resources('apt_repository[apt.postgresql.org]').run_action(:add)
 
@@ -79,6 +79,8 @@ rescue LoadError
   begin
     chef_gem 'pg' do
       compile_time true if respond_to?(:compile_time)
+      # allow optional attribute to install specific version of pg gem
+      node['postgresql']['pg_gem']['version'] if node['postgresql']['pg_gem']['version']
     end
   rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
     # Are we an omnibus install?

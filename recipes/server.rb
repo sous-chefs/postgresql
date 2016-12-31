@@ -21,8 +21,8 @@ include_recipe 'postgresql::ca_certificates'
 
 include_recipe 'postgresql::client'
 
-# randomly generate postgres password, unless using solo or zero - see README
-if Chef::Config[:solo] || Chef::Config.local_mode
+# randomly generate postgres password, unless using solo - see README
+if Chef::Config[:solo]
   missing_attrs = %w(
     postgres
   ).select do |attr|
