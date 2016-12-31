@@ -9,7 +9,7 @@ namespace :style do
     desc 'Run Ruby style checks'
     RuboCop::RakeTask.new(:ruby)
   rescue LoadError => e
-    puts ">>> Gem load error: #{e}, omitting style:ruby" unless ENV['CI']
+    puts ">>> Gem load error: #{e}, omitting #{task.name}" unless ENV['CI']
   end
 
   begin
@@ -20,10 +20,11 @@ namespace :style do
       t.options = {
         fail_tags: ['any'],
         progress: true,
+        exclude: 'spec',
       }
     end
-  rescue LoadError
-    puts ">>> Gem load error: #{e}, omitting style:chef" unless ENV['CI']
+  rescue LoadError => e
+    puts ">>> Gem load error: #{e}, omitting #{task.name}" unless ENV['CI']
   end
 end
 
@@ -37,7 +38,7 @@ begin
   desc 'Run ChefSpec examples'
   RSpec::Core::RakeTask.new(:spec)
 rescue LoadError => e
-  puts ">>> Gem load error: #{e}, omitting spec" unless ENV['CI']
+  puts ">>> Gem load error: #{e}, omitting #{task.name}" unless ENV['CI']
 end
 
 # Integration tests. Kitchen.ci
@@ -47,8 +48,8 @@ namespace :integration do
 
     desc 'Run kitchen integration tests'
     Kitchen::RakeTasks.new
-  rescue StandardError => e
-    puts ">>> Kitchen error: #{e}, omitting #{task.name}" unless ENV['CI']
+  rescue LoadError, StandardError => e
+    puts ">>> Gem load error: #{e}, omitting #{task.name}" unless ENV['CI']
   end
 end
 
