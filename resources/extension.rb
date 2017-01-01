@@ -28,8 +28,6 @@ property :extension, String,
          required: true,
          default: lazy { name.scan(%r{(?<=/)[^/]+\Z}).first }
 
-default_action :create
-
 action :create do
   bash "CREATE EXTENSION #{name}" do
     code psql("CREATE EXTENSION IF NOT EXISTS \"#{extension}\"")
