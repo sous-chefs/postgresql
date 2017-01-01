@@ -15,8 +15,6 @@
 # limitations under the License.
 #
 
-include_recipe 'postgresql::ca_certificates'
-
 case node['platform_family']
 when 'debian'
   if node['postgresql']['version'].to_f > 9.3

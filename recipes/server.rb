@@ -15,8 +15,6 @@
 # limitations under the License.
 #
 
-include_recipe 'postgresql::ca_certificates'
-
 ::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
 
 include_recipe 'postgresql::client'
