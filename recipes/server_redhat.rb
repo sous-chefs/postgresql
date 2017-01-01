@@ -86,11 +86,11 @@ if node['postgresql']['server']['init_package'] == 'systemd'
 
   if node['platform_family'] == 'rhel'
 
-    if node['postgresql']['use_pgdg_packages']
-      template_path = "/etc/systemd/system/postgresql-#{node['postgresql']['version']}.service"
-    else
-      template_path = '/etc/systemd/system/postgresql.service'
-    end
+    template_path = if node['postgresql']['use_pgdg_packages']
+                      "/etc/systemd/system/postgresql-#{node['postgresql']['version']}.service"
+                    else
+                      '/etc/systemd/system/postgresql.service'
+                    end
 
     template template_path do
       source 'postgresql.service.erb'
