@@ -24,11 +24,7 @@ suites:
 
 - name: contrib
   run_list:
-  - recipe[postgresql::contrib]
-  attributes:
-    postgresql:
-      password:
-        postgres: "iloverandompasswordsbutthiswilldo"
+  - recipe[test::contrib]
 
 - name: apt-pgdg-client
   run_list:
