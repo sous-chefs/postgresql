@@ -32,6 +32,4 @@ when 'rhel'
   end
 end
 
-node['postgresql']['client']['packages'].each do |pkg|
-  package pkg
-end
+package node['postgresql']['client']['packages']

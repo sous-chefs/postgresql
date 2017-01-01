@@ -17,11 +17,11 @@ Installs and configures PostgreSQL as a client or a server.
 
 ### Chef
 
-- Chef 11+
+- Chef 12.1+
 
 ### Cookbooks
 
-- `apt`
+- `compat_resource`
 - `openssl`
 - `build-essential`
 

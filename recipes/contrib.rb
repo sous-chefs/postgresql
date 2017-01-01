@@ -19,9 +19,7 @@ db_name = node['postgresql']['database_name']
 
 # Install the PostgreSQL contrib package(s) from the distribution,
 # as specified by the node attributes.
-node['postgresql']['contrib']['packages'].each do |pg_pack|
-  package pg_pack
-end
+package node['postgresql']['contrib']['packages']
 
 include_recipe 'postgresql::server'
 
