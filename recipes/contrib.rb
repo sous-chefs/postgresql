@@ -29,14 +29,6 @@ include_recipe 'postgresql::server'
 # node attribute node['postgresql']['database_name'].
 if node['postgresql']['contrib'].attribute?('extensions')
   node['postgresql']['contrib']['extensions'].each do |pg_ext|
-    bash "install-#{pg_ext}-extension" do
-      user 'postgres'
-      code <<-EOH
-        echo 'CREATE EXTENSION IF NOT EXISTS "#{pg_ext}";' | psql -d "#{db_name}"
-      EOH
-      action :run
-      ::Chef::Resource.send(:include, Opscode::PostgresqlHelpers)
-      not_if { extension_installed?(pg_ext) }
-    end
+    postgresql_extension "#{db_name}/#{pg_ext}"
   end
 end
