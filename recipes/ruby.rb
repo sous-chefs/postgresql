@@ -32,7 +32,7 @@ rescue LoadError
   node.override['build-essential']['compile_time'] = true
   include_recipe 'build-essential'
 
-  if node['postgresql']['enable_pgdg_yum'] && platform_family?('redhat')
+  if node['postgresql']['enable_pgdg_yum'] && platform_family?('rhel')
     package 'ca-certificates' do
       action :nothing
     end.run_action(:upgrade)
