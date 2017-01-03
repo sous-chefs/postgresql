@@ -42,7 +42,6 @@ suites:
 
 - name: server
   run_list:
-  - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   attributes:
@@ -52,7 +51,6 @@ suites:
 
 - name: apt-pgdg-server
   run_list:
-  - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-25" ]
@@ -92,7 +90,6 @@ suites:
 
 - name: apt-pgdg-client-ruby
   run_list:
-  - recipe[apt]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
   excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-25" ]
@@ -117,7 +114,6 @@ suites:
 
 - name: apt-pgdg-server-pg_stat_statements
   run_list:
-  - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
   excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-13.2", "fedora-23", "fedora-25" ]
