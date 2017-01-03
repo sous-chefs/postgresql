@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'postgresql::default' do
+describe 'Client installation' do
   platforms = {
     'ubuntu' => {
       'versions' => ['12.04', '14.04', '16.04'],
@@ -27,12 +27,12 @@ describe 'postgresql::default' do
             platform: platform.to_s,
             version: version.to_s
           ) do |node|
-            node.normal['postgresql']['password']['postgres'] = 'ilikewaffles'
-          end.converge(described_recipe)
+            node.default['postgresql']['password']['postgres'] = 'ilikewaffles'
+          end.converge('postgresql::client')
         end
 
-        it 'runs no tests' do
-          expect(chef_run)
+        it 'converges successfully' do
+          expect { :chef_run }.to_not raise_error
         end
       end
     end

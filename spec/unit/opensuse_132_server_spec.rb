@@ -29,12 +29,8 @@ describe 'opensuse::postgresql::server' do
     expect(chef_run).to install_package('postgresql93-server')
   end
 
-  it 'Install postgresql 9.3 client' do
-    expect(chef_run).to install_package('postgresql93')
-  end
-
-  it 'Install postgresql 9.3 dev files' do
-    expect(chef_run).to install_package('postgresql93-devel')
+  it 'Install postgresql 9.3 client and dev packages' do
+    expect(chef_run).to install_package(['postgresql93', 'postgresql93-devel'])
   end
 
   it 'Enable and start service postgresql' do
