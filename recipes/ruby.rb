@@ -21,12 +21,11 @@
 begin
   require 'pg'
 rescue LoadError
-
-  if platform_family?('ubuntu', 'debian')
-    e = execute 'apt-get update' do
+  if platform_family?('debian')
+    e = apt_update 'update' do
       action :nothing
     end
-    e.run_action(:run) unless ::File.exist?('/var/lib/apt/periodic/update-success-stamp')
+    e.run_action(:update)
   end
 
   node.override['build-essential']['compile_time'] = true
