@@ -47,9 +47,7 @@ directory node['postgresql']['config']['data_directory'] do
   mode '0700'
 end
 
-node['postgresql']['server']['packages'].each do |pg_pack|
-  package pg_pack
-end
+package node['postgresql']['server']['packages']
 
 # If using PGDG, add symlinks so that downstream commands all work
 if node['postgresql']['enable_pgdg_yum'] == true || node['postgresql']['use_pgdg_packages'] == true
