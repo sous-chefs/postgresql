@@ -35,7 +35,7 @@ rescue LoadError
     include_recipe 'postgresql::yum_pgdg_postgresql'
 
     rpm_platform = node['platform']
-    rpm_platform_version = node['platform_version'].to_f.to_i.to_s
+    rpm_platform_version = node['platform_version'].to_i.to_s
     arch = node['kernel']['machine']
 
     resources("remote_file[#{Chef::Config[:file_cache_path]}/#{node['postgresql']['pgdg']['repo_rpm_url'][node['postgresql']['version']][rpm_platform][rpm_platform_version][arch]['package']}]").run_action(:create)
