@@ -2,6 +2,22 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v6.0.0 (2017-01-03)
+
+- This cookbook now requires Chef 12.1 or later
+- Removed the dependency on the apt cookbook as this functionality is built into modern chef client releases
+- Added a new custom resource for installing extensions. This acts as a replacement for the contrib recipe with minimal backwards compatibility. You can now install / remove extensions into any database. This adds the compat_resource cookbook dependency so we can continue to support Chef 12.1-12.4, which lack custom resource support.
+- The unused get_result_orig helper has been removed. If you utilized this you'll want to move it to your own wrapper cookbook
+- Updates for compatibility with Postgresql 9.5 and 9.6
+- Fixed client package installation on openSUSE Leap 42.2
+- ca-certificates recipe has been deprecated. If ca-certificates package needs to be upgraded the user should do so prior to including this recipe. Package upgrades in community cookbooks are generally a bad idea as this bring in updated packages to production systems. The recipe currently warns if used and will be removed with the next major cookbook release.
+- Fixed RHEL platform detection in the Ruby recipe
+- systemd fixes for RHEL systems
+- Fix systemd service file include when using pgdg packages
+- Package installation now uses multi-package installs to speed up converge times
+- Added integration testing in Travis of the client recipe using a new test cookbook. This will be expanded in the future to cover server installation as well
+- Expanded the specs to test converges on multiple platforms
+
 ## v5.2.0 (2016-12-30)
 
 - Updated contacts and links to point to Sous Chefs now
