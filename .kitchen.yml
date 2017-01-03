@@ -29,7 +29,7 @@ suites:
 - name: apt-pgdg-client
   run_list:
   - recipe[test::apt-pgdg-client]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-24" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-25" ]
 
 - name: yum-pgdg-client
   run_list:
@@ -55,7 +55,7 @@ suites:
   - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-24" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-25" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -95,7 +95,7 @@ suites:
   - recipe[apt]
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-24" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-25" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
@@ -120,7 +120,7 @@ suites:
   - recipe[apt]
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-13.2", "fedora-23", "fedora-24" ]
+  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-13.2", "fedora-23", "fedora-25" ]
   attributes:
     postgresql:
       enable_pgdg_apt: true
