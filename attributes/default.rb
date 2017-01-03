@@ -161,7 +161,6 @@ when 'redhat', 'centos', 'scientific', 'oracle'
 when 'opensuse', 'opensuseleap'
 
   default['postgresql']['dir'] = '/var/lib/pgsql/data'
-
   default['postgresql']['uid'] = '26'
   default['postgresql']['gid'] = '26'
 
@@ -176,7 +175,7 @@ when 'opensuse', 'opensuseleap'
     default['postgresql']['client']['packages'] = ['postgresql93', 'postgresql93-devel']
     default['postgresql']['server']['packages'] = ['postgresql93-server']
     default['postgresql']['contrib']['packages'] = ['postgresql93-contrib']
-  when 42.1
+  else # opensuseleap
     default['postgresql']['version'] = '9.4'
     default['postgresql']['client']['packages'] = ['postgresql94', 'postgresql94-devel']
     default['postgresql']['server']['packages'] = ['postgresql94-server']
