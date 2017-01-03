@@ -32,10 +32,6 @@ rescue LoadError
   include_recipe 'build-essential'
 
   if node['postgresql']['enable_pgdg_yum'] && platform_family?('rhel')
-    package 'ca-certificates' do
-      action :nothing
-    end.run_action(:upgrade)
-
     include_recipe 'postgresql::yum_pgdg_postgresql'
 
     rpm_platform = node['platform']
