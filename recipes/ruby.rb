@@ -43,11 +43,9 @@ rescue LoadError
 
     ENV['PATH'] = "/usr/pgsql-#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
 
-    node['postgresql']['client']['packages'].each do |pkg|
-      package pkg do
-        action :nothing
-      end.run_action(:install)
-    end
+    package node['postgresql']['client']['packages'] do
+      action :nothing
+    end.run_action(:install)
 
   end
 
@@ -55,21 +53,16 @@ rescue LoadError
     include_recipe 'postgresql::apt_pgdg_postgresql'
     resources('apt_repository[apt.postgresql.org]').run_action(:add)
 
-    node['postgresql']['client']['packages'].each do |pkg|
-      package pkg do
-        action :nothing
-      end.run_action(:install)
-    end
-
+    package node['postgresql']['client']['packages'] do
+      action :nothing
+    end.run_action(:install)
   end
 
   include_recipe 'postgresql::client'
 
-  node['postgresql']['client']['packages'].each do |pkg|
-    package pkg do
-      action :nothing
-    end.run_action(:install)
-  end
+  package node['postgresql']['client']['packages'] do
+    action :nothing
+  end.run_action(:install)
 
   begin
     chef_gem 'pg' do
