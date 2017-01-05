@@ -114,13 +114,8 @@ suites:
   - recipe[test::yum-pgdg-client]
   excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-7.11", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
 
-- name: ruby
-  run_list:
-  - recipe[postgresql::ruby]
-
 - name: server
   run_list:
-  - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   attributes:
     postgresql:

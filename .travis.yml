@@ -20,6 +20,26 @@ services: docker
 
 env:
   matrix:
+  - INSTANCE=server-centos-6
+  - INSTANCE=server-centos-7
+  - INSTANCE=server-debian-7
+  - INSTANCE=server-debian-8
+  - INSTANCE=server-fedora-latest
+  - INSTANCE=server-opensuse-132
+  - INSTANCE=server-opensuse-leap
+  - INSTANCE=server-ubuntu-1204
+  - INSTANCE=server-ubuntu-1404
+  - INSTANCE=server-ubuntu-1604
+  - INSTANCE=contrib-centos-6
+  - INSTANCE=contrib-centos-7
+  - INSTANCE=contrib-debian-7
+  - INSTANCE=contrib-debian-8
+  - INSTANCE=contrib-fedora-latest
+  - INSTANCE=contrib-opensuse-132
+  - INSTANCE=contrib-opensuse-leap
+  - INSTANCE=contrib-ubuntu-1204
+  - INSTANCE=contrib-ubuntu-1404
+  - INSTANCE=contrib-ubuntu-1604
   - INSTANCE=client-centos-6
   - INSTANCE=client-centos-7
   - INSTANCE=client-debian-7
