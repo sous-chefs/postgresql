@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: postgresql
+# Cookbook:: postgresql
 # Recipe:: ruby
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,26 +21,21 @@
 begin
   require 'pg'
 rescue LoadError
-
-  if platform_family?('ubuntu', 'debian')
-    e = execute 'apt-get update' do
+  if platform_family?('debian')
+    e = apt_update 'update' do
       action :nothing
     end
-    e.run_action(:run) unless ::File.exist?('/var/lib/apt/periodic/update-success-stamp')
+    e.run_action(:update)
   end
 
   node.override['build-essential']['compile_time'] = true
   include_recipe 'build-essential'
 
-  if node['postgresql']['enable_pgdg_yum'] and platform_family? 'redhat'
-    package 'ca-certificates' do
-      action :nothing
-    end.run_action(:upgrade)
-
+  if node['postgresql']['enable_pgdg_yum'] && platform_family?('rhel')
     include_recipe 'postgresql::yum_pgdg_postgresql'
 
     rpm_platform = node['platform']
-    rpm_platform_version = node['platform_version'].to_f.to_i.to_s
+    rpm_platform_version = node['platform_version'].to_i.to_s
     arch = node['kernel']['machine']
 
     resources("remote_file[#{Chef::Config[:file_cache_path]}/#{node['postgresql']['pgdg']['repo_rpm_url'][node['postgresql']['version']][rpm_platform][rpm_platform_version][arch]['package']}]").run_action(:create)
@@ -48,33 +43,26 @@ rescue LoadError
 
     ENV['PATH'] = "/usr/pgsql-#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
 
-    node['postgresql']['client']['packages'].each do |pkg|
-      package pkg do
-        action :nothing
-      end.run_action(:install)
-    end
+    package node['postgresql']['client']['packages'] do
+      action :nothing
+    end.run_action(:install)
 
   end
 
-  if node['postgresql']['enable_pgdg_apt'] and platform_family? 'debian'
+  if node['postgresql']['enable_pgdg_apt'] && platform_family?('debian')
     include_recipe 'postgresql::apt_pgdg_postgresql'
     resources('apt_repository[apt.postgresql.org]').run_action(:add)
 
-    node['postgresql']['client']['packages'].each do |pkg|
-      package pkg do
-        action :nothing
-      end.run_action(:install)
-    end
-
+    package node['postgresql']['client']['packages'] do
+      action :nothing
+    end.run_action(:install)
   end
 
   include_recipe 'postgresql::client'
 
-  node['postgresql']['client']['packages'].each do |pkg|
-    package pkg do
-      action :nothing
-    end.run_action(:install)
-  end
+  package node['postgresql']['client']['packages'] do
+    action :nothing
+  end.run_action(:install)
 
   begin
     chef_gem 'pg' do

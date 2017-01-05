@@ -2,9 +2,37 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v6.0.0 (2017-01-03)
+
+- This cookbook now requires Chef 12.1 or later
+- Removed the dependency on the apt cookbook as this functionality is built into modern chef client releases
+- Added a new custom resource for installing extensions. This acts as a replacement for the contrib recipe with minimal backwards compatibility. You can now install / remove extensions into any database. This adds the compat_resource cookbook dependency so we can continue to support Chef 12.1-12.4, which lack custom resource support.
+- The unused get_result_orig helper has been removed. If you utilized this you'll want to move it to your own wrapper cookbook
+- Updates for compatibility with Postgresql 9.5 and 9.6
+- Fixed client package installation on openSUSE Leap 42.2
+- ca-certificates recipe has been deprecated. If ca-certificates package needs to be upgraded the user should do so prior to including this recipe. Package upgrades in community cookbooks are generally a bad idea as this bring in updated packages to production systems. The recipe currently warns if used and will be removed with the next major cookbook release.
+- Fixed RHEL platform detection in the Ruby recipe
+- systemd fixes for RHEL systems
+- Fix systemd service file include when using pgdg packages
+- Package installation now uses multi-package installs to speed up converge times
+- Added integration testing in Travis of the client recipe using a new test cookbook. This will be expanded in the future to cover server installation as well
+- Expanded the specs to test converges on multiple platforms
+
+## v5.2.0 (2016-12-30)
+
+- Updated contacts and links to point to Sous Chefs now
+- Added a Code of Conduct (the Chef CoC)
+- Removed duplicate platforms in the metadata
+- Fix Chef runs with local mode in the server recipe
+- Fix the ruby recipe to not fail when you specify enabling both the apt and yum repos for mixed distro environments
+- Set the postgresql data directory to 700 permissions
+- Added node['postgresql']['pg_gem']['version'] to specify the version of the pg gem to install
+- Cookstyle fixes for the latest cookstyle release
+- Removed test deps from the Gemfile. Rely on ChefDK for base testing deps instead
+
 ## v5.1.0 (2016-11-01)
 
-- Maintenance of this cookbook has been migrated from Heavy Water to Chef Brigade - <https://chefbrigade.io/>
+- Maintenance of this cookbook has been migrated from Heavy Water to Sous Chefs - <https://sous-chefs.org/>
 - Add support for Chef-Zero (local mode)
 - Don't hardcode the UID / GID on RHEL/Amazon/Suse platforms
 - Add PGDG yum RPMs for 9.5 / 9.6
@@ -138,7 +166,7 @@ override['postgresql']['config']['ssl_ciphers']  = "<my cipher suite>"
 
 ## v3.4.20
 
-- Revert [#251](https://github.com/hw-cookbooks/postgresql/pull/251), a change which caused the postgresql service to restart every Chef run.
+- Revert [#251](https://github.com/sous-chefs/postgresql/pull/251), a change which caused the postgresql service to restart every Chef run.
 
 ## v3.4.19
 

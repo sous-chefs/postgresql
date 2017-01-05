@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: postgresql
+# Cookbook:: postgresql
 # Resource:: extension
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,6 @@ property :database, String,
 property :extension, String,
          required: true,
          default: lazy { name.scan(%r{(?<=/)[^/]+\Z}).first }
-
-default_action :create
 
 action :create do
   bash "CREATE EXTENSION #{name}" do

@@ -10,8 +10,8 @@ describe 'debian::postgresql::server' do
     ) do |node|
       node.automatic['memory']['total'] = '2048kB'
       node.automatic['ipaddress'] = '1.1.1.1'
-      node.normal['postgresql']['version'] = '9.1'
-      node.normal['postgresql']['password']['postgres'] = 'password'
+      node.default['postgresql']['version'] = '9.1'
+      node.default['postgresql']['password']['postgres'] = 'password'
     end
     runner.converge('postgresql::server')
   end
@@ -26,12 +26,8 @@ describe 'debian::postgresql::server' do
     expect(chef_run).to install_package('postgresql-9.1')
   end
 
-  it 'Install postgresql 9.1 client' do
-    expect(chef_run).to install_package('postgresql-client-9.1')
-  end
-
-  it 'Install postgresql 9.1 dev files' do
-    expect(chef_run).to install_package('libpq-dev')
+  it 'Install postgresql 9.1 client and dev packages' do
+    expect(chef_run).to install_package(['postgresql-client-9.1', 'libpq-dev'])
   end
 
   it 'Enable and start service postgresql' do

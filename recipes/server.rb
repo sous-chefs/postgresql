@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: postgresql
+# Cookbook:: postgresql
 # Recipe:: server
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-include_recipe 'postgresql::ca_certificates'
 
 ::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
 
@@ -32,7 +30,7 @@ if Chef::Config[:solo]
   unless missing_attrs.empty?
     Chef::Log.fatal([
       "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
-      'For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note'
+      'For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note',
     ].join(' '))
     raise
   end

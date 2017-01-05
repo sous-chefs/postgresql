@@ -1,6 +1,6 @@
 # postgresql cookbook
 
-[![Build Status](https://travis-ci.org/chef-brigade/postgresql-cookbook.svg?branch=develop)](https://travis-ci.org/chef-brigade/postgresql-cookbook) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
+[![Build Status](https://travis-ci.org/sous-chefs/postgresql.svg?branch=master)](https://travis-ci.org/sous-chefs/postgresql) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
 
 Installs and configures PostgreSQL as a client or a server.
 
@@ -17,11 +17,11 @@ Installs and configures PostgreSQL as a client or a server.
 
 ### Chef
 
-- Chef 11+
+- Chef 12.1+
 
 ### Cookbooks
 
-- `apt`
+- `compat_resource`
 - `openssl`
 - `build-essential`
 
@@ -265,15 +265,11 @@ That should actually be the "encrypted password" instead of cleartext, so you sh
 - You can run this from a linux commandline:<br>
   `echo -n 'iloverandompasswordsbutthiswilldo''postgres' | openssl md5 | sed -e 's/.* /md5/'`
 
-## License and Author
+## License
 
-- Author:: Joshua Timberman ([joshua@chef.io](mailto:joshua@chef.io))
-- Author:: Lamont Granquist ([lamont@chef.io](mailto:lamont@chef.io))
-- Author:: Chris Roberts ([chrisroberts.code@gmail.com](mailto:chrisroberts.code@gmail.com))
-- Author:: David Crane ([davidc@donorschoose.org](mailto:davidc@donorschoose.org))
-- Author:: Aaron Baer ([aaron@heavywater.io](mailto:aaron@heavywater.io))
+Copyright 2010-2016, Chef Software, Inc.
 
-```
+```text
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

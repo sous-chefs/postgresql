@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: postgresql
+# Cookbook:: postgresql
 # Recipe:: server
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,15 +47,13 @@ directory node['postgresql']['config']['data_directory'] do
   mode '0700'
 end
 
-node['postgresql']['server']['packages'].each do |pg_pack|
-  package pg_pack
-end
+package node['postgresql']['server']['packages']
 
 # If using PGDG, add symlinks so that downstream commands all work
 if node['postgresql']['enable_pgdg_yum'] == true || node['postgresql']['use_pgdg_packages'] == true
   [
     "postgresql#{shortver}-setup",
-    "postgresql#{shortver}-check-db-dir"
+    "postgresql#{shortver}-check-db-dir",
   ].each do |cmd|
     link "/usr/bin/#{cmd}" do
       to "/usr/pgsql-#{node['postgresql']['version']}/bin/#{cmd}"
@@ -86,11 +84,11 @@ if node['postgresql']['server']['init_package'] == 'systemd'
 
   if node['platform_family'] == 'rhel'
 
-    if node['postgresql']['use_pgdg_packages']
-      template_path = "/etc/systemd/system/postgresql-#{node['postgresql']['version']}.service"
-    else
-      template_path = '/etc/systemd/system/postgresql.service'
-    end
+    template_path = if node['postgresql']['use_pgdg_packages']
+                      "/etc/systemd/system/postgresql-#{node['postgresql']['version']}.service"
+                    else
+                      '/etc/systemd/system/postgresql.service'
+                    end
 
     template template_path do
       source 'postgresql.service.erb'
