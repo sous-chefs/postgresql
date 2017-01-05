@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v6.0.1 (2017-01-04
+
+- Fix systemd unit file template
+
 ## v6.0.0 (2017-01-03)
 
 - This cookbook now requires Chef 12.1 or later

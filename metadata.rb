@@ -4,7 +4,7 @@ maintainer_email  'help@sous-chefs.org'
 license           'Apache 2.0'
 description       'Installs and configures postgresql for clients or servers'
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           '6.0.0'
+version           '6.0.1'
 source_url        'https://github.com/sous-chefs/postgresql'
 issues_url        'https://github.com/sous-chefs/postgresql/issues'
 chef_version      '>= 12.1' if respond_to?(:chef_version)
