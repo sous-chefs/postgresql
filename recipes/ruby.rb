@@ -104,6 +104,8 @@ LDFLAGS
   RbConfig::CONFIG[key].gsub!(/-Wl[^ ]+( ?\\/[^ ]+)?/, '')
   RbConfig::MAKEFILE_CONFIG[key].gsub!(/-Wl[^ ]+( ?\\/[^ ]+)?/, '')
 end
+RbConfig::CONFIG['LIBPATHENV'] = ''
+RbConfig::MAKEFILE_CONFIG['LIBPATHENV'] = ''
 RbConfig::CONFIG['RPATHFLAG'] = ''
 RbConfig::MAKEFILE_CONFIG['RPATHFLAG'] = ''
 EOS
