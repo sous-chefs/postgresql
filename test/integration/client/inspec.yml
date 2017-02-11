@@ -1,0 +1,10 @@
+name: client
+title: PostgreSQL client integration tests
+maintainer: Rene Martin Rodriguez
+copyright_email: agarfu@gmail.com
+license: Apache
+summary: Check that the client is installed and working
+version: 0.0.1
+supports:
+  - os-family: unix
+  - inspec: '~> 1.0'
