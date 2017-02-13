@@ -20,6 +20,9 @@ branches:
 services: docker
 
 env:
+  global:
+  - KITCHEN_YAML=.kitchen.yml
+  - KITCHEN_LOCAL_YAML=.kitchen.docker.yml
   matrix:
   - INSTANCE=client-centos-6
   - INSTANCE=client-centos-7
@@ -39,7 +42,7 @@ before_script:
   - /opt/chefdk/embedded/bin/cookstyle --version
   - /opt/chefdk/embedded/bin/foodcritic --version
 
-script: KITCHEN_YAML=.kitchen.yml KITCHEN_LOCAL_YAML=.kitchen.docker.yml /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
+script: /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
 
 matrix:
   include:
