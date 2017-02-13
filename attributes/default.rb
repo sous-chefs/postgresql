@@ -203,7 +203,6 @@ when 'debian'
   default['postgresql']['config']['datestyle'] = 'iso, mdy'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
   default['postgresql']['config']['ssl'] = true
-  default['postgresql']['config']['dynamic_shared_memory_type'] = 'sysv' if node['postgresql']['version'].to_f >= 9.6
 when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432
@@ -221,7 +220,6 @@ when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['lc_numeric'] = 'en_US.UTF-8'
   default['postgresql']['config']['lc_time'] = 'en_US.UTF-8'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
-  default['postgresql']['config']['dynamic_shared_memory_type'] = 'sysv' if node['postgresql']['version'].to_f >= 9.6
 end
 
 default['postgresql']['pg_hba'] = [
