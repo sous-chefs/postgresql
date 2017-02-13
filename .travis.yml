@@ -24,7 +24,7 @@ env:
   - INSTANCE=client-centos-7
   - INSTANCE=client-debian-7
   - INSTANCE=client-debian-8
-  - INSTANCE=client-fedora-latest
+  - INSTANCE=client-fedora-25
   - INSTANCE=client-opensuse-132
   - INSTANCE=client-opensuse-leap
   - INSTANCE=client-ubuntu-1204
