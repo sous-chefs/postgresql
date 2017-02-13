@@ -1,3 +1,9 @@
+<%
+rpm_based_platforms = %w(centos-5 centos-6 centos-7 fedora-25)
+deb_based_platforms = %w(ubuntu-12.04 ubuntu-14.04 ubuntu-16.04 debian-7 debian-8)
+opensuse_platforms = %w(opensuse-13.2 opensuse-leap)
+%>
+---
 driver:
   name: dokken
   privileged: true # because Docker and SystemD/Upstart
@@ -9,8 +15,14 @@ transport:
 provisioner:
   name: dokken
 
+verifier:
+  name: inspec
+
 platforms:
 - name: debian-7
+  verifier:
+    attributes:
+      pg_version: '9.1'
   driver:
     image: debian:7
     pid_one_command: /sbin/init
@@ -27,6 +39,9 @@ platforms:
       - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
 
 - name: centos-5
+  verifier:
+    attributes:
+      pg_version: '8.4'
   driver:
     image: centos:5
     platform: rhel
@@ -35,6 +50,9 @@ platforms:
       - RUN yum install -y which initscripts net-tools wget
 
 - name: centos-6
+  verifier:
+    attributes:
+      pg_version: '8.4'
   driver:
     image: centos:6
     platform: rhel
@@ -43,6 +61,9 @@ platforms:
       - RUN yum -y install which initscripts net-tools wget
 
 - name: centos-7
+  verifier:
+    attributes:
+      pg_version: '9.2'
   driver:
     image: centos:7
     platform: rhel
@@ -50,14 +71,20 @@ platforms:
     intermediate_instructions:
       - RUN yum -y install lsof which systemd-sysv initscripts wget net-tools
 
-- name: fedora-latest
+- name: fedora-25
+  verifier:
+    attributes:
+      pg_version: '9.5'
   driver:
-    image: fedora:latest
+    image: fedora:25
     pid_one_command: /usr/lib/systemd/systemd
     intermediate_instructions:
       - RUN dnf -y install yum which systemd-sysv initscripts wget net-tools
 
 - name: ubuntu-12.04
+  verifier:
+    attributes:
+      pg_version: '9.1'
   driver:
     image: ubuntu-upstart:12.04
     pid_one_command: /sbin/init
@@ -66,6 +93,9 @@ platforms:
       - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
 
 - name: ubuntu-14.04
+  verifier:
+    attributes:
+      pg_version: '9.3'
   driver:
     image: ubuntu-upstart:14.04
     pid_one_command: /sbin/init
@@ -74,6 +104,9 @@ platforms:
       - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
 
 - name: ubuntu-16.04
+  verifier:
+    attributes:
+      pg_version: '9.5'
   driver:
     image: ubuntu:16.04
     pid_one_command: /bin/systemd
@@ -82,6 +115,9 @@ platforms:
       - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
 
 - name: opensuse-13.2
+  verifier:
+    attributes:
+      pg_version: '9.3'
   driver:
     image: opensuse:13.2
     pid_one_command: /bin/systemd
@@ -107,16 +143,17 @@ suites:
 - name: apt-pgdg-client
   run_list:
   - recipe[test::apt-pgdg-client]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-25" ]
+  excludes: <%= rpm_based_platforms + opensuse_platforms %>
 
 - name: yum-pgdg-client
   run_list:
   - recipe[test::yum-pgdg-client]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-7.11", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
+  excludes: <%= deb_based_platforms + opensuse_platforms %>
 
 - name: ruby
   run_list:
   - recipe[postgresql::ruby]
+  - recipe[test::ruby]
 
 - name: server
   run_list:
@@ -125,92 +162,94 @@ suites:
   attributes:
     postgresql:
       password:
-        postgres: "iloverandompasswordsbutthiswilldo"
+        postgres: 'iloverandompasswordsbutthiswilldo'
 
 - name: apt-pgdg-server
   run_list:
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-25" ]
+  excludes: <%= rpm_based_platforms + opensuse_platforms %>
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.4"
+      version: '9.4'
       dir: '/etc/postgresql/9.4/main'
       server:
-        service_name: "postgresql"
-        packages: [ "postgresql-9.4" ]
+        service_name: 'postgresql'
+        packages: [ 'postgresql-9.4' ]
       client:
-        packages: [ "postgresql-client-9.4", "libpq-dev" ]
+        packages: [ 'postgresql-client-9.4', 'libpq-dev' ]
       password:
-        postgres: "iloverandompasswordsbutthiswilldo"
+        postgres: 'iloverandompasswordsbutthiswilldo'
       config:
-        ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-        ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+        ssl_cert_file: '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+        ssl_key_file: '/etc/ssl/private/ssl-cert-snakeoil.key'
 
 - name: yum-pgdg-server
   run_list:
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
+  excludes: <%= deb_based_platforms + opensuse_platforms %>
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.4"
+      version: '9.4'
       server:
-        packages: [ "postgresql94-server" ]
-        service_name: "postgresql-9.4"
+        packages: [ 'postgresql94-server' ]
+        service_name: 'postgresql-9.4'
       client:
-        packages: [ "postgresql94", "postgresql94-devel" ]
-      setup_script: "postgresql94-setup"
+        packages: [ 'postgresql94', 'postgresql94-devel' ]
+      setup_script: 'postgresql94-setup'
       password:
-        postgres: "iloverandompasswordsbutthiswilldo"
+        postgres: 'iloverandompasswordsbutthiswilldo'
 
 - name: apt-pgdg-client-ruby
   run_list:
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.2", "opensuse-leap-42.1", "fedora-23", "fedora-25" ]
+  - recipe[test::ruby]
+  excludes: <%= rpm_based_platforms + opensuse_platforms %>
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.4"
+      version: '9.4'
       client:
-        packages: [ "postgresql-client-9.4", "libpq-dev" ]
+        packages: [ 'postgresql-client-9.4', 'libpq-dev' ]
 
 - name: yum-pgdg-client-ruby
   run_list:
   - recipe[postgresql]
   - recipe[postgresql::ruby]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-7.11", "debian-8.5", "opensuse-13.2", "opensuse-leap-42.1" ]
+  - recipe[test::ruby]
+  excludes: <%= deb_based_platforms + opensuse_platforms %>
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.4"
+      version: '9.4'
       client:
-        packages: [ "postgresql94", "postgresql94-devel" ]
+        packages: [ 'postgresql94', 'postgresql94-devel' ]
 
 - name: apt-pgdg-server-pg_stat_statements
   run_list:
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "centos-6.8", "centos-7.2", "opensuse-13.1", "opensuse-13.2", "fedora-23", "fedora-25" ]
+  excludes: <%= rpm_based_platforms + opensuse_platforms %>
   attributes:
     postgresql:
       enable_pgdg_apt: true
-      version: "9.4"
+      version: '9.4'
       dir: '/etc/postgresql/9.4/main'
       server:
-        service_name: "postgresql"
-        packages: [ "postgresql-9.4" ]
+        service_name: 'postgresql'
+        packages: [ 'postgresql-9.4' ]
       client:
-        packages: [ "postgresql-client-9.4", "libpq-dev" ]
+        packages: [ 'postgresql-client-9.4', 'libpq-dev' ]
       password:
-        postgres: "iloverandompasswordsbutthiswilldo"
+        postgres: 'iloverandompasswordsbutthiswilldo'
       config:
-        shared_preload_libraries: "pg_stat_statements"
-        ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-        ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+        shared_preload_libraries: 'pg_stat_statements'
+        ssl_cert_file: '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+        ssl_key_file: '/etc/ssl/private/ssl-cert-snakeoil.key'
       contrib:
         extensions:
           - pg_stat_statements
@@ -219,18 +258,18 @@ suites:
   run_list:
   - recipe[postgresql::ruby]
   - recipe[postgresql::contrib]
-  excludes: [ "ubuntu-12.04", "ubuntu-14.04", "ubuntu-16.04", "debian-8.5", "opensuse-13.2", "opensuse-leap-42-1" ]
+  excludes: <%= deb_based_platforms + opensuse_platforms %>
   attributes:
     postgresql:
       enable_pgdg_yum: true
-      version: "9.4"
+      version: '9.4'
       server:
-        packages: [ "postgresql94-server" ]
-        service_name: "postgresql-9.4"
+        packages: [ 'postgresql94-server' ]
+        service_name: 'postgresql-9.4'
       password:
-        postgres: "iloverandompasswordsbutthiswilldo"
+        postgres: 'iloverandompasswordsbutthiswilldo'
       config:
-        shared_preload_libraries: "pg_stat_statements"
+        shared_preload_libraries: 'pg_stat_statements'
       contrib:
         extensions:
           - pg_stat_statements
