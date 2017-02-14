@@ -24,6 +24,7 @@ env:
   - KITCHEN_YAML=.kitchen.yml
   - KITCHEN_LOCAL_YAML=.kitchen.docker.yml
   matrix:
+  - INSTANCE=client-centos-5
   - INSTANCE=client-centos-6
   - INSTANCE=client-centos-7
   - INSTANCE=client-debian-7
