@@ -82,9 +82,6 @@ platforms:
         - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
 
   - name: opensuse-13.2
-    verifier:
-      attributes:
-        pg_version: '9.3'
     driver:
       image: opensuse:13.2
       pid_one_command: /bin/systemd
