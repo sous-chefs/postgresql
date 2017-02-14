@@ -33,7 +33,7 @@ action :create do
     code psql("CREATE EXTENSION IF NOT EXISTS \"#{extension}\"")
     user 'postgres'
     action :run
-    not_if { installed? }
+    not_if { extension_installed? }
   end
 end
 
@@ -42,7 +42,7 @@ action :drop do
     code psql("DROP EXTENSION IF EXISTS \"#{extension}\"")
     user 'postgres'
     action :run
-    only_if { installed? }
+    only_if { extension_installed? }
   end
 end
 
@@ -50,7 +50,7 @@ def psql(query)
   "psql -d #{database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
 end
 
-def installed?
+def extension_installed?
   query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{extension}';"
   !(execute_sql(query, database) =~ /^installed$/).nil?
 end
