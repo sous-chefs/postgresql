@@ -17,9 +17,6 @@ verifier:
 
 platforms:
   - name: debian-7
-    verifier:
-      attributes:
-        pg_version: '9.1'
     driver:
       box: bento/debian-7.11
 
@@ -28,52 +25,31 @@ platforms:
       box: bento/debian-8.5
 
   - name: centos-5
-    verifier:
-      attributes:
-        pg_version: '8.4'
     driver:
       box: bento/centos-5.11
 
   - name: centos-6
-    verifier:
-      attributes:
-        pg_version: '8.4'
     driver:
       box: bento/centos-6.8
 
   - name: centos-7
-    verifier:
-      attributes:
-        pg_version: '9.2'
     driver:
       box: bento/centos-7.2
 
   - name: fedora-25
-    verifier:
-      attributes:
-        pg_version: '9.5'
     driver:
       box: bento/fedora-25
     run_list: yum::dnf_yum_compat
 
   - name: ubuntu-12.04
-    verifier:
-      attributes:
-        pg_version: '9.1'
     driver:
       box: bento/ubuntu-12.04
 
   - name: ubuntu-14.04
-    verifier:
-      attributes:
-        pg_version: '9.3'
     driver:
       box: bento/ubuntu-14.04
 
   - name: ubuntu-16.04
-    verifier:
-      attributes:
-        pg_version: '9.5'
     driver:
       box: bento/ubuntu-16.04
 

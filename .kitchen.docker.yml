@@ -11,9 +11,6 @@ provisioner:
 
 platforms:
   - name: debian-7
-    verifier:
-      attributes:
-        pg_version: '9.1'
     driver:
       image: debian:7
       pid_one_command: /sbin/init
@@ -30,9 +27,6 @@ platforms:
         - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
 
   - name: centos-5
-    verifier:
-      attributes:
-        pg_version: '8.4'
     driver:
       image: centos:5
       platform: rhel
@@ -41,9 +35,6 @@ platforms:
         - RUN yum install -y which initscripts net-tools wget
 
   - name: centos-6
-    verifier:
-      attributes:
-        pg_version: '8.4'
     driver:
       image: centos:6
       platform: rhel
@@ -52,9 +43,6 @@ platforms:
         - RUN yum -y install which initscripts net-tools wget
 
   - name: centos-7
-    verifier:
-      attributes:
-        pg_version: '9.2'
     driver:
       image: centos:7
       platform: rhel
@@ -63,9 +51,6 @@ platforms:
         - RUN yum -y install lsof which systemd-sysv initscripts wget net-tools
 
   - name: fedora-25
-    verifier:
-      attributes:
-        pg_version: '9.5'
     driver:
       image: fedora:25
       pid_one_command: /usr/lib/systemd/systemd
@@ -73,9 +58,6 @@ platforms:
         - RUN dnf -y install yum which systemd-sysv initscripts wget net-tools
 
   - name: ubuntu-12.04
-    verifier:
-      attributes:
-        pg_version: '9.1'
     driver:
       image: ubuntu-upstart:12.04
       pid_one_command: /sbin/init
@@ -84,9 +66,6 @@ platforms:
         - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
 
   - name: ubuntu-14.04
-    verifier:
-      attributes:
-        pg_version: '9.3'
     driver:
       image: ubuntu-upstart:14.04
       pid_one_command: /sbin/init
@@ -95,9 +74,6 @@ platforms:
         - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
 
   - name: ubuntu-16.04
-    verifier:
-      attributes:
-        pg_version: '9.5'
     driver:
       image: ubuntu:16.04
       pid_one_command: /bin/systemd
