@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Cookbook:: postgresql
 # Library:: default
@@ -108,9 +109,8 @@ module Opscode
         return 'ymd'
         elseif (posD < posM)
         return 'dmy'
-      else
-        return 'mdy'
       end
+      'mdy'
     end
 
     #######

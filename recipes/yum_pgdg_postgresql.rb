@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Cookbook:: postgresql
 # Recipe::yum_pgdg_postgresql
@@ -33,7 +34,7 @@ remote_file "#{Chef::Config[:file_cache_path]}/#{pgdg_package}" do
 end
 
 # Install the PGDG repository RPM from the local file
-package (pgdg_package).to_s do
+package pgdg_package.to_s do
   provider Chef::Provider::Package::Rpm
   source "#{Chef::Config[:file_cache_path]}/#{pgdg_package}"
   action :install

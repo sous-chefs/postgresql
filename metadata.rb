@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 name              'postgresql'
 maintainer        'Sous Chefs'
 maintainer_email  'help@sous-chefs.org'
