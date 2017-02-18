@@ -1,6 +1,6 @@
 <%
-rpm_based_platforms = %w(centos-5 centos-6 centos-7 fedora-25)
-deb_based_platforms = %w(ubuntu-12.04 ubuntu-14.04 ubuntu-16.04 debian-7 debian-8)
+rpm_based_platforms = %w(centos-6 centos-7 fedora-25)
+deb_based_platforms = %w(ubuntu-14.04 ubuntu-16.04 debian-7 debian-8)
 opensuse_platforms = %w(opensuse-13.2 opensuse-leap)
 %>
 ---
@@ -35,10 +35,6 @@ platforms:
   - name: fedora-25
     driver:
       box: bento/fedora-25
-
-  - name: ubuntu-12.04
-    driver:
-      box: bento/ubuntu-12.04
 
   - name: ubuntu-14.04
     driver:
