@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
 #
 # Cookbook:: postgresql
 # Library:: default
@@ -246,7 +246,7 @@ module Opscode
 
         resultbuf = [
           'Etc/GMT',
-          (-std_ofs > 0) ? '+' : '',
+          -std_ofs > 0 ? '+' : '',
           (-std_ofs).to_s,
         ].join('')
       end
@@ -288,8 +288,7 @@ module Opscode
       statement = query.is_a?(String) ? query : query.join("\n")
       cmd = shell_out("psql -q --tuples-only --no-align -d #{db_name} -f -",
                       user: 'postgres',
-                      input: statement
-                     )
+                      input: statement)
       # If psql fails, generally the postgresql service is down.
       # Instead of aborting chef with a fatal error, let's just
       # pass these non-zero exitstatus back as empty cmd.stdout.
