@@ -24,7 +24,7 @@ env:
   - KITCHEN_YAML=.kitchen.yml
   - KITCHEN_LOCAL_YAML=.kitchen.docker.yml
   matrix:
-  - INSTANCE=client-centos-5
+    #- INSTANCE=client-centos-5
   - INSTANCE=client-centos-6
   - INSTANCE=client-centos-7
   - INSTANCE=client-debian-7
@@ -35,7 +35,7 @@ env:
   - INSTANCE=client-ubuntu-1204
   - INSTANCE=client-ubuntu-1404
   - INSTANCE=client-ubuntu-1604
-  - INSTANCE=yum-pgdg-client-centos-5
+    #- INSTANCE=yum-pgdg-client-centos-5
   - INSTANCE=yum-pgdg-client-centos-6
   - INSTANCE=yum-pgdg-client-centos-7
   - INSTANCE=yum-pgdg-client-fedora-25
@@ -44,7 +44,7 @@ env:
   - INSTANCE=apt-pgdg-client-ubuntu-1204
   - INSTANCE=apt-pgdg-client-ubuntu-1404
   - INSTANCE=apt-pgdg-client-ubuntu-1604
-  - INSTANCE=yum-pgdg-client-ruby-centos-5
+    #- INSTANCE=yum-pgdg-client-ruby-centos-5
   - INSTANCE=yum-pgdg-client-ruby-centos-6
   - INSTANCE=yum-pgdg-client-ruby-centos-7
   - INSTANCE=yum-pgdg-client-ruby-fedora-25
