@@ -22,7 +22,7 @@ platforms:
 
   - name: debian-8
     driver:
-      box: bento/debian-8.5
+      box: bento/debian-8.6
 
   - name: centos-6
     driver:
@@ -30,7 +30,7 @@ platforms:
 
   - name: centos-7
     driver:
-      box: bento/centos-7.2
+      box: bento/centos-7.3
 
   - name: fedora-25
     driver:
