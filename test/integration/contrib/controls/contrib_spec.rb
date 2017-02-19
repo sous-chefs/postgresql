@@ -2,8 +2,13 @@
 include_controls 'server'
 
 sql = postgres_session('postgres', 'iloverandompasswordsbutthiswilldo')
-pg_version = sql.query('SELECT version();').lines[0].split(' ')[1]
-extension_support = Gem::Version.new(pg_version) >= Gem::Version.new('9.1')
+
+begin
+  pg_version = sql.query('SELECT version();').lines[0].split(' ')[1]
+  extension_support = Gem::Version.new(pg_version) >= Gem::Version.new('9.1')
+rescue
+  extension_support = true
+end
 
 control 'check_installed_extensions' do
   only_if do

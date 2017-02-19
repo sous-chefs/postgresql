@@ -50,6 +50,7 @@ env:
   - INSTANCE=contrib-centos-7
   - INSTANCE=contrib-debian-7
   - INSTANCE=contrib-debian-8
+  - INSTANCE=contrib-fedora-25
   - INSTANCE=contrib-ubuntu-1404
   - INSTANCE=contrib-ubuntu-1604
   - INSTANCE=contrib-opensuse-132
