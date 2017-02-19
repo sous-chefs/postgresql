@@ -1,0 +1,15 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
+    - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+    - /opt/chefdk/embedded/bin/chef --version
+    - /opt/chefdk/embedded/bin/cookstyle --version
+    - /opt/chefdk/embedded/bin/foodcritic --version
+
+test:
+  post:
+    - /opt/chefdk/embedded/bin/kitchen verify client-ubuntu-1404
