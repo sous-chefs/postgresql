@@ -15,7 +15,6 @@ install: echo "skip bundle install"
 branches:
   only:
     - master
-    - kitchen_refactor
 
 services: docker
 

@@ -2,6 +2,17 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v6.1.0 (2017-02-18)
+
+- Fix a method name conflict that caused errors if Chef Sugar was also being used on the run list
+- Revert a previous PR that added support for Postgresql 9.6 as it introduced incorrect configuration values
+- Added Fedora 25 support for pgdg packages
+- Added RHEL 5 support for Postgresql 9.4 pgdg packages
+- Removed testing for RHEL 5 and Ubuntu 12.04 as they are scheduled for EoL in the near future
+- Improvements to Test Kitchen testing to allow more extensive testing in Travis CI
+- Fixed the client recipe on Fedora
+- Added Inspec tests for client installs
+
 ## v6.0.1 (2017-01-04
 
 - Fix systemd unit file template
