@@ -61,5 +61,5 @@ end
 def check_extensions_support
   query = 'SELECT version();'
   version = execute_sql(query, database).split(' ')[1]
-  fail "PostgreSQL version #{version} does not support extensions. Minimmum required version: 9.1" if Gem::Version.new(version) < Gem::Version.new('9.1')
+  raise "PostgreSQL version #{version} does not support extensions. Minimmum required version: 9.1" if Gem::Version.new(version) < Gem::Version.new('9.1')
 end
