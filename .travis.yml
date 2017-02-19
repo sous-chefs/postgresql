@@ -14,8 +14,7 @@ install: echo "skip bundle install"
 
 branches:
   only:
-    - master
-    - kitchen_refactor
+    - /.*/
 
 services: docker
 
@@ -47,6 +46,12 @@ env:
   - INSTANCE=apt-pgdg-client-ruby-debian-8
   - INSTANCE=apt-pgdg-client-ruby-ubuntu-1404
   - INSTANCE=apt-pgdg-client-ruby-ubuntu-1604
+  - INSTANCE=contrib-debian-7
+  - INSTANCE=contrib-debian-8
+  - INSTANCE=contrib-ubuntu-1404
+  - INSTANCE=contrib-ubuntu-1604
+  - INSTANCE=contrib-opensuse-132
+  - INSTANCE=contrib-opensuse-leap
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
