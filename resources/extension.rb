@@ -30,6 +30,7 @@ property :extension, String,
          default: lazy { name.scan(%r{(?<=/)[^/]+\Z}).first }
 
 action :create do
+  check_extensions_support
   bash "CREATE EXTENSION #{name}" do
     code psql("CREATE EXTENSION IF NOT EXISTS \"#{extension}\"")
     user 'postgres'
@@ -39,6 +40,7 @@ action :create do
 end
 
 action :drop do
+  check_extensions_support
   bash "DROP EXTENSION #{name}" do
     code psql("DROP EXTENSION IF EXISTS \"#{extension}\"")
     user 'postgres'
@@ -54,4 +56,10 @@ end
 def extension_installed?
   query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{extension}';"
   !(execute_sql(query, database) =~ /^installed$/).nil?
+end
+
+def check_extensions_support
+  query = 'SELECT version();'
+  version = execute_sql(query, database).split(' ')[1]
+  fail "PostgreSQL version #{version} does not support extensions. Minimmum required version: 9.1" if Gem::Version.new(version) < Gem::Version.new('9.1')
 end
