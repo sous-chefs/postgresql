@@ -10,5 +10,5 @@ end
 sql = postgres_session('postgres', 'iloverandompasswordsbutthiswilldo')
 
 describe sql.query('SELECT * FROM pg_shadow WHERE passwd IS NULL;') do
-    its(:lines) { should eq ['(0 rows)'] }
+  its(:lines) { should eq ['(0 rows)'] }
 end
