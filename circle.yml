@@ -4,6 +4,9 @@ machine:
 
 dependencies:
   pre:
+    - wget -qO - https://downloads.chef.io/packages-chef-io-public.key | sudo apt-key add -
+    - sudo apt-add-repository "deb https://packages.chef.io/current-apt trusty main"
+    - sudo apt-get update; sudo apt-get install chefdk
     - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
     - eval "$(/opt/chefdk/bin/chef shell-init bash)"
     - /opt/chefdk/embedded/bin/chef --version
