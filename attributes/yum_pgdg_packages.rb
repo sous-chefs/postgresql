@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The PostgreSQL RPM Building Project built repository RPMs for easy
 # access to the PGDG yum repositories. Links to RPMs for installation
 # on the supported version/platform combinations are listed at

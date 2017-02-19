@@ -1,4 +1,5 @@
 #!/usr/bin/env rake
+# frozen_string_literal: true
 
 # Style tests. cookstyle (rubocop) and Foodcritic
 namespace :style do

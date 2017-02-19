@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Cookbook:: postgresql
 # Recipe::yum_pgdg_postgresql
@@ -21,16 +22,20 @@
 rpm_platform = node['platform']
 rpm_platform_version = node['platform_version'].to_f.to_i.to_s
 arch = node['kernel']['machine']
+pg_version = node['postgresql']['version']
+pgdg_setup = node['postgresql']['pgdg']['repo_rpm_url'][pg_version][rpm_platform][rpm_platform_version][arch]
+pgdg_package = pgdg_setup['package']
+pgdg_repository = pgdg_setup['url']
 
 # Download the PGDG repository RPM as a local file
-remote_file "#{Chef::Config[:file_cache_path]}/#{node['postgresql']['pgdg']['repo_rpm_url'][node['postgresql']['version']][rpm_platform][rpm_platform_version][arch]['package']}" do
-  source "#{node['postgresql']['pgdg']['repo_rpm_url'][node['postgresql']['version']][rpm_platform][rpm_platform_version][arch]['url']}#{node['postgresql']['pgdg']['repo_rpm_url'][node['postgresql']['version']][rpm_platform][rpm_platform_version][arch]['package']}"
+remote_file "#{Chef::Config[:file_cache_path]}/#{pgdg_package}" do
+  source "#{pgdg_repository}#{pgdg_package}"
   mode '0644'
 end
 
 # Install the PGDG repository RPM from the local file
-package (node['postgresql']['pgdg']['repo_rpm_url'][node['postgresql']['version']][rpm_platform][rpm_platform_version][arch]['package']).to_s do
+package pgdg_package.to_s do
   provider Chef::Provider::Package::Rpm
-  source "#{Chef::Config[:file_cache_path]}/#{node['postgresql']['pgdg']['repo_rpm_url'][node['postgresql']['version']][rpm_platform][rpm_platform_version][arch]['package']}"
+  source "#{Chef::Config[:file_cache_path]}/#{pgdg_package}"
   action :install
 end
