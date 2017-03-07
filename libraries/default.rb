@@ -201,7 +201,7 @@ module Opscode
         # in spite of what the sysadmin had specified in the symlink.
         # (There are many duplicates under tzdir, with the same timezone
         # content appearing as an average of 2-3 different file names.)
-        path = ::File.readlink('/etc/localtime')
+        path = ::File.realdirpath('/etc/localtime')
         bestzonename = path.gsub("#{tzdir}/", '')
       else # /etc/localtime is a file, so scan for it under tzdir
         localtime_content = File.read('/etc/localtime')
