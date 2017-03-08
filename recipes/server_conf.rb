@@ -27,7 +27,7 @@ if node['platform_family'] == 'debian'
 
   if node['postgresql']['version'].to_f < 9.3
     node.normal['postgresql']['config']['unix_socket_directory'] = '/var/run/postgresql'
-  else
+  elsif !node['postgresql']['config'].key?('unix_socket_directories')
     node.normal['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql'
   end
 
