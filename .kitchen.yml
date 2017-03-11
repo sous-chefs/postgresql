@@ -11,19 +11,12 @@ driver:
 
 provisioner:
   name: chef_zero
+  deprecations_as_errors: true
 
 verifier:
   name: inspec
 
 platforms:
-  - name: debian-7
-    driver:
-      box: bento/debian-7.11
-
-  - name: debian-8
-    driver:
-      box: bento/debian-8.6
-
   - name: centos-6
     driver:
       box: bento/centos-6.8
@@ -32,9 +25,21 @@ platforms:
     driver:
       box: bento/centos-7.3
 
+  - name: debian-7
+    driver:
+      box: bento/debian-7.11
+
+  - name: debian-8
+    driver:
+      box: bento/debian-8.6
+
   - name: fedora-25
     driver:
       box: bento/fedora-25
+
+  - name: opensuse-leap
+    driver:
+      box: bento/opensuse-leap-42.1
 
   - name: ubuntu-14.04
     driver:
@@ -43,14 +48,6 @@ platforms:
   - name: ubuntu-16.04
     driver:
       box: bento/ubuntu-16.04
-
-  - name: opensuse-13.2
-    driver:
-      box: bento/opensuse-13.2
-
-  - name: opensuse-leap
-    driver:
-      box: bento/opensuse-leap-42.1
 
 suites:
 - name: client

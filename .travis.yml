@@ -21,14 +21,13 @@ services: docker
 env:
   global:
   - KITCHEN_YAML=.kitchen.yml
-  - KITCHEN_LOCAL_YAML=.kitchen.docker.yml
+  - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
   matrix:
   - INSTANCE=client-centos-6
   - INSTANCE=client-centos-7
   - INSTANCE=client-debian-7
   - INSTANCE=client-debian-8
   - INSTANCE=client-fedora-25
-  - INSTANCE=client-opensuse-132
   - INSTANCE=client-opensuse-leap
   - INSTANCE=client-ubuntu-1404
   - INSTANCE=client-ubuntu-1604
@@ -68,5 +67,5 @@ script: /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
 matrix:
   include:
     - script:
-      - /opt/chefdk/bin/chef exec rake
+      - /opt/chefdk/bin/chef exec delivery local all
       env: UNIT_AND_LINT=1

@@ -43,20 +43,11 @@ rescue LoadError
     resources("package[#{node['postgresql']['pgdg']['repo_rpm_url'][node['postgresql']['version']][rpm_platform][rpm_platform_version][arch]['package']}]").run_action(:install)
 
     ENV['PATH'] = "/usr/pgsql-#{node['postgresql']['version']}/bin:#{ENV['PATH']}"
-
-    package node['postgresql']['client']['packages'] do
-      action :nothing
-    end.run_action(:install)
-
   end
 
   if node['postgresql']['enable_pgdg_apt'] && platform_family?('debian')
     include_recipe 'postgresql::apt_pgdg_postgresql'
     resources('apt_repository[apt.postgresql.org]').run_action(:add)
-
-    package node['postgresql']['client']['packages'] do
-      action :nothing
-    end.run_action(:install)
   end
 
   include_recipe 'postgresql::client'
@@ -67,9 +58,8 @@ rescue LoadError
 
   begin
     chef_gem 'pg' do
-      compile_time true if respond_to?(:compile_time)
-      # allow optional attribute to install specific version of pg gem
-      node['postgresql']['pg_gem']['version'] if node['postgresql']['pg_gem']['version']
+      compile_time true
+      version node['postgresql']['pg_gem']['version'] if node['postgresql']['pg_gem']['version']
     end
   rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
     # Are we an omnibus install?

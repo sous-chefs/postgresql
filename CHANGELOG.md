@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v6.1.1 (2017-03-08)
+
+- Fix pg gem installation on non-omnibus chef runs
+- Resolve resource cloning deprecation warnings in the ruby recipe
+- Fix issues resolving the timezone on CentOS 7 and probably other distros
+- Test with Delivery local instead of Rake
+
 ## v6.1.0 (2017-02-18)
 
 - Fix a method name conflict that caused errors if Chef Sugar was also being used on the run list
