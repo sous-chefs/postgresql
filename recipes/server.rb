@@ -51,9 +51,12 @@ end
 # Include the right "family" recipe for installing the server
 # since they do things slightly differently.
 case node['platform_family']
-when 'rhel', 'fedora'
+when 'rhel'
   node.normal['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
   node.normal['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  include_recipe 'postgresql::server_redhat'
+when 'fedora'
+  node.normal['postgresql']['config']['data_directory'] = node['postgresql']['dir']
   include_recipe 'postgresql::server_redhat'
 when 'debian'
   node.normal['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"

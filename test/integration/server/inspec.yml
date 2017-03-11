@@ -1,0 +1,13 @@
+name: server
+title: PostgreSQL server
+maintainer: Rene Martin Rodriguez
+copyright_email: agarfu@gmail.com
+license: Apache
+summary: Verify the correct installation of the postgresql server
+version: 0.0.1
+supports:
+  - os-family: unix
+  - inspec: '~> 1.0'
+depends:
+    - name: client
+      path: ./test/integration/client

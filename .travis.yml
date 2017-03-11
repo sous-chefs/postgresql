@@ -45,6 +45,14 @@ env:
   - INSTANCE=apt-pgdg-client-ruby-debian-8
   - INSTANCE=apt-pgdg-client-ruby-ubuntu-1404
   - INSTANCE=apt-pgdg-client-ruby-ubuntu-1604
+  - INSTANCE=contrib-centos-6
+  - INSTANCE=contrib-centos-7
+  - INSTANCE=contrib-debian-7
+  - INSTANCE=contrib-debian-8
+  - INSTANCE=contrib-fedora-25
+  - INSTANCE=contrib-ubuntu-1404
+  - INSTANCE=contrib-ubuntu-1604
+  - INSTANCE=contrib-opensuse-leap
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
