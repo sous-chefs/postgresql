@@ -1,7 +1,7 @@
 <%
 rpm_based_platforms = %w(centos-6 centos-7 fedora-25)
 deb_based_platforms = %w(ubuntu-14.04 ubuntu-16.04 debian-7 debian-8)
-opensuse_platforms = %w(opensuse-13.2 opensuse-leap)
+opensuse_platforms = %w(opensuse-leap)
 %>
 ---
 driver:

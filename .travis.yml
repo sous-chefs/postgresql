@@ -52,7 +52,6 @@ env:
   - INSTANCE=contrib-fedora-25
   - INSTANCE=contrib-ubuntu-1404
   - INSTANCE=contrib-ubuntu-1604
-  - INSTANCE=contrib-opensuse-132
   - INSTANCE=contrib-opensuse-leap
 
 before_script:
