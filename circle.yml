@@ -1,0 +1,18 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - wget -qO - https://downloads.chef.io/packages-chef-io-public.key | sudo apt-key add -
+    - sudo apt-add-repository "deb https://packages.chef.io/current-apt trusty main"
+    - sudo apt-get update; sudo apt-get install chefdk
+    - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
+    - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+    - chef --version
+    - cookstyle --version
+    - foodcritic --version
+
+test:
+  post:
+    - /opt/chefdk/embedded/bin/kitchen verify client-ubuntu-1404
