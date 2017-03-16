@@ -18,6 +18,7 @@
 default['postgresql']['enable_pgdg_apt'] = false
 default['postgresql']['enable_pgdg_yum'] = false
 default['postgresql']['use_pgdg_packages'] = false
+default['postgresql']['enable_suse_zypp'] = false
 default['postgresql']['service_action'] = [:enable, :start]
 default['postgresql']['password_action'] = :run
 

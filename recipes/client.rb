@@ -31,6 +31,10 @@ when 'rhel'
   if node['postgresql']['enable_pgdg_yum']
     include_recipe 'postgresql::yum_pgdg_postgresql'
   end
+when 'suse'
+  if node['postgresql']['enable_suse_zypp']
+    include_recipe 'postgresql::zypp_suse_postgresql'
+  end
 end
 
 node['postgresql']['client']['packages'].each do |pkg|

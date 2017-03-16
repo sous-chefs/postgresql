@@ -70,6 +70,16 @@ rescue LoadError
     end
 
   end
+  if node['postgresql']['enable_suse_zypp']
+    include_recipe "postgresql::zypp_suse_postgresql"
+    resources("zypper_repo[server_database_postgresql]").run_action(:add)
+
+    node['postgresql']['client']['packages'].each do |pkg|
+      package pkg do
+        action :nothing
+      end.run_action(:install)
+    end
+  end
 
   include_recipe "postgresql::client"
 
