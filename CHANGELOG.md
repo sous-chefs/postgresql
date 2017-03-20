@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v6.1.2 (2017-xx-xx)
+
+- Disable postgres user password setting by default as the result is stored on the node object
+
+
 ## v6.1.1 (2017-03-08)
 
 - Fix pg gem installation on non-omnibus chef runs
