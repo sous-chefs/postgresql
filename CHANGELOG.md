@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
-## v6.1.2 (2017-xx-xx)
+## Unreleased
 
 - Disable postgres user password setting by default as the result is stored on the node object
 
