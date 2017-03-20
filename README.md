@@ -123,7 +123,7 @@ Install the `pg` gem under Chef's Ruby environment so it can be used in other re
 
 Includes the `server_debian` or `server_redhat` recipe to get the appropriate server packages installed and service managed. Also manages the configuration for the server:
 
-- generates a strong default password (via `openssl`) for `postgres`
+- generates a strong default password (via `openssl`) for `postgres` (off by default)
 - sets the password for postgres
 - manages the `postgresql.conf` file.
 - manages the `pg_hba.conf` file.
@@ -231,7 +231,7 @@ You may set `node['postgresql']['pgdg']['repo_rpm_url']` attributes to pick up r
 
 On systems that need to connect to a PostgreSQL database, add to a run list `recipe[postgresql]` or `recipe[postgresql::client]`.
 
-On systems that should be PostgreSQL servers, use `recipe[postgresql::server]` on a run list. This recipe does set a password for the `postgres` user. If you're using `chef server`, if the attribute `node['postgresql']['password']['postgres']` is not found, the recipe generates a random password and performs a node.save. (TODO: This is broken, as it disables the password.) If you're using `chef-solo`, you'll need to set the attribute `node['postgresql']['password']['postgres']` in your node's `json_attribs` file or in a role.
+On systems that should be PostgreSQL servers, use `recipe[postgresql::server]` on a run list. This recipe can set a password for the `postgres` user by doesn't by default as it's stored on the node object and this may be undesirable. If you're using `chef server`, if the attribute `node['postgresql']['password']['postgres']` is not found, the recipe generates a random password and performs a node.save. (TODO: This is broken, as it disables the password.) If you're using `chef-solo`, you'll need to set the attribute `node['postgresql']['password']['postgres']` in your node's `json_attribs` file or in a role.
 
 On Debian family systems, SSL will be enabled, as the packages on Debian/Ubuntu also generate the SSL certificates. If you use another platform and wish to use SSL in postgresql, then generate your SSL certificates and distribute them in your own cookbook, and set the `node['postgresql']['config']['ssl']` attribute to true in your role/cookboook/node.
 
