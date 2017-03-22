@@ -13,6 +13,7 @@ recipe            'postgresql::default', 'Includes postgresql::client'
 recipe            'postgresql::ruby', 'Installs pg gem for Ruby bindings'
 recipe            'postgresql::client', 'Installs postgresql client package(s)'
 recipe            'postgresql::server', 'Installs postgresql server packages, templates'
+recipe            'postgresql::setup_users', 'Operates with DB users'
 
 supports 'ubuntu', '>= 12.04'
 supports 'debian', '>= 7.0'
