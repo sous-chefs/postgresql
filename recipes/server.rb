@@ -48,36 +48,41 @@ else
   end
 end
 
-# Include the right "family" recipe for installing the server
-# since they do things slightly differently.
-case node['platform_family']
-when 'rhel'
-  node.normal['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-  node.normal['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-  include_recipe 'postgresql::server_redhat'
-when 'fedora'
-  node.normal['postgresql']['config']['data_directory'] = node['postgresql']['dir']
-  include_recipe 'postgresql::server_redhat'
-when 'debian'
-  node.normal['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
-  include_recipe 'postgresql::server_debian'
-when 'suse'
-  node.normal['postgresql']['config']['data_directory'] = node['postgresql']['dir']
-  include_recipe 'postgresql::server_redhat'
+if node['postgresql']['enable_pgdg_yum'] == true
+  include_recipe 'postgresql::server_pgdg'
+else
+  # Include the right "family" recipe for installing the server
+  # since they do things slightly differently.
+  case node['platform_family']
+  when 'rhel'
+    node.normal['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+    node.normal['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+    include_recipe 'postgresql::server_redhat'
+  when 'fedora'
+    node.normal['postgresql']['config']['data_directory'] = node['postgresql']['dir']
+    include_recipe 'postgresql::server_redhat'
+  when 'debian'
+    node.normal['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+    include_recipe 'postgresql::server_debian'
+  when 'suse'
+    node.normal['postgresql']['config']['data_directory'] = node['postgresql']['dir']
+    include_recipe 'postgresql::server_redhat'
+  end
+  # TODO: Need to move this to a resource that can be better handle ssl configs
+  # # Versions prior to 9.2 do not have a config file option to set the SSL
+  # # key and cert path, and instead expect them to be in a specific location.
+
+  link ::File.join(node['postgresql']['config']['data_directory'], 'server.crt') do
+    to node['postgresql']['config']['ssl_cert_file']
+    only_if { node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_cert_file') }
+  end
+
+  link ::File.join(node['postgresql']['config']['data_directory'], 'server.key') do
+    to node['postgresql']['config']['ssl_key_file']
+    only_if { node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_key_file') }
+  end
 end
 
-# Versions prior to 9.2 do not have a config file option to set the SSL
-# key and cert path, and instead expect them to be in a specific location.
-
-link ::File.join(node['postgresql']['config']['data_directory'], 'server.crt') do
-  to node['postgresql']['config']['ssl_cert_file']
-  only_if { node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_cert_file') }
-end
-
-link ::File.join(node['postgresql']['config']['data_directory'], 'server.key') do
-  to node['postgresql']['config']['ssl_key_file']
-  only_if { node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_key_file') }
-end
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
 # (1) Passing the "ALTER ROLE ..." through the psql command only works
