@@ -105,6 +105,27 @@ local   all             all                                     ident
 
 (By the way, the template uses `peer` instead of `ident` for PostgreSQL-9.1 and above, which has the same effect.)
 
+## Custom resources
+
+### postgresql_config
+
+Used to manage various postgresql configuration files
+
+#### properties
+
+### postgresql_pgdg_server_install
+
+Installs postgresql server using pgdg packages
+
+#### properties
+
+* `:version`, String, required: true - postgresql version to install
+* `:packages`, Array, required: true - list of packages to install
+* `:data_directory`, [String, nil], default: nil - postgresql data directory (example: `/var/lib/pgsql/9.4/data`)
+* `:setup_script`, [String, nil], default: nil - setup script used to initialize database (example: `postgresql94-setup`)
+* `:ssl_cert_file`, String, default: ''
+* `:ssl_key_file`, String, default: ''
+
 ## Recipes
 
 ### default
