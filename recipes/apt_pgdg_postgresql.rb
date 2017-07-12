@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 apt_repository 'apt.postgresql.org' do
-  uri 'http://apt.postgresql.org/pub/repos/apt'
+  uri node['postgresql']['pgdg']['repo_apt_url']
   distribution "#{node['postgresql']['pgdg']['release_apt_codename']}-pgdg"
   components ['main', node['postgresql']['version']]
-  key 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
+  key node['postgresql']['pgdg']['repo_apt_key']
   action :add
 end
