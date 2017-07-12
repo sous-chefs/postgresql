@@ -6,16 +6,16 @@ describe 'opensuse::postgresql::server' do
     double('Chef::Application', fatal!: false)
   end
   let(:chef_run) do
-    runner = ChefSpec::ServerRunner.new(
-      platform: 'opensuse', version: '13.1'
+    runner = ChefSpec::SoloRunner.new(
+      platform: 'opensuse', version: '42.2'
     ) do |node|
       node.automatic['memory']['total'] = '2048kB'
       node.automatic['ipaddress'] = '1.1.1.1'
-      node.normal['postgresql']['version'] = '9.2'
-      node.normal['postgresql']['password']['postgres'] = 'password'
-      node.normal['postgresql']['dir'] = '/var/lib/pgsql/data'
-      node.normal['postgresql']['conf_dir'] = '/etc/sysconfig/pgsql'
-      node.normal['postgresql']['initdb_locale'] = 'UTF-8'
+      node.override['postgresql']['version'] = '9.4'
+      node.override['postgresql']['password']['postgres'] = 'password'
+      node.override['postgresql']['dir'] = '/var/lib/pgsql/data'
+      node.override['postgresql']['conf_dir'] = '/etc/sysconfig/pgsql'
+      node.override['postgresql']['initdb_locale'] = 'UTF-8'
     end
     runner.converge('postgresql::server')
   end
@@ -26,12 +26,12 @@ describe 'opensuse::postgresql::server' do
     stub_command('ls /var/lib/pgsql/data/recovery.conf').and_return(false)
   end
 
-  it 'Install postgresql 9.2' do
-    expect(chef_run).to install_package('postgresql92-server')
+  it 'Install postgresql 9.3' do
+    expect(chef_run).to install_package('postgresql94-server')
   end
 
-  it 'Install postgresql 9.2 client and dev packages' do
-    expect(chef_run).to install_package(['postgresql92', 'postgresql92-devel'])
+  it 'Install postgresql 9.3 client and dev packages' do
+    expect(chef_run).to install_package(['postgresql94', 'postgresql94-devel'])
   end
 
   it 'Enable and start service postgresql' do
