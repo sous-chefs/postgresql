@@ -31,8 +31,8 @@ property :extension, String,
 
 action :create do
   check_extensions_support
-  bash "CREATE EXTENSION #{name}" do
-    code psql("CREATE EXTENSION IF NOT EXISTS \"#{extension}\"")
+  bash "CREATE EXTENSION #{new_resource.name}" do
+    code psql("CREATE EXTENSION IF NOT EXISTS \"#{new_resource.extension}\"")
     user 'postgres'
     action :run
     not_if { extension_installed? }
@@ -41,8 +41,8 @@ end
 
 action :drop do
   check_extensions_support
-  bash "DROP EXTENSION #{name}" do
-    code psql("DROP EXTENSION IF EXISTS \"#{extension}\"")
+  bash "DROP EXTENSION #{new_resource.name}" do
+    code psql("DROP EXTENSION IF EXISTS \"#{new_resource.extension}\"")
     user 'postgres'
     action :run
     only_if { extension_installed? }
@@ -50,16 +50,16 @@ action :drop do
 end
 
 def psql(query)
-  "psql -d #{database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
+  "psql -d #{new_resource.database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
 end
 
 def extension_installed?
-  query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{extension}';"
-  !(execute_sql(query, database) =~ /^installed$/).nil?
+  query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
+  !(execute_sql(query, new_resource.database) =~ /^installed$/).nil?
 end
 
 def check_extensions_support
   query = 'SELECT version();'
-  version = execute_sql(query, database).split(' ')[1]
+  version = execute_sql(query, new_resource.database).split(' ')[1]
   raise "PostgreSQL version #{version} does not support extensions. Minimmum required version: 9.1" if Gem::Version.new(version) < Gem::Version.new('9.1')
 end
