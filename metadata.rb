@@ -9,10 +9,6 @@ version           '6.1.1'
 source_url        'https://github.com/sous-chefs/postgresql'
 issues_url        'https://github.com/sous-chefs/postgresql/issues'
 chef_version      '>= 12.1' if respond_to?(:chef_version)
-recipe            'postgresql::default', 'Includes postgresql::client'
-recipe            'postgresql::ruby', 'Installs pg gem for Ruby bindings'
-recipe            'postgresql::client', 'Installs postgresql client package(s)'
-recipe            'postgresql::server', 'Installs postgresql server packages, templates'
 
 supports 'ubuntu', '>= 12.04'
 supports 'debian', '>= 7.0'
