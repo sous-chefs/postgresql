@@ -233,6 +233,9 @@ default['postgresql']['pg_gem']['version'] = nil
 case node['platform_family']
 when 'debian'
   default['postgresql']['pgdg']['release_apt_codename'] = node['lsb']['codename']
+  default['postgresql']['pgdg']['repo_apt_url'] = 'http://apt.postgresql.org/pub/repos/apt'
+  default['postgresql']['pgdg']['repo_apt_key'] = 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
+
 end
 
 default['postgresql']['initdb_locale'] = 'UTF-8'
