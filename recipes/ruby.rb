@@ -59,6 +59,7 @@ rescue LoadError
   begin
     chef_gem 'pg' do
       compile_time true
+      source node['postgresql']['pg_gem']['source'] if node['postgresql']['pg_gem']['source']
       version node['postgresql']['pg_gem']['version'] if node['postgresql']['pg_gem']['version']
     end
   rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
@@ -71,6 +72,7 @@ rescue LoadError
     gem_name = File.basename(gem_dir)
     ext_dir = File.join(gem_dir, 'ext')
     gem_exec = File.join(File.dirname(RbConfig.ruby), 'gem')
+    gem_file_cached = File.join(gem_dir, '..', '..', 'cache', "#{gem_name}.gem")
     new_content = <<-EOS
 require 'rbconfig'
 %w(
@@ -112,6 +114,15 @@ EOS
       action :nothing
     end
     lib_installer.run_action(:run)
+
+    # Make sure the gem file gets loaded into Chef gems cache dir even if the path to this file is 
+    # specified in chef_gem resource
+    gem_in_cache_loader = remote_file gem_file_cached do
+      source "file://#{node['postgresql']['pg_gem']['source']}"
+      only_if { node['postgresql']['pg_gem']['source'] }
+      action :nothing
+    end
+    gem_in_cache_loader.run_action(:create)
 
     spec_installer = execute 'install pg spec' do
       command "#{gem_exec} spec ./cache/#{gem_name}.gem --ruby > ./specifications/#{gem_name}.gemspec"
