@@ -17,7 +17,7 @@ Installs and configures PostgreSQL as a client or a server.
 
 ### Chef
 
-- Chef 12.5+
+- Chef 12.9+
 
 ### Cookbooks
 
@@ -108,6 +108,34 @@ port = 5432
 Note that the `unix_socket_directory` configuration was renamed to `unix_socket_directories` in Postgres 9.3 so make sure to use the `node['postgresql']['unix_socket_directories']` attribute instead of `node['postgresql']['unix_socket_directory']`.
 
 ## Resources
+
+### postgresql_extention
+
+This resource manages postgresql extensions with a given database to ease installation/removal. It uses the name of the resource in the format `database/extension` to determine the database and extention to install.
+
+#### Actions
+
+- `create` - (default) Creates an extension in a given database
+- `drop` - Drops an extension from the database
+
+#### Properties
+
+| Name | Types | Description | Default | Required? |
+|------|-------|-------------|---------|-----------|
+| database | String | Name of the database to install the extention into | Name of resource | yes |
+| extention | String | Name of the extention to install the database | Name of resource | yes |
+
+#### Examples
+
+To install the adminpack extension:
+
+```ruby
+# Add the contrib package in Ubuntu/Debian
+package 'postgresql-contrib-9.6'
+
+# Install adminpack extension
+postgresql_extension 'postgres/adminpack'
+```
 
 ### postgresql_access
 
