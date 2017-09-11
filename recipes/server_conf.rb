@@ -46,10 +46,18 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do
   notifies change_notify, 'service[postgresql]', :immediately
 end
 
-template "#{node['postgresql']['dir']}/pg_hba.conf" do
-  source 'pg_hba.conf.erb'
-  owner 'postgres'
-  group 'postgres'
-  mode '0600'
-  notifies change_notify, 'service[postgresql]', :immediately
+if !node['postgresql']['pg_hba'].empty?
+  Chef::Log.warn 'Configuring access via attributes is **DEPRECATED**. Please use the new postgresql_access resource. See README for migration information'
+  node['postgresql']['pg_hba'].each do |access|
+    # Generate a unique string for the resource to avoid cloning
+    access_name = "#{access[:type]}_#{access[:db]}_#{access[:user]}_#{access[:method]}"
+    postgresql_access access_name do
+      access_type access[:type]
+      access_db access[:db]
+      access_user access[:user]
+      access_addr access[:addr]
+      access_method access[:method]
+      notification change_notify
+    end
+  end
 end
