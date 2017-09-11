@@ -20,7 +20,8 @@
 # database/extension
 
 property :name, String, name_property: true
-property :source, String, required: false, default: 'pg_hba.conf.erb'
+property :source, String, required: true, default: 'pg_hba.conf.erb'
+property :cookbook, String, required: true, default: 'postgresql'
 property :access_type, String, required: true, default: 'local'
 property :access_db, String, required: true, default: 'all'
 property :access_user, String, required: true, default: 'postgres'
@@ -32,6 +33,7 @@ action :grant do
   with_run_context :root do
     edit_resource(:template, "#{node['postgresql']['dir']}/pg_hba.conf") do |new_resource|
       source new_resource.source
+      cookbook new_resource.cookbook
       owner 'postgres'
       group 'postgres'
       mode '0600'

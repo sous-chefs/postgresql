@@ -24,6 +24,34 @@ Installs and configures PostgreSQL as a client or a server.
 - `openssl`
 - `build-essential`
 
+## Deprecation notice for pg_hba.conf
+
+Updating the pg_hba configuration can now be done with the `postgresql_access` resource which is documented below. There is a backward-compatible migration left in the `server_conf` recipe, but it will be removed in the next major release.
+
+For each of the `node['postgresql']['pg_hba']` hashes, you want to make a corresponding postgresql_access resource like the following example:
+
+```ruby
+# What used to be this:
+default['postgresql']['pg_hba'] = {
+  type: 'local',
+  db: 'all',
+  user: 'postgres',
+  addr: nil,
+  method: 'ident'
+}
+
+# Is now this:
+postgresql_access 'local_postgres_superuser' do
+  access_type 'local'
+  access_db 'all'
+  access_user 'postgres'
+  access_addr nil
+  access_method 'ident'
+end
+```
+
+**Note**: The default notification for the new `postgresql_access` resource is now `:reload` which is the recommended method of notifying PostgreSQL of access changes without requiring a full database restart. Before, the access template would defer to the notification method specified by node['postgresql']['server']['config_change_notify']
+
 ## Attributes
 
 The following attributes are set based on the platform, see the `attributes/default.rb` file for default values.
@@ -42,7 +70,7 @@ The following attributes are generated in `recipe[postgresql::server]`.
 
 ## Configuration
 
-The `postgresql.conf` and `pg_hba.conf` files are dynamically generated from attributes. Each key in `node['postgresql']['config']` is a postgresql configuration directive, and will be rendered in the config file. For example, the attribute:
+The `postgresql.conf` file is dynamically generated from attributes. Each key in `node['postgresql']['config']` is a postgresql configuration directive, and will be rendered in the config file. For example, the attribute:
 
 ```ruby
 node['postgresql']['config']['listen_addresses'] = 'localhost'
@@ -103,6 +131,30 @@ local   all             all                                     ident
 ```
 
 (By the way, the template uses `peer` instead of `ident` for PostgreSQL-9.1 and above, which has the same effect.)
+
+## Resources
+
+### postgresql_access
+
+This resource uses the accumulator pattern to build up the `pg_hba.conf` file via chef resources instead of piling on a mountain of chef attributes to make this cookbook more reusable. It directly mirrors the configuration options of the postgres hba file in the resource and by default notifies the server with a reload to avoid a full restart, causing a potential outage of service. To revoke access, simply remove the resource and the access change won't be computed into the final `pg_hba.conf`
+
+#### Actions
+
+- `grant` - (default) Creates an access line inside of `pg_hba.conf`
+
+#### Properties
+
+| Name | Types | Description | Default | Required? |
+|------|-------|-------------|---------|-----------|
+| name | String | Name of the access resource, this is left as a comment inside the pg_hba config | Resource name | yes |
+| source | String | The cookbook template filename if you want to use your own custom template | 'pg_hba.conf.erb' | yes |
+| cookbook | String | The cookbook to look in for the template source | 'postgresql' | yes |
+| `access_type` | String | The type of access, e.g. local or host | 'local' | yes |
+| `access_db` | String | The database to access. Can use 'all' for all databases | 'all' | yes |
+| `access_user` | String | The user accessing the database. Can use 'all' for any user | 'all' | yes |
+| `access_addr` | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil | yes |
+| `access_method` | String | Authentication method to use | 'ident' | yes |
+| `notification` | Symbol | How to notify Postgres of the access change. | `:reload` | yes |
 
 ## Recipes
 
