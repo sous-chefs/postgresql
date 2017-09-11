@@ -22,6 +22,7 @@
 property :name, String, name_property: true
 property :source, String, required: true, default: 'pg_hba.conf.erb'
 property :cookbook, String, required: true, default: 'postgresql'
+property :comment, [String, nil], required: false, default: nil
 property :access_type, String, required: true, default: 'local'
 property :access_db, String, required: true, default: 'all'
 property :access_user, String, required: true, default: 'postgres'
@@ -39,6 +40,7 @@ action :grant do
       mode '0600'
       variables['pg_hba'] ||= {}
       variables['pg_hba'] << {
+        comment: new_resource.comment,
         name: new_resource.name,
         type: new_resource.access_type,
         db: new_resource.access_db,

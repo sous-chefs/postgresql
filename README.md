@@ -107,31 +107,6 @@ port = 5432
 
 Note that the `unix_socket_directory` configuration was renamed to `unix_socket_directories` in Postgres 9.3 so make sure to use the `node['postgresql']['unix_socket_directories']` attribute instead of `node['postgresql']['unix_socket_directory']`.
 
-The `pg_hba.conf` file is dynamically generated from the `node['postgresql']['pg_hba']` attribute. This attribute must be an array of hashes, each hash containing the authorization data. As it is an array, you can append to it in your own recipes. The hash keys in the array must be symbols. Each hash will be written as a line in `pg_hba.conf`. For example, this entry from `node['postgresql']['pg_hba']`:
-
-```
-[{:comment => '# Optional comment',
-:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'md5'}]
-```
-
-Will result in the following line in `pg_hba.conf`:
-
-```
-# Optional comment
-local   all             postgres                                md5
-```
-
-Use `nil` if the CIDR-ADDRESS should be empty (as above). Don't provide a comment if none is desired in the `pg_hba.conf` file.
-
-Note that the following authorization rule is supplied automatically by the cookbook template. The cookbook needs this to execute SQL in the PostgreSQL server without supplying the clear-text password (which isn't known by the cookbook). Therefore, your `node['postgresql']['pg_hba']` attributes don't need to specify this authorization rule:
-
-```
-# "local" is for Unix domain socket connections only
-local   all             all                                     ident
-```
-
-(By the way, the template uses `peer` instead of `ident` for PostgreSQL-9.1 and above, which has the same effect.)
-
 ## Resources
 
 ### postgresql_access
@@ -146,15 +121,44 @@ This resource uses the accumulator pattern to build up the `pg_hba.conf` file vi
 
 | Name | Types | Description | Default | Required? |
 |------|-------|-------------|---------|-----------|
-| name | String | Name of the access resource, this is left as a comment inside the pg_hba config | Resource name | yes |
+| name | String | Name of the access resource, this is left as a comment inside the `pg_hba` config | Resource name | yes |
 | source | String | The cookbook template filename if you want to use your own custom template | 'pg_hba.conf.erb' | yes |
 | cookbook | String | The cookbook to look in for the template source | 'postgresql' | yes |
+| comment | String, nil | A comment to leave above the entry in `pg_hba` | nil | no |
 | `access_type` | String | The type of access, e.g. local or host | 'local' | yes |
 | `access_db` | String | The database to access. Can use 'all' for all databases | 'all' | yes |
 | `access_user` | String | The user accessing the database. Can use 'all' for any user | 'all' | yes |
 | `access_addr` | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil | yes |
 | `access_method` | String | Authentication method to use | 'ident' | yes |
-| `notification` | Symbol | How to notify Postgres of the access change. | `:reload` | yes |
+| notification | Symbol | How to notify Postgres of the access change. | `:reload` | yes |
+
+#### Examples
+
+To grant access to the postgresql user with ident authentication:
+
+```ruby
+postgresql_access 'local_postgres_superuser' do
+  comment 'Local postgres superuser access'
+  access_type 'local'
+  access_db 'all'
+  access_user 'postgres'
+  access_addr nil
+  access_method 'ident'
+end
+```
+
+This generates the following line in the `pg_hba.conf`:
+```
+# Local postgres superuser access
+local   all             postgres                                ident
+```
+
+**Note**: The template by default generates a local access for Unix domain sockets only to support running the SQL execute resources. In Postgres version 9.1 and higher, the method is 'peer' instead of 'ident' which is identical. It looks like this:
+
+```
+# "local" is for Unix domain socket connections only
+local   all             all                                     peer
+```
 
 ## Recipes
 
