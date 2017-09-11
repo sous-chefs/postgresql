@@ -16,9 +16,6 @@
 # limitations under the License.
 #
 
-# name property should take the form:
-# database/extension
-
 property :name, String, name_property: true
 property :source, String, required: true, default: 'pg_hba.conf.erb'
 property :cookbook, String, required: true, default: 'postgresql'
