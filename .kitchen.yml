@@ -17,6 +17,9 @@ verifier:
   name: inspec
 
 platforms:
+  - name: amazonlinux
+    driver_config:
+      box: mvbcoding/awslinux
   - name: centos-6
     driver:
       box: bento/centos-6.8
