@@ -27,20 +27,20 @@ env:
   - INSTANCE=client-centos-7
   - INSTANCE=client-debian-7
   - INSTANCE=client-debian-8
-  - INSTANCE=client-fedora-25
+  - INSTANCE=client-fedora-latest
   - INSTANCE=client-opensuse-leap
   - INSTANCE=client-ubuntu-1404
   - INSTANCE=client-ubuntu-1604
   - INSTANCE=yum-pgdg-client-centos-6
   - INSTANCE=yum-pgdg-client-centos-7
-  - INSTANCE=yum-pgdg-client-fedora-25
+  - INSTANCE=yum-pgdg-client-fedora-latest
   - INSTANCE=apt-pgdg-client-debian-7
   - INSTANCE=apt-pgdg-client-debian-8
   - INSTANCE=apt-pgdg-client-ubuntu-1404
   - INSTANCE=apt-pgdg-client-ubuntu-1604
   - INSTANCE=yum-pgdg-client-ruby-centos-6
   - INSTANCE=yum-pgdg-client-ruby-centos-7
-  - INSTANCE=yum-pgdg-client-ruby-fedora-25
+  - INSTANCE=yum-pgdg-client-ruby-fedora-latest
   - INSTANCE=apt-pgdg-client-ruby-debian-7
   - INSTANCE=apt-pgdg-client-ruby-debian-8
   - INSTANCE=apt-pgdg-client-ruby-ubuntu-1404
@@ -49,22 +49,22 @@ env:
   - INSTANCE=contrib-centos-7
   - INSTANCE=contrib-debian-7
   - INSTANCE=contrib-debian-8
-  - INSTANCE=contrib-fedora-25
+  - INSTANCE=contrib-fedora-latest
   - INSTANCE=contrib-ubuntu-1404
   - INSTANCE=contrib-ubuntu-1604
   - INSTANCE=contrib-opensuse-leap
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
-  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
-  - /opt/chefdk/embedded/bin/chef --version
-  - /opt/chefdk/embedded/bin/cookstyle --version
-  - /opt/chefdk/embedded/bin/foodcritic --version
+  - eval "$(chef shell-init bash)"
+  - chef --version
+  - cookstyle --version
+  - foodcritic --version
 
-script: /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
+script: kitchen verify ${INSTANCE}
 
 matrix:
   include:
     - script:
-      - /opt/chefdk/bin/chef exec delivery local all
+      - chef exec delivery local all
       env: UNIT_AND_LINT=1

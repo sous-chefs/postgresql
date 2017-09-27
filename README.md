@@ -9,11 +9,11 @@ Installs and configures PostgreSQL as a client or a server.
 ### Platforms
 
 - Debian 7+
-- Ubuntu 12.04+
+- Ubuntu 14.04+
 - Red Hat/CentOS/Scientific (6.0+ required) - "EL6-family"
 - Fedora
 - SLES 12+
-- openSUSE 13+ / openSUSE Leap
+- openSUSE Leap
 
 ### Chef
 
