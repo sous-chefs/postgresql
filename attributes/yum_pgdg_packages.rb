@@ -189,6 +189,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
           'url' => 'http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/',
           'package' => 'pgdg-ami201503-95-9.5-3.noarch.rpm',
         },
+      },
       '2014' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.5/redhat/rhel-6-i386/',
@@ -198,6 +199,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
           'url' => 'http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/',
           'package' => 'pgdg-ami201503-95-9.5-3.noarch.rpm',
         },
+      },
       '2013' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.5/redhat/rhel-6-i386/',
@@ -411,6 +413,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/',
           'package' => 'pgdg-ami201503-94-9.4-3.noarch.rpm',
         },
+      },
       '2014' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-i386/',
@@ -420,6 +423,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/',
           'package' => 'pgdg-ami201503-94-9.4-3.noarch.rpm',
         },
+      },
       '2013' => {
         'i386' => {
           'url' => 'http://yum.postgresql.org/9.4/redhat/rhel-6-i386/',
