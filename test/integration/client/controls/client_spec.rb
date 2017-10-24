@@ -6,7 +6,7 @@ if pg_version.nil?
   case os[:family]
   when 'redhat'
     case os[:release]
-    when /(5|6)\.\d+/
+    when /6\.\d+/
       pg_version = '8.4'
 
     when /7\.\d+/
@@ -28,9 +28,6 @@ if pg_version.nil?
       pg_version = '9.4'
 
     # Ubuntu versions
-    when '12.04'
-      pg_version = '9.1'
-
     when '14.04'
       pg_version = '9.3'
 
@@ -40,11 +37,8 @@ if pg_version.nil?
 
   when 'suse'
     case os[:release]
-    when '42.2'
+    when /42\.\d+/
       pg_version = '9.4'
-
-    when '13.2'
-      pg_version = '9.3'
     end
   end
 end

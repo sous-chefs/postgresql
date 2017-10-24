@@ -16,18 +16,11 @@
 # limitations under the License.
 #
 
-include Opscode::PostgresqlHelpers
-
 # name property should take the form:
 # database/extension
 
-property :database, String,
-         required: true,
-         default: lazy { name.scan(%r{\A[^/]+(?=/)}).first }
-
-property :extension, String,
-         required: true,
-         default: lazy { name.scan(%r{(?<=/)[^/]+\Z}).first }
+property :database, String, required: true, default: lazy { name.scan(%r{\A[^/]+(?=/)}).first }
+property :extension, String, required: true, default: lazy { name.scan(%r{(?<=/)[^/]+\Z}).first }
 
 action :create do
   check_extensions_support
@@ -49,17 +42,21 @@ action :drop do
   end
 end
 
-def psql(query)
-  "psql -d #{new_resource.database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
-end
+action_class do
+  include Opscode::PostgresqlHelpers
 
-def extension_installed?
-  query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
-  !(execute_sql(query, new_resource.database) =~ /^installed$/).nil?
-end
+  def psql(query)
+    "psql -d #{new_resource.database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
+  end
 
-def check_extensions_support
-  query = 'SELECT version();'
-  version = execute_sql(query, new_resource.database).split(' ')[1]
-  raise "PostgreSQL version #{version} does not support extensions. Minimmum required version: 9.1" if Gem::Version.new(version) < Gem::Version.new('9.1')
+  def extension_installed?
+    query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
+    !(execute_sql(query, new_resource.database) =~ /^installed$/).nil?
+  end
+
+  def check_extensions_support
+    query = 'SELECT version();'
+    version = execute_sql(query, new_resource.database).split(' ')[1]
+    raise "PostgreSQL version #{version} does not support extensions. Minimmum required version: 9.1" if Gem::Version.new(version) < Gem::Version.new('9.1')
+  end
 end

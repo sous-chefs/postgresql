@@ -38,7 +38,7 @@ if node['platform_family'] == 'debian'
 
 end
 
-template "#{node['postgresql']['dir']}/postgresql.conf" do
+template "#{node['postgresql']['dir']}/postgresql.conf" do # ~FC037
   source 'postgresql.conf.erb'
   owner 'postgres'
   group 'postgres'
