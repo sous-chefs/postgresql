@@ -51,7 +51,7 @@ default['postgresql']['server']['init_package'] =
     end
   when 'fedora'
     'systemd'
-  when 'opensuse', 'opensuseleap'
+  when 'opensuseleap', 'suse'
     'systemd'
   else
     'upstart'
