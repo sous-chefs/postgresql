@@ -34,9 +34,12 @@ platforms:
   - name: ubuntu-16.04
 
 suites:
+- name: repo
+  run_list:
+    - recipe[test::repository]
 - name: client
   run_list:
-  - recipe[test::default]
+    - recipe[test::default]
 
 - name: contrib
   run_list:
