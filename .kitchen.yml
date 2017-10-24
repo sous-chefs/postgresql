@@ -92,6 +92,9 @@ suites:
   - recipe[postgresql::ruby]
   - recipe[postgresql::server]
   excludes: <%= deb_based_platforms + opensuse_platforms %>
+  verifier:
+    inspec_tests:
+    - test/smoke/pgdg_server  
   attributes:
     postgresql:
       enable_pgdg_yum: true
