@@ -17,13 +17,40 @@ Installs and configures PostgreSQL as a client or a server.
 
 ### Chef
 
-- Chef 12.1+
+- Chef 12.9+
 
 ### Cookbooks
 
-- `compat_resource`
 - `openssl`
 - `build-essential`
+
+## Deprecation notice for pg_hba.conf
+
+Updating the pg_hba configuration can now be done with the `postgresql_access` resource which is documented below. There is a backward-compatible migration left in the `server_conf` recipe, but it will be removed in the next major release.
+
+For each of the `node['postgresql']['pg_hba']` hashes, you want to make a corresponding postgresql_access resource like the following example:
+
+```ruby
+# What used to be this:
+default['postgresql']['pg_hba'] = {
+  type: 'local',
+  db: 'all',
+  user: 'postgres',
+  addr: nil,
+  method: 'ident'
+}
+
+# Is now this:
+postgresql_access 'local_postgres_superuser' do
+  access_type 'local'
+  access_db 'all'
+  access_user 'postgres'
+  access_addr nil
+  access_method 'ident'
+end
+```
+
+**Note**: The default notification for the new `postgresql_access` resource is now `:reload` which is the recommended method of notifying PostgreSQL of access changes without requiring a full database restart. Before, the access template would defer to the notification method specified by node['postgresql']['server']['config_change_notify']
 
 ## Attributes
 
@@ -43,7 +70,7 @@ The following attributes are generated in `recipe[postgresql::server]`.
 
 ## Configuration
 
-The `postgresql.conf` and `pg_hba.conf` files are dynamically generated from attributes. Each key in `node['postgresql']['config']` is a postgresql configuration directive, and will be rendered in the config file. For example, the attribute:
+The `postgresql.conf` file is dynamically generated from attributes. Each key in `node['postgresql']['config']` is a postgresql configuration directive, and will be rendered in the config file. For example, the attribute:
 
 ```ruby
 node['postgresql']['config']['listen_addresses'] = 'localhost'
@@ -80,30 +107,86 @@ port = 5432
 
 Note that the `unix_socket_directory` configuration was renamed to `unix_socket_directories` in Postgres 9.3 so make sure to use the `node['postgresql']['unix_socket_directories']` attribute instead of `node['postgresql']['unix_socket_directory']`.
 
-The `pg_hba.conf` file is dynamically generated from the `node['postgresql']['pg_hba']` attribute. This attribute must be an array of hashes, each hash containing the authorization data. As it is an array, you can append to it in your own recipes. The hash keys in the array must be symbols. Each hash will be written as a line in `pg_hba.conf`. For example, this entry from `node['postgresql']['pg_hba']`:
+## Resources
 
+### postgresql_extention
+
+This resource manages postgresql extensions with a given database to ease installation/removal. It uses the name of the resource in the format `database/extension` to determine the database and extention to install.
+
+#### Actions
+
+- `create` - (default) Creates an extension in a given database
+- `drop` - Drops an extension from the database
+
+#### Properties
+
+| Name | Types | Description | Default | Required? |
+|------|-------|-------------|---------|-----------|
+| database | String | Name of the database to install the extention into | Name of resource | yes |
+| extention | String | Name of the extention to install the database | Name of resource | yes |
+
+#### Examples
+
+To install the adminpack extension:
+
+```ruby
+# Add the contrib package in Ubuntu/Debian
+package 'postgresql-contrib-9.6'
+
+# Install adminpack extension
+postgresql_extension 'postgres/adminpack'
 ```
-[{:comment => '# Optional comment',
-:type => 'local', :db => 'all', :user => 'postgres', :addr => nil, :method => 'md5'}]
+
+### postgresql_access
+
+This resource uses the accumulator pattern to build up the `pg_hba.conf` file via chef resources instead of piling on a mountain of chef attributes to make this cookbook more reusable. It directly mirrors the configuration options of the postgres hba file in the resource and by default notifies the server with a reload to avoid a full restart, causing a potential outage of service. To revoke access, simply remove the resource and the access change won't be computed into the final `pg_hba.conf`
+
+#### Actions
+
+- `grant` - (default) Creates an access line inside of `pg_hba.conf`
+
+#### Properties
+
+| Name | Types | Description | Default | Required? |
+|------|-------|-------------|---------|-----------|
+| name | String | Name of the access resource, this is left as a comment inside the `pg_hba` config | Resource name | yes |
+| source | String | The cookbook template filename if you want to use your own custom template | 'pg_hba.conf.erb' | yes |
+| cookbook | String | The cookbook to look in for the template source | 'postgresql' | yes |
+| comment | String, nil | A comment to leave above the entry in `pg_hba` | nil | no |
+| `access_type` | String | The type of access, e.g. local or host | 'local' | yes |
+| `access_db` | String | The database to access. Can use 'all' for all databases | 'all' | yes |
+| `access_user` | String | The user accessing the database. Can use 'all' for any user | 'all' | yes |
+| `access_addr` | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil | yes |
+| `access_method` | String | Authentication method to use | 'ident' | yes |
+| notification | Symbol | How to notify Postgres of the access change. | `:reload` | yes |
+
+#### Examples
+
+To grant access to the postgresql user with ident authentication:
+
+```ruby
+postgresql_access 'local_postgres_superuser' do
+  comment 'Local postgres superuser access'
+  access_type 'local'
+  access_db 'all'
+  access_user 'postgres'
+  access_addr nil
+  access_method 'ident'
+end
 ```
 
-Will result in the following line in `pg_hba.conf`:
-
+This generates the following line in the `pg_hba.conf`:
 ```
-# Optional comment
-local   all             postgres                                md5
+# Local postgres superuser access
+local   all             postgres                                ident
 ```
 
-Use `nil` if the CIDR-ADDRESS should be empty (as above). Don't provide a comment if none is desired in the `pg_hba.conf` file.
-
-Note that the following authorization rule is supplied automatically by the cookbook template. The cookbook needs this to execute SQL in the PostgreSQL server without supplying the clear-text password (which isn't known by the cookbook). Therefore, your `node['postgresql']['pg_hba']` attributes don't need to specify this authorization rule:
+**Note**: The template by default generates a local access for Unix domain sockets only to support running the SQL execute resources. In Postgres version 9.1 and higher, the method is 'peer' instead of 'ident' which is identical. It looks like this:
 
 ```
 # "local" is for Unix domain socket connections only
-local   all             all                                     ident
+local   all             all                                     peer
 ```
-
-(By the way, the template uses `peer` instead of `ident` for PostgreSQL-9.1 and above, which has the same effect.)
 
 ## Recipes
 

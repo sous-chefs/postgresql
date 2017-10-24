@@ -15,11 +15,11 @@
 ###########
 # Other authentication configurations taken from chef node defaults:
 ###########
-<% node['postgresql']['pg_hba'].each do |auth| -%>
+<% @pg_hba.each do |auth| -%>
 
-<%   if auth[:comment] %>
+<%   if auth[:comment] -%>
 # <%= auth[:comment] %>
-<%   end %>
+<%   end -%>
 <%   if auth[:addr] %>
 <%= auth[:type].ljust(7) %> <%= auth[:db].ljust(15) %> <%= auth[:user].ljust(15) %> <%= auth[:addr].ljust(23) %> <%= auth[:method] %>
 <%   else %>
