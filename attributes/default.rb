@@ -65,12 +65,18 @@ when 'debian'
     default['postgresql']['client']['packages'] = ['postgresql-client-9.1', 'libpq-dev']
     default['postgresql']['server']['packages'] = ['postgresql-9.1']
     default['postgresql']['contrib']['packages'] = ['postgresql-contrib-9.1']
-  else # 8+
+  elsif node['platform_version'].to_i == 8
     default['postgresql']['version'] = '9.4'
     default['postgresql']['dir'] = '/etc/postgresql/9.4/main'
     default['postgresql']['client']['packages'] = ['postgresql-client-9.4', 'libpq-dev']
     default['postgresql']['server']['packages'] = ['postgresql-9.4']
     default['postgresql']['contrib']['packages'] = ['postgresql-contrib-9.4']
+  else # 9+
+    default['postgresql']['version'] = '9.6'
+    default['postgresql']['dir'] = '/etc/postgresql/9.6/main'
+    default['postgresql']['client']['packages'] = ['postgresql-client-9.6', 'libpq-dev']
+    default['postgresql']['server']['packages'] = ['postgresql-9.6']
+    default['postgresql']['contrib']['packages'] = ['postgresql-contrib-9.6']
   end
 
   default['postgresql']['server']['service_name'] = 'postgresql'

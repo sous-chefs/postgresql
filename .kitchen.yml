@@ -33,6 +33,10 @@ platforms:
     driver:
       box: bento/debian-8.6
 
+  - name: debian-9
+    driver:
+      box: bento/debian-9.1
+
   - name: fedora-25
     driver:
       box: bento/fedora-25
