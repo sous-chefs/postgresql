@@ -5,7 +5,7 @@ describe 'opensuse::postgresql::server' do
   let(:chef_application) do
     double('Chef::Application', fatal!: false)
   end
-  let(:chef_run) do
+  cached(:chef_run) do
     runner = ChefSpec::SoloRunner.new(
       platform: 'opensuse', version: '42.3'
     ) do |node|
@@ -65,7 +65,7 @@ describe 'opensuse::postgresql::server' do
     end
 
     it 'Don\'t launch Cluster Creation' do
-      expect(chef_run).to_not run_execute('Set locale and Create cluster')
+      expect(chef_run).to_not run_execute('Set locale and create cluster')
     end
   end
 end
