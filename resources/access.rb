@@ -28,7 +28,7 @@ property :access_method, String, required: true, default: 'ident'
 property :notification, Symbol, required: true, default: :reload
 
 action :grant do
-  with_run_context :root do
+  with_run_context :root do # ~FC037
     edit_resource(:template, "#{node['postgresql']['dir']}/pg_hba.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
