@@ -209,8 +209,12 @@ default['postgresql']['pg_hba'] = []
 
 default['postgresql']['password'] = {}
 
-# set to install a specific version of the ruby gem pg
-# if attribute is not defined, install will pick the latest available pg gem
+# N.B. if the following attributes are not defined, install will pick the latest available
+# pg gem from the internet
+# - set this to install the ruby gem pg from a specific local file path
+# (useful when you can't get it from the internet)
+default['postgresql']['pg_gem']['source'] = nil
+# - set this to install a specific version of the ruby gem pg
 default['postgresql']['pg_gem']['version'] = nil
 
 case node['platform_family']
