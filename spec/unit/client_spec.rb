@@ -4,19 +4,19 @@ require 'spec_helper'
 describe 'Client installation' do
   platforms = {
     'ubuntu' => {
-      'versions' => ['12.04', '14.04', '16.04'],
+      'versions' => ['14.04', '16.04'],
     },
     'centos' => {
-      'versions' => ['6.8', '7.2.1511'],
+      'versions' => ['6.9', '7.3.1608'],
     },
     'redhat' => {
-      'versions' => ['6.6', '7.2'],
+      'versions' => ['6.9', '7.3'],
     },
     'debian' => {
-      'versions' => ['7.11', '8.6'],
+      'versions' => ['7.11', '8.9'],
     },
     'opensuse' => {
-      'versions' => ['13.2', '42.1'],
+      'versions' => ['42.3'],
     },
   }
 
