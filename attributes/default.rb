@@ -30,7 +30,7 @@ default['postgresql']['database_name'] = 'template1'
 default['postgresql']['server']['init_package'] =
   case node['platform']
   when 'debian'
-    if node['platform_version'].to_f < 7.0
+    if node['platform_version'].to_i <= 7
       'sysv'
     else
       'systemd'
