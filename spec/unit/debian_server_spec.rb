@@ -6,7 +6,7 @@ describe 'debian::postgresql::server' do
     double('Chef::Application', fatal!: false)
   end
   let(:chef_run) do
-    runner = ChefSpec::ServerRunner.new(
+    runner = ChefSpec::SoloRunner.new(
       platform: 'debian', version: '7.11'
     ) do |node|
       node.automatic['memory']['total'] = '2048kB'

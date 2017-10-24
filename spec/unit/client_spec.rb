@@ -24,7 +24,7 @@ describe 'Client installation' do
     config['versions'].each do |version|
       context "on #{platform} #{version}" do
         let(:chef_run) do
-          ChefSpec::ServerRunner.new(
+          ChefSpec::SoloRunner.new(
             platform: platform.to_s,
             version: version.to_s
           ) do |node|
