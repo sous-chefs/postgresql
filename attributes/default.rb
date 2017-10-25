@@ -30,7 +30,7 @@ default['postgresql']['database_name'] = 'template1'
 default['postgresql']['server']['init_package'] =
   case node['platform']
   when 'debian'
-    if node['platform_version'].to_f < 7.0
+    if node['platform_version'].to_i <= 7
       'sysv'
     else
       'systemd'
@@ -51,7 +51,7 @@ default['postgresql']['server']['init_package'] =
     end
   when 'fedora'
     'systemd'
-  when 'opensuse', 'opensuseleap'
+  when 'opensuseleap', 'suse'
     'systemd'
   else
     'upstart'
@@ -82,15 +82,7 @@ when 'debian'
   default['postgresql']['server']['service_name'] = 'postgresql'
 
 when 'ubuntu'
-
-  if node['platform_version'].to_f <= 13.10
-    default['postgresql']['version'] = '9.1'
-    default['postgresql']['dir'] = '/etc/postgresql/9.1/main'
-    default['postgresql']['server']['service_name'] = 'postgresql'
-    default['postgresql']['client']['packages'] = ['postgresql-client-9.1', 'libpq-dev']
-    default['postgresql']['server']['packages'] = ['postgresql-9.1']
-    default['postgresql']['contrib']['packages'] = ['postgresql-contrib-9.1']
-  elsif node['platform_version'].to_f <= 14.04
+  if node['platform_version'].to_f = 14.04
     default['postgresql']['version'] = '9.3'
     default['postgresql']['dir'] = '/etc/postgresql/9.3/main'
     default['postgresql']['server']['service_name'] = 'postgresql'
@@ -114,7 +106,6 @@ when 'ubuntu'
   end
 
 when 'fedora'
-
   default['postgresql']['version'] = '9.5'
   default['postgresql']['setup_script'] = 'postgresql-setup'
   default['postgresql']['dir'] = '/var/lib/pgsql/data'
@@ -165,30 +156,14 @@ when 'redhat', 'centos', 'scientific', 'oracle'
     default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
   end
 
-when 'opensuse', 'opensuseleap'
-
+when 'opensuseleap'
   default['postgresql']['dir'] = '/var/lib/pgsql/data'
   default['postgresql']['uid'] = '26'
   default['postgresql']['gid'] = '26'
-
-  case node['platform_version'].to_f
-  when 13.1
-    default['postgresql']['version'] = '9.2'
-    default['postgresql']['client']['packages'] = ['postgresql92', 'postgresql92-devel']
-    default['postgresql']['server']['packages'] = ['postgresql92-server']
-    default['postgresql']['contrib']['packages'] = ['postgresql92-contrib']
-  when 13.2
-    default['postgresql']['version'] = '9.3'
-    default['postgresql']['client']['packages'] = ['postgresql93', 'postgresql93-devel']
-    default['postgresql']['server']['packages'] = ['postgresql93-server']
-    default['postgresql']['contrib']['packages'] = ['postgresql93-contrib']
-  else # opensuseleap
-    default['postgresql']['version'] = '9.4'
-    default['postgresql']['client']['packages'] = ['postgresql94', 'postgresql94-devel']
-    default['postgresql']['server']['packages'] = ['postgresql94-server']
-    default['postgresql']['contrib']['packages'] = ['postgresql94-contrib']
-  end
-
+  default['postgresql']['version'] = '9.4'
+  default['postgresql']['client']['packages'] = ['postgresql94', 'postgresql94-devel']
+  default['postgresql']['server']['packages'] = ['postgresql94-server']
+  default['postgresql']['contrib']['packages'] = ['postgresql94-contrib']
   default['postgresql']['server']['service_name'] = 'postgresql'
 
 when 'suse' # sles 12+
