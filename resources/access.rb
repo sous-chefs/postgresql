@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 
-property :name, String, name_property: true
 property :source, String, required: true, default: 'pg_hba.conf.erb'
 property :cookbook, String, required: true, default: 'postgresql'
 property :comment, [String, nil], required: false, default: nil
