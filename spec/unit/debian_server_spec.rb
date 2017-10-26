@@ -5,7 +5,7 @@ describe 'debian::postgresql::server' do
   let(:chef_application) do
     double('Chef::Application', fatal!: false)
   end
-  let(:chef_run) do
+  cached(:chef_run) do
     runner = ChefSpec::ServerRunner.new(
       platform: 'debian', version: '7.11'
     ) do |node|
@@ -38,7 +38,6 @@ describe 'debian::postgresql::server' do
 
   it 'Create configuration files' do
     expect(chef_run).to create_template('/etc/postgresql/9.1/main/postgresql.conf')
-    expect(chef_run).to create_template('/etc/postgresql/9.1/main/pg_hba.conf')
   end
 
   it 'Assign Postgres Password' do
@@ -53,7 +52,7 @@ describe 'debian::postgresql::server' do
   end
 
   it 'Launch Cluster Creation' do
-    expect(chef_run).to run_execute('Set locale and Create cluster')
+    expect(chef_run).to run_execute('Set locale and create cluster')
   end
 
   context 'Directory /etc/postgresql/9.1/main exist' do
@@ -63,7 +62,7 @@ describe 'debian::postgresql::server' do
     end
 
     it 'Don\'t launch Cluster Creation' do
-      expect(chef_run).to_not run_execute('Set locale and Create cluster')
+      expect(chef_run).to_not run_execute('Set locale and create cluster')
     end
   end
 end
