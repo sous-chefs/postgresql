@@ -82,7 +82,7 @@ when 'debian'
   default['postgresql']['server']['service_name'] = 'postgresql'
 
 when 'ubuntu'
-  if node['platform_version'].to_f = 14.04
+  if node['platform_version'].to_f == 14.04
     default['postgresql']['version'] = '9.3'
     default['postgresql']['dir'] = '/etc/postgresql/9.3/main'
     default['postgresql']['server']['service_name'] = 'postgresql'
