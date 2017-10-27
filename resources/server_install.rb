@@ -24,6 +24,7 @@ property :enable_pgdg_updates_testing, [true, false], default: false
 property :enable_pgdg_source_updates_testing, [true, false], default: false
 property :enable_pgdg_updates_testing, [true, false], default: false
 property :enable_pgdg_source_updates_testing, [true, false], default: false
+property :yum_gpg_key_uri, [String, nil], default: nil
 
 action :install do
   postgresql_client_install 'client' do
@@ -38,13 +39,14 @@ action :install do
 
   case node['platform_family']
   when 'rhel'
-    package ["postgresql#{new_resource.version}-server"]
+    ver = new_resource.version.gsub('.','')
+    package ["postgresql#{ver}-server"]
 
     if new_resource.init_db
       case node['platform_version'].to_i
       when 7
         execute 'init_db' do
-          command "/usr/pgsql-#{new_resource.version}/bin/postgresql-#{new_resource.version}-setup initdb"
+          command "/usr/pgsql-#{new_resource.version}/bin/postgresql#{ver}-setup initdb"
         end
       when 6
         execute 'init_db' do

@@ -39,6 +39,7 @@ action :install do
   when 'debian'
     package 'postgresql-client'
   when 'rhel', 'fedora', 'amazon'
-    package "postgresql#{new_resource.version}"
+    ver = new_resource.version.gsub('.','')
+    package "postgresql#{ver}"
   end
 end

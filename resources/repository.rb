@@ -110,6 +110,6 @@ action_class do
 
   # on amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
   def yum_releasever
-    platform?('amazon') ? '6' : "$releasever"
+    platform?('amazon') ? '6' : '$releasever'
   end
 end
