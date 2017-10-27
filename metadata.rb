@@ -10,17 +10,8 @@ source_url        'https://github.com/sous-chefs/postgresql'
 issues_url        'https://github.com/sous-chefs/postgresql/issues'
 chef_version      '>= 12.9' if respond_to?(:chef_version)
 
-supports 'ubuntu', '>= 12.04'
-supports 'debian', '>= 7.0'
-supports 'opensuse', '>= 13.0'
-supports 'suse', '>= 12.0'
-
-%w(fedora opensuseleap amazon).each do |os|
+%w(ubuntu debian fedora opensuseleap suse amazon redhat centos scientific oracle).each do |os|
   supports os
-end
-
-%w(redhat centos scientific oracle).each do |el|
-  supports el, '>= 6.0'
 end
 
 depends 'build-essential', '>= 2.0.0'

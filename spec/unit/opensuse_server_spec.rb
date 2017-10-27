@@ -5,13 +5,13 @@ describe 'opensuse::postgresql::server' do
   let(:chef_application) do
     double('Chef::Application', fatal!: false)
   end
-  let(:chef_run) do
-    runner = ChefSpec::ServerRunner.new(
-      platform: 'opensuse', version: '13.1'
+  cached(:chef_run) do
+    runner = ChefSpec::SoloRunner.new(
+      platform: 'opensuse', version: '42.3'
     ) do |node|
       node.automatic['memory']['total'] = '2048kB'
       node.automatic['ipaddress'] = '1.1.1.1'
-      node.normal['postgresql']['version'] = '9.2'
+      node.normal['postgresql']['version'] = '9.4'
       node.normal['postgresql']['password']['postgres'] = 'password'
       node.normal['postgresql']['dir'] = '/var/lib/pgsql/data'
       node.normal['postgresql']['conf_dir'] = '/etc/sysconfig/pgsql'
@@ -26,12 +26,12 @@ describe 'opensuse::postgresql::server' do
     stub_command('ls /var/lib/pgsql/data/recovery.conf').and_return(false)
   end
 
-  it 'Install postgresql 9.2' do
-    expect(chef_run).to install_package('postgresql92-server')
+  it 'Install postgresql 9.4' do
+    expect(chef_run).to install_package('postgresql94-server')
   end
 
-  it 'Install postgresql 9.2 client and dev packages' do
-    expect(chef_run).to install_package(['postgresql92', 'postgresql92-devel'])
+  it 'Install postgresql 9.4 client and dev packages' do
+    expect(chef_run).to install_package(['postgresql94', 'postgresql94-devel'])
   end
 
   it 'Enable and start service postgresql' do
@@ -41,7 +41,6 @@ describe 'opensuse::postgresql::server' do
 
   it 'Create configuration files' do
     expect(chef_run).to create_template('/var/lib/pgsql/data/postgresql.conf')
-    expect(chef_run).to create_template('/var/lib/pgsql/data/pg_hba.conf')
   end
 
   it 'Assign Postgres Password' do
@@ -66,7 +65,7 @@ describe 'opensuse::postgresql::server' do
     end
 
     it 'Don\'t launch Cluster Creation' do
-      expect(chef_run).to_not run_execute('Set locale and Create cluster')
+      expect(chef_run).to_not run_execute('Set locale and create cluster')
     end
   end
 end
