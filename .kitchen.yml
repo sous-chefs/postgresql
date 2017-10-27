@@ -39,9 +39,9 @@ suites:
 - name: server_install
   run_list:
     - recipe[test::server_install]
-- name: client
+- name: client_install
   run_list:
-    - recipe[test::default]
+    - recipe[test::client_install]
 - name: contrib
   run_list:
   - recipe[test::contrib]
