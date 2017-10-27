@@ -79,7 +79,7 @@ action :add do
     end
 
     apt_repository 'name' do
-      uri          'https://apt.postgresql.org/pub/repos/apt/'
+      uri          'https://download.postgresql.org/pub/repos/apt/'
       components   ['main', new_resource.version.to_s]
       distribution "#{node['lsb']['codename']}-pgdg"
       cache_rebuild true
