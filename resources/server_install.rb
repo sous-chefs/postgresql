@@ -17,7 +17,6 @@
 #
 
 property :version, String, default: '10'
-property :minor_version, String, default: '10-1'
 property :init_db, [true, false], default: true
 property :enable_pgdg, [true, false], default: true
 property :enable_pgdg_source, [true, false], default: false
