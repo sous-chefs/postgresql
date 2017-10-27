@@ -39,7 +39,7 @@ action :install do
 
   case node['platform_family']
   when 'rhel'
-    ver = new_resource.version.gsub('.','')
+    ver = new_resource.version.delete('.')
     package ["postgresql#{ver}-server"]
 
     if new_resource.init_db
