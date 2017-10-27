@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 include_controls 'client'
 
-describe service('postgresql') do
+describe service('postgresql-10') do
   it { should be_installed }
   it { should be_enabled }
   it { should be_running }
