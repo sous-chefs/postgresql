@@ -27,38 +27,38 @@ property :apt_gpg_key_uri, String, default: 'https://download.postgresql.org/pub
 action :add do
   case node['platform_family']
 
-  when 'rhel', 'fedora'
+  when 'rhel', 'fedora', 'amazon'
     remote_file "/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}" do
       source new_resource.yum_gpg_key_uri
     end
 
-    yum_repository "PostgreSQL #{new_resource.version} $releasever - $basearch" do
+    yum_repository "PostgreSQL #{new_resource.version}" do
       repositoryid "pgdg#{new_resource.version}"
-      baseurl     "https://download.postgresql.org/pub/repos/yum/#{new_resource.version}/#{yum_repo_platform}/#{node['platform_family']}-$releasever-$basearch"
+      baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum')
       enabled     new_resource.enable_pgdg
       gpgcheck    true
       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
     end
 
-    yum_repository "PostgreSQL #{new_resource.version} $releasever - $basearch - source " do
+    yum_repository "PostgreSQL #{new_resource.version} - source " do
       repositoryid "pgdg#{new_resource.version}-source"
-      baseurl     "https://download.postgresql.org/pub/repos/yum/srpms/#{new_resource.version}/#{yum_repo_platform}/#{node['platform_family']}-$releasever-$basearch"
+      baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/srpms')
       enabled     new_resource.enable_pgdg_source
       gpgcheck    true
       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
     end
 
-    yum_repository "PostgreSQL #{new_resource.version} $releasever - $basearch - updates testing" do
+    yum_repository "PostgreSQL #{new_resource.version} - updates testing" do
       repositoryid "pgdg#{new_resource.version}-updates-testing"
-      baseurl     "https://download.postgresql.org/pub/repos/yum/testing/#{new_resource.version}/#{yum_repo_platform}/#{node['platform_family']}-$releasever-$basearch"
+      baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/testing')
       enabled     new_resource.enable_pgdg_updates_testing
       gpgcheck    true
       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
     end
 
-    yum_repository "PostgreSQL #{new_resource.version} $releasever - $basearch - source - updates testing" do
+    yum_repository "PostgreSQL #{new_resource.version} - source - updates testing" do
       repositoryid "pgdg#{new_resource.version}-source-updates-testing"
-      baseurl     "https://download.postgresql.org/pub/repos/yum/srpms/testing/#{new_resource.version}/#{yum_repo_platform}/#{node['platform_family']}-$releasever-$basearch"
+      baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/srpms/testing')
       enabled     new_resource.enable_pgdg_source_updates_testing
       gpgcheck    true
       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
@@ -78,7 +78,7 @@ action :add do
       action :nothing
     end
 
-    apt_repository 'name' do
+    apt_repository 'Postgresql Apt Repository' do
       uri          'https://download.postgresql.org/pub/repos/apt/'
       components   ['main', new_resource.version.to_s]
       distribution "#{node['lsb']['codename']}-pgdg"
@@ -90,8 +90,26 @@ action :add do
 end
 
 action_class do
-  # the postgresql yum repos are for either "redhat" or "fedora". Route things to the right place based on platform_family
-  def yum_repo_platform
+  # given the base URL build the complete URL string for a yum repo
+  def yum_repo_url(base_url)
+    "#{base_url}/#{new_resource.version}/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
+  end
+
+  # the postgresql yum repos URLs are organized into redhat and fedora directories.s
+  # route things to the right place based on platform_family
+  def yum_repo_platform_family_string
     platform_family?('fedora') ? 'fedora' : 'redhat'
+  end
+
+  # build the platform string that makes up the final component of the yum repo URL
+  def yum_repo_platform_string
+    platform = platform?('fedora') ? 'fedora' : 'rhel'
+    release = platform?('amazon') ? '6' : '$releasever'
+    "#{platform}-#{release}-$basearch"
+  end
+
+  # on amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
+  def yum_releasever
+    platform?('amazon') ? '6' : "$releasever"
   end
 end
