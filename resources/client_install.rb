@@ -17,12 +17,26 @@
 #
 
 property :version, String, default: '10'
-property :minor_version, String, default: '10-1'
+property :enable_pgdg, [true,false], default: false
+property :enable_pgdg_source, [true,false], default: false
+property :enable_pgdg_updates_testing, [true,false], default: true
+property :enable_pgdg_source_updates_testing, [true,false], default: false
 
 default_action :install
 
 action :install do
   postgresql_repository 'add' do
-    version "#{new_resource.version}"
+    version new_resource.version
+    enable_pgdg new_resource.enable_pgdg
+    enable_pgdg_source new_resource.enable_pgdg_source
+    enable_pgdg_updates_testing new_resource.enable_pgdg_updates_testing
+    enable_pgdg_source_updates_testing new_resource.enable_pgdg_source_updates_testing
+  end
+
+  case node['platform_family']
+  when 'debian'
+    package 'postgresql-client'
+  when 'rhel'
+    package "postgresql#{new_resource.version}"
   end
 end
