@@ -16,17 +16,21 @@
 # limitations under the License.
 #
 
-property :packages, Array, default: %w(node['postgresql']['server']['packages']) # TODO
-property :service_name, String, default: lazy {  node['postgresql']['server']['service_name'] }
 property :version, String, default: '10'
 property :minor_version, String, default: '10-1'
-property :locale, String, default: lazy { node['postgresql']['initdb_locale'] }
 property :init_db, [true, false], default: true
+property :enable_pgdg, [true,false], default: false
+property :enable_pgdg_source, [true,false], default: false
+property :enable_pgdg_updates_testing, [true,false], default: true
+property :enable_pgdg_source_updates_testing, [true,false], default: false
 
 action :install do
   postgresql_client_install 'client' do
     version "#{new_resource.version}"
-    minor_version "#{new_resource.minor_version}"
+    enable_pgdg new_resource.enable_pgdg
+    enable_pgdg_source new_resource.enable_pgdg_source
+    enable_pgdg_updates_testing new_resource.enable_pgdg_updates_testing
+    enable_pgdg_source_updates_testing new_resource.enable_pgdg_source_updates_testing
   end
 
   case node['platform_family']
@@ -53,7 +57,6 @@ action :install do
   when 'debian'
     package "postgresql-#{new_resource.version}"
   end
-
 
   service "postgresql" do
     service_name node['platform_family'] == 'rhel' ? "postgresql-#{new_resource.version}" : "postgresql"
