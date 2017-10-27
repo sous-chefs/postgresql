@@ -84,5 +84,7 @@ action :add do
       distribution "#{node['lsb']['codename']}-pgdg"
       cache_rebuild true
     end
+  else
+    raise "The platform_family #{node['platform_family']} or #{node['platform']} is not supported by the postgresql_repository resource. If you believe this platform can/should be supported by this resource please file and issue or open a pull request at https://github.com/sous-chefs/postgresql"
   end
 end
