@@ -26,7 +26,7 @@ action :install do
 
   case node['platform_family']
   when 'debian'
-    package 'postgresql-client'
+    package "postgresql-client-#{new_resource.version}"
   when 'rhel', 'fedora', 'amazon'
     ver = new_resource.version.delete('.')
     package "postgresql#{ver}"

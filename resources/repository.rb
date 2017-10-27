@@ -82,7 +82,7 @@ action :add do
       action :nothing
     end
 
-    apt_repository 'Postgresql Apt Repository' do
+    apt_repository 'postgresql_org_repository' do
       uri          'https://download.postgresql.org/pub/repos/apt/'
       components   ['main', new_resource.version.to_s]
       distribution "#{node['lsb']['codename']}-pgdg"

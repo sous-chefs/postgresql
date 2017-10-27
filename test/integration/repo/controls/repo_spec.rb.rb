@@ -21,7 +21,7 @@ when 'redhat'
 
 when 'debian'
 
-  describe apt('http://apt.postgresql.org/pub/repos/apt/') do
+  describe apt('https://download.postgresql.org/pub/repos/apt/') do
     it { should exist }
     it { should be_enabled }
   end
