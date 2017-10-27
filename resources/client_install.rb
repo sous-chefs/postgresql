@@ -17,22 +17,11 @@
 #
 
 property :version, String, default: '9.6'
-property :enable_pgdg, [true, false], default: true
-property :enable_pgdg_source, [true, false], default: false
-property :enable_pgdg_updates_testing, [true, false], default: false
-property :enable_pgdg_source_updates_testing, [true, false], default: false
-property :yum_gpg_key_uri, [String, nil], default: nil
-property :apt_gpg_key_uri, [String, nil], default: nil
+property :auto_setup_repo, [true, false], default: true
 
 action :install do
   postgresql_repository 'Add downloads.postgresql.org repository' do
-    version new_resource.version
-    enable_pgdg new_resource.enable_pgdg
-    enable_pgdg_source new_resource.enable_pgdg_source
-    enable_pgdg_updates_testing new_resource.enable_pgdg_updates_testing
-    enable_pgdg_source_updates_testing new_resource.enable_pgdg_source_updates_testing
-    yum_gpg_key_uri new_resource.yum_gpg_key_uri unless new_resource.yum_gpg_key_uri.nil?
-    apt_gpg_key_uri new_resource.yum_gpg_key_uri unless new_resource.yum_gpg_key_uri.nil?
+    only_if { new_resource.auto_setup_repo }
   end
 
   case node['platform_family']
