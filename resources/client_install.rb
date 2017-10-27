@@ -23,7 +23,7 @@ property :enable_pgdg_updates_testing, [true, false], default: false
 property :enable_pgdg_source_updates_testing, [true, false], default: false
 
 action :install do
-  postgresql_repository 'add' do
+  postgresql_repository 'Add downloads.postgresql.org repository' do
     version new_resource.version
     enable_pgdg new_resource.enable_pgdg
     enable_pgdg_source new_resource.enable_pgdg_source
