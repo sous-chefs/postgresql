@@ -21,7 +21,7 @@ default['postgresql']['enable_pgdg_yum'] = false
 default['postgresql']['use_pgdg_packages'] = false
 
 default['postgresql']['server']['config_change_notify'] = :restart
-default['postgresql']['assign_postgres_password'] = true
+default['postgresql']['assign_postgres_password'] = false
 
 # Establish default database name
 default['postgresql']['database_name'] = 'template1'
