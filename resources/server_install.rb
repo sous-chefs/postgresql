@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-property :version, String, default: '10'
+property :version, String, default: '9.6'
 property :init_db, [true, false], default: true
 property :enable_pgdg, [true, false], default: true
 property :enable_pgdg_source, [true, false], default: false
