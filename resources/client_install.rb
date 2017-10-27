@@ -17,11 +17,11 @@
 #
 
 property :version, String, default: '9.6'
-property :auto_setup_repo, [true, false], default: true
+property :setup_repo, [true, false], default: true
 
 action :install do
   postgresql_repository 'Add downloads.postgresql.org repository' do
-    only_if { new_resource.auto_setup_repo }
+    only_if { new_resource.setup_repo }
   end
 
   case node['platform_family']
