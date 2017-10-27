@@ -46,7 +46,7 @@ template "#{node['postgresql']['dir']}/postgresql.conf" do # ~FC037
   notifies change_notify, 'service[postgresql]', :immediately
 end
 
-if !node['postgresql']['pg_hba'].empty?
+unless node['postgresql']['pg_hba'].empty?
   Chef::Log.warn 'Configuring access via attributes is **DEPRECATED**. Please use the new postgresql_access resource. See README for migration information'
   node['postgresql']['pg_hba'].each do |access|
     # Generate a unique string for the resource to avoid cloning

@@ -19,14 +19,14 @@
 property :version, String, default: '10'
 property :minor_version, String, default: '10-1'
 property :init_db, [true, false], default: true
-property :enable_pgdg, [true,false], default: false
-property :enable_pgdg_source, [true,false], default: false
-property :enable_pgdg_updates_testing, [true,false], default: true
-property :enable_pgdg_source_updates_testing, [true,false], default: false
+property :enable_pgdg, [true, false], default: false
+property :enable_pgdg_source, [true, false], default: false
+property :enable_pgdg_updates_testing, [true, false], default: true
+property :enable_pgdg_source_updates_testing, [true, false], default: false
 
 action :install do
   postgresql_client_install 'client' do
-    version "#{new_resource.version}"
+    version new_resource.version.to_s
     enable_pgdg new_resource.enable_pgdg
     enable_pgdg_source new_resource.enable_pgdg_source
     enable_pgdg_updates_testing new_resource.enable_pgdg_updates_testing
@@ -58,10 +58,9 @@ action :install do
     package "postgresql-#{new_resource.version}"
   end
 
-  service "postgresql" do
-    service_name node['platform_family'] == 'rhel' ? "postgresql-#{new_resource.version}" : "postgresql"
+  service 'postgresql' do
+    service_name node['platform_family'] == 'rhel' ? "postgresql-#{new_resource.version}" : 'postgresql'
     supports restart: true, status: true, reload: true
     action [:enable, :start]
   end
-
 end

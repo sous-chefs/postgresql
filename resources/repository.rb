@@ -17,12 +17,10 @@
 #
 
 property :version, String, default: '10'
-property :enable_pgdg, [true,false], default: false
-property :enable_pgdg_source, [true,false], default: false
-property :enable_pgdg_updates_testing, [true,false], default: true
-property :enable_pgdg_source_updates_testing, [true,false], default: false
-
-default_action :add
+property :enable_pgdg, [true, false], default: false
+property :enable_pgdg_source, [true, false], default: false
+property :enable_pgdg_updates_testing, [true, false], default: true
+property :enable_pgdg_source_updates_testing, [true, false], default: false
 
 action :add do
   case node['platform_family']
@@ -34,39 +32,39 @@ action :add do
 
     yum_repository "PostgreSQL #{new_resource.version} $releasever - $basearch" do
       repositoryid "pgdg#{new_resource.version}"
-       baseurl     "https://download.postgresql.org/pub/repos/yum/#{new_resource.version}/redhat/rhel-$releasever-$basearch"
-       enabled     new_resource.enable_pgdg
-       gpgcheck    true
-       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      baseurl     "https://download.postgresql.org/pub/repos/yum/#{new_resource.version}/redhat/rhel-$releasever-$basearch"
+      enabled     new_resource.enable_pgdg
+      gpgcheck    true
+      gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
     end
 
     yum_repository "PostgreSQL #{new_resource.version} $releasever - $basearch - source " do
       repositoryid "pgdg#{new_resource.version}-source"
-       baseurl     "https://download.postgresql.org/pub/repos/yum/srpms/#{new_resource.version}/redhat/rhel-$releasever-$basearch"
-       enabled     new_resource.enable_pgdg_source
-       gpgcheck    true
-       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      baseurl     "https://download.postgresql.org/pub/repos/yum/srpms/#{new_resource.version}/redhat/rhel-$releasever-$basearch"
+      enabled     new_resource.enable_pgdg_source
+      gpgcheck    true
+      gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
     end
 
     yum_repository "PostgreSQL #{new_resource.version} $releasever - $basearch - updates testing" do
       repositoryid "pgdg#{new_resource.version}-updates-testing"
-       baseurl     "https://download.postgresql.org/pub/repos/yum/testing/#{new_resource.version}/redhat/rhel-$releasever-$basearch"
-       enabled     new_resource.enable_pgdg_updates_testing
-       gpgcheck    true
-       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      baseurl     "https://download.postgresql.org/pub/repos/yum/testing/#{new_resource.version}/redhat/rhel-$releasever-$basearch"
+      enabled     new_resource.enable_pgdg_updates_testing
+      gpgcheck    true
+      gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
     end
 
     yum_repository "PostgreSQL #{new_resource.version} $releasever - $basearch - source - updates testing" do
       repositoryid "pgdg#{new_resource.version}-source-updates-testing"
-       baseurl     "https://download.postgresql.org/pub/repos/yum/srpms/testing/#{new_resource.version}/redhat/rhel-$releasever-$basearch"
-       enabled     new_resource.enable_pgdg_source_updates_testing
-       gpgcheck    true
-       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      baseurl     "https://download.postgresql.org/pub/repos/yum/srpms/testing/#{new_resource.version}/redhat/rhel-$releasever-$basearch"
+      enabled     new_resource.enable_pgdg_source_updates_testing
+      gpgcheck    true
+      gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
     end
 
   when 'debian'
     remote_file "#{Chef::Config[:file_cache_path]}/ACCC4CF8.asc" do
-      source "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+      source 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
       notifies :run, 'bash[apt-key-add]', :immediately
     end
 
@@ -79,10 +77,10 @@ action :add do
     end
 
     apt_repository 'name' do
-     uri          "https://apt.postgresql.org/pub/repos/apt/"
-     components   ["main", "#{new_resource.version}"]
-     distribution "#{node['lsb']['codename']}-pgdg"
-     cache_rebuild true
+      uri          'https://apt.postgresql.org/pub/repos/apt/'
+      components   ['main', new_resource.version.to_s]
+      distribution "#{node['lsb']['codename']}-pgdg"
+      cache_rebuild true
     end
   end
 end
