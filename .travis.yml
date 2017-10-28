@@ -22,36 +22,14 @@ env:
   - KITCHEN_YAML=.kitchen.yml
   - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
   matrix:
-  - INSTANCE=client-centos-6
-  - INSTANCE=client-centos-7
-  - INSTANCE=client-debian-7
-  - INSTANCE=client-debian-8
-  - INSTANCE=client-fedora-latest
-  - INSTANCE=client-opensuse-leap
-  - INSTANCE=client-ubuntu-1404
-  - INSTANCE=client-ubuntu-1604
-  - INSTANCE=yum-pgdg-client-centos-6
-  - INSTANCE=yum-pgdg-client-centos-7
-  - INSTANCE=yum-pgdg-client-fedora-latest
-  - INSTANCE=apt-pgdg-client-debian-7
-  - INSTANCE=apt-pgdg-client-debian-8
-  - INSTANCE=apt-pgdg-client-ubuntu-1404
-  - INSTANCE=apt-pgdg-client-ubuntu-1604
-  - INSTANCE=yum-pgdg-client-ruby-centos-6
-  - INSTANCE=yum-pgdg-client-ruby-centos-7
-  - INSTANCE=yum-pgdg-client-ruby-fedora-latest
-  - INSTANCE=apt-pgdg-client-ruby-debian-7
-  - INSTANCE=apt-pgdg-client-ruby-debian-8
-  - INSTANCE=apt-pgdg-client-ruby-ubuntu-1404
-  - INSTANCE=apt-pgdg-client-ruby-ubuntu-1604
-  - INSTANCE=contrib-centos-6
-  - INSTANCE=contrib-centos-7
-  - INSTANCE=contrib-debian-7
-  - INSTANCE=contrib-debian-8
-  - INSTANCE=contrib-fedora-25
-  - INSTANCE=contrib-ubuntu-1404
-  - INSTANCE=contrib-ubuntu-1604
-  - INSTANCE=contrib-opensuse-leap
+  - INSTANCE=client-install-centos-6
+  - INSTANCE=client-install-centos-7
+  - INSTANCE=client-install-debian-7
+  - INSTANCE=client-install-debian-8
+  - INSTANCE=client-install-debian-9
+  - INSTANCE=client-install-fedora-26
+  - INSTANCE=client-install-ubuntu-1404
+  - INSTANCE=client-install-ubuntu-1604
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )

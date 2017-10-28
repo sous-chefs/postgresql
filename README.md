@@ -8,16 +8,15 @@ Installs and configures PostgreSQL as a client or a server.
 
 ### Platforms
 
+- Amazon Linux
 - Debian 7+
 - Ubuntu 14.04+
 - Red Hat/CentOS/Scientific 6+
 - Fedora
-- SLES 12+
-- openSUSE
 
 ### Chef
 
-- Chef 12.9+
+- Chef 12.14+
 
 ### Cookbooks
 
@@ -120,10 +119,10 @@ This resource manages postgresql extensions with a given database to ease instal
 
 #### Properties
 
-| Name | Types | Description | Default | Required? |
-|------|-------|-------------|---------|-----------|
-| database | String | Name of the database to install the extention into | Name of resource | yes |
-| extention | String | Name of the extention to install the database | Name of resource | yes |
+Name      | Types  | Description                                        | Default          | Required?
+--------- | ------ | -------------------------------------------------- | ---------------- | ---------
+database  | String | Name of the database to install the extention into | Name of resource | yes
+extention | String | Name of the extention to install the database      | Name of resource | yes
 
 #### Examples
 
@@ -147,18 +146,18 @@ This resource uses the accumulator pattern to build up the `pg_hba.conf` file vi
 
 #### Properties
 
-| Name | Types | Description | Default | Required? |
-|------|-------|-------------|---------|-----------|
-| name | String | Name of the access resource, this is left as a comment inside the `pg_hba` config | Resource name | yes |
-| source | String | The cookbook template filename if you want to use your own custom template | 'pg_hba.conf.erb' | yes |
-| cookbook | String | The cookbook to look in for the template source | 'postgresql' | yes |
-| comment | String, nil | A comment to leave above the entry in `pg_hba` | nil | no |
-| `access_type` | String | The type of access, e.g. local or host | 'local' | yes |
-| `access_db` | String | The database to access. Can use 'all' for all databases | 'all' | yes |
-| `access_user` | String | The user accessing the database. Can use 'all' for any user | 'all' | yes |
-| `access_addr` | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil | yes |
-| `access_method` | String | Authentication method to use | 'ident' | yes |
-| notification | Symbol | How to notify Postgres of the access change. | `:reload` | yes |
+Name            | Types       | Description                                                                               | Default           | Required?
+--------------- | ----------- | ----------------------------------------------------------------------------------------- | ----------------- | ---------
+name            | String      | Name of the access resource, this is left as a comment inside the `pg_hba` config         | Resource name     | yes
+source          | String      | The cookbook template filename if you want to use your own custom template                | 'pg_hba.conf.erb' | yes
+cookbook        | String      | The cookbook to look in for the template source                                           | 'postgresql'      | yes
+comment         | String, nil | A comment to leave above the entry in `pg_hba`                                            | nil               | no
+`access_type`   | String      | The type of access, e.g. local or host                                                    | 'local'           | yes
+`access_db`     | String      | The database to access. Can use 'all' for all databases                                   | 'all'             | yes
+`access_user`   | String      | The user accessing the database. Can use 'all' for any user                               | 'all'             | yes
+`access_addr`   | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil               | yes
+`access_method` | String      | Authentication method to use                                                              | 'ident'           | yes
+notification    | Symbol      | How to notify Postgres of the access change.                                              | `:reload`         | yes
 
 #### Examples
 
@@ -176,6 +175,7 @@ end
 ```
 
 This generates the following line in the `pg_hba.conf`:
+
 ```
 # Local postgres superuser access
 local   all             postgres                                ident

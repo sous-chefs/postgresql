@@ -32,8 +32,9 @@ action :add do
       source new_resource.yum_gpg_key_uri
     end
 
-    yum_repository "PostgreSQL #{new_resource.version}" do
+    yum_repository "PostgreSQL #{new_resource.version}" do # ~FC005
       repositoryid "pgdg#{new_resource.version}"
+      description "PostgreSQL.org #{new_resource.version}"
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum')
       enabled     new_resource.enable_pgdg
       gpgcheck    true
@@ -42,6 +43,7 @@ action :add do
 
     yum_repository "PostgreSQL #{new_resource.version} - source " do
       repositoryid "pgdg#{new_resource.version}-source"
+      description "PostgreSQL.org #{new_resource.version} Source"
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/srpms')
       enabled     new_resource.enable_pgdg_source
       gpgcheck    true
@@ -50,6 +52,7 @@ action :add do
 
     yum_repository "PostgreSQL #{new_resource.version} - updates testing" do
       repositoryid "pgdg#{new_resource.version}-updates-testing"
+      description "PostgreSQL.org #{new_resource.version} Updates Testing"
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/testing')
       enabled     new_resource.enable_pgdg_updates_testing
       gpgcheck    true
@@ -58,6 +61,7 @@ action :add do
 
     yum_repository "PostgreSQL #{new_resource.version} - source - updates testing" do
       repositoryid "pgdg#{new_resource.version}-source-updates-testing"
+      description "PostgreSQL.org #{new_resource.version} Source Updates Testing"
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/srpms/testing')
       enabled     new_resource.enable_pgdg_source_updates_testing
       gpgcheck    true
@@ -78,7 +82,7 @@ action :add do
       action :nothing
     end
 
-    apt_repository 'Postgresql Apt Repository' do
+    apt_repository 'postgresql_org_repository' do
       uri          'https://download.postgresql.org/pub/repos/apt/'
       components   ['main', new_resource.version.to_s]
       distribution "#{node['lsb']['codename']}-pgdg"

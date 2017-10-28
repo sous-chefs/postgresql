@@ -26,9 +26,6 @@ platforms:
   - name: debian-8
   - name: debian-9
   - name: fedora-26
-  - name: opensuse-leap
-    driver:
-      box: bento/opensuse-leap-42.2
   - name: ubuntu-14.04
   - name: ubuntu-16.04
 
@@ -39,9 +36,9 @@ suites:
 - name: server_install
   run_list:
     - recipe[test::server_install]
-- name: client
+- name: client_install
   run_list:
-    - recipe[test::default]
+    - recipe[test::client_install]
 - name: contrib
   run_list:
   - recipe[test::contrib]
