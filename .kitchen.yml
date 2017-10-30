@@ -39,6 +39,9 @@ suites:
 - name: client_install
   run_list:
     - recipe[test::client_install]
+- name: pg_gem
+  run_list:
+    - recipe[test::pg_gem]
 - name: contrib
   run_list:
   - recipe[test::contrib]
