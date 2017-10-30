@@ -27,7 +27,7 @@ action :install do
   end.run_action :add
 
   package 'Install dependencies' do
-    case node[:platform_family]
+    case node['platform_family']
     when 'debian'
       package_name [
         'libpq5',
