@@ -1,0 +1,10 @@
+name: pg_gem
+title: PostgreSQL server
+maintainer: Dan Webb
+copyright_email: agarfu@gmail.com
+license: Apache
+summary: Verify the correct installation of the PG Gem
+version: 0.0.1
+supports:
+  - os-family: unix
+  - inspec: '~> 1.0'
