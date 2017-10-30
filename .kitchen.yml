@@ -42,13 +42,6 @@ suites:
 - name: pg_gem
   run_list:
     - recipe[test::pg_gem]
-- name: contrib
-  run_list:
-  - recipe[test::contrib]
-- name: ruby
-  run_list:
-  - recipe[postgresql::ruby]
-  - recipe[test::ruby]
 - name: server
   run_list:
   - recipe[postgresql::ruby]

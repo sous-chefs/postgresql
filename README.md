@@ -83,8 +83,6 @@ listen_addresses = 'localhost'
 
 The attributes file contains default values for Debian and RHEL platform families (per the `node['platform_family']`). These defaults have disparity between the platforms because they were originally extracted from the postgresql.conf files in the previous version of this cookbook, which differed in their default config. The resulting configuration files will be the same as before, but the content will be dynamically rendered from the attributes. The helpful commentary will no longer be present. You should consult the PostgreSQL documentation for specific configuration details.
 
-See **Recipes** `config_initdb` and `config_pgtune` below to auto-generate many postgresql.conf settings.
-
 For values that are "on" or "off", they should be specified as literal `true` or `false`. String values will be used with single quotes. Any configuration option set to the literal `nil` will be skipped entirely. All other values (e.g., numeric literals) will be used as is. So for example:
 
 ```ruby
@@ -198,10 +196,6 @@ Includes the client recipe.
 
 Installs the packages defined in the `node['postgresql']['client']['packages']` attribute.
 
-### ruby
-
-Install the `pg` gem under Chef's Ruby environment so it can be used in other recipes. The build-essential packages and postgresql client packages will be installed during the compile phase, so that the native extensions of `pg` can be compiled.
-
 ### server
 
 Includes the `server_debian` or `server_redhat` recipe to get the appropriate server packages installed and service managed. Also manages the configuration for the server:
@@ -210,105 +204,6 @@ Includes the `server_debian` or `server_redhat` recipe to get the appropriate se
 - sets the password for postgres
 - manages the `postgresql.conf` file.
 - manages the `pg_hba.conf` file.
-
-### config_initdb
-
-Takes locale and timezone settings from the system configuration. This recipe creates `node.default['postgresql']['config']` attributes that conform to the system's locale and timezone. In addition, this recipe creates the same error reporting and logging settings that `initdb` provided: a rotation of 7 days of log files named postgresql-Mon.log, etc.
-
-The default attributes created by this recipe are easy to override with normal attributes because of Chef attribute precedence. For example, suppose a DBA wanted to keep log files indefinitely, rolling over daily or when growing to 10MB. The Chef installation could include the `postgresql::config_initdb` recipe for the locale and timezone settings, but customize the logging settings with these node JSON attributes:
-
-```javascript
-"postgresql": {
-  "config": {
-    "log_rotation_age": "1d",
-    "log_rotation_size": "10MB",
-    "log_filename": "postgresql-%Y-%m-%d_%H%M%S.log"
-  }
-}
-```
-
-Credits: This `postgresql::config_initdb` recipe is based on algorithms in the [source code](http://doxygen.postgresql.org/initdb_8c_source.html) for the PostgreSQL `initdb` utility.
-
-### config_pgtune
-
-Performance tuning. Takes the wimpy default postgresql.conf and expands the database server to be as powerful as the hardware it's being deployed on. This recipe creates a baseline configuration of `node.default['postgresql']['config']` attributes in the right general range for a dedicated Postgresql system. Most installations won't need additional performance tuning.
-
-The only decision you need to make is to choose a `db_type` from the following database workloads. (See the recipe code comments for more detailed descriptions.)
-
-- "dw" -- Data Warehouse
-- "oltp" -- Online Transaction Processing
-- "web" -- Web Application
-- "mixed" -- Mixed DW and OLTP characteristics
-- "desktop" -- Not a dedicated database
-
-This recipe uses a performance model with three input parameters. These node attributes are completely optional, but it is obviously important to choose the `db_type` correctly:
-
-- `node['postgresql']['config_pgtune']['db_type']` -- Specifies database type from the list of five choices above. If not specified, the default is "mixed".
-
-- `node['postgresql']['config_pgtune']['max_connections']` -- Specifies maximum number of connections expected. If not specified, it depends on database type: "web":200, "oltp":300, "dw":20, "mixed":80, "desktop":5
-
-- `node['postgresql']['config_pgtune']['total_memory']` -- Specifies total system memory in kB. (E.g., "49416564kB".) If not specified, it will be taken from Ohai automatic attributes. This could be used to tune a system that isn't a dedicated database.
-
-The default attributes created by this recipe are easy to override with normal attributes because of Chef attribute precedence. For example, if you are running application benchmarks to try different buffer cache sizes, you would experiment with this node JSON attribute:
-
-```javascript
-"postgresql": {
-  "config": {
-    "shared_buffers": "3GB"
-  }
-}
-```
-
-Note that the recipe uses `max_connections` in its computations. If you want to override that setting, you should specify `node['postgresql']['config_pgtune']['max_connections']` instead of `node['postgresql']['config']['max_connections']`.
-
-Credits: This `postgresql::config_pgtune` recipe is based on the [pgtune python script](https://github.com/gregs1104/pgtune) developed by [Greg Smith](http://notemagnet.blogspot.com/2008/11/automating-initial-postgresqlconf.html) and [other pgsql-hackers](http://www.postgresql.org/message-id/491C6CDC.8090506@agliodbs.com).
-
-### contrib
-
-Installs the packages defined in the `node['postgresql']['contrib']['packages']` attribute. The contrib directory of the PostgreSQL distribution includes porting tools, analysis utilities, and plug-in features that database engineers often require. Some (like `pgbench`) are executable. Others (like `pg_buffercache`) would need to be installed into the database.
-
-Also installs any contrib module extensions defined in the `node['postgresql']['contrib']['extensions']` attribute. These will be available in any subsequently created databases in the cluster, because they will be installed into the `template1` database using the `CREATE EXTENSION` command. For example, it is often necessary/helpful for problem troubleshooting and maintenance planning to install the views and functions in these [standard instrumentation extensions] ([http://www.postgresql.org/message-id/flat/4DC32600.6080900@pgexperts.com#4DD3D6C6.5060006@2ndquadrant.com](mailto:http://www.postgresql.org/message-id/flat/4DC32600.6080900@pgexperts.com#4DD3D6C6.5060006@2ndquadrant.com)):
-
-```ruby
-node['postgresql']['contrib']['extensions'] = [
-  "pageinspect",
-  "pg_buffercache",
-  "pg_freespacemap",
-  "pgrowlocks",
-  "pg_stat_statements",
-  "pgstattuple"
-]
-```
-
-Note that the `pg_stat_statements` view only works if `postgresql.conf` loads its shared library, which can be done with this node attribute:
-
-```ruby
-node['postgresql']['config']['shared_preload_libraries'] = 'pg_stat_statements'
-```
-
-If using `shared_preload_libraries` in combination with the `contrib` recipe, make sure that the `contrib` recipe is called before the `server` recipe (to ensure the dependencies are installed and setup in order).
-
-### apt_pgdg_postgresql
-
-Enables the PostgreSQL Global Development Group yum repository maintained by Devrim Gündüz for updated PostgreSQL packages. (The PGDG is the groups that develops PostgreSQL.) Automatically included if the `node['postgresql']['enable_pgdg_apt']` attribute is true. Also set the `node['postgresql']['client']['packages']` and `node['postgresql']['server]['packages']` to the list of packages to use from this repository, and set the `node['postgresql']['version']` attribute to the version to use (e.g., "9.2").
-
-### yum_pgdg_postgresql
-
-Enables the PostgreSQL Global Development Group yum repository maintained by Devrim Gündüz for updated PostgreSQL packages. (The PGDG is the groups that develops PostgreSQL.) Automatically included if the `node['postgresql']['enable_pgdg_yum']` attribute is true. Also use `override_attributes` to set a number of values that will need to have embedded version numbers. For example:
-
-```ruby
-node['postgresql']['enable_pgdg_yum'] = true
-node['postgresql']['version'] = "9.4"
-node['postgresql']['dir'] = "/var/lib/pgsql/9.4/data"
-node['postgresql']['config']['data_directory'] = node['postgresql']['dir']
-node['postgresql']['client']['packages'] = ["postgresql94", "postgresql94-devel"]
-node['postgresql']['server']['packages'] = ["postgresql94-server"]
-node['postgresql']['server']['service_name'] = "postgresql-9.4"
-node['postgresql']['contrib']['packages'] = ["postgresql94-contrib"]
-node['postgresql']['setup_script'] = "postgresql94-setup"
-```
-
-You may set `node['postgresql']['pgdg']['repo_rpm_url']` attributes to pick up recent [PGDG repo packages](http://yum.postgresql.org/repopackages.php).
 
 ## Usage
 
@@ -324,33 +219,9 @@ On server systems, the postgres server is restarted when a configuration file ch
 node['postgresql']['server']['config_change_notify'] = :reload
 ```
 
-## Chef Solo Note
-
-The following node attribute is stored on the Chef Server when using `chef-client`. Because `chef-solo` does not connect to a server or save the node object at all, to have the password persist across `chef-solo` runs, you must specify them in the `json_attribs` file used. For Example:
-
-```
-{
-  "postgresql": {
-    "password": {
-      "postgres": "iloverandompasswordsbutthiswilldo"
-    }
-  },
-  "run_list": ["recipe[postgresql::server]"]
-}
-```
-
-That should actually be the "encrypted password" instead of cleartext, so you should generate it as an md5 hash using the PostgreSQL algorithm.
-
-- You could copy the md5-hashed password from an existing postgres database if you have `postgres` access and want to use the same password:<br>
-  `select * from pg_shadow where usename='postgres';`
-- You can run this from any postgres database session to use a new password:<br>
-  `select 'md5'||md5('iloverandompasswordsbutthiswilldo'||'postgres');`
-- You can run this from a linux commandline:<br>
-  `echo -n 'iloverandompasswordsbutthiswilldo''postgres' | openssl md5 | sed -e 's/.* /md5/'`
-
 ## License
 
-Copyright 2010-2016, Chef Software, Inc.
+Copyright 2010-2017, Chef Software, Inc.
 
 ```text
 Licensed under the Apache License, Version 2.0 (the "License");
