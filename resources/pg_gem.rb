@@ -19,6 +19,7 @@
 property :client_version, String, default: '9.6'
 property :version, [String, nil], default: '0.21.0'
 property :setup_repo, [true, false], default: true
+property :source, [String, nil], default: nil
 
 action :install do
   postgresql_repository 'Add downloads.postgresql.org repository' do
@@ -50,6 +51,7 @@ action :install do
       chef_gem 'pg' do
         compile_time true
         version new_resource.version
+        source new_resource.source.to_s if new_resource.source
       end
     rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
       build_essential 'for debian' do
