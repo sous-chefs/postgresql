@@ -16,20 +16,8 @@
 # limitations under the License.
 #
 
-include_recipe 'postgresql::client'
+postgresql_client_install 'postgresql client'
 
-package node['postgresql']['server']['packages']
+postgresql_server_install 'postgresql server'
 
 include_recipe 'postgresql::server_conf'
-
-service 'postgresql' do
-  service_name node['postgresql']['server']['service_name']
-  supports restart: true, status: true, reload: true
-  action [:enable, :start]
-end
-
-execute 'Set locale and create cluster' do
-  command 'export LC_ALL=C; /usr/bin/pg_createcluster --start ' + node['postgresql']['version'] + ' main'
-  action :run
-  not_if { ::File.directory?('/etc/postgresql/' + node['postgresql']['version'] + '/main') }
-end

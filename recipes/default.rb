@@ -16,4 +16,4 @@
 # limitations under the License.
 #
 
-include_recipe 'postgresql::client'
+postgresql_client_install 'postgresql client'

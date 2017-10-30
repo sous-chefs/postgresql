@@ -19,7 +19,7 @@
 
 include Chef::Mixin::ShellOut
 
-module Opscode
+module Chef
   module PostgresqlHelpers
     #######
     # Function to truncate value to 4 significant bits, render human readable.
