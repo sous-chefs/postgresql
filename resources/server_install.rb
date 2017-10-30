@@ -26,35 +26,43 @@ action :install do
     setup_repo new_resource.setup_repo
   end
 
-  case node['platform_family']
-  when 'rhel'
-    ver = new_resource.version.delete('.')
-    package ["postgresql#{ver}-server"]
+  package package_name
 
-    if new_resource.init_db
-      case node['platform_version'].to_i
-      when 7
-        execute 'init_db' do
-          command "/usr/pgsql-#{new_resource.version}/bin/postgresql#{ver}-setup initdb"
-        end
-      when 6
-        execute 'init_db' do
-          command "service postgresql-#{new_resource.version} initdb"
-        end
-      else
-        log 'InitDB' do
-          message 'InitDB is not supported on this version of operating system.'
-          level :error
-        end
+  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db
+    db_command = rhel_init_db_command(new_resource.version.delete('.'))
+    if db_command
+      execute 'init_db' do
+        command db_command
+      end
+    else # we don't know about this platform version
+      log 'InitDB' do
+        message 'InitDB is not supported on this version of operating system.'
+        level :error
       end
     end
-  when 'debian'
-    package "postgresql-#{new_resource.version}"
   end
 
   service 'postgresql' do
-    service_name node['platform_family'] == 'rhel' ? "postgresql-#{new_resource.version}" : 'postgresql'
+    service_name platform_service_name
     supports restart: true, status: true, reload: true
     action [:enable, :start]
+  end
+end
+
+action_class do
+  def package_name
+    platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
+  end
+
+  def platform_service_name
+    platform_family?('rhel', 'amazon', 'fedora') ? "postgresql-#{new_resource.version}" : 'postgresql'
+  end
+
+  def rhel_init_db_command(ver)
+    if platform_family?('fedora') || (platform_family('rhel') && node['platform_version'].to_i >= 7)
+      "/usr/pgsql-#{new_resource.version}/bin/postgresql#{ver}-setup initdb"
+    elsif platform_family('rhel') && node['platform_version'].to_i == 6
+      "service postgresql-#{new_resource.version} initdb"
+    end
   end
 end
