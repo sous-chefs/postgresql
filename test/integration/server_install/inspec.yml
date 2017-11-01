@@ -10,4 +10,4 @@ supports:
   - inspec: '~> 1.0'
 depends:
     - name: client
-      path: ./test/integration/client
+      path: ./test/integration/client_install
