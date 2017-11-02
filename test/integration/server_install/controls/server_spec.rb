@@ -1,8 +1,5 @@
 # frozen_string_literal: true
-
-svc_name = %w(fedora rhel).include?(os[:family]) ? 'postgresql-95' : 'postgresql'
-
-describe service(svc_name) do
+describe service('postgresql') do
   it { should be_installed }
   it { should be_enabled }
   it { should be_running }
