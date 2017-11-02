@@ -19,8 +19,8 @@
 
 include Chef::Mixin::ShellOut
 
-module Chef
-  module PostgresqlHelpers
+module PostgresqlCookbook
+  module Helpers
     #######
     # Function to truncate value to 4 significant bits, render human readable.
     # Used in recipes/config_initdb.rb to set this attribute:
