@@ -14,6 +14,14 @@ Installs and configures PostgreSQL as a client or a server.
 - Red Hat/CentOS/Scientific 6+
 - Fedora
 
+## PostgreSQL version
+
+We follow the currently supported versions listed on <https://www.postgresql.org/support/versioning/>
+
+The earliest supported version is currently:
+
+- 9.3 (9.3.19)
+
 ### Chef
 
 - Chef 12.14+

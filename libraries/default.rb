@@ -23,7 +23,7 @@ module PostgresqlCookbook
   module Helpers
     #######
     # Function to truncate value to 4 significant bits, render human readable.
-    # Used in recipes/config_initdb.rb to set this attribute:
+    # Used in server_conf resource:
     #
     # The memory settings (shared_buffers, effective_cache_size, work_mem,
     # maintenance_work_mem and wal_buffers) will be rounded down to keep

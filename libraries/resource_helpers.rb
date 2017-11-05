@@ -1,7 +1,8 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
 #
 # Cookbook:: postgresql
-# Recipe:: server
+# Library:: resource_helpers
+# Author:: Dan Webb (<dan.webb@damacus.io)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,5 +17,15 @@
 # limitations under the License.
 #
 
-
-Chef::Log.warn('The postgresql::server_conf recipe has been deprecated and will be removed in the next major release of the cookbook. Please use the postgresql_server_conf resource instead')
+module PostgresqlCookbook
+  module Helpers
+    def data_dir
+      case node['platform_family']
+      when 'rhel', 'fedora', 'amazon'
+        "/var/lib/pgsql/#{new_resource.version}/data"
+      when 'debian', 'ubuntu'
+        "/var/lib/postgresql/#{new_resource.version}/main"
+      end
+    end
+  end
+end

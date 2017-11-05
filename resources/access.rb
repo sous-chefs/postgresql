@@ -17,18 +17,18 @@
 #
 
 property :source, String, required: true, default: 'pg_hba.conf.erb'
-property :cookbook, String, required: true, default: 'postgresql'
-property :comment, [String, nil], required: false, default: nil
+property :cookbook, String, default: 'postgresql'
+property :comment, [String, nil], default: nil
 property :access_type, String, required: true, default: 'local'
 property :access_db, String, required: true, default: 'all'
 property :access_user, String, required: true, default: 'postgres'
-property :access_addr, [String, nil], required: true, default: nil
+property :access_addr, String, required: true
 property :access_method, String, required: true, default: 'ident'
 property :notification, Symbol, required: true, default: :reload
 
 action :grant do
   with_run_context :root do # ~FC037
-    edit_resource(:template, "#{node['postgresql']['dir']}/pg_hba.conf") do |new_resource|
+    edit_resource(:template, "#{postgresql_data_dir}/pg_hba.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
       owner 'postgres'
@@ -50,4 +50,8 @@ action :grant do
       notifies new_resource.notification, 'service[postgresql]', :immediately
     end
   end
+end
+
+action_class do
+	include PostgresqlCookbook::Helpers 
 end
