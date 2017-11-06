@@ -18,7 +18,9 @@
 
 ::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
 
-include_recipe 'postgresql::client'
+postgresql_client_install 'postgresql client'
+
+postgresql_server_install 'postgresql server'
 
 # randomly generate postgres password, unless using solo - see README
 if Chef::Config[:solo]

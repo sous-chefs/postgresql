@@ -2,6 +2,26 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v7.0.0 (tbc)
+
+- Add custom resources for:
+
+  - `postgresql_client_install`
+  - `postgresql_server_install`
+  - `postgresql_repository`
+  - `postgresql_pg_gem`
+
+- Deprecate recipes:
+
+  - `apt_pgdg_postgresql`
+  - `config_initdb`
+  - `config_pgtune`
+  - `contrib`
+  - `ruby`
+  - `yum_pgdg_postgresql`
+
+- Remove deprecated tests
+
 ## v6.1.1 (2017-03-08)
 
 - Fix pg gem installation on non-omnibus chef runs

@@ -43,7 +43,7 @@ action :drop do
 end
 
 action_class do
-  include Opscode::PostgresqlHelpers
+  include PostgresqlCookbook::Helpers
 
   def psql(query)
     "psql -d #{new_resource.database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
