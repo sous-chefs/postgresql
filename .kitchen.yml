@@ -42,11 +42,3 @@ suites:
 - name: pg_gem
   run_list:
     - recipe[test::pg_gem]
-- name: server
-  run_list:
-  - recipe[postgresql::ruby]
-  - recipe[postgresql::server]
-  attributes:
-    postgresql:
-      password:
-        postgres: iloverandompasswordsbutthiswilldo

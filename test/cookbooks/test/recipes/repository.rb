@@ -1,1 +1,3 @@
-postgresql_repository 'install'
+postgresql_repository 'pg repo' do
+  version '9.5'
+end

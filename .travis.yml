@@ -30,6 +30,14 @@ env:
   - INSTANCE=client-install-fedora-26
   - INSTANCE=client-install-ubuntu-1404
   - INSTANCE=client-install-ubuntu-1604
+  - INSTANCE=server-install-centos-6
+  - INSTANCE=server-install-centos-7
+  - INSTANCE=server-install-debian-7
+  - INSTANCE=server-install-debian-8
+  - INSTANCE=server-install-debian-9
+  - INSTANCE=server-install-fedora-26
+  - INSTANCE=server-install-ubuntu-1404
+  - INSTANCE=server-install-ubuntu-1604
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )

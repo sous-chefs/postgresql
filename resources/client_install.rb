@@ -21,6 +21,7 @@ property :setup_repo, [true, false], default: true
 
 action :install do
   postgresql_repository 'Add downloads.postgresql.org repository' do
+    version new_resource.version
     only_if { new_resource.setup_repo }
   end
 
