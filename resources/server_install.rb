@@ -31,27 +31,19 @@ action :install do
     setup_repo new_resource.setup_repo
   end
 
-  case node['platform_family']
-  when 'rhel', 'fedora','amazon'
-    ver = new_resource.version.delete('.')
-    package ["postgresql#{ver}-server"]
+  package server_pkg_name
 
-    if new_resource.init_db && !initialized
+  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db !initialized
+    db_command = rhel_init_db_command(new_resource.version.delete('.'))
+    if db_command
+      execute 'init_db' do
+        command db_command
+      end
+    else # we don't know about this platform version
+      log 'InitDB' do
+        message 'InitDB is not supported on this version of operating system.'
+        level :error
 
-      case node['platform_version'].to_i
-      when 7
-        execute 'init_db' do
-          command "/usr/pgsql-#{new_resource.version}/bin/postgresql#{ver}-setup initdb"
-        end
-      when 6, 2017
-        execute 'init_db' do
-          command "service postgresql-#{new_resource.version} initdb"
-        end
-      else
-        log 'InitDB' do
-          message "InitDB is not supported on this version of operating system. Trying: service postgresql-#{new_resource.version} initdb"
-          level :error
-        end
       end
 
       file "#{data_dir}/initialized.txt" do
@@ -61,17 +53,10 @@ action :install do
 
     end
 
-  when 'debian'
-    package "postgresql-#{new_resource.version}"
   end
 
   service 'postgresql' do
-    case node['platform_family']
-    when 'rhel', 'amazon'
-      service_name "postgresql-#{new_resource.version}"
-    when 'debian'
-      service_name 'postgresql'
-    end
+    service_name platform_service_name
     supports restart: true, status: true, reload: true
     action [:enable, :start]
   end
@@ -82,5 +67,24 @@ action_class do
 
   def initialized
     true if ::File.exist?("#{data_dir}/initialized.txt")
+  end
+
+  # determine the platform specific server package name
+  def server_pkg_name
+    platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
+  end
+
+  # determine the platform specific service name
+  def platform_service_name
+    platform_family?('rhel', 'amazon', 'fedora') ? "postgresql-#{new_resource.version}" : 'postgresql'
+  end
+
+  # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
+  def rhel_init_db_command(ver)
+    if platform_family?('fedora') || (platform_family?('rhel') && node['platform_version'].to_i >= 7)
+      "/usr/pgsql-#{new_resource.version}/bin/postgresql#{ver}-setup initdb"
+    elsif platform_family?('rhel') && node['platform_version'].to_i == 6
+      "service postgresql-#{new_resource.version} initdb"
+    end
   end
 end

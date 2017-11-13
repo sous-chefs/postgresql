@@ -42,6 +42,4 @@ suites:
 - name: pg_gem
   run_list:
     - recipe[test::pg_gem]
-# - name: server_conf
-#   run_list:
-#     - receip[test::server_conf]
+

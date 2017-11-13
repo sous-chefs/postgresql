@@ -3,6 +3,6 @@ describe command('/usr/bin/psql --help') do
 end
 
 describe command('/usr/bin/psql -V') do
-  its('stdout') { should match(/psql \(PostgreSQL\) 9\.6/) }
+  its('stdout') { should match(/psql \(PostgreSQL\) 9\.5/) }
   its('exit_status') { should eq 0 }
 end
