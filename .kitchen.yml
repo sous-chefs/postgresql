@@ -42,3 +42,4 @@ suites:
 - name: pg_gem
   run_list:
     - recipe[test::pg_gem]
+

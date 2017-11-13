@@ -20,6 +20,11 @@ property :version, String, default: '9.6'
 property :init_db, [true, false], default: true
 property :setup_repo, [true, false], default: true
 
+property :hba_file, String, default: "/etc/postgresql/#{version}/main/pg_hba.conf"
+property :ident_file, String, default: "/etc/postgresql/#{version}/main/pg_ident.conf"
+property :external_pid_file, String, default: "/var/run/postgresql/#{version}-main.pid"
+
+
 action :install do
   postgresql_client_install 'Install PostgreSQL Client' do
     version new_resource.version
@@ -28,7 +33,7 @@ action :install do
 
   package server_pkg_name
 
-  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db
+  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db !initialized
     db_command = rhel_init_db_command(new_resource.version.delete('.'))
     if db_command
       execute 'init_db' do
@@ -38,8 +43,16 @@ action :install do
       log 'InitDB' do
         message 'InitDB is not supported on this version of operating system.'
         level :error
+
       end
+
+      file "#{data_dir}/initialized.txt" do
+        content 'Database initialized'
+        mode '0744'
+      end
+
     end
+
   end
 
   service 'postgresql' do
@@ -50,6 +63,12 @@ action :install do
 end
 
 action_class do
+  include 'PostgresqlCookbook::Helpers'
+
+  def initialized
+    true if ::File.exist?("#{data_dir}/initialized.txt")
+  end
+
   # determine the platform specific server package name
   def server_pkg_name
     platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
