@@ -152,7 +152,7 @@ when 'redhat', 'centos', 'scientific', 'oracle'
   end
 
   if node['platform_version'].to_f >= 7.0
-    default['postgresql']['version'] = '9.2'
+    default['postgresql']['version'] = '10'
     default['postgresql']['client']['packages'] = ['postgresql-devel']
     default['postgresql']['server']['packages'] = ['postgresql-server']
     default['postgresql']['contrib']['packages'] = ['postgresql-contrib']
