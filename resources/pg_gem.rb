@@ -62,7 +62,7 @@ action :install do
     compile_time true
   end
 
-  if ruby_version < 2.0
+  raise if ruby_version < 2.0
     Chef::Log.fatal("pg gem requires a system Ruby installation of 2.0 or higher. \n Please install a global Ruby")
   end
 
@@ -75,7 +75,6 @@ action :install do
     timeout new_resource.timeout if new_resource.timeout
     version new_resource.version if new_resource.version
     action :install
-    not_if { ruby_version < 2.0 }
   end
 end
 
