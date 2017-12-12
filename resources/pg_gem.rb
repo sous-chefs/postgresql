@@ -62,9 +62,7 @@ action :install do
     compile_time true
   end
 
-  raise if ruby_version < 2.0
-    Chef::Log.fatal("pg gem requires a system Ruby installation of 2.0 or higher. \n Please install a global Ruby")
-  end
+  raise ArgumentError, "pg gem requires a system Ruby installation of 2.0 or higher." if uby_version < 2.0
 
   gem_package 'pg' do
     clear_sources new_resource.clear_sources if new_resource.clear_sources
