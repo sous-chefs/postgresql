@@ -1,4 +1,5 @@
-# frozen_string_literal: false
+# frozen_string_literal: true
+# encoding: utf-8
 #
 # Cookbook:: postgresql
 # Resource:: pg
@@ -20,14 +21,24 @@ property :client_version, String, default: '9.6'
 property :version, [String, nil], default: '0.21.0'
 property :setup_repo, [true, false], default: true
 property :source, [String, nil], default: nil
+# gem options
+property :clear_sources, [true, false]
+property :include_default_source, [true, false]
+property :gem_binary, String
+property :options, [String, Hash]
+property :source, [String, Array]
+property :timeout, Integer, default: 300
+property :version, String
+property :ruby_binary, String
 
 action :install do
+  # Needed for the client
   postgresql_repository 'Add downloads.postgresql.org repository' do
     only_if { new_resource.setup_repo }
     action :nothing
   end.run_action :add
 
-  package 'Install dependencies' do
+  package 'Install gem dependencies' do
     case node['platform_family']
     when 'debian'
       package_name [
@@ -47,76 +58,40 @@ action :install do
     action :nothing
   end.run_action :install
 
-  begin
-      chef_gem 'pg' do
-        compile_time true
-        version new_resource.version
-        source new_resource.source.to_s if new_resource.source
-      end
-    rescue Gem::Installer::ExtensionBuildError, Mixlib::ShellOut::ShellCommandFailed => e
-      build_essential 'for debian' do
-        compile_time true
-      end
+  build_essential 'essentially essential' do
+    compile_time true
+  end
 
-      # Are we an omnibus install?
-      raise if RbConfig.ruby.scan(/(chef|opscode)/).empty?
-      # Still here, must be omnibus. Lets make this thing install!
-      Chef::Log.warn 'Failed to properly build pg gem. Forcing properly linking and retrying (omnibus fix)'
-      gem_dir = e.message.scan(/will remain installed in ([^ ]+)/).flatten.first
-      raise unless gem_dir
-      gem_name = ::File.basename(gem_dir)
-      ext_dir = ::File.join(gem_dir, 'ext')
-      gem_exec = ::File.join(::File.dirname(RbConfig.ruby), 'gem')
-      new_content = <<-EOS
-require 'rbconfig'
-%w(
-configure_args
-LIBRUBYARG_SHARED
-LIBRUBYARG_STATIC
-LIBRUBYARG
-LDFLAGS
-).each do |key|
-  RbConfig::CONFIG[key].gsub!(/-Wl[^ ]+( ?\\/[^ ]+)?/, '')
-  RbConfig::MAKEFILE_CONFIG[key].gsub!(/-Wl[^ ]+( ?\\/[^ ]+)?/, '')
+  if ruby_version < 2.0
+    Chef::Log.fatal("pg gem requires a system Ruby installation of 2.0 or higher. \n Please install a global Ruby")
+  end
+
+  gem_package 'pg' do
+    clear_sources new_resource.clear_sources if new_resource.clear_sources
+    include_default_source new_resource.include_default_source if new_resource.include_default_source
+    gem_binary new_resource.gem_binary if new_resource.gem_binary
+    options new_resource.options if new_resource.options
+    source new_resource.source if new_resource.source
+    timeout new_resource.timeout if new_resource.timeout
+    version new_resource.version if new_resource.version
+    action :install
+    not_if { ruby_version < 2.0 }
+  end
+
 end
-RbConfig::CONFIG['RPATHFLAG'] = ''
-RbConfig::MAKEFILE_CONFIG['RPATHFLAG'] = ''
-EOS
-      new_content << ::File.read(extconf_path = ::File.join(ext_dir, 'extconf.rb'))
-      ::File.open(extconf_path, 'w') do |file|
-        file.write(new_content)
-      end
 
-      lib_builder = execute 'generate pg gem Makefile' do
-        # [COOK-3490] pg gem install requires full path on RHEL
-
-        command "PATH=$PATH:/usr/pgsql-#{new_resource.client_version}/bin #{RbConfig.ruby} extconf.rb"
-        cwd ext_dir
-        action :nothing
-      end
-      lib_builder.run_action(:run)
-
-      lib_maker = execute 'make pg gem lib' do
-        command 'make'
-        cwd ext_dir
-        action :nothing
-      end
-      lib_maker.run_action(:run)
-
-      lib_installer = execute 'install pg gem lib' do
-        command 'make install'
-        cwd ext_dir
-        action :nothing
-      end
-      lib_installer.run_action(:run)
-
-      spec_installer = execute 'install pg spec' do
-        command "#{gem_exec} spec ./cache/#{gem_name}.gem --ruby > ./specifications/#{gem_name}.gemspec"
-        cwd ::File.join(gem_dir, '..', '..')
-        action :nothing
-      end
-      spec_installer.run_action(:run)
-
-      Chef::Log.warn 'Installation of pg gem successful!'
+action_class do
+  def ruby_bin
+    if new_resource.ruby_binary
+      new_resource.ruby_binary
+    else
+      '/usr/bin/ruby'
     end
+  end
+
+  def ruby_version
+    require 'mixlib/shellout'
+    v  = Mixlib::ShellOut.new("/usr/local/rbenv/shims/ruby -v").run_command
+    version = v.stdout.split("ruby ")[1].split("p")[0].to_f
+  end
 end

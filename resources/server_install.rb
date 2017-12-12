@@ -20,9 +20,9 @@ property :version, String, default: '9.6'
 property :init_db, [true, false], default: true
 property :setup_repo, [true, false], default: true
 
-property :hba_file, String, default: "/etc/postgresql/#{version}/main/pg_hba.conf"
-property :ident_file, String, default: "/etc/postgresql/#{version}/main/pg_ident.conf"
-property :external_pid_file, String, default: "/var/run/postgresql/#{version}-main.pid"
+property :hba_file, String, default: lazy { "/etc/postgresql/#{version}/main/pg_hba.conf" }
+property :ident_file, String, default: lazy { "/etc/postgresql/#{version}/main/pg_ident.conf" }
+property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
 
 
 action :install do
@@ -33,7 +33,7 @@ action :install do
 
   package server_pkg_name
 
-  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db !initialized
+  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db =!  initialized
     db_command = rhel_init_db_command(new_resource.version.delete('.'))
     if db_command
       execute 'init_db' do
@@ -63,7 +63,7 @@ action :install do
 end
 
 action_class do
-  include 'PostgresqlCookbook::Helpers'
+  include PostgresqlCookbook::Helpers
 
   def initialized
     true if ::File.exist?("#{data_dir}/initialized.txt")
