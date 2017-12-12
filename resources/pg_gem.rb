@@ -2,7 +2,7 @@
 # encoding: utf-8
 #
 # Cookbook:: postgresql
-# Resource:: pg
+# Resource:: pg_gem
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,7 +77,6 @@ action :install do
     action :install
     not_if { ruby_version < 2.0 }
   end
-
 end
 
 action_class do
@@ -91,7 +90,7 @@ action_class do
 
   def ruby_version
     require 'mixlib/shellout'
-    v  = Mixlib::ShellOut.new("/usr/local/rbenv/shims/ruby -v").run_command
-    version = v.stdout.split("ruby ")[1].split("p")[0].to_f
+    v = Mixlib::ShellOut.new('/usr/local/rbenv/shims/ruby -v').run_command
+    v.stdout.split('ruby ')[1].split('p')[0].to_f
   end
 end
