@@ -22,6 +22,7 @@ property :setup_repo, [true, false], default: true
 property :hba_file, String, default: lazy { "/etc/postgresql/#{version}/main/pg_hba.conf" }
 property :ident_file, String, default: lazy { "/etc/postgresql/#{version}/main/pg_ident.conf" }
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
+property :password, String
 
 action :install do
   postgresql_client_install 'Install PostgreSQL Client' do
@@ -55,10 +56,34 @@ action :install do
     supports restart: true, status: true, reload: true
     action [:enable, :start]
   end
+
+  bash 'generate-postgres-password' do
+    user 'postgres'
+    code <<-EOH
+    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{generated_password}\';" | psql -p #{new_resource.port}
+    EOH
+    not_if { ::File.exist? "#{data_dir}/recovery.conf" }
+    only_if { new_resource.password.eql? 'generate' }
+  end
+
+  bash 'generate-postgres-password' do
+    user 'postgres'
+    code <<-EOH
+    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{new_resource.password}\';" | psql -p #{new_resource.port}
+    EOH
+    not_if { ::File.exist? "#{data_dir}/recovery.conf" }
+    not_if { new_resource.password.eql? 'generate' }
+  end
 end
 
 action_class do
   include PostgresqlCookbook::Helpers
+
+  def generated_password
+    passwd = new_resource.password.crypt('$6$' + SecureRandom.random_number(36**8).to_s(36))
+    Chef::Log.debug "SC: generated system password: #{passwd}"
+    passwd
+  end
 
   def initialized
     true if ::File.exist?("#{data_dir}/initialized.txt")
