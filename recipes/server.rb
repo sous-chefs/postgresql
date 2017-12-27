@@ -16,8 +16,6 @@
 # limitations under the License.
 #
 
-::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
-
 postgresql_client_install 'postgresql client'
 
 postgresql_server_install 'postgresql server' do

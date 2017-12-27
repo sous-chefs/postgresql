@@ -78,6 +78,7 @@ end
 
 action_class do
   include PostgresqlCookbook::Helpers
+  require 'mixlib/shellout'
 
   def generated_password
     passwd = new_resource.password.crypt('$6$' + SecureRandom.random_number(36**8).to_s(36))
