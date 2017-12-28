@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Cookbook:: postgresql
-# Resource:: install
+# Resource:: server_install
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@
 property :version, String, default: '9.6'
 property :init_db, [true, false], default: true
 property :setup_repo, [true, false], default: true
-
-property :hba_file, String, default: "/etc/postgresql/#{version}/main/pg_hba.conf"
-property :ident_file, String, default: "/etc/postgresql/#{version}/main/pg_ident.conf"
-property :external_pid_file, String, default: "/var/run/postgresql/#{version}-main.pid"
-
+property :hba_file, String, default: lazy { "/etc/postgresql/#{version}/main/pg_hba.conf" }
+property :ident_file, String, default: lazy { "/etc/postgresql/#{version}/main/pg_ident.conf" }
+property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
+property :password, String, default: 'generate'
+property :port, [String, Integer], default: 5432
 
 action :install do
   postgresql_client_install 'Install PostgreSQL Client' do
@@ -33,7 +33,7 @@ action :install do
 
   package server_pkg_name
 
-  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db !initialized
+  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db != initialized
     db_command = rhel_init_db_command(new_resource.version.delete('.'))
     if db_command
       execute 'init_db' do
@@ -43,16 +43,13 @@ action :install do
       log 'InitDB' do
         message 'InitDB is not supported on this version of operating system.'
         level :error
-
       end
 
       file "#{data_dir}/initialized.txt" do
         content 'Database initialized'
         mode '0744'
       end
-
     end
-
   end
 
   service 'postgresql' do
@@ -60,10 +57,27 @@ action :install do
     supports restart: true, status: true, reload: true
     action [:enable, :start]
   end
+
+  # Generate Password
+  bash 'generate-postgres-password' do
+    user 'postgres'
+    code <<-EOH
+    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{secure_random}\';" | psql -p #{new_resource.port}
+    EOH
+    not_if { ::File.exist? "#{data_dir}/recovery.conf" }
+    only_if { new_resource.password.eql? 'generate' }
+  end
 end
 
 action_class do
-  include 'PostgresqlCookbook::Helpers'
+  include PostgresqlCookbook::Helpers
+  require 'securerandom'
+
+  def secure_random
+    r = SecureRandom.hex
+    Chef::Log.debug "Generated password: #{r}"
+    r
+  end
 
   def initialized
     true if ::File.exist?("#{data_dir}/initialized.txt")

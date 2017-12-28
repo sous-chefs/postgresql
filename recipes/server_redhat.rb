@@ -16,8 +16,4 @@
 # limitations under the License.
 #
 
-postgresql_client_install 'postgresql client'
-
-postgresql_server_install 'postgresql server'
-
-include_recipe 'postgresql::server_conf'
+Chef::Log.warn('The postgresql::server_redhat recipe has been deprecated and will be removed in the next major release of the cookbook. Please use the postgresql_server_install resource instead')
