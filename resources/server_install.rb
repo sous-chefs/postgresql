@@ -33,7 +33,7 @@ action :install do
 
   package server_pkg_name
 
-  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db != initialized
+  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db && !initialized
     db_command = rhel_init_db_command(new_resource.version.delete('.'))
     if db_command
       execute 'init_db' do
@@ -44,12 +44,12 @@ action :install do
         message 'InitDB is not supported on this version of operating system.'
         level :error
       end
-
-      file "#{data_dir}/initialized.txt" do
-        content 'Database initialized'
-        mode '0744'
-      end
     end
+  end
+
+  file "#{data_dir}/initialized.txt" do
+    content 'Database initialized'
+    mode '0744'
   end
 
   service 'postgresql' do
@@ -65,6 +65,7 @@ action :install do
     echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{secure_random}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
+    not_if { initialized }
     only_if { new_resource.password.eql? 'generate' }
   end
 end

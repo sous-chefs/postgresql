@@ -28,7 +28,7 @@ property :notification, Symbol, required: true, default: :reload
 
 action :grant do
   with_run_context :root do # ~FC037
-    edit_resource(:template, "#{postgresql_data_dir}/pg_hba.conf") do |new_resource|
+    edit_resource(:template, "#{data_dir}/pg_hba.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
       owner 'postgres'
