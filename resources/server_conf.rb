@@ -17,7 +17,7 @@
 #
 
 property :version, String, default: '9.6'
-property :change_notify, Symbol, default: :restart
+property :change_notify, Symbol, default: :reload
 property :hba_file, String, default: lazy { "#{data_dir}/pg_hba.conf" }
 property :ident_file, String, default: lazy { "#{data_dir}/pg_ident.conf" }
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }

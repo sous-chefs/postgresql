@@ -7,6 +7,6 @@ postgresql_server_install 'package' do
 end
 
 postgresql_extension '' do
-  database
-  extension
+  database  'test_1'
+  extension 'openfts'
 end

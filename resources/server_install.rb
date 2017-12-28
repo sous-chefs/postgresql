@@ -22,7 +22,7 @@ property :setup_repo, [true, false], default: true
 property :hba_file, String, default: lazy { "/etc/postgresql/#{version}/main/pg_hba.conf" }
 property :ident_file, String, default: lazy { "/etc/postgresql/#{version}/main/pg_ident.conf" }
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
-property :password, String, default: 'generate'
+property :password, [String, nil], default: 'generate'
 property :port, [String, Integer], default: 5432
 
 action :install do
