@@ -20,9 +20,6 @@ default['postgresql']['server']['config_change_notify'] = :restart
 default['postgresql']['assign_postgres_password'] = true
 default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql'
 
-# Establish default database name
-default['postgresql']['database_name'] = 'template1'
-
 case node['platform_family']
 when 'debian'
   default['postgresql']['config']['listen_addresses'] = 'localhost'
