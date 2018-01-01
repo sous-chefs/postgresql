@@ -6,6 +6,8 @@ postgresql_server_install 'package' do
   version '9.6'
 end
 
+postgresql_database 'test_1'
+
 postgresql_extension 'openfts' do
   database  'test_1'
 end

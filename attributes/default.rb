@@ -16,9 +16,6 @@
 # limitations under the License.
 #
 
-default['postgresql']['server']['config_change_notify'] = :restart
-default['postgresql']['assign_postgres_password'] = true
-default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql'
 
 case node['platform_family']
 when 'debian'
@@ -48,5 +45,3 @@ when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['lc_time'] = 'en_US.UTF-8'
   default['postgresql']['config']['default_text_search_config'] = 'pg_catalog.english'
 end
-
-default['postgresql']['initdb_locale'] = 'UTF-8'

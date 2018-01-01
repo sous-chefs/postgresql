@@ -24,6 +24,7 @@ property :ident_file, String, default: lazy { "/etc/postgresql/#{version}/main/p
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
 property :password, [String, nil], default: 'generate'
 property :port, [String, Integer], default: 5432
+property :initdb_locale, String, default: 'UTF-8'
 
 action :install do
   postgresql_client_install 'Install PostgreSQL Client' do
