@@ -19,8 +19,8 @@
 # name property should take the form:
 # database/extension
 
-property :database, String, required: true, default: lazy { name.scan(%r{\A[^/]+(?=/)}).first }
-property :extension, String, name_property: true, default: lazy { name.scan(%r{(?<=/)[^/]+\Z}).first }
+property :database,  String, required: true
+property :extension, String, name_property: true
 
 action :create do
   bash "CREATE EXTENSION #{new_resource.name}" do

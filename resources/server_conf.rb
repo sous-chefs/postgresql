@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-property :version, String, default: '9.6'
-property :change_notify, Symbol, default: :reload
-property :hba_file, String, default: lazy { "#{data_dir}/pg_hba.conf" }
-property :ident_file, String, default: lazy { "#{data_dir}/pg_ident.conf" }
-property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
+property :version,                 String, default: '9.6'
+property :change_notify,           Symbol, default: :reload
+property :hba_file,                String, default: lazy { "#{data_dir}/pg_hba.conf" }
+property :ident_file,              String, default: lazy { "#{data_dir}/pg_ident.conf" }
+property :external_pid_file,       String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
 property :unix_socket_directories, [String, Array], default: ' /var/run/postgresql'
 
 action :modify do

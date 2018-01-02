@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-property :source, String, required: true, default: 'pg_hba.conf.erb'
-property :cookbook, String, default: 'postgresql'
-property :comment, [String, nil], default: nil
-property :access_type, String, required: true, default: 'local'
-property :access_db, String, required: true, default: 'all'
-property :access_user, String, required: true, default: 'postgres'
-property :access_addr, String, required: true
+property :source,        String, required: true, default: 'pg_hba.conf.erb'
+property :cookbook,      String, default: 'postgresql'
+property :comment,       [String, nil], default: nil
+property :access_type,   String, required: true, default: 'local'
+property :access_db,     String, required: true, default: 'all'
+property :access_user,   String, required: true, default: 'postgres'
+property :access_addr,   String, required: true
 property :access_method, String, required: true, default: 'ident'
-property :notification, Symbol, required: true, default: :reload
+property :notification,  Symbol, required: true, default: :reload
 
 action :grant do
   with_run_context :root do # ~FC037

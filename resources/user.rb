@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-property :superuser,          [TrueClass, FalseClass], default: false
-property :createdb,           [TrueClass, FalseClass], default: false
-property :createrole,         [TrueClass, FalseClass], default: false
-property :inherit,            [TrueClass, FalseClass], default: true
-property :replication,        [TrueClass, FalseClass], default: false
-property :login,              [TrueClass, FalseClass], default: true
+property :superuser,          [true, false], default: false
+property :createdb,           [true, false], default: false
+property :createrole,         [true, false], default: false
+property :inherit,            [true, false], default: true
+property :replication,        [true, false], default: false
+property :login,              [true, false], default: true
 property :password,           String
 property :encrypted_password, String
 
