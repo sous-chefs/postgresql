@@ -20,16 +20,19 @@
 # database/extension
 
 property :database, String, name_property: true, default: lazy { name.scan(%r{\A[^/]+(?=/)}).first }
-property :username, String, default: 'postgres'
+property :user,     String, default: 'postgres'
+property :username, String
 property :encoding, String, default: 'UTF-8'
-property :locale, String, default: 'en_US.UTF-8'
+property :locale,   String, default: 'en_US.UTF-8'
 property :template, String, default: ''
-property :host, String
-property :port, [String, Integer], default: ''
-property :owner, String
+property :host,     String
+property :port,     Integer, default: 5432
+property :encoding, String, default: 'UTF-8'
+property :template, String, default: 'template0'
+property :owner,    String
 
 action :create do
-  createdb = "createdb"
+  createdb = 'createdb'
   createdb << " -U #{new_resource.username}" if new_resource.username
   createdb << " -E #{new_resource.encoding}" if new_resource.encoding
   createdb << " -l #{new_resource.locale}" if new_resource.locale
@@ -37,33 +40,29 @@ action :create do
   createdb << " -h #{new_resource.host}" if new_resource.host
   createdb << " -p #{new_resource.port}" if new_resource.port
   createdb << " -O #{new_resource.owner}" if new_resource.owner
-  createdb << " #{new_resource.name}"
+  createdb << " #{new_resource.database}"
 
   bash "Create Database #{new_resource.database}" do
     code createdb
     user new_resource.username
-    not_if { database_exists? }
     sensitive true
+    not_if { database_exists?(new_resource) }
   end
-
 end
 
 action :drop do
-  if @current_resource.exists
-    converge_by "Drop PostgreSQL Database #{new_resource.database}" do
-      dropdb = "dropdb"
-      dropdb << " -U #{new_resource.username}" if new_resource.username
-      dropdb << " --host #{new_resource.host}" if new_resource.host
-      dropdb << " --port #{new_resource.port}" if new_resource.port
-      dropdb << " #{new_resource.database}"
+  converge_by "Drop PostgreSQL Database #{new_resource.database}" do
+    dropdb = 'dropdb'
+    dropdb << " -U #{new_resource.username}" if new_resource.username
+    dropdb << " --host #{new_resource.host}" if new_resource.host
+    dropdb << " --port #{new_resource.port}" if new_resource.port
+    dropdb << " #{new_resource.database}"
 
-      execute %(drop postgresql database #{new_resource.database}) do
-        user "postgres"
-        command dropdb
-        sensitive true
-      end
-
-      new_resource.updated_by_last_action(true)
+    bash "drop postgresql database #{new_resource.database})" do
+      user 'postgres'
+      command dropdb
+      sensitive true
+      only_if { database_exists?(new_resource) }
     end
   end
 end
@@ -71,8 +70,16 @@ end
 action_class do
   include PostgresqlCookbook::Helpers
 
-  def extension_installed?
-    query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
-    !(execute_sql(query, new_resource.database) =~ /^installed$/).nil?
+  def database_exists?(new_resource)
+    sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.name}')
+
+    exists = %(psql -c "#{sql}" postgres)
+    exists << " --host #{new_resource.host}" if new_resource.host
+    exists << " --port #{new_resource.port}" if new_resource.port
+    exists << " | grep #{new_resource.name}"
+
+    cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
+    cmd.run_command
+    cmd.exitstatus == 0
   end
 end

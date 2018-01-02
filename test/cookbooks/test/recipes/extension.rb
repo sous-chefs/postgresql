@@ -9,7 +9,7 @@ end
 postgresql_database 'test_1'
 
 postgresql_extension 'openfts' do
-  database  'test_1'
+  database 'test_1'
 end
 
 def psql(q)
@@ -20,7 +20,7 @@ query = "SELECT 'installed' FROM pg_extension WHERE extname = 'openfts';"
 
 check_extension = psql(query)
 
-describe bash("#{check_extension}") do
+describe bash(check_extension.to_s) do
   its('stdout') { should match /openfts/ }
   its('exit_status') { should eq 0 }
 end

@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 
-
 case node['platform_family']
 when 'debian'
   default['postgresql']['config']['listen_addresses'] = 'localhost'
