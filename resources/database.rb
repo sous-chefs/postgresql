@@ -19,7 +19,7 @@
 # name property should take the form:
 # database/extension
 
-property :database, String, name_property: true, default: lazy { name.scan(%r{\A[^/]+(?=/)}).first }
+property :database, String, name_property: true
 property :user,     String, default: 'postgres'
 property :username, String
 property :encoding, String, default: 'UTF-8'
