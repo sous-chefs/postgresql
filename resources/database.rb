@@ -18,18 +18,18 @@
 # name property should take the form:
 # database/extension
 
-property :database, String, name_property: true
-property :user,     String, default: 'postgres'
-property :username, String
-property :encoding, String, default: 'UTF-8'
-property :locale,   String, default: 'en_US.UTF-8'
-property :template, String, default: ''
-property :host,     String
-property :port,     Integer, default: 5432
-property :encoding, String, default: 'UTF-8'
-property :template, String, default: 'template0'
-property :owner,    String
-property :sensitive String, default: false
+property :database,  String, name_property: true
+property :user,      String, default: 'postgres'
+property :username,  String
+property :encoding,  String, default: 'UTF-8'
+property :locale,    String, default: 'en_US.UTF-8'
+property :template,  String, default: ''
+property :host,      String
+property :port,      Integer, default: 5432
+property :encoding,  String, default: 'UTF-8'
+property :template,  String, default: 'template0'
+property :owner,     String
+property :sensitive, String, default: false
 
 action :create do
   createdb = 'createdb'
