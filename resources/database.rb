@@ -29,7 +29,7 @@ property :port,      Integer, default: 5432
 property :encoding,  String, default: 'UTF-8'
 property :template,  String, default: 'template0'
 property :owner,     String
-property :sensitive, String, default: false
+property :sensitive, [true, false], default: false
 
 action :create do
   createdb = 'createdb'
