@@ -28,7 +28,6 @@ property :port,      Integer, default: 5432
 property :encoding,  String, default: 'UTF-8'
 property :template,  String, default: 'template0'
 property :owner,     String
-property :sensitive, [true, false], default: false
 
 action :create do
   createdb = 'createdb'
@@ -44,7 +43,6 @@ action :create do
   bash "Create Database #{new_resource.database}" do
     code createdb
     user new_resource.user
-    sensitive new_resource.sensitive
     not_if { database_exists?(new_resource) }
   end
 end
@@ -60,7 +58,6 @@ action :drop do
     bash "drop postgresql database #{new_resource.database})" do
       user 'postgres'
       command dropdb
-      sensitive new_resource.sensitive
       only_if { database_exists?(new_resource) }
     end
   end
