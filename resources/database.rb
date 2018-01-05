@@ -20,7 +20,6 @@
 
 property :database,  String, name_property: true
 property :user,      String, default: 'postgres'
-property :username,  String
 property :encoding,  String, default: 'UTF-8'
 property :locale,    String, default: 'en_US.UTF-8'
 property :template,  String, default: ''
@@ -33,7 +32,7 @@ property :sensitive, [true, false], default: false
 
 action :create do
   createdb = 'createdb'
-  createdb << " -U #{new_resource.username}" if new_resource.username
+  createdb << " -U #{new_resource.user}" if new_resource.user
   createdb << " -E #{new_resource.encoding}" if new_resource.encoding
   createdb << " -l #{new_resource.locale}" if new_resource.locale
   createdb << " -T #{new_resource.template}" if new_resource.template
@@ -44,7 +43,7 @@ action :create do
 
   bash "Create Database #{new_resource.database}" do
     code createdb
-    user new_resource.username
+    user new_resource.user
     sensitive new_resource.sensitive
     not_if { database_exists?(new_resource) }
   end
@@ -53,7 +52,7 @@ end
 action :drop do
   converge_by "Drop PostgreSQL Database #{new_resource.database}" do
     dropdb = 'dropdb'
-    dropdb << " -U #{new_resource.username}" if new_resource.username
+    dropdb << " -U #{new_resource.user}" if new_resource.user
     dropdb << " --host #{new_resource.host}" if new_resource.host
     dropdb << " --port #{new_resource.port}" if new_resource.port
     dropdb << " #{new_resource.database}"
