@@ -29,7 +29,7 @@ action :modify do
     source 'postgresql.conf.erb'
     owner 'postgres'
     group 'postgres'
-    mode 0600
+    mode '0600'
     variables(
       data_dir: new_resource.data_directory,
       hba_file: new_resource.hba_file,

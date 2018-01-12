@@ -24,7 +24,7 @@ The earliest supported version is currently:
 
 ### Chef
 
-- Chef 12.14+
+- Chef 12.16+
 
 ### Cookbooks
 
