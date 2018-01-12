@@ -35,7 +35,7 @@ action :modify do
       hba_file: new_resource.hba_file,
       ident_file: new_resource.ident_file,
       external_pid_file: new_resource.external_pid_file,
-      stats_temp_directory: new_resource.stats_temp_directory,
+      stats_temp_directory: new_resource.stats_temp_directory
     )
   end
 end

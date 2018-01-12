@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-#default['postgresql']['server']['config_change_notify'] = :reload
+# default['postgresql']['server']['config_change_notify'] = :reload
 default['postgresql']['assign_postgres_password'] = true
 default['postgresql']['config']['unix_socket_directories'] = '/var/run/postgresql'
 default['postgresql']['config']['listen_addresses'] = 'localhost'
