@@ -26,10 +26,9 @@ property :access_addr, String, required: true
 property :access_method, String, required: true, default: 'ident'
 property :notification, Symbol, required: true, default: :reload
 
-node.run_state['postgresql'] ||= {}
-
 action :grant do
   with_run_context :root do # ~FC037
+    find_resource(:service, 'postgresql')
     edit_resource(:template, "#{conf_dir}/pg_hba.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
@@ -45,9 +44,9 @@ action :grant do
         addr: new_resource.access_addr,
         method: new_resource.access_method,
       }
-
       action :nothing
       delayed_action :create
+      notifies new_resource.notification, 'service[postgresql]'
     end
   end
 end

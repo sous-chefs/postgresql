@@ -35,12 +35,15 @@ action :install do
 
   package server_pkg_name
 
+  find_resource(:service, 'postgresql')
+
   if platform_family?('rhel', 'fedora', 'amazon')
     db_command = rhel_init_db_command(new_resource.version.delete('.'))
     if db_command
       execute 'init_db' do
         command db_command
         not_if { initialized }
+        notifies :start, 'service[postgresql]', :immediately
       end
     else # we don't know about this platform version
       log 'InitDB' do
@@ -49,12 +52,6 @@ action :install do
       end
     end
   end
-
-  # service 'postgresql' do
-  #   service_name platform_service_name
-  #   supports restart: true, status: true, reload: true
-  #   action [:enable, :start]
-  # end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
   # Generate Password
