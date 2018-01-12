@@ -23,7 +23,7 @@ module PostgresqlCookbook
       case node['platform_family']
       when 'rhel', 'fedora', 'amazon'
         "/var/lib/pgsql/#{node.run_state['postgresql']['version']}/data"
-      when 'debian', 'ubuntu'
+      when 'debian'
         "/var/lib/postgresql/#{node.run_state['postgresql']['version']}/main"
       end
     end
@@ -32,7 +32,7 @@ module PostgresqlCookbook
       case node['platform_family']
       when 'rhel', 'fedora', 'amazon'
         "/var/lib/pgsql/#{node.run_state['postgresql']['version']}/data"
-      when 'debian', 'ubuntu'
+      when 'debian'
         "/etc/postgresql/#{node.run_state['postgresql']['version']}/main"
       end
     end

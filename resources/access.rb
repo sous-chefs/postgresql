@@ -34,7 +34,7 @@ action :grant do
       cookbook new_resource.cookbook
       owner 'postgres'
       group 'postgres'
-      mode 0600
+      mode '0600'
       variables['pg_hba'] ||= {}
       variables['pg_hba'][new_resource.name] = {
         comment: new_resource.comment,
