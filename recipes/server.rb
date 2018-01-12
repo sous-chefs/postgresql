@@ -16,8 +16,20 @@
 # limitations under the License.
 #
 
-postgresql_client_install 'postgresql client'
+postgresql_client_install 'Postgresql Client'
 
-postgresql_server_install 'postgresql server' do
-  password 'generate'
+postgresql_server_install 'Postgresql Server' do
+  password node['postgresql']['password']['postgres']
+end
+
+# TODO: Find a trick to push attribute as action sym
+# notifies node['postgresql']['server']['config_change_notify'].to_sym
+postgresql_server_conf 'PostgreSQL Config' do
+  notifies :reload, 'service[postgresql]', :delayed
+end
+
+service 'postgresql' do
+  service_name platform_service_name
+  supports restart: true, status: true, reload: true
+  action [:enable, :start]
 end
