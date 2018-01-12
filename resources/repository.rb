@@ -69,23 +69,13 @@ action :add do
     end
 
   when 'debian'
-    remote_file "#{Chef::Config[:file_cache_path]}/ACCC4CF8.asc" do
-      source new_resource.apt_gpg_key_uri
-      notifies :run, 'bash[apt-key-add]', :immediately
-    end
-
-    apt_update 'update'
     package 'apt-transport-https'
-
-    bash 'apt-key-add' do
-      code "sudo apt-key add #{Chef::Config[:file_cache_path]}/ACCC4CF8.asc"
-      action :nothing
-    end
 
     apt_repository 'postgresql_org_repository' do
       uri          'https://download.postgresql.org/pub/repos/apt/'
       components   ['main', new_resource.version.to_s]
       distribution "#{node['lsb']['codename']}-pgdg"
+      key new_resource.apt_gpg_key_uri
       cache_rebuild true
     end
   else
