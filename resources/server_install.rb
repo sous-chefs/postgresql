@@ -43,7 +43,6 @@ action :install do
       execute 'init_db' do
         command db_command
         not_if { initialized }
-        notifies :start, 'service[postgresql]', :immediately
       end
     else # we don't know about this platform
       log 'InitDB' do
@@ -51,6 +50,10 @@ action :install do
         level :error
       end
     end
+  end
+
+  log 'Force service start after package install' do
+    notifies :start, 'service[postgresql]', :immediately
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
