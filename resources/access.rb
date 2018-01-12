@@ -26,8 +26,6 @@ property :access_addr,   String, required: true
 property :access_method, String, required: true, default: 'ident'
 property :notification,  Symbol, required: true, default: :reload
 
-node.run_state['postgresql'] ||= {}
-
 action :grant do
   with_run_context :root do # ~FC037
     find_resource(:service, 'postgresql')

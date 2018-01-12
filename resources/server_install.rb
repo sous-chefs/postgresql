@@ -43,6 +43,7 @@ action :install do
       execute 'init_db' do
         command db_command
         not_if { initialized }
+        notifies :start, 'service[postgresql]', :immediately
       end
     else # we don't know about this platform
       log 'InitDB' do
@@ -50,23 +51,6 @@ action :install do
         level :error
       end
     end
-  end
-
-  file "#{data_dir}/initialized.txt" do
-    content   'Database initialized'
-    mode      '0744'
-  end
-
-  directory "/usr/share/postgresql/#{new_resource.version}/" do
-    user  'postgres'
-    group 'postgres'
-    only_if { platform_family?('debian') && node['platform_version'].to_f == 7 }
-  end
-
-  service 'postgresql' do
-    service_name platform_service_name
-    supports restart: true, status: true, reload: true
-    action [:enable, :start]
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
