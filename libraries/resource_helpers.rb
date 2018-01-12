@@ -27,12 +27,13 @@ module PostgresqlCookbook
         "/var/lib/postgresql/#{node.run_state['postgresql']['version']}/main"
       end
     end
+
     def conf_dir
       case node['platform_family']
-        when 'rhel', 'fedora', 'amazon'
-          "/var/lib/pgsql/#{node.run_state['postgresql']['version']}/data"
-        when 'debian', 'ubuntu'
-          "/etc/postgresql/#{node.run_state['postgresql']['version']}/main"
+      when 'rhel', 'fedora', 'amazon'
+        "/var/lib/pgsql/#{node.run_state['postgresql']['version']}/data"
+      when 'debian', 'ubuntu'
+        "/etc/postgresql/#{node.run_state['postgresql']['version']}/main"
       end
     end
 
