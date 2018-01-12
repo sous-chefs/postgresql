@@ -25,11 +25,11 @@ end
 # TODO: Find a trick to push attribute as action sym
 # notifies node['postgresql']['server']['config_change_notify'].to_sym
 postgresql_server_conf 'PostgreSQL Config' do
-  notifies :reload, 'service[postgresql]', :delayed
+  notifies :reload, 'service[postgresql]'
 end
 
 service 'postgresql' do
-  service_name platform_service_name
+  service_name lazy { platform_service_name }
   supports restart: true, status: true, reload: true
   action [:enable, :start]
 end
