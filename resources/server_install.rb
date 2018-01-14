@@ -52,8 +52,17 @@ action :install do
     end
   end
 
-  log 'Force service start after package install' do
+  # Fix running service after package installation for Debian 7 and Ubuntu 14.04 (OS without Systemd)
+  if platform_family? 'debian'
+    execute 'Force service shutdown after package installation' do
+      command "/usr/bin/pg_ctlcluster #{new_resource.version} main stop"
+      not_if '/bin/pidof systemd || /etc/init.d/postgresql status'
+    end
+  end
+
+  log 'Force service start after package installation' do
     notifies :start, 'service[postgresql]', :immediately
+    not_if "/etc/init.d/#{platform_service_name} status"
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
