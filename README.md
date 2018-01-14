@@ -24,7 +24,7 @@ The earliest supported version is currently:
 
 ### Chef
 
-- Chef 12.14+
+- Chef 12.16+
 
 ### Cookbooks
 
@@ -67,7 +67,6 @@ The following attributes are set based on the platform, see the `attributes/defa
 - `node['postgresql']['dir']` - home directory of where postgresql data and configuration lives.
 - `node['postgresql']['client']['packages']` - An array of package names that should be installed on "client" systems.
 - `node['postgresql']['server']['packages']` - An array of package names that should be installed on "server" systems.
-- `node['postgresql']['server']['config_change_notify']` - Type of notification triggered when a config file changes.
 - `node['postgresql']['contrib']['packages']` - An array of package names that could be installed on "server" systems for useful sysadmin tools.
 - `node['postgresql']['enable_pgdg_apt']` - Whether to enable the apt repo by the PostgreSQL Global Development Group, which contains newer versions of PostgreSQL.
 - `node['postgresql']['enable_pgdg_yum']` - Whether to enable the yum repo by the PostgreSQL Global Development Group, which contains newer versions of PostgreSQL.
@@ -206,10 +205,10 @@ Installs the packages defined in the `node['postgresql']['client']['packages']` 
 
 ### server
 
-Includes the `server_debian` or `server_redhat` recipe to get the appropriate server packages installed and service managed. Also manages the configuration for the server:
+Install and configure postgresql for the server:
 
-- generates a strong default password (via `openssl`) for `postgres`
-- sets the password for postgres
+- install appropriate packages depends on OS
+- generates a strong default password (via `openssl`) for `postgres` or apply postgres password from attribute
 - manages the `postgresql.conf` file.
 - manages the `pg_hba.conf` file.
 
@@ -217,7 +216,7 @@ Includes the `server_debian` or `server_redhat` recipe to get the appropriate se
 
 On systems that need to connect to a PostgreSQL database, add to a run list `recipe[postgresql]` or `recipe[postgresql::client]`.
 
-On systems that should be PostgreSQL servers, use `recipe[postgresql::server]` on a run list. This recipe does set a password for the `postgres` user. If you're using `chef server`, if the attribute `node['postgresql']['password']['postgres']` is not found, the recipe generates a random password and performs a node.save. (TODO: This is broken, as it disables the password.) If you're using `chef-solo`, you'll need to set the attribute `node['postgresql']['password']['postgres']` in your node's `json_attribs` file or in a role.
+On systems that should be PostgreSQL servers, use `recipe[postgresql::server]` on a run list. This recipe does set a password for the `postgres` user. If you're using `chef server`, if the attribute `node['postgresql']['password']['postgres']` is not found, the recipe generates a random password. If you're using `chef-solo`, you'll need to set the attribute `node['postgresql']['password']['postgres']` in your node's `json_attribs` file or in a role.
 
 On Debian family systems, SSL will be enabled, as the packages on Debian/Ubuntu also generate the SSL certificates. If you use another platform and wish to use SSL in postgresql, then generate your SSL certificates and distribute them in your own cookbook, and set the `node['postgresql']['config']['ssl']` attribute to true in your role/cookboook/node.
 
@@ -226,6 +225,8 @@ On server systems, the postgres server is restarted when a configuration file ch
 ```ruby
 node['postgresql']['server']['config_change_notify'] = :reload
 ```
+
+**Note**: This attribute is broken and we decide to reload service instead of restart service after a configuration change. We will try to fix to let you the choice of service action. 
 
 ## License
 

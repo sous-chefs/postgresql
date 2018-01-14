@@ -22,10 +22,27 @@ module PostgresqlCookbook
     def data_dir
       case node['platform_family']
       when 'rhel', 'fedora', 'amazon'
-        "/var/lib/pgsql/#{new_resource.version}/data"
-      when 'debian', 'ubuntu'
-        "/var/lib/postgresql/#{new_resource.version}/main"
+        "/var/lib/pgsql/#{node.run_state['postgresql']['version']}/data"
+      when 'debian'
+        "/var/lib/postgresql/#{node.run_state['postgresql']['version']}/main"
       end
+    end
+
+    def conf_dir
+      case node['platform_family']
+      when 'rhel', 'fedora', 'amazon'
+        "/var/lib/pgsql/#{node.run_state['postgresql']['version']}/data"
+      when 'debian'
+        "/etc/postgresql/#{node.run_state['postgresql']['version']}/main"
+      end
+    end
+
+    # determine the platform specific service name
+    def platform_service_name
+      platform_family?('rhel', 'amazon', 'fedora') ? "postgresql-#{node.run_state['postgresql']['version']}" : 'postgresql'
     end
   end
 end
+
+Chef::Recipe.include(PostgresqlCookbook::Helpers)
+Chef::Resource.include(PostgresqlCookbook::Helpers)

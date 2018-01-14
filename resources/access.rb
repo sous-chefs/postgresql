@@ -28,26 +28,25 @@ property :notification, Symbol, required: true, default: :reload
 
 action :grant do
   with_run_context :root do # ~FC037
-    edit_resource(:template, "#{postgresql_data_dir}/pg_hba.conf") do |new_resource|
+    find_resource(:service, 'postgresql')
+    edit_resource(:template, "#{conf_dir}/pg_hba.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
       owner 'postgres'
       group 'postgres'
       mode '0600'
       variables['pg_hba'] ||= {}
-      variables['pg_hba'] << {
+      variables['pg_hba'][new_resource.name] = {
         comment: new_resource.comment,
-        name: new_resource.name,
         type: new_resource.access_type,
         db: new_resource.access_db,
         user: new_resource.access_user,
         addr: new_resource.access_addr,
         method: new_resource.access_method,
       }
-
       action :nothing
       delayed_action :create
-      notifies new_resource.notification, 'service[postgresql]', :immediately
+      notifies new_resource.notification, 'service[postgresql]'
     end
   end
 end
