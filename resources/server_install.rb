@@ -53,8 +53,15 @@ action :install do
   end
 
   file "#{data_dir}/initialized.txt" do
-    content 'Database initialized'
-    mode '0744'
+    content   'Database initialized'
+    recursive true
+    mode      '0744'
+  end
+
+  directory "/usr/share/postgresql/#{new_resource.version}/" do
+    user  'postgres'
+    group 'postgres'
+    only_if { platform_family?('debian') && node['platform_version'].to_f == 7 }
   end
 
   service 'postgresql' do
