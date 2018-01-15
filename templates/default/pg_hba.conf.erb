@@ -8,14 +8,10 @@
 
 local   all             postgres                                peer
 
-<% if node['postgresql']['version'].to_f < 9.1 -%>
 # TYPE  DATABASE        USER            CIDR-ADDRESS            METHOD
-<% elsif node['postgresql']['version'].to_f >= 9.1 -%>
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
-<% end -%>
 # IPv4 local connections:
 host    all             all             127.0.0.1/32            md5
 # IPv6 local connections:
