@@ -113,6 +113,92 @@ Note that the `unix_socket_directory` configuration was renamed to `unix_socket_
 
 ## Resources
 
+### postgresql_client_install
+
+This resource install PostgreSQL client packages.   
+
+#### Actions
+
+- `install` - (default) Install client packages   
+
+#### Properties
+
+Name       | Types   | Description                                        | Default  | Required?
+---------- | ------- | -------------------------------------------------- | -------- | ---------
+version    | String  | Version of PostgreSQL to install                   | '9.6'    | no
+setup_repo | Boolean | Define if you want to add the PostgreSQL repo      | true     | no
+
+#### Examples
+
+To install '9.5' version:   
+```
+postgresql_client_install 'My Postgresql Client install' do
+  version '9.5'
+end
+```
+
+### postgresql_server_install
+
+This resource install PostgreSQL client and server packages.
+
+#### Actions
+
+- `install` - (default) Install client and server packages   
+
+#### Properties
+
+Name              | Types           | Description                                    | Default                                  | Required?
+----------------- | --------------- | ---------------------------------------------- | ---------------------------------------- | ---------
+version           | String          | Version of PostgreSQL to install               | '9.6'                                    | no
+setup_repo        | Boolean         | Define if you want to add the PostgreSQL repo  | true                                     | no
+hba_file          | String          | Path of pg_hba.conf file                       | '<default_os_path>/pg_hba.conf'          | no
+ident_file        | String          | Path of pg_ident.conf file                     | '<default_os_path>/pg_ident.conf'        | no
+external_pid_file | String          | Path of PID file                               | '/var/run/postgresql/<version>-main.pid' | no
+password          | String, nil     | Set postgres user password                     | 'generate'                               | no
+port              | String, Integer | Set listen port of postgresql service          | 5432                                     | no
+
+
+#### Examples
+
+To install PostgreSQL server, set you own postgres password and set another service port.   
+```
+postgresql_server_install 'My Postgresql Server install' do
+  password 'MyP4ssw0d
+  port 5433
+end
+```
+
+
+### postgresql_server_conf
+
+#### Actions
+
+- `modify` - (default) Manager PostgreSQL configuration file (postgresql.conf)   
+
+#### Properties
+
+Name                 | Types           | Description                       | Default                                  | Required?
+-------------------- | --------------- | --------------------------------- | ---------------------------------------- | ---------
+version              | String          | Version of PostgreSQL to install  | '9.6'                                    | no
+data_directory       | String          | Path of postgresql data directory | '<default_os_data_path>'                 | no
+hba_file             | String          | Path of pg_hba.conf file          | '<default_os_conf_path>/pg_hba.conf'     | no
+ident_file           | String          | Path of pg_ident.conf file        | '<default_os_conf_path>/pg_ident.conf'   | no
+external_pid_file    | String          | Path of PID file                  | '/var/run/postgresql/<version>-main.pid' | no
+stats_temp_directory | String, nil     | Path of stats file                | 'generate'                               | no
+
+
+#### Examples
+
+To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.   
+```
+postgresql_server_conf 'My PostgreSQL Config' do
+  vesion '9.5'
+  data_directory '/data/postgresql/9.5/main'
+  notifies :reload, 'service[postgresql]'
+end
+```
+
+
 ### postgresql_extention
 
 This resource manages postgresql extensions with a given database to ease installation/removal. It uses the name of the resource in the format `database/extension` to determine the database and extention to install.
@@ -197,7 +283,7 @@ local   all             all                                     peer
 
 ### default
 
-Includes the client recipe.
+Install PostgreSQL client only.   
 
 ### client
 
@@ -205,12 +291,39 @@ Installs the packages defined in the `node['postgresql']['client']['packages']` 
 
 ### server
 
-Install and configure postgresql for the server:
+Install and configure PostgreSQL client and server:
 
 - install appropriate packages depends on OS
 - generates a strong default password (via `openssl`) for `postgres` or apply postgres password from attribute
 - manages the `postgresql.conf` file.
 - manages the `pg_hba.conf` file.
+   
+By default, server_install resource install PostgreSQL 9.6 version. If you want to change any parameters, we recommend you to create your own cookbook and call needed resources with your own parameters.
+
+Example:   
+cookbooks/my_postgresql/recipes/default.rb
+```
+postgresql_client_install 'Postgresql Client' do
+  setup_repo false
+  version '9.5'
+end
+
+postgresql_server_install 'Postgresql Server' do
+  version '9.5'
+  setup_repo false
+  password node['postgresql']['password']['postgres']
+end
+
+postgresql_server_conf 'PostgreSQL Config' do
+  notifies :restart, 'service[postgresql]'
+end
+
+service 'postgresql' do
+  service_name lazy { platform_service_name }
+  supports restart: true, status: true, reload: true
+  action [:enable, :start]
+end
+```  
 
 ## Usage
 
