@@ -8,12 +8,12 @@ postgresql_server_install 'package' do
   version '9.5'
 end
 
-postgresql_user 'testuser' do
-  superuser true
-  login     true
-  password  'mysecret'
+postgresql_server_conf 'PostgreSQL Config' do
+  notifies :reload, 'service[postgresql]'
 end
 
-postgresql_database 'testdb' do
-  owner 'testuser'
+service 'postgresql' do
+  service_name lazy { platform_service_name }
+  supports restart: true, status: true, reload: true
+  action [:enable, :start]
 end

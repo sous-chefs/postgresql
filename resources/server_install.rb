@@ -27,6 +27,9 @@ property :port,              [String, Integer], default: 5432
 property :initdb_locale,     String, default: 'UTF-8'
 
 action :install do
+  node.run_state['postgresql'] ||= {}
+  node.run_state['postgresql']['version'] = new_resource.version
+
   postgresql_client_install 'Install PostgreSQL Client' do
     version new_resource.version
     setup_repo new_resource.setup_repo
@@ -39,6 +42,7 @@ action :install do
     if db_command
       execute 'init_db' do
         command db_command
+        not_if { initialized }
       end
     else # we don't know about this platform version
       log 'InitDB' do
@@ -59,11 +63,12 @@ action :install do
     action [:enable, :start]
   end
 
+  postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
   # Generate Password
   bash 'generate-postgres-password' do
     user 'postgres'
     code <<-EOH
-    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{secure_random}\';" | psql -p #{new_resource.port}
+    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
     not_if { initialized }
@@ -82,17 +87,12 @@ action_class do
   end
 
   def initialized
-    true if ::File.exist?("#{data_dir}/initialized.txt")
+    true if ::File.exist?("#{data_dir}/PG_VERSION")
   end
 
   # determine the platform specific server package name
   def server_pkg_name
     platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
-  end
-
-  # determine the platform specific service name
-  def platform_service_name
-    platform_family?('rhel', 'amazon', 'fedora') ? "postgresql-#{new_resource.version}" : 'postgresql'
   end
 
   # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
