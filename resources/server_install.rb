@@ -54,7 +54,6 @@ action :install do
 
   file "#{data_dir}/initialized.txt" do
     content   'Database initialized'
-    recursive true
     mode      '0744'
   end
 
