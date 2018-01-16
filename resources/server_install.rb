@@ -52,7 +52,7 @@ action :install do
     end
   end
 
-  log 'Force service start after package install' do
+  log 'Force service start after package installation' do
     notifies :start, 'service[postgresql]', :immediately
   end
 

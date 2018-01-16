@@ -22,7 +22,7 @@ postgresql_server_install 'Postgresql Server' do
   password node['postgresql']['password']['postgres']
 end
 
-# TODO: Find a trick to push attribute as action sym
+# TODO: Find a trick to push attribute as action sym. Today that generate and exeception
 # notifies node['postgresql']['server']['config_change_notify'].to_sym
 postgresql_server_conf 'PostgreSQL Config' do
   notifies :reload, 'service[postgresql]'
