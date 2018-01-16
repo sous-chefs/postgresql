@@ -54,7 +54,6 @@ action :install do
 
   log 'Force service start after package installation' do
     notifies :start, 'service[postgresql]', :immediately
-    not_if "/etc/init.d/#{platform_service_name} status"
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
