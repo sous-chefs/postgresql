@@ -22,7 +22,6 @@ env:
   - KITCHEN_YAML=.kitchen.yml
   - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
   matrix:
-  - INSTANCE=client-install-amazonlinux
   - INSTANCE=client-install-centos-6
   - INSTANCE=client-install-centos-7
   - INSTANCE=client-install-debian-7
@@ -31,7 +30,6 @@ env:
   - INSTANCE=client-install-fedora-26
   - INSTANCE=client-install-ubuntu-1404
   - INSTANCE=client-install-ubuntu-1604
-  - INSTANCE=server-install-amazonlinux
   - INSTANCE=server-install-centos-6
   - INSTANCE=server-install-centos-7
   - INSTANCE=server-install-debian-7
@@ -40,6 +38,10 @@ env:
   - INSTANCE=server-install-fedora-26
   - INSTANCE=server-install-ubuntu-1404
   - INSTANCE=server-install-ubuntu-1604
+  allowed_failures:
+  - INSTANCE=client-install-amazonlinux
+  - INSTANCE=server-install-amazonlinux
+
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
