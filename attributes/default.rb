@@ -52,5 +52,3 @@ when 'rhel', 'fedora', 'suse'
   default['postgresql']['config']['log_rotation_age'] = '1d'
   default['postgresql']['config']['log_rotation_size'] = 0
 end
-
-default['postgresql']['initdb_locale'] = 'UTF-8'

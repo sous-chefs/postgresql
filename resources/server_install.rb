@@ -16,13 +16,15 @@
 # limitations under the License.
 #
 
-property :version, String, default: '9.6'
-property :setup_repo, [true, false], default: true
-property :hba_file, String, default: lazy { "#{conf_dir}/pg_hba.conf" }
-property :ident_file, String, default: lazy { "#{conf_dir}/pg_ident.conf" }
+property :version,           String, default: '9.6'
+property :init_db,           [true, false], default: true
+property :setup_repo,        [true, false], default: true
+property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
+property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.conf" }
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
-property :password, [String, nil], default: 'generate'
-property :port, [String, Integer], default: 5432
+property :password,          [String, nil], default: 'generate'
+property :port,              [String, Integer], default: 5432
+property :initdb_locale,     String, default: 'UTF-8'
 
 action :install do
   node.run_state['postgresql'] ||= {}
@@ -35,9 +37,7 @@ action :install do
 
   package server_pkg_name
 
-  find_resource(:service, 'postgresql')
-
-  if platform_family?('rhel', 'fedora', 'amazon')
+  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db && !initialized
     db_command = rhel_init_db_command(new_resource.version.delete('.'))
     if db_command
       execute 'init_db' do
@@ -52,8 +52,21 @@ action :install do
     end
   end
 
-  log 'Force service start after package installation' do
-    notifies :start, 'service[postgresql]', :immediately
+  file "#{data_dir}/initialized.txt" do
+    content   'Database initialized'
+    mode      '0744'
+  end
+
+  directory "/usr/share/postgresql/#{new_resource.version}/" do
+    user  'postgres'
+    group 'postgres'
+    only_if { platform_family?('debian') && node['platform_version'].to_f == 7 }
+  end
+
+  service 'postgresql' do
+    service_name platform_service_name
+    supports restart: true, status: true, reload: true
+    action [:enable, :start]
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
@@ -64,7 +77,8 @@ action :install do
     echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
-    only_if { node['postgresql']['assign_postgres_password'] }
+    not_if { initialized }
+    only_if { new_resource.password.eql? 'generate' }
   end
 end
 

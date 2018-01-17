@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-property :version, String, default: '9.6'
+property :version,    String, default: '9.6'
 property :setup_repo, [true, false], default: true
 
 action :install do

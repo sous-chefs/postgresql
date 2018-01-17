@@ -1,10 +1,6 @@
 [Service]
-<% if node['postgresql']['use_pgdg_packages'] %>
-.include /usr/lib/systemd/system/postgresql-<%= node['postgresql']['version'] %>.service
-<% else %>
-.include /usr/lib/systemd/system/postgresql.service
-<% end %>
+.include /usr/lib/systemd/system/<%= @svc_name %>.service
 
 Environment=
-Environment=PGPORT=<%= node['postgresql']['config']['port'] %>
-Environment=PGDATA=<%= node['postgresql']['config']['data_directory'] %>
+Environment=PGPORT=<%= @port %>
+Environment=PGDATA=<%= @data_dir %>

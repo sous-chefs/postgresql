@@ -283,7 +283,7 @@ module PostgresqlCookbook
     #           Note an empty output could mean psql couldn't connect.
     # This is easiest for 1-field (1-row, 1-col) results, otherwise
     # it will be complex to parse the results.
-    def execute_sql(query, db_name = node['postgresql']['database_name'])
+    def execute_sql(query, db_name)
       # query could be a String or an Array of String
       statement = query.is_a?(String) ? query : query.join("\n")
       cmd = shell_out("psql -q --tuples-only --no-align -d #{db_name} -f -",

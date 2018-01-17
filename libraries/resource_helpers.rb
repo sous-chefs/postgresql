@@ -41,6 +41,10 @@ module PostgresqlCookbook
     def platform_service_name
       platform_family?('rhel', 'amazon', 'fedora') ? "postgresql-#{node.run_state['postgresql']['version']}" : 'postgresql'
     end
+
+    def psql(database, query)
+      "psql -d #{database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
+    end
   end
 end
 
