@@ -9,6 +9,7 @@ postgresql_server_install 'package' do
 end
 
 postgresql_server_conf 'PostgreSQL Config' do
+  version '9.5'
   notifies :reload, 'service[postgresql]'
 end
 
