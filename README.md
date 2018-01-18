@@ -281,7 +281,7 @@ local   all             all                                     peer
 
 _None_
 
-There is no recipes anymore. Please use cookbook's resources to install, config and manager your PostgreSQL server.   
+There is no recipes anymore. Please use cookbook's resources to install, config and manage your PostgreSQL server.   
 
 
 ## Usage
