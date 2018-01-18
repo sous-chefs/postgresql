@@ -63,14 +63,11 @@ end
 
 The following attributes are set based on the platform, see the `attributes/default.rb` file for default values.
 
-- `node['postgresql']['version']` - version of postgresql to manage
-- `node['postgresql']['dir']` - home directory of where postgresql data and configuration lives.
 - `node['postgresql']['client']['packages']` - An array of package names that should be installed on "client" systems.
 - `node['postgresql']['server']['packages']` - An array of package names that should be installed on "server" systems.
 - `node['postgresql']['contrib']['packages']` - An array of package names that could be installed on "server" systems for useful sysadmin tools.
 - `node['postgresql']['enable_pgdg_apt']` - Whether to enable the apt repo by the PostgreSQL Global Development Group, which contains newer versions of PostgreSQL.
 - `node['postgresql']['enable_pgdg_yum']` - Whether to enable the yum repo by the PostgreSQL Global Development Group, which contains newer versions of PostgreSQL.
-- `node['postgresql']['initdb_locale']` - Sets the default locale for the database cluster. If this attribute is not specified, the locale is inherited from the environment that initdb runs in. Sometimes you must have a system locale that is not what you want for your database cluster, and this attribute addresses that scenario. Valid only for EL-family distros (RedHat/Centos/etc.).
 
 The following attributes are generated in `recipe[postgresql::server]`.
 
@@ -123,10 +120,10 @@ This resource install PostgreSQL client packages.
 
 #### Properties
 
-Name       | Types   | Description                                        | Default  | Required?
----------- | ------- | -------------------------------------------------- | -------- | ---------
-version    | String  | Version of PostgreSQL to install                   | '9.6'    | no
-setup_repo | Boolean | Define if you want to add the PostgreSQL repo      | true     | no
+Name         | Types   | Description                                        | Default  | Required?
+------------ | ------- | -------------------------------------------------- | -------- | ---------
+`version`    | String  | Version of PostgreSQL to install                   | '9.6'    | no
+`setup_repo` | Boolean | Define if you want to add the PostgreSQL repo      | true     | no
 
 #### Examples
 
@@ -147,15 +144,15 @@ This resource install PostgreSQL client and server packages.
 
 #### Properties
 
-Name              | Types           | Description                                    | Default                                  | Required?
------------------ | --------------- | ---------------------------------------------- | ---------------------------------------- | ---------
-version           | String          | Version of PostgreSQL to install               | '9.6'                                    | no
-setup_repo        | Boolean         | Define if you want to add the PostgreSQL repo  | true                                     | no
-hba_file          | String          | Path of pg_hba.conf file                       | '<default_os_path>/pg_hba.conf'          | no
-ident_file        | String          | Path of pg_ident.conf file                     | '<default_os_path>/pg_ident.conf'        | no
-external_pid_file | String          | Path of PID file                               | '/var/run/postgresql/<version>-main.pid' | no
-password          | String, nil     | Set postgres user password                     | 'generate'                               | no
-port              | String, Integer | Set listen port of postgresql service          | 5432                                     | no
+Name                | Types           | Description                                    | Default                                  | Required?
+------------------- | --------------- | ---------------------------------------------- | ---------------------------------------- | ---------
+`version`           | String          | Version of PostgreSQL to install               | '9.6'                                    | no
+`setup_repo`        | Boolean         | Define if you want to add the PostgreSQL repo  | true                                     | no
+`hba_file`          | String          | Path of pg_hba.conf file                       | '<default_os_path>/pg_hba.conf'          | no
+`ident_file`        | String          | Path of pg_ident.conf file                     | '<default_os_path>/pg_ident.conf'        | no
+`external_pid_file` | String          | Path of PID file                               | '/var/run/postgresql/<version>-main.pid' | no
+`password`          | String, nil     | Set postgres user password                     | 'generate'                               | no
+`port`              | String, Integer | Set listen port of postgresql service          | 5432                                     | no
 
 
 #### Examples
@@ -177,14 +174,15 @@ end
 
 #### Properties
 
-Name                 | Types           | Description                       | Default                                  | Required?
--------------------- | --------------- | --------------------------------- | ---------------------------------------- | ---------
-version              | String          | Version of PostgreSQL to install  | '9.6'                                    | no
-data_directory       | String          | Path of postgresql data directory | '<default_os_data_path>'                 | no
-hba_file             | String          | Path of pg_hba.conf file          | '<default_os_conf_path>/pg_hba.conf'     | no
-ident_file           | String          | Path of pg_ident.conf file        | '<default_os_conf_path>/pg_ident.conf'   | no
-external_pid_file    | String          | Path of PID file                  | '/var/run/postgresql/<version>-main.pid' | no
-stats_temp_directory | String, nil     | Path of stats file                | 'generate'                               | no
+Name                   | Types           | Description                                 | Default                                  | Required?
+---------------------- | --------------- | ------------------------------------------- | ---------------------------------------- | ---------
+`version`              | String          | Version of PostgreSQL to install            | '9.6'                                    | no
+`data_directory`       | String          | Path of postgresql data directory           | '<default_os_data_path>'                 | no
+`hba_file`             | String          | Path of pg_hba.conf file                    | '<default_os_conf_path>/pg_hba.conf'     | no
+`ident_file`           | String          | Path of pg_ident.conf file                  | '<default_os_conf_path>/pg_ident.conf'   | no
+`external_pid_file`    | String          | Path of PID file                            | '/var/run/postgresql/<version>-main.pid' | no
+`stats_temp_directory` | String, nil     | Path of stats file                          | 'generate'                               | no
+`notification`         | Symbol          | How to notify Postgres of the access change | ':restart'                               | yes
 
 
 #### Examples
@@ -239,16 +237,16 @@ This resource uses the accumulator pattern to build up the `pg_hba.conf` file vi
 
 Name            | Types       | Description                                                                               | Default           | Required?
 --------------- | ----------- | ----------------------------------------------------------------------------------------- | ----------------- | ---------
-name            | String      | Name of the access resource, this is left as a comment inside the `pg_hba` config         | Resource name     | yes
-source          | String      | The cookbook template filename if you want to use your own custom template                | 'pg_hba.conf.erb' | yes
-cookbook        | String      | The cookbook to look in for the template source                                           | 'postgresql'      | yes
-comment         | String, nil | A comment to leave above the entry in `pg_hba`                                            | nil               | no
+`name`          | String      | Name of the access resource, this is left as a comment inside the `pg_hba` config         | Resource name     | yes
+`source`        | String      | The cookbook template filename if you want to use your own custom template                | 'pg_hba.conf.erb' | yes
+`cookbook`      | String      | The cookbook to look in for the template source                                           | 'postgresql'      | yes
+`comment`       | String, nil | A comment to leave above the entry in `pg_hba`                                            | nil               | no
 `access_type`   | String      | The type of access, e.g. local or host                                                    | 'local'           | yes
 `access_db`     | String      | The database to access. Can use 'all' for all databases                                   | 'all'             | yes
 `access_user`   | String      | The user accessing the database. Can use 'all' for any user                               | 'all'             | yes
 `access_addr`   | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil               | yes
 `access_method` | String      | Authentication method to use                                                              | 'ident'           | yes
-notification    | Symbol      | How to notify Postgres of the access change.                                              | `:reload`         | yes
+`notification`  | Symbol      | How to notify Postgres of the access change.                                              | ':reload'         | yes
 
 #### Examples
 
@@ -281,24 +279,14 @@ local   all             all                                     peer
 
 ## Recipes
 
-### default
+_None_
 
-Install PostgreSQL client only.   
+There is no recipes anymore. Please use cookbook's resources to install, config and manage your PostgreSQL server.   
 
-### client
 
-Installs the packages defined in the `node['postgresql']['client']['packages']` attribute.
+## Usage
 
-### server
-
-Install and configure PostgreSQL client and server:
-
-- install appropriate packages depends on OS
-- generates a strong default password (via `openssl`) for `postgres` or apply postgres password from attribute
-- manages the `postgresql.conf` file.
-- manages the `pg_hba.conf` file.
-   
-By default, server_install resource install PostgreSQL 9.6 version. If you want to change any parameters, we recommend you to create your own cookbook and call needed resources with your own parameters.
+To install and configure your PostgreSQL instance you need to create your own cookbook and call needed resources with your own parameters.
 
 Example:   
 cookbooks/my_postgresql/recipes/default.rb
@@ -315,7 +303,7 @@ postgresql_server_install 'Postgresql Server' do
 end
 
 postgresql_server_conf 'PostgreSQL Config' do
-  notifies :restart, 'service[postgresql]'
+  notification :reload
 end
 
 service 'postgresql' do
@@ -323,23 +311,26 @@ service 'postgresql' do
   supports restart: true, status: true, reload: true
   action [:enable, :start]
 end
-```  
+```
 
-## Usage
-
-On systems that need to connect to a PostgreSQL database, add to a run list `recipe[postgresql]` or `recipe[postgresql::client]`.
-
-On systems that should be PostgreSQL servers, use `recipe[postgresql::server]` on a run list. This recipe does set a password for the `postgres` user. If you're using `chef server`, if the attribute `node['postgresql']['password']['postgres']` is not found, the recipe generates a random password. If you're using `chef-solo`, you'll need to set the attribute `node['postgresql']['password']['postgres']` in your node's `json_attribs` file or in a role.
+This cookbook recipe randomly generate a password for postgres user. If you want to set/change the postgres's password you can define `node['postgresql']['password']['postgres']` attribute.
+The PostgreSQL server is restarted when the `postgresql.conf` configuration file change. This can be changed by set `notification` parameter to `:reload` in `postgresql_server_conf` resource call.
 
 On Debian family systems, SSL will be enabled, as the packages on Debian/Ubuntu also generate the SSL certificates. If you use another platform and wish to use SSL in postgresql, then generate your SSL certificates and distribute them in your own cookbook, and set the `node['postgresql']['config']['ssl']` attribute to true in your role/cookboook/node.
 
-On server systems, the postgres server is restarted when a configuration file changes. This can be changed to reload only by setting the following attribute:
+## Contributing
 
-```ruby
-node['postgresql']['server']['config_change_notify'] = :reload
-```
+Please refer to each project's style guidelines and guidelines for submitting patches and additions. In general, we follow the "fork-and-pull" Git workflow.
 
-**Note**: This attribute is broken and we decide to reload service instead of restart service after a configuration change. We will try to fix to let you the choice of service action. 
+ 1. **Fork** the repo on GitHub
+ 2. **Clone** the project to your own machine
+ 3. **Commit** changes to your own branch
+ 4. **Push** your work back up to your fork
+ 5. Submit a **Pull request** so that we can review your changes
+
+NOTE: Be sure to merge the latest from "upstream" before making a pull request!
+
+[Contribution informations for this project](CONTRIBUTING.md)
 
 ## Contributing
 

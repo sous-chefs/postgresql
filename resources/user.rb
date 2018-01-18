@@ -23,13 +23,14 @@ property :replication,        [true, false], default: false
 property :login,              [true, false], default: true
 property :password,           String
 property :encrypted_password, String
+property :valid_until,        String
 
 action :create do
   execute "create postgresql user #{new_resource.name}" do # ~FC009
     user 'postgres'
     command %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
     sensitive true
-    not_if { user_exists?(new_resource) }
+    not_if { slave? || user_exists?(new_resource) }
   end
 end
 
@@ -38,6 +39,7 @@ action :update do
     user 'postgres'
     command %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
     sensitive true
+    not_if { slave? }
     only_if { user_exists?(new_resource) }
   end
 end
@@ -47,6 +49,7 @@ action :drop do
     user 'postgres'
     command %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.name}\\\"')
     sensitive true
+    not_if { slave? }
     only_if { user_exists?(new_resource) }
   end
 end
@@ -61,7 +64,7 @@ action_class do
   end
 
   def role_sql(new_resource)
-    sql = %(\\\"#{new_resource.name}\\\" )
+    sql = %(\\\"#{new_resource.name}\\\" WITH )
 
     %w(superuser createdb createrole inherit replication login).each do |perm|
       sql << "#{'NO' unless new_resource.send(perm)}#{perm.upcase} "
@@ -71,6 +74,12 @@ action_class do
              "ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'"
            elsif new_resource.password
              "PASSWORD '#{new_resource.password}'"
+           else
+             ''
+           end
+
+    sql << if new_resource.valid_until
+             " VALID UNTIL '#{new_resource.valid_until}'"
            else
              ''
            end

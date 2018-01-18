@@ -45,6 +45,10 @@ module PostgresqlCookbook
     def psql(database, query)
       "psql -d #{database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
     end
+
+    def slave?
+      ::File.exist? "#{data_dir}/recovery.conf"
+    end
   end
 end
 
