@@ -325,22 +325,6 @@ service 'postgresql' do
 end
 ```  
 
-## Usage
-
-On systems that need to connect to a PostgreSQL database, add to a run list `recipe[postgresql]` or `recipe[postgresql::client]`.
-
-On systems that should be PostgreSQL servers, use `recipe[postgresql::server]` on a run list. This recipe does set a password for the `postgres` user. If you're using `chef server`, if the attribute `node['postgresql']['password']['postgres']` is not found, the recipe generates a random password. If you're using `chef-solo`, you'll need to set the attribute `node['postgresql']['password']['postgres']` in your node's `json_attribs` file or in a role.
-
-On Debian family systems, SSL will be enabled, as the packages on Debian/Ubuntu also generate the SSL certificates. If you use another platform and wish to use SSL in postgresql, then generate your SSL certificates and distribute them in your own cookbook, and set the `node['postgresql']['config']['ssl']` attribute to true in your role/cookboook/node.
-
-On server systems, the postgres server is restarted when a configuration file changes. This can be changed to reload only by setting the following attribute:
-
-```ruby
-node['postgresql']['server']['config_change_notify'] = :reload
-```
-
-**Note**: This attribute is broken and we decide to reload service instead of restart service after a configuration change. We will try to fix to let you the choice of service action. 
-
 ## Contributing
 
 Please refer to each project's style guidelines and guidelines for submitting patches and additions. In general, we follow the "fork-and-pull" Git workflow.
