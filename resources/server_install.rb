@@ -77,7 +77,7 @@ action :install do
     echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
-    not_if { initialized }
+    not_if { initialized? }
     only_if { new_resource.password.eql? 'generate' }
   end
 end
