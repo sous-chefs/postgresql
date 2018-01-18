@@ -27,7 +27,7 @@ action :create do
     code psql("CREATE EXTENSION IF NOT EXISTS \"#{new_resource.extension}\"")
     user 'postgres'
     action :run
-    not_if { is_slave? && extension_installed? }
+    not_if { slave? || extension_installed? }
   end
 end
 
@@ -36,7 +36,7 @@ action :drop do
     code psql("DROP EXTENSION IF EXISTS \"#{new_resource.extension}\"")
     user 'postgres'
     action :run
-    not_if { is_slave? }
+    not_if { slave? }
     only_if { extension_installed? }
   end
 end
