@@ -28,7 +28,6 @@ property :notification,  Symbol, required: true, default: :reload
 
 action :grant do
   with_run_context :root do # ~FC037
-    find_resource(:service, 'postgresql')
     edit_resource(:template, "#{conf_dir}/pg_hba.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
@@ -46,7 +45,7 @@ action :grant do
       }
       action :nothing
       delayed_action :create
-      notifies new_resource.notification, 'service[postgresql]'
+      notifies new_resource.notification, postgresql_service
     end
   end
 end
