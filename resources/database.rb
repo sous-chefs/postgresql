@@ -15,18 +15,13 @@
 # limitations under the License.
 #
 
-# name property should take the form:
-# database/extension
-
 property :database,  String, name_property: true
 property :user,      String, default: 'postgres'
-property :encoding,  String, default: 'UTF-8'
-property :locale,    String, default: 'en_US.UTF-8'
 property :template,  String, default: ''
 property :host,      String
 property :port,      Integer, default: 5432
 property :encoding,  String, default: 'UTF-8'
-property :template,  String, default: 'template0'
+property :locale,    String, default: 'en_US.UTF-8'
 property :owner,     String
 
 action :create do
@@ -43,7 +38,7 @@ action :create do
   bash "Create Database #{new_resource.database}" do
     code createdb
     user new_resource.user
-    not_if { database_exists?(new_resource) }
+    not_if { is_slave? && database_exists?(new_resource) }
   end
 end
 
@@ -58,6 +53,7 @@ action :drop do
     bash "drop postgresql database #{new_resource.database})" do
       user 'postgres'
       command dropdb
+      not_if { is_slave? }
       only_if { database_exists?(new_resource) }
     end
   end
