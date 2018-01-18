@@ -42,7 +42,7 @@ action :install do
     if db_command
       execute 'init_db' do
         command db_command
-        not_if { initialized }
+        not_if { initialized? }
       end
     else # we don't know about this platform
       log 'InitDB' do
@@ -52,20 +52,24 @@ action :install do
     end
   end
 
-  log 'Force service start after package installation' do
-    notifies :start, 'service[postgresql]', :immediately
+  service 'postgresql' do
+    service_name lazy { platform_service_name }
+    supports restart: true, status: true, reload: true
+    action [:enable, :start]
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
-  # Generate Password
+
+  # Generate a ramdom password or set the a password defined with node['postgresql']['password']['postgres'].
+  # The password is set or change at each run. It is good for security if you choose to set a random password and
+  # allow you to change the postgres password if needed.
   bash 'generate-postgres-password' do
     user 'postgres'
     code <<-EOH
     echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
-    not_if { initialized }
-    only_if { new_resource.password.eql? 'generate' }
+    only_if { node['postgresql']['assign_postgres_password'] }
   end
 end
 
@@ -80,7 +84,7 @@ action_class do
   end
 
   def initialized?
-    return true if ::File.exist?("#{data_dir}/initialized.txt")
+    return true if ::File.exist?("#{data_dir}/PG_VERSION")
     false
   end
 
