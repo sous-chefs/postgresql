@@ -59,18 +59,6 @@ end
 
 **Note**: The default notification for the new `postgresql_access` resource is now `:reload` which is the recommended method of notifying PostgreSQL of access changes without requiring a full database restart. Before, the access template would defer to the notification method specified by node['postgresql']['server']['config_change_notify']
 
-## Attributes
-
-The following attributes are set based on the platform, see the `attributes/default.rb` file for default values.
-
-- `node['postgresql']['client']['packages']` - An array of package names that should be installed on "client" systems.
-- `node['postgresql']['server']['packages']` - An array of package names that should be installed on "server" systems.
-- `node['postgresql']['contrib']['packages']` - An array of package names that could be installed on "server" systems for useful sysadmin tools.
-- `node['postgresql']['enable_pgdg_apt']` - Whether to enable the apt repo by the PostgreSQL Global Development Group, which contains newer versions of PostgreSQL.
-- `node['postgresql']['enable_pgdg_yum']` - Whether to enable the yum repo by the PostgreSQL Global Development Group, which contains newer versions of PostgreSQL.
-
-The following attributes are generated in `recipe[postgresql::server]`.
-
 ## Configuration
 
 The `postgresql.conf` file is dynamically generated from attributes. Each key in `node['postgresql']['config']` is a postgresql configuration directive, and will be rendered in the config file. For example, the attribute:
@@ -168,21 +156,23 @@ end
 
 ### postgresql_server_conf
 
+This resource setup postgresql.conf server file.
+
 #### Actions
 
 - `modify` - (default) Manager PostgreSQL configuration file (postgresql.conf)   
 
 #### Properties
 
-Name                   | Types           | Description                                 | Default                                  | Required?
----------------------- | --------------- | ------------------------------------------- | ---------------------------------------- | ---------
-`version`              | String          | Version of PostgreSQL to install            | '9.6'                                    | no
-`data_directory`       | String          | Path of postgresql data directory           | '<default_os_data_path>'                 | no
-`hba_file`             | String          | Path of pg_hba.conf file                    | '<default_os_conf_path>/pg_hba.conf'     | no
-`ident_file`           | String          | Path of pg_ident.conf file                  | '<default_os_conf_path>/pg_ident.conf'   | no
-`external_pid_file`    | String          | Path of PID file                            | '/var/run/postgresql/<version>-main.pid' | no
-`stats_temp_directory` | String, nil     | Path of stats file                          | 'generate'                               | no
-`notification`         | Symbol          | How to notify Postgres of the access change | ':restart'                               | yes
+Name                   | Types  | Description                                 | Default                                  | Required?
+---------------------- | ------ | ------------------------------------------- | ---------------------------------------- | ---------
+`version`              | String | Version of PostgreSQL to install            | '9.6'                                    | no
+`data_directory`       | String | Path of postgresql data directory           | '<default_os_data_path>'                 | no
+`hba_file`             | String | Path of pg_hba.conf file                    | '<default_os_conf_path>/pg_hba.conf'     | no
+`ident_file`           | String | Path of pg_ident.conf file                  | '<default_os_conf_path>/pg_ident.conf'   | no
+`external_pid_file`    | String | Path of PID file                            | '/var/run/postgresql/<version>-main.pid' | no
+`stats_temp_directory` | String | Path of stats file                          | '/var/run/postgresql/<version>-main.pg_stat_tmp'                               | no
+`notification`         | Symbol | How to notify Postgres of the access change | :restart                                 | yes
 
 
 #### Examples
@@ -192,7 +182,7 @@ To setup your PostgreSQL configuration with a specific data directory. If you ha
 postgresql_server_conf 'My PostgreSQL Config' do
   vesion '9.5'
   data_directory '/data/postgresql/9.5/main'
-  notifies :reload, 'service[postgresql]'
+  notification :reload
 end
 ```
 
@@ -208,10 +198,10 @@ This resource manages postgresql extensions with a given database to ease instal
 
 #### Properties
 
-Name      | Types  | Description                                        | Default          | Required?
---------- | ------ | -------------------------------------------------- | ---------------- | ---------
-database  | String | Name of the database to install the extention into | Name of resource | yes
-extention | String | Name of the extention to install the database      | Name of resource | yes
+Name        | Types  | Description                                        | Default          | Required?
+----------- | ------ | -------------------------------------------------- | ---------------- | ---------
+`database`  | String | Name of the database to install the extention into | Name of resource | yes
+`extention` | String | Name of the extention to install the database      | Name of resource | yes
 
 #### Examples
 
@@ -246,11 +236,11 @@ Name            | Types       | Description                                     
 `access_user`   | String      | The user accessing the database. Can use 'all' for any user                               | 'all'             | yes
 `access_addr`   | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil               | yes
 `access_method` | String      | Authentication method to use                                                              | 'ident'           | yes
-`notification`  | Symbol      | How to notify Postgres of the access change.                                              | ':reload'         | yes
+`notification`  | Symbol      | How to notify Postgres of the access change.                                              | :reload           | yes
 
 #### Examples
 
-To grant access to the postgresql user with ident authentication:
+To grant access to the postgresql user with ident authentication:   
 
 ```ruby
 postgresql_access 'local_postgres_superuser' do
@@ -277,6 +267,77 @@ local   all             postgres                                ident
 local   all             all                                     peer
 ```
 
+
+### postgresql_database
+
+This resource manages PostgreSQL databases.   
+
+#### Actions
+
+- `create` - (default) Creates the given database.   
+- `drop` - Drops the given database.   
+
+#### Properties
+
+Name       | Types   | Description                                                         | Default             | Required?
+---------- | ------- | ------------------------------------------------------------------- | ------------------- | ---------
+`database` | String  | Name of the database to create                                      | Name of resource    | yes
+`user`     | String  | User which run psql command                                         | 'postgres'          | no
+`template` | String  | Template used to create the new database                            | 'template1'         | no
+`host`     | String  | Define the host server where the database creation will be executed | Not set (localhost) | no
+`port`     | Integer | Define the port of Postgresql server                                | 5432                | no
+`encoding` | String  | Define database encoding                                            | 'UTF-8'             | no
+`locale`   | String  | Define database locale                                              | 'en_US.UTF-8'       | no
+`owner`    | String  | Define the owner of the database                                    | Not set             | no
+
+#### Examples
+
+To create database named 'my_app' with owner 'user1':
+
+```ruby
+postgresql_database 'my_app' do
+  owner 'user1'
+end
+```
+
+
+### postgresql_user
+
+This resource manage PostgreSQL users.   
+
+#### Actions
+
+- `create` - (default) Creates the given user with default or given privileges.   
+- `update` - Update user privilieges.   
+- `drop` - Deletes the given user.   
+
+#### Properties
+
+Name                 | Types   | Description                                     | Default | Required?
+-------------------- | ------- | ----------------------------------------------- | ------- | ---------
+`superuser`          | Boolean | Define if user needs superuser role             | false   | no
+`createdb`           | Boolean | Define if user needs createdb role              | false   | no
+`createrole`         | Boolean | Define if user needs createrole role            | false   | no
+`inherit`            | Boolean | Define if user inherits the privileges of roles | true    | no
+`replication`        | Boolean | Define if user needs replication role           | false   | no
+`login`              | Boolean | Define if user can login                        | true    | no
+`password`           | String  | Set user's password                             | Not Set | no
+`encrypted_password` | String  | Set user's password with an hashed password     | Not set | no
+`valid_until`        | String  | Define an account expiration date               | Not set | no
+
+#### Examples
+
+Create an user `user1` with a password, with `createdb` role and set an expiration date to 
+
+```ruby
+postgresql_user 'user1' do
+  password 'UserP4ssword'
+  createdb true
+  valid_until '2018-12-31'
+end
+```
+
+
 ## Recipes
 
 _None_
@@ -299,21 +360,15 @@ end
 postgresql_server_install 'Postgresql Server' do
   version '9.5'
   setup_repo false
-  password node['postgresql']['password']['postgres']
+  password 'P0sgresP4ssword'
 end
 
 postgresql_server_conf 'PostgreSQL Config' do
   notification :reload
 end
-
-service 'postgresql' do
-  service_name lazy { platform_service_name }
-  supports restart: true, status: true, reload: true
-  action [:enable, :start]
-end
 ```
 
-This cookbook recipe randomly generate a password for postgres user. If you want to set/change the postgres's password you can define `node['postgresql']['password']['postgres']` attribute.
+This cookbook recipe randomly generate a password for postgres user. If you want to set/change the postgres's password you can set `password` parameter of server_install resource.
 The PostgreSQL server is restarted when the `postgresql.conf` configuration file change. This can be changed by set `notification` parameter to `:reload` in `postgresql_server_conf` resource call.
 
 On Debian family systems, SSL will be enabled, as the packages on Debian/Ubuntu also generate the SSL certificates. If you use another platform and wish to use SSL in postgresql, then generate your SSL certificates and distribute them in your own cookbook, and set the `node['postgresql']['config']['ssl']` attribute to true in your role/cookboook/node.
