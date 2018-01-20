@@ -148,7 +148,7 @@ Name                | Types           | Description                             
 To install PostgreSQL server, set you own postgres password and set another service port.   
 ```
 postgresql_server_install 'My Postgresql Server install' do
-  password 'MyP4ssw0d
+  password 'MyP4ssw0d'
   port 5433
 end
 ```
@@ -164,15 +164,15 @@ This resource setup postgresql.conf server file.
 
 #### Properties
 
-Name                   | Types  | Description                                 | Default                                  | Required?
----------------------- | ------ | ------------------------------------------- | ---------------------------------------- | ---------
-`version`              | String | Version of PostgreSQL to install            | '9.6'                                    | no
-`data_directory`       | String | Path of postgresql data directory           | '<default_os_data_path>'                 | no
-`hba_file`             | String | Path of pg_hba.conf file                    | '<default_os_conf_path>/pg_hba.conf'     | no
-`ident_file`           | String | Path of pg_ident.conf file                  | '<default_os_conf_path>/pg_ident.conf'   | no
-`external_pid_file`    | String | Path of PID file                            | '/var/run/postgresql/<version>-main.pid' | no
-`stats_temp_directory` | String | Path of stats file                          | '/var/run/postgresql/<version>-main.pg_stat_tmp'                               | no
-`notification`         | Symbol | How to notify Postgres of the access change | :restart                                 | yes
+Name                   | Types  | Description                                 | Default                                          | Required?
+---------------------- | ------ | ------------------------------------------- | ------------------------------------------------ | ---------
+`version`              | String | Version of PostgreSQL to install            | '9.6'                                            | no
+`data_directory`       | String | Path of postgresql data directory           | '<default_os_data_path>'                         | no
+`hba_file`             | String | Path of pg_hba.conf file                    | '<default_os_conf_path>/pg_hba.conf'             | no
+`ident_file`           | String | Path of pg_ident.conf file                  | '<default_os_conf_path>/pg_ident.conf'           | no
+`external_pid_file`    | String | Path of PID file                            | '/var/run/postgresql/<version>-main.pid'         | no
+`stats_temp_directory` | String | Path of stats file                          | '/var/run/postgresql/<version>-main.pg_stat_tmp' | no
+`notification`         | Symbol | How to notify Postgres of the access change | :restart                                         | yes
 
 
 #### Examples
