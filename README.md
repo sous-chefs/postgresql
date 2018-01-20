@@ -160,7 +160,7 @@ Name                | Types           | Description                             
 To install PostgreSQL server, set you own postgres password and set another service port.   
 ```
 postgresql_server_install 'My Postgresql Server install' do
-  password 'MyP4ssw0d
+  password 'MyP4ssw0d'
   port 5433
 end
 ```
