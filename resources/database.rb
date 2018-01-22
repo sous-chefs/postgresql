@@ -17,7 +17,7 @@
 
 property :database,  String, name_property: true
 property :user,      String, default: 'postgres'
-property :template,  String, default: ''
+property :template,  String, default: 'template1'
 property :host,      String
 property :port,      Integer, default: 5432
 property :encoding,  String, default: 'UTF-8'

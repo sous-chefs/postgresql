@@ -52,10 +52,9 @@ action :install do
     end
   end
 
-  service 'postgresql' do
-    service_name lazy { platform_service_name }
-    supports restart: true, status: true, reload: true
-    action [:enable, :start]
+  log 'Enable and start PostgreSQL service' do
+    notifies :enable, postgresql_service, :immediately
+    notifies :start, postgresql_service, :immediately
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password

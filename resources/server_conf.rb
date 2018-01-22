@@ -25,8 +25,6 @@ property :stats_temp_directory, String, default: lazy { "/var/run/postgresql/#{v
 property :notification, Symbol, required: true, default: :restart
 
 action :modify do
-  find_resource(:service, 'postgresql')
-
   template "#{conf_dir}/postgresql.conf" do # ~FC037
     cookbook 'postgresql'
     source 'postgresql.conf.erb'
@@ -40,7 +38,7 @@ action :modify do
       external_pid_file: new_resource.external_pid_file,
       stats_temp_directory: new_resource.stats_temp_directory
     )
-    notifies new_resource.notification, 'service[postgresql]'
+    notifies new_resource.notification, postgresql_service
   end
 end
 
