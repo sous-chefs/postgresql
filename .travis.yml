@@ -21,6 +21,7 @@ env:
   global:
   - KITCHEN_YAML=.kitchen.yml
   - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
+  - CHEF_VERSION=13
   matrix:
   - INSTANCE=client-install-centos-6
   - INSTANCE=client-install-centos-7
