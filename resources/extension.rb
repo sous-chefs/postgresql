@@ -16,9 +16,6 @@
 # limitations under the License.
 #
 
-# name property should take the form:
-# database/extension
-
 property :database,  String, required: true
 property :extension, String, name_property: true
 property :old_version, String
