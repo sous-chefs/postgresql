@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-property :client_version, 				String, default: '9.6'
-property :setup_repo,    					[true, false], default: true
+property :client_version, String, default: '9.6'
+property :setup_repo, [true, false], default: true
 # gem options
-property :version,       					[String, nil], default: '0.21.0'
-property :clear_sources,          [true, false]
+property :version, [String, nil], default: '0.21.0'
+property :clear_sources, [true, false]
 property :include_default_source, [true, false]
-property :gem_binary,             String
-property :options,                [String, Hash]
-property :timeout,                Integer, default: 300
-property :ruby_binary,            String
-property :source,        					String
+property :gem_binary, String
+property :options, [String, Hash]
+property :timeout, Integer, default: 300
+property :ruby_binary, String
+property :source,	String
 
 action :install do
   # Needed for the client

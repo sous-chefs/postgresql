@@ -105,9 +105,9 @@ module PostgresqlCookbook
 
       if posM.nil? || posD.nil? || posY.nil?
         return 'mdy'
-        elsif (posY < posM && posM < posD)
+      elsif posY < posM && posM < posD
         return 'ymd'
-        elsif (posD < posM)
+      elsif posD < posM
         return 'dmy'
       end
       'mdy'
