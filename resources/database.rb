@@ -29,7 +29,7 @@ action :create do
   createdb << " -U #{new_resource.user}" if new_resource.user
   createdb << " -E #{new_resource.encoding}" if new_resource.encoding
   createdb << " -l #{new_resource.locale}" if new_resource.locale
-  createdb << " -T #{new_resource.template}" unless new_resource.template.empty? 
+  createdb << " -T #{new_resource.template}" unless new_resource.template.empty?
   createdb << " -h #{new_resource.host}" if new_resource.host
   createdb << " -p #{new_resource.port}" if new_resource.port
   createdb << " -O #{new_resource.owner}" if new_resource.owner
