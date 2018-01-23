@@ -39,6 +39,7 @@ platforms:
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
       - RUN /usr/bin/apt-get -y install sudo
+      - RUN /usr/bin/apt-get -y install ca-certificates
 
 - name: centos-6
   driver:
@@ -62,7 +63,7 @@ platforms:
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
       - RUN /usr/bin/apt-get -y install sudo
-      - RUN /usr/bin/apt-get -y install ca-certificates
+      - RUN /usr/bin/apt-get -y dist-upgrade
 
 - name: ubuntu-16.04
   driver:
@@ -71,4 +72,4 @@ platforms:
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
       - RUN /usr/bin/apt-get -y install sudo
-      - RUN /usr/bin/apt-get -y install ca-certificates
+      - RUN /usr/bin/apt-get -y dist-upgrade
