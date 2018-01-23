@@ -202,6 +202,7 @@ Name        | Types  | Description                                        | Defa
 ----------- | ------ | -------------------------------------------------- | ---------------- | ---------
 `database`  | String | Name of the database to install the extention into | Name of resource | yes
 `extention` | String | Name of the extention to install the database      | Name of resource | yes
+`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query      | None | no
 
 #### Examples
 

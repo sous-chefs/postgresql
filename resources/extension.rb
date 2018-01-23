@@ -21,10 +21,13 @@
 
 property :database,  String, required: true
 property :extension, String, name_property: true
+property :old_version, String
 
 action :create do
+  create_query = "CREATE EXTENSION IF NOT EXISTS \"#{new_resource.extension}\""
+  create_query << " FROM \"#{new_resource.old_version}\"" if property_is_set?(:old_version)
   bash "CREATE EXTENSION #{new_resource.name}" do
-    code psql("CREATE EXTENSION IF NOT EXISTS \"#{new_resource.extension}\"")
+    code psql(create_query)
     user 'postgres'
     action :run
     not_if { slave? || extension_installed? }
