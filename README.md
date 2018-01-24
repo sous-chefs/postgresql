@@ -177,7 +177,7 @@ Name                   | Types  | Description                                 | 
 
 #### Examples
 
-To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.   
+To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.
 ```
 postgresql_server_conf 'My PostgreSQL Config' do
   vesion '9.5'
@@ -191,7 +191,7 @@ end
 
 This resource manages postgresql extensions with a given database to ease installation/removal.
 
-**Deprecation Note:** The format `database/extension` to determine the database and extention to install has been deprecated. Please use the properties 'database' and 'extension' instead.   
+**Deprecation Note:** The format `database/extension` to determine the database and extention to install has been deprecated. Please use the properties 'database' and 'extension' instead.
 
 #### Actions
 
