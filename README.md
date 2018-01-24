@@ -100,11 +100,11 @@ Note that the `unix_socket_directory` configuration was renamed to `unix_socket_
 
 ### postgresql_client_install
 
-This resource installs PostgreSQL client packages.
+This resource installs PostgreSQL client packages.   
 
 #### Actions
 
-- `install` - (default) Install client packages
+- `install` - (default) Install client packages   
 
 #### Properties
 
@@ -115,7 +115,7 @@ Name         | Types   | Description                                        | De
 
 #### Examples
 
-To install '9.5' version:
+To install '9.5' version:   
 ```
 postgresql_client_install 'My Postgresql Client install' do
   version '9.5'
@@ -124,11 +124,11 @@ end
 
 ### postgresql_server_install
 
-This resource install PostgreSQL client and server packages.
+This resource installs PostgreSQL client and server packages.
 
 #### Actions
 
-- `install` - (default) Install client and server packages
+- `install` - (default) Install client and server packages   
 
 #### Properties
 
@@ -145,7 +145,7 @@ Name                | Types           | Description                             
 
 #### Examples
 
-To install PostgreSQL server, set you own postgres password and set another service port.
+To install PostgreSQL server, set you own postgres password and set another service port.   
 ```
 postgresql_server_install 'My Postgresql Server install' do
   password 'MyP4ssw0d'
@@ -156,11 +156,11 @@ end
 
 ### postgresql_server_conf
 
-This resource manages the postgresql.conf server file.
+This resource manages postgresql.conf configuration file.
 
 #### Actions
 
-- `modify` - (default) Manager PostgreSQL configuration file (postgresql.conf)
+- `modify` - (default) Manager PostgreSQL configuration file (postgresql.conf)   
 
 #### Properties
 
@@ -177,7 +177,7 @@ Name                   | Types  | Description                                 | 
 
 #### Examples
 
-To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.
+To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.   
 ```
 postgresql_server_conf 'My PostgreSQL Config' do
   vesion '9.5'
@@ -189,9 +189,9 @@ end
 
 ### postgresql_extention
 
-This resource manages postgresql extensions with a given database to ease installation/removal.
+This resource manages postgresql extensions with a given database to ease installation/removal.   
 
-**Deprecation Note:** The format `database/extension` to determine the database and extention to install has been deprecated. Please use the properties 'database' and 'extension' instead.
+**Deprecation Note:** The format `database/extension` to determine the database and extention to install has been deprecated. Please use the properties 'database' and 'extension' instead.   
 
 #### Actions
 
@@ -204,7 +204,7 @@ Name          | Types  | Description                                            
 ------------- | ------ | --------------------------------------------------------------------------------- | ---------------- | ---------
 `database`    | String | Name of the database to install the extention into                                | Name of resource | yes
 `extention`   | String | Name of the extention to install the database                                     | Name of resource | yes
-`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query  | None | no
+`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query  | None             | no
 
 #### Examples
 
@@ -231,18 +231,19 @@ This resource installs the pg rubygem and replaces the previously used 'ruby' re
 
 #### Properties
 
-Name                     | Types           | Description                                                                      | Default          | Required?
------------------------- | --------------- | -------------------------------------------------------------------------------- | ---------------- | ---------
-`client_version`         | String          | PostgreSQL Client Version                                                        | '9.6'            | no
-`version`                | String or nil   | PG gem version to install                                                        | '0.21.0'         | no
-`setup_repo`             | Boolean         | Automatically setup pgdg repo for the client library?                            | true             | no
-`source`                 | String          | Gem source file path                                                             | None             | no
-`clear_sources`          | Boolean         | Set to true to download a gem from the path specified by the source property (and not from RubyGems) | None             | no
-`include_default_source` | Boolean         | Set to false to not include Chef::Config[:rubygems_url] in the sources					  | None             | no
-`gem_binary`             | String          | Path to the rubygems `gem` binary																							  | None             | no
-`options`                | String          | One (or more) additional options that are passed to the gem install						  | None             | no
-`timeout`                | Integer         | The amount of time (in seconds) to wait before timing out											  | 300              | no
-`ruby_binary`            | String          | Path to the ruby binary																												  | None             | no
+Name                     | Types           | Description                                                                                          | Default  | Required?
+------------------------ | --------------- | ---------------------------------------------------------------------------------------------------- | -------- | ---------
+`client_version`         | String          | PostgreSQL Client Version                                                                            | '9.6'    | no
+`version`                | String or nil   | PG gem version to install                                                                            | '0.21.0' | no
+`setup_repo`             | Boolean         | Automatically setup pgdg repo for the client library?                                                | true     | no
+`source`                 | String          | Gem source file path                                                                                 | None     | no
+`clear_sources`          | Boolean         | Set to true to download a gem from the path specified by the source property (and not from RubyGems) | None     | no
+`include_default_source` | Boolean         | Set to false to not include Chef::Config[:rubygems_url] in the sources                               | None     | no
+`gem_binary`             | String          | Path to the rubygems `gem` binary                                                                    | None     | no
+`options`                | String          | One (or more) additional options that are passed to the gem install                                  | None     | no
+`timeout`                | Integer         | The amount of time (in seconds) to wait before timing out                                            | 300      | no
+`ruby_binary`            | String          | Path to the ruby binary                                                                              | None     | no
+
 
 ### postgresql_access
 
@@ -269,7 +270,7 @@ Name            | Types       | Description                                     
 
 #### Examples
 
-To grant access to the postgresql user with ident authentication:
+To grant access to the postgresql user with ident authentication:   
 
 ```ruby
 postgresql_access 'local_postgres_superuser' do
@@ -294,17 +295,60 @@ local   all             postgres                                ident
 ```
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
+```   
+
+
+### postgresql_ident
+
+This resource generate `pg_ident.conf` configuration file to manage user mapping between system and PostgreSQL users.    
+
+#### Actions
+
+- `create` - (default) Creates an mapping line inside of `pg_ident.conf`   
+
+#### Properties
+
+Name           | Types       | Description                                                                | Default             | Required?
+-------------- | ----------- | -------------------------------------------------------------------------- | ------------------- | ---------
+`mapname`      | String      | Name of the user mapping                                                   | Resource name       | yes
+`source`       | String      | The cookbook template filename if you want to use your own custom template | 'pg_ident.conf.erb' | yes
+`cookbook`     | String      | The cookbook to look in for the template source                            | 'postgresql'        | no
+`comment`      | String, nil | A comment to leave above the entry in `pg_ident`                           | nil                 | no
+`system_user`  | String      | System user or regexp used for the mapping                                 | None                | yes
+`pg_user`      | String      | Pg user or regexp used for the mapping                                     | None                | yes
+`notification` | Symbol      | How to notify Postgres of the access change.                               | :reload             | no   
+
+#### Examples
+
+Creates a `mymapping` mapping that map `john` system user to `user1` PostgreSQL user:   
+
+```ruby
+postgresql_ident 'Map john to user1' do
+  comment 'John Mapping'
+  mapname 'mymapping'
+  system_user 'john'
+  pg_user 'user1'
+end
+```   
+
+This generates the following line in the `pg_ident.conf`:   
+
 ```
+# MAPNAME       SYSTEM-USERNAME         PG-USERNAME
+
+# John Mapping
+mymapping       john                    user1  
+```   
 
 
 ### postgresql_database
 
-This resource manages PostgreSQL databases.
+This resource manages PostgreSQL databases.   
 
 #### Actions
 
-- `create` - (default) Creates the given database.
-- `drop` - Drops the given database.
+- `create` - (default) Creates the given database.   
+- `drop` - Drops the given database.   
 
 #### Properties
 
@@ -332,13 +376,13 @@ end
 
 ### postgresql_user
 
-This resource manage PostgreSQL users.
+This resource manage PostgreSQL users.   
 
 #### Actions
 
-- `create` - (default) Creates the given user with default or given privileges.
-- `update` - Update user privilieges.
-- `drop` - Deletes the given user.
+- `create` - (default) Creates the given user with default or given privileges.   
+- `update` - Update user privilieges.   
+- `drop` - Deletes the given user.   
 
 #### Properties
 
@@ -356,7 +400,7 @@ Name                 | Types   | Description                                    
 
 #### Examples
 
-Create an user `user1` with a password, with `createdb` role and set an expiration date to
+Create an user `user1` with a password, with `createdb` role and set an expiration date to 2018, Dec 21.   
 
 ```ruby
 postgresql_user 'user1' do
@@ -370,13 +414,14 @@ end
 
 _None_
 
-There are no recipes. Please use the cookbook resources to install, config, and manage your PostgreSQL server.
+There are no recipes. Please use the cookbook resources to install, config, and manage your PostgreSQL server.   
+
 
 ## Usage
 
 To install and configure your PostgreSQL instance you need to create your own cookbook and call needed resources with your own parameters.
 
-Example:
+Example:   
 cookbooks/my_postgresql/recipes/default.rb
 ```
 postgresql_client_install 'Postgresql Client' do
