@@ -100,11 +100,11 @@ Note that the `unix_socket_directory` configuration was renamed to `unix_socket_
 
 ### postgresql_client_install
 
-This resource installs PostgreSQL client packages.   
+This resource installs PostgreSQL client packages.
 
 #### Actions
 
-- `install` - (default) Install client packages   
+- `install` - (default) Install client packages
 
 #### Properties
 
@@ -115,7 +115,7 @@ Name         | Types   | Description                                        | De
 
 #### Examples
 
-To install '9.5' version:   
+To install '9.5' version:
 ```
 postgresql_client_install 'My Postgresql Client install' do
   version '9.5'
@@ -128,7 +128,7 @@ This resource installs PostgreSQL client and server packages.
 
 #### Actions
 
-- `install` - (default) Install client and server packages   
+- `install` - (default) Install client and server packages
 
 #### Properties
 
@@ -145,7 +145,7 @@ Name                | Types           | Description                             
 
 #### Examples
 
-To install PostgreSQL server, set you own postgres password and set another service port.   
+To install PostgreSQL server, set you own postgres password and set another service port.
 ```
 postgresql_server_install 'My Postgresql Server install' do
   password 'MyP4ssw0d'
@@ -160,7 +160,7 @@ This resource manages postgresql.conf configuration file.
 
 #### Actions
 
-- `modify` - (default) Manager PostgreSQL configuration file (postgresql.conf)   
+- `modify` - (default) Manager PostgreSQL configuration file (postgresql.conf)
 
 #### Properties
 
@@ -189,7 +189,7 @@ end
 
 ### postgresql_extention
 
-This resource manages postgresql extensions with a given database to ease installation/removal.   
+This resource manages postgresql extensions with a given database to ease installation/removal.
 
 **Deprecation Note:** The format `database/extension` to determine the database and extention to install has been deprecated. Please use the properties 'database' and 'extension' instead.   
 
@@ -270,7 +270,7 @@ Name            | Types       | Description                                     
 
 #### Examples
 
-To grant access to the postgresql user with ident authentication:   
+To grant access to the postgresql user with ident authentication:
 
 ```ruby
 postgresql_access 'local_postgres_superuser' do
@@ -300,11 +300,11 @@ local   all             all                                     peer
 
 ### postgresql_ident
 
-This resource generate `pg_ident.conf` configuration file to manage user mapping between system and PostgreSQL users.    
+This resource generate `pg_ident.conf` configuration file to manage user mapping between system and PostgreSQL users.
 
 #### Actions
 
-- `create` - (default) Creates an mapping line inside of `pg_ident.conf`   
+- `create` - (default) Creates an mapping line inside of `pg_ident.conf`
 
 #### Properties
 
@@ -316,11 +316,12 @@ Name           | Types       | Description                                      
 `comment`      | String, nil | A comment to leave above the entry in `pg_ident`                           | nil                 | no
 `system_user`  | String      | System user or regexp used for the mapping                                 | None                | yes
 `pg_user`      | String      | Pg user or regexp used for the mapping                                     | None                | yes
-`notification` | Symbol      | How to notify Postgres of the access change.                               | :reload             | no   
+`notification` | Symbol      | How to notify Postgres of the access change.                               | :reload             | no
+
 
 #### Examples
 
-Creates a `mymapping` mapping that map `john` system user to `user1` PostgreSQL user:   
+Creates a `mymapping` mapping that map `john` system user to `user1` PostgreSQL user:
 
 ```ruby
 postgresql_ident 'Map john to user1' do
@@ -329,26 +330,26 @@ postgresql_ident 'Map john to user1' do
   system_user 'john'
   pg_user 'user1'
 end
-```   
+```
 
-This generates the following line in the `pg_ident.conf`:   
+This generates the following line in the `pg_ident.conf`:
 
 ```
 # MAPNAME       SYSTEM-USERNAME         PG-USERNAME
 
 # John Mapping
 mymapping       john                    user1  
-```   
+```
 
 
 ### postgresql_database
 
-This resource manages PostgreSQL databases.   
+This resource manages PostgreSQL databases.
 
 #### Actions
 
-- `create` - (default) Creates the given database.   
-- `drop` - Drops the given database.   
+- `create` - (default) Creates the given database.
+- `drop` - Drops the given database.
 
 #### Properties
 
@@ -376,13 +377,13 @@ end
 
 ### postgresql_user
 
-This resource manage PostgreSQL users.   
+This resource manage PostgreSQL users.
 
 #### Actions
 
-- `create` - (default) Creates the given user with default or given privileges.   
-- `update` - Update user privilieges.   
-- `drop` - Deletes the given user.   
+- `create` - (default) Creates the given user with default or given privileges.
+- `update` - Update user privilieges.
+- `drop` - Deletes the given user.
 
 #### Properties
 
@@ -400,7 +401,7 @@ Name                 | Types   | Description                                    
 
 #### Examples
 
-Create an user `user1` with a password, with `createdb` role and set an expiration date to 2018, Dec 21.   
+Create an user `user1` with a password, with `createdb` role and set an expiration date to 2018, Dec 21.
 
 ```ruby
 postgresql_user 'user1' do
@@ -414,14 +415,14 @@ end
 
 _None_
 
-There are no recipes. Please use the cookbook resources to install, config, and manage your PostgreSQL server.   
+There are no recipes. Please use the cookbook resources to install, config, and manage your PostgreSQL server.
 
 
 ## Usage
 
 To install and configure your PostgreSQL instance you need to create your own cookbook and call needed resources with your own parameters.
 
-Example:   
+Example:
 cookbooks/my_postgresql/recipes/default.rb
 ```
 postgresql_client_install 'Postgresql Client' do
