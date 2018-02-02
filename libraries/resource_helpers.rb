@@ -19,12 +19,12 @@
 
 module PostgresqlCookbook
   module Helpers
-    def data_dir
+    def data_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
       when 'rhel', 'fedora', 'amazon'
-        "/var/lib/pgsql/#{node.run_state['postgresql']['version']}/data"
+        "/var/lib/pgsql/#{version}/data"
       when 'debian'
-        "/var/lib/postgresql/#{node.run_state['postgresql']['version']}/main"
+        "/var/lib/postgresql/#{version}/main"
       end
     end
 
