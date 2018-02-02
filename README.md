@@ -263,7 +263,7 @@ Name            | Types       | Description                                     
 `access_type`   | String      | The type of access, e.g. local or host                                                    | 'local'           | yes
 `access_db`     | String      | The database to access. Can use 'all' for all databases                                   | 'all'             | yes
 `access_user`   | String      | The user accessing the database. Can use 'all' for any user                               | 'all'             | yes
-`access_addr`   | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil               | yes
+`access_addr`   | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil               | no
 `access_method` | String      | Authentication method to use                                                              | 'ident'           | yes
 `notification`  | Symbol      | How to notify Postgres of the access change.                                              | :reload           | yes
 
@@ -294,6 +294,26 @@ local   all             postgres                                ident
 ```
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
+```
+
+To grant access to the foo user with password authentication:
+
+```ruby
+postgresql_access 'local_foo_user' do
+  comment 'Foo user access'
+  access_type 'host'
+  access_db 'all'
+  access_user 'foo'
+  access_addr '127.0.0.1/32'
+  access_method 'md5'
+end
+```
+
+This generates the following line in the `pg_hba.conf`:
+
+```
+# Local postgres superuser access
+host   all             foo               127.0.0.1/32           ident
 ```
 
 
