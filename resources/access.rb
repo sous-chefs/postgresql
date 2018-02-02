@@ -24,30 +24,24 @@ property :access_db,     String, required: true, default: 'all'
 property :access_user,   String, required: true, default: 'postgres'
 property :access_addr,   [String, nil], default: nil
 property :access_method, String, required: true, default: 'ident'
-property :notification,  Symbol, required: true, default: :reload
 
 action :grant do
-  with_run_context :root do # ~FC037
-    edit_resource(:template, "#{conf_dir}/pg_hba.conf") do |new_resource|
+    template "#{conf_dir}/pg_hba.conf" do
       source new_resource.source
       cookbook new_resource.cookbook
       owner 'postgres'
       group 'postgres'
       mode '0600'
-      variables['pg_hba'] ||= {}
-      variables['pg_hba'][new_resource.name] = {
-        comment: new_resource.comment,
-        type: new_resource.access_type,
-        db: new_resource.access_db,
-        user: new_resource.access_user,
-        addr: new_resource.access_addr,
-        method: new_resource.access_method,
-      }
-      action :nothing
-      delayed_action :create
-      notifies new_resource.notification, postgresql_service
+      variables(
+        pg_hba: {
+          comment: new_resource.comment,
+          type: new_resource.access_type,
+          db: new_resource.access_db,
+          user: new_resource.access_user,
+          addr: new_resource.access_addr,
+          method: new_resource.access_method,
+      })
     end
-  end
 end
 
 action_class do
