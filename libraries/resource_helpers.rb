@@ -38,8 +38,12 @@ module PostgresqlCookbook
     end
 
     # determine the platform specific service name
-    def platform_service_name
-      platform_family?('rhel', 'amazon', 'fedora') ? "postgresql-#{node.run_state['postgresql']['version']}" : 'postgresql'
+    def platform_service_name(version = node.run_state['postgresql']['version'])
+      if %w(rhel amazon fedora).include?(node['platform_family'])
+        "postgresql-#{version}"
+      else
+        'postgresql'
+      end
     end
 
     def postgresql_service

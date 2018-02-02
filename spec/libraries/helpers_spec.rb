@@ -54,4 +54,28 @@ RSpec.describe PostgresqlCookbook::Helpers do
       end
     end
   end
+
+  describe '#platform_service_name(version)' do
+    before do
+      allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
+    end
+
+    let(:pg_version) { '9.6' }
+
+    context 'with rhel family and Postgres 9.6' do
+      let(:platform_family) { 'rhel' }
+
+      it 'returns the correct service name' do
+        expect(subject.platform_service_name(pg_version)).to eq 'postgresql-9.6'
+      end
+    end
+
+    context 'with debian family and Postgres 9.6' do
+      let(:platform_family) { 'debian' }
+
+      it 'returns the correct service name' do
+        expect(subject.platform_service_name(pg_version)).to eq 'postgresql'
+      end
+    end
+  end
 end
