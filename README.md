@@ -227,7 +227,7 @@ node.default['postgresql']['autovacuum_config']['autovacuum_naptime'] = '1min'
 node.default['postgresql']['autovacuum_config']['autovacuum_vacuum_threshold'] = '20'
 ```
 ```
-postgresql_server_conf 'My PostgreSQL extra Config 1' do
+postgresql_server_conf 'My PostgreSQL extra Config 2' do
   version '9.5'
   extra_config_name 'autovacuum_config'
   notification :reload
