@@ -17,6 +17,7 @@
 #
 
 property :extra_config_name, String, required: true
+property :notification, Symbol, required: true, default: :restart
 
 action :modify do
   template "#{conf_dir}/conf.d/#{new_ressource.extra_config_name}.conf" do # ~FC037
