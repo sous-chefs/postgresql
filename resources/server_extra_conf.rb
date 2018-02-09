@@ -21,7 +21,7 @@ property :extra_config_name, String, required: true
 action :modify do
   template "#{conf_dir}/conf.d/#{new_ressource.extra_config_name}.conf" do # ~FC037
     cookbook 'postgresql'
-    source 'postgresql_extra_config.conf.erb'
+    source 'postgresql_extra_config.erb'
     owner 'postgres'
     group 'postgres'
     mode '0600'
