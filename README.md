@@ -180,7 +180,7 @@ Name                   | Types  | Description                                 | 
 To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.
 ```
 postgresql_server_conf 'My PostgreSQL Config' do
-  vesion '9.5'
+  version '9.5'
   data_directory '/data/postgresql/9.5/main'
   notification :reload
 end
