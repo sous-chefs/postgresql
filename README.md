@@ -124,7 +124,7 @@ end
 
 ### postgresql_server_install
 
-This resource installs the PostgreSQL server
+This resource installs PostgreSQL client and server packages.
 
 #### Actions
 
@@ -162,7 +162,7 @@ end
 
 ### postgresql_server_conf
 
-This resource manages the postgresql.conf server file.
+This resource manages postgresql.conf configuration file.
 
 #### Actions
 
@@ -210,7 +210,7 @@ Name          | Types  | Description                                            
 ------------- | ------ | --------------------------------------------------------------------------------- | ---------------- | ---------
 `database`    | String | Name of the database to install the extention into                                | Name of resource | yes
 `extention`   | String | Name of the extention to install the database                                     | Name of resource | yes
-`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query  | None | no
+`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query  | None             | no
 
 #### Examples
 
@@ -237,18 +237,19 @@ This resource installs the pg rubygem and replaces the previously used 'ruby' re
 
 #### Properties
 
-Name                     | Types           | Description                                                                      | Default          | Required?
------------------------- | --------------- | -------------------------------------------------------------------------------- | ---------------- | ---------
-`client_version`         | String          | PostgreSQL Client Version                                                        | '9.6'            | no
-`version`                | String or nil   | PG gem version to install                                                        | '0.21.0'         | no
-`setup_repo`             | Boolean         | Automatically setup pgdg repo for the client library?                            | true             | no
-`source`                 | String          | Gem source file path                                                             | None             | no
-`clear_sources`          | Boolean         | Set to true to download a gem from the path specified by the source property (and not from RubyGems) | None             | no
-`include_default_source` | Boolean         | Set to false to not include Chef::Config[:rubygems_url] in the sources					  | None             | no
-`gem_binary`             | String          | Path to the rubygems `gem` binary																							  | None             | no
-`options`                | String          | One (or more) additional options that are passed to the gem install						  | None             | no
-`timeout`                | Integer         | The amount of time (in seconds) to wait before timing out											  | 300              | no
-`ruby_binary`            | String          | Path to the ruby binary																												  | None             | no
+Name                     | Types           | Description                                                                                          | Default  | Required?
+------------------------ | --------------- | ---------------------------------------------------------------------------------------------------- | -------- | ---------
+`client_version`         | String          | PostgreSQL Client Version                                                                            | '9.6'    | no
+`version`                | String or nil   | PG gem version to install                                                                            | '0.21.0' | no
+`setup_repo`             | Boolean         | Automatically setup pgdg repo for the client library?                                                | true     | no
+`source`                 | String          | Gem source file path                                                                                 | None     | no
+`clear_sources`          | Boolean         | Set to true to download a gem from the path specified by the source property (and not from RubyGems) | None     | no
+`include_default_source` | Boolean         | Set to false to not include Chef::Config[:rubygems_url] in the sources                               | None     | no
+`gem_binary`             | String          | Path to the rubygems `gem` binary                                                                    | None     | no
+`options`                | String          | One (or more) additional options that are passed to the gem install                                  | None     | no
+`timeout`                | Integer         | The amount of time (in seconds) to wait before timing out                                            | 300      | no
+`ruby_binary`            | String          | Path to the ruby binary                                                                              | None     | no
+
 
 ### postgresql_access
 
@@ -300,6 +301,50 @@ local   all             postgres                                ident
 ```
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
+```   
+
+
+### postgresql_ident
+
+This resource generate `pg_ident.conf` configuration file to manage user mapping between system and PostgreSQL users.
+
+#### Actions
+
+- `create` - (default) Creates an mapping line inside of `pg_ident.conf`
+
+#### Properties
+
+Name           | Types       | Description                                                                | Default             | Required?
+-------------- | ----------- | -------------------------------------------------------------------------- | ------------------- | ---------
+`mapname`      | String      | Name of the user mapping                                                   | Resource name       | yes
+`source`       | String      | The cookbook template filename if you want to use your own custom template | 'pg_ident.conf.erb' | yes
+`cookbook`     | String      | The cookbook to look in for the template source                            | 'postgresql'        | no
+`comment`      | String, nil | A comment to leave above the entry in `pg_ident`                           | nil                 | no
+`system_user`  | String      | System user or regexp used for the mapping                                 | None                | yes
+`pg_user`      | String      | Pg user or regexp used for the mapping                                     | None                | yes
+`notification` | Symbol      | How to notify Postgres of the access change.                               | :reload             | no
+
+
+#### Examples
+
+Creates a `mymapping` mapping that map `john` system user to `user1` PostgreSQL user:
+
+```ruby
+postgresql_ident 'Map john to user1' do
+  comment 'John Mapping'
+  mapname 'mymapping'
+  system_user 'john'
+  pg_user 'user1'
+end
+```
+
+This generates the following line in the `pg_ident.conf`:
+
+```
+# MAPNAME       SYSTEM-USERNAME         PG-USERNAME
+
+# John Mapping
+mymapping       john                    user1  
 ```
 
 To grant access to the foo user with password authentication:
@@ -382,7 +427,7 @@ Name                 | Types   | Description                                    
 
 #### Examples
 
-Create an user `user1` with a password, with `createdb` role and set an expiration date to
+Create an user `user1` with a password, with `createdb` role and set an expiration date to 2018, Dec 21.
 
 ```ruby
 postgresql_user 'user1' do
@@ -397,6 +442,7 @@ end
 _None_
 
 There are no recipes. Please use the cookbook resources to install, config, and manage your PostgreSQL server.
+
 
 ## Usage
 

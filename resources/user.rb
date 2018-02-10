@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 
+property :user,               String, name_property: true
 property :superuser,          [true, false], default: false
 property :createdb,           [true, false], default: false
 property :createrole,         [true, false], default: false
@@ -24,9 +25,12 @@ property :login,              [true, false], default: true
 property :password,           String
 property :encrypted_password, String
 property :valid_until,        String
+property :attributes,         Hash, default: {}
 
 action :create do
-  execute "create postgresql user #{new_resource.name}" do # ~FC009
+  Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?
+
+  execute "create postgresql user #{new_resource.user}" do # ~FC009
     user 'postgres'
     command %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
     sensitive true
@@ -35,19 +39,37 @@ action :create do
 end
 
 action :update do
-  execute "update postgresql user #{new_resource.name}" do
-    user 'postgres'
-    command %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
-    sensitive true
-    not_if { slave? }
-    only_if { user_exists?(new_resource) }
+  if new_resource.attributes.empty?
+    execute "update postgresql user #{new_resource.user}" do
+      user 'postgres'
+      command %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
+      sensitive true
+      not_if { slave? }
+      only_if { user_exists?(new_resource) }
+    end
+  else
+    new_resource.attributes.each do |attr, value|
+      v = if value.is_a?(TrueClass) || value.is_a?(FalseClass)
+            value.to_s
+          else
+            "'#{value}'"
+          end
+
+      execute "Update postgresql user #{new_resource.user} to set #{attr}" do
+        user 'postgres'
+        command %(psql -c "ALTER ROLE \\\"#{new_resource.user}\\\" SET #{attr} = #{v};")
+        sensitive true
+        not_if { slave? }
+        only_if { user_exists?(new_resource) }
+      end
+    end
   end
 end
 
 action :drop do
-  execute "drop postgresql user #{new_resource.name}" do
+  execute "drop postgresql user #{new_resource.user}" do
     user 'postgres'
-    command %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.name}\\\"')
+    command %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.user}\\\"')
     sensitive true
     not_if { slave? }
     only_if { user_exists?(new_resource) }
@@ -56,7 +78,7 @@ end
 
 action_class do
   def user_exists?(new_resource)
-    exists = %(psql -c "SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.name}'" | grep '#{new_resource.name}')
+    exists = %(psql -c "SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'" | grep '#{new_resource.user}')
 
     cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
     cmd.run_command
@@ -64,7 +86,7 @@ action_class do
   end
 
   def role_sql(new_resource)
-    sql = %(\\\"#{new_resource.name}\\\" WITH )
+    sql = %(\\\"#{new_resource.user}\\\" WITH )
 
     %w(superuser createdb createrole inherit replication login).each do |perm|
       sql << "#{'NO' unless new_resource.send(perm)}#{perm.upcase} "
