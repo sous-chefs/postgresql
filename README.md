@@ -129,6 +129,7 @@ This resource installs PostgreSQL client and server packages.
 #### Actions
 
 - `install` - (default) Install client and server packages
+- `create` - Initialize the database
 
 #### Properties
 
@@ -148,8 +149,13 @@ Name                | Types           | Description                             
 To install PostgreSQL server, set you own postgres password and set another service port.
 ```
 postgresql_server_install 'My Postgresql Server install' do
+  action :install
+end
+
+postgresql_server_install 'Setup my postgresql 9.5 server' do
   password 'MyP4ssw0d'
   port 5433
+  action :create
 end
 ```
 
@@ -180,7 +186,7 @@ Name                   | Types  | Description                                 | 
 To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.
 ```
 postgresql_server_conf 'My PostgreSQL Config' do
-  vesion '9.5'
+  version '9.5'
   data_directory '/data/postgresql/9.5/main'
   notification :reload
 end
