@@ -193,6 +193,54 @@ end
 ```
 
 
+### postgresql_server_extra_conf
+
+This resource manages the '<default_os_conf_path>/conf.d/*.conf' server files.
+
+#### Actions
+
+- `modify` - (required) Filename for the extra configuration which should be in '<default_os_conf_path>/conf.d/<filename>.conf'
+
+#### Properties
+
+Name                   | Types  | Description                                 | Default                                          | Required?
+---------------------- | ------ | ------------------------------------------- | ------------------------------------------------ | ---------
+`extra_config_name`    | String | Filename you want to apply                  | no                                               | yes
+`notification`         | Symbol | How to notify Postgres of the access change | :restart                                         | yes
+
+#### Examples
+
+To setup your PostgreSQL additionnal configurations in 'conf.d' directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.
+
+##### Example 1
+```ruby
+node.default['postgresql']['buffer_config']['shared_buffers'] = 5GB
+node.default['postgresql']['buffer_config']['wal_buffers'] = 16MB
+```
+
+```
+postgresql_server_conf 'My PostgreSQL extra Config 1' do
+  version '9.5'
+  extra_config_name 'buffer_config'
+  notification :reload
+end
+```
+
+##### Example 2
+```ruby
+node.default['postgresql']['autovacuum_config']['autovacuum_analyze_threshold'] = '10'
+node.default['postgresql']['autovacuum_config']['autovacuum_naptime'] = '1min'
+node.default['postgresql']['autovacuum_config']['autovacuum_vacuum_threshold'] = '20'
+```
+```
+postgresql_server_conf 'My PostgreSQL extra Config 2' do
+  version '9.5'
+  extra_config_name 'autovacuum_config'
+  notification :reload
+end
+```
+
+
 ### postgresql_extention
 
 This resource manages postgresql extensions with a given database to ease installation/removal.
