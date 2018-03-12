@@ -72,6 +72,8 @@ suites:
   run_list:
   - recipe[postgresql::ruby]
   - recipe[test::ruby]
+  excludes:
+    - centos-6
 
 - name: server
   run_list:
