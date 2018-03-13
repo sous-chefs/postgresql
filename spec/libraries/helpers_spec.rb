@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../../libraries/resource_helpers.rb'
+require_relative '../../libraries/helpers.rb'
 
 RSpec.describe PostgresqlCookbook::Helpers do
   class DummyClass < Chef::Node

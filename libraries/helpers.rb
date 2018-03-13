@@ -1,7 +1,6 @@
-# frozen_string_literal: false
 #
 # Cookbook:: postgresql
-# Library:: default
+# Library:: helpers
 # Author:: David Crane (<davidc@donorschoose.org>)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -302,6 +301,54 @@ module PostgresqlCookbook
       cmd.stdout.chomp
     end
 
-    # End the Opscode::PostgresqlHelpers module
+    def data_dir(version = node.run_state['postgresql']['version'])
+      case node['platform_family']
+      when 'rhel', 'fedora', 'amazon'
+        "/var/lib/pgsql/#{version}/data"
+      when 'debian'
+        "/var/lib/postgresql/#{version}/main"
+      end
+    end
+
+    def conf_dir(version = node.run_state['postgresql']['version'])
+      case node['platform_family']
+      when 'rhel', 'fedora', 'amazon'
+        "/var/lib/pgsql/#{version}/data"
+      when 'debian'
+        "/etc/postgresql/#{version}/main"
+      end
+    end
+
+    # determine the platform specific service name
+    def platform_service_name(version = node.run_state['postgresql']['version'])
+      if %w(rhel amazon fedora).include?(node['platform_family'])
+        "postgresql-#{version}"
+      else
+        'postgresql'
+      end
+    end
+
+    def postgresql_service
+      resources(service: 'postgresql')
+    rescue Chef::Exceptions::ResourceNotFound
+      service 'postgresql' do
+        service_name lazy { platform_service_name }
+        supports restart: true, status: true, reload: true
+        action :nothing
+      end
+    end
+
+    def psql_command_string(database, query)
+      "psql -d #{database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
+    end
+
+    # XXX: Remove me after removing this method elsewhere
+    def psql(database, query)
+      psql_command_string(database, query)
+    end
+
+    def slave?
+      ::File.exist? "#{data_dir}/recovery.conf"
+    end
   end
 end
