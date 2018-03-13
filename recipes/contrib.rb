@@ -20,6 +20,10 @@ db_name = node['postgresql']['database_name']
 
 # Install the PostgreSQL contrib package(s) from the distribution,
 # as specified by the node attributes.
+if node['postgresql']['enable_pgdg_yum'] || node['postgresql']['use_pgdg_packages']
+  shortver = node['postgresql']['version'].gsub(/\./, '')
+  node.default['postgresql']['contrib']['packages'] = ["postgresql#{shortver}-contrib"]
+end
 package node['postgresql']['contrib']['packages']
 
 include_recipe 'postgresql::server'

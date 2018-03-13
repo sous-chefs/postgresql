@@ -48,6 +48,10 @@ directory node['postgresql']['config']['data_directory'] do
   mode '0700'
 end
 
+if node['postgresql']['enable_pgdg_yum'] || node['postgresql']['use_pgdg_packages']
+  node.default['postgresql']['server']['packages'] = ["postgresql#{shortver}-server"]
+  node.default['postgresql']['setup_script'] = "postgresql#{shortver}-setup"
+end
 package node['postgresql']['server']['packages']
 
 # If using PGDG, add symlinks so that downstream commands all work

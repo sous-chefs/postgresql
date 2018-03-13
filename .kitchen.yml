@@ -2,6 +2,7 @@
 rpm_based_platforms = %w(centos-6 centos-7 fedora-25)
 deb_based_platforms = %w(ubuntu-14.04 ubuntu-16.04 debian-7 debian-8)
 opensuse_platforms = %w(opensuse-13.2 opensuse-leap)
+eol_platforms = %w(centos-6 debian-7 opensuse-leap)
 %>
 ---
 driver:
@@ -72,8 +73,7 @@ suites:
   run_list:
   - recipe[postgresql::ruby]
   - recipe[test::ruby]
-  excludes:
-    - centos-6
+  excludes: <%= eol_platforms %>
 
 - name: server
   run_list:
@@ -83,6 +83,7 @@ suites:
     postgresql:
       password:
         postgres: iloverandompasswordsbutthiswilldo
+  excludes: <%= eol_platforms %>
 
 - name: apt-pgdg-server
   run_list:
@@ -171,6 +172,7 @@ suites:
         ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem
         ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key
       contrib:
+        packages: [ 'postgresql-contrib-9.4' ]
         extensions:
           - pg_stat_statements
 
