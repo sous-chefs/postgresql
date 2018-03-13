@@ -28,7 +28,7 @@ when 'debian'
 when 'rhel', 'fedora'
   if node['postgresql']['enable_pgdg_yum']
     include_recipe 'postgresql::yum_pgdg_postgresql'
-    shortver = node['postgresql']['version'].gsub(/\./, '')
+    shortver = node['postgresql']['version'].delete('.')
     node.default['postgresql']['client']['packages'] = "postgresql#{shortver}-devel"
   end
 end
