@@ -26,10 +26,3 @@ postgresql_access 'a sous_chef local superuser' do
   access_method 'md5'
   access_addr '127.0.0.1/32'
 end
-
-service 'postgresql' do
-  extend PostgresqlCookbook::Helpers
-  supports reload: true
-  action :nothing
-  subscribes :reload, "template[#{conf_dir('9.6')}/pg_hba.conf]"
-end
