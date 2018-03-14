@@ -34,8 +34,8 @@ action :grant do
       owner 'postgres'
       group 'postgres'
       mode '0600'
-      variables['pg_hba'] ||= {}
-      variables['pg_hba'][new_resource.name] = {
+      variables[:pg_hba] ||= {}
+      variables[:pg_hba][new_resource.name] = {
         comment: new_resource.comment,
         type: new_resource.access_type,
         db: new_resource.access_db,
