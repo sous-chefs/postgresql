@@ -12,3 +12,10 @@ postgresql_access 'postgresql host superuser' do
   access_addr '127.0.0.1/32'
   access_method 'md5'
 end
+
+postgresql_access 'a sous_chef local superuser' do
+  access_type 'local'
+  access_db 'all'
+  access_user 'sous_chef'
+  access_method 'peer'
+end
