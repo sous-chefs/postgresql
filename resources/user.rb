@@ -77,6 +77,8 @@ action :drop do
 end
 
 action_class do
+  include PostgresqlCookbook::Helpers
+
   def user_exists?(new_resource)
     exists = %(psql -c "SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'" | grep '#{new_resource.user}')
 
