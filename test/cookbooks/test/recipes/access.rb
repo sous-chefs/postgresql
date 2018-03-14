@@ -3,6 +3,7 @@ postgresql_server_install 'postgresql' do
   password '12345'
   port 5432
   setup_repo true
+  action [:install, :create]
 end
 
 postgresql_access 'postgresql host superuser' do
