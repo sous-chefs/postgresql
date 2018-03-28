@@ -44,8 +44,7 @@ action :grant do
         method: new_resource.access_method,
       }
       action :nothing
-      delayed_action :create
-      notifies new_resource.notification, postgresql_service
+      notifies new_resource.notification, postgresql_service, :immediately
     end
   end
 end
