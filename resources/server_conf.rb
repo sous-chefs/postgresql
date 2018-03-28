@@ -38,7 +38,7 @@ action :modify do
       external_pid_file: new_resource.external_pid_file,
       stats_temp_directory: new_resource.stats_temp_directory
     )
-    notifies new_resource.notification, postgresql_service
+    notifies new_resource.notification, postgresql_service, :immediately
   end
 end
 
