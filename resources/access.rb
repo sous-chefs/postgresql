@@ -43,7 +43,7 @@ action :grant do
         addr: new_resource.access_addr,
         method: new_resource.access_method,
       }
-      action :nothing
+      action :create
       notifies new_resource.notification, postgresql_service, :immediately
     end
   end
