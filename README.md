@@ -265,7 +265,7 @@ Name            | Types       | Description                                     
 --------------- | ----------- | ----------------------------------------------------------------------------------------- | ----------------- | ---------
 `name`          | String      | Name of the access resource, this is left as a comment inside the `pg_hba` config         | Resource name     | yes
 `source`        | String      | The cookbook template filename if you want to use your own custom template                | 'pg_hba.conf.erb' | yes
-`cookbook`      | String      | The cookbook to look in for the template source                                           | 'postgresql'      | yes
+`cookbook_name` | String      | The cookbook to look in for the template source                                           | 'postgresql'      | yes
 `comment`       | String, nil | A comment to leave above the entry in `pg_hba`                                            | nil               | no
 `access_type`   | String      | The type of access, e.g. local or host                                                    | 'local'           | yes
 `access_db`     | String      | The database to access. Can use 'all' for all databases                                   | 'all'             | yes
