@@ -18,7 +18,7 @@
 
 property :mapname,       String, required: true, name_property: true
 property :source,        String, required: true, default: 'pg_ident.conf.erb'
-property :cookbook,      String, default: 'postgresql'
+property :cookbook_name, String, default: 'postgresql'
 property :system_user,   String, required: true
 property :pg_user,       String, required: true
 property :comment,       [String, nil], default: nil
@@ -28,7 +28,7 @@ action :create do
   with_run_context :root do # ~FC037
     edit_resource(:template, "#{conf_dir}/pg_ident.conf") do |new_resource|
       source new_resource.source
-      cookbook new_resource.cookbook
+      cookbook new_resource.cookbook_name
       owner 'postgres'
       group 'postgres'
       mode '0640'
@@ -39,8 +39,7 @@ action :create do
         system_user: new_resource.system_user,
         pg_user: new_resource.pg_user,
       }
-      action :nothing
-      delayed_action :create
+      action :create
       notifies new_resource.notification, postgresql_service, :immediately
     end
   end
