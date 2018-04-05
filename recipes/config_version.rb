@@ -83,7 +83,11 @@ when "redhat", "centos", "scientific", "oracle"
 
   node.default['postgresql']['dir'] = "/var/lib/pgsql/data"
   if node['postgresql']['enable_pgdg_yum']
-    node.default['postgresql']['setup_script'] = "postgresql#{node['postgresql']['version'].split('.').join}-setup"
+    if node['postgresql']['version'].to_f >= 10
+      node.default['postgresql']['setup_script'] = "postgresql-#{node['postgresql']['version'].split('.').join}-setup"
+    else
+      node.default['postgresql']['setup_script'] = "postgresql#{node['postgresql']['version'].split('.').join}-setup"
+    end
   else
     node.default['postgresql']['setup_script'] = "postgresql-setup"
   end
