@@ -52,7 +52,7 @@ action :drop do
 
     bash "drop postgresql database #{new_resource.database})" do
       user 'postgres'
-      command dropdb
+      code dropdb
       not_if { slave? }
       only_if { database_exists?(new_resource) }
     end
@@ -63,12 +63,13 @@ action_class do
   include PostgresqlCookbook::Helpers
 
   def database_exists?(new_resource)
-    sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.name}')
+    sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.database}')
 
-    exists = %(psql -c "#{sql}" postgres)
+    exists = %(psql -c "#{sql}")
+    exists << " -U #{new_resource.user}" if new_resource.user
     exists << " --host #{new_resource.host}" if new_resource.host
     exists << " --port #{new_resource.port}" if new_resource.port
-    exists << " | grep #{new_resource.name}"
+    exists << " | grep #{new_resource.database}"
 
     cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
     cmd.run_command
