@@ -52,7 +52,7 @@ action :drop do
 
     bash "drop postgresql database #{new_resource.database})" do
       user 'postgres'
-      command dropdb
+      code dropdb
       not_if { slave? }
       only_if { database_exists?(new_resource) }
     end
@@ -73,6 +73,6 @@ action_class do
 
     cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
     cmd.run_command
-    cmd.exitstatus.zero?
+    cmd.exitstatus == 0
   end
 end
