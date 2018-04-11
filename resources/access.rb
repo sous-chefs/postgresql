@@ -24,9 +24,9 @@ property :access_db,     String, required: true, default: 'all'
 property :access_user,   String, required: true, default: 'postgres'
 property :access_addr,   [String, nil], default: nil
 property :access_method, String, required: true, default: 'ident'
-property :notification,  Symbol, required: true, default: :reload
 
 action :grant do
+  config_resource = new_resource
   with_run_context :root do # ~FC037
     edit_resource(:template, "#{conf_dir}/pg_hba.conf") do |new_resource|
       source new_resource.source
@@ -45,9 +45,13 @@ action :grant do
       }
       action :nothing
       delayed_action :create
-      notifies new_resource.notification, postgresql_service
+      notifies :trigger, config_resource, :immediately
     end
   end
+end
+
+action :trigger do
+  new_resource.updated_by_last_action(true)
 end
 
 action_class do
