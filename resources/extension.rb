@@ -16,36 +16,33 @@
 # limitations under the License.
 #
 
-# name property should take the form:
-# database/extension
-
 property :database,  String, required: true
 property :extension, String, name_property: true
+property :old_version, String
 
 action :create do
+  create_query = "CREATE EXTENSION IF NOT EXISTS \"#{new_resource.extension}\""
+  create_query << " FROM \"#{new_resource.old_version}\"" if property_is_set?(:old_version)
   bash "CREATE EXTENSION #{new_resource.name}" do
-    code psql("CREATE EXTENSION IF NOT EXISTS \"#{new_resource.extension}\"")
+    code psql_command_string(new_resource.database, create_query)
     user 'postgres'
     action :run
-    not_if { extension_installed? }
+    not_if { slave? || extension_installed? }
   end
 end
 
 action :drop do
   bash "DROP EXTENSION #{new_resource.name}" do
-    code psql("DROP EXTENSION IF EXISTS \"#{new_resource.extension}\"")
+    code psql_command_string(new_resource.database, "DROP EXTENSION IF EXISTS \"#{new_resource.extension}\"")
     user 'postgres'
     action :run
+    not_if { slave? }
     only_if { extension_installed? }
   end
 end
 
 action_class do
   include PostgresqlCookbook::Helpers
-
-  def psql(query)
-    "psql -d #{new_resource.database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
-  end
 
   def extension_installed?
     query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"

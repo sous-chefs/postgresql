@@ -17,7 +17,6 @@
 #
 
 property :version,           String, default: '9.6'
-property :init_db,           [true, false], default: true
 property :setup_repo,        [true, false], default: true
 property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
 property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.conf" }
@@ -25,6 +24,8 @@ property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{vers
 property :password,          [String, nil], default: 'generate'
 property :port,              [String, Integer], default: 5432
 property :initdb_locale,     String, default: 'UTF-8'
+
+default_action :install
 
 action :install do
   node.run_state['postgresql'] ||= {}
@@ -36,13 +37,15 @@ action :install do
   end
 
   package server_pkg_name
+end
 
-  if platform_family?('rhel', 'fedora', 'amazon') && new_resource.init_db && !initialized?
+action :create do
+  if platform_family?('rhel', 'fedora', 'amazon') && !initialized?
     db_command = rhel_init_db_command
     if db_command
       execute 'init_db' do
         command db_command
-        not_if { initialized }
+        not_if { initialized? }
       end
     else # we don't know about this platform
       log 'InitDB' do
@@ -52,33 +55,23 @@ action :install do
     end
   end
 
-  file "#{data_dir}/initialized.txt" do
-    content   'Database initialized'
-    mode      '0744'
-  end
-
-  directory "/usr/share/postgresql/#{new_resource.version}/" do
-    user  'postgres'
-    group 'postgres'
-    only_if { platform_family?('debian') && node['platform_version'].to_f == 7 }
-  end
-
-  service 'postgresql' do
-    service_name platform_service_name
-    supports restart: true, status: true, reload: true
-    action [:enable, :start]
+  log 'Enable and start PostgreSQL service' do
+    notifies :enable, postgresql_service, :immediately
+    notifies :start, postgresql_service, :immediately
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
-  # Generate Password
+
+  # Generate a ramdom password or set the a password defined with node['postgresql']['password']['postgres'].
+  # The password is set or change at each run. It is good for security if you choose to set a random password and
+  # allow you to change the postgres password if needed.
   bash 'generate-postgres-password' do
     user 'postgres'
     code <<-EOH
     echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
-    not_if { initialized? }
-    only_if { new_resource.password.eql? 'generate' }
+    only_if { node['postgresql']['assign_postgres_password'] }
   end
 end
 
@@ -93,7 +86,7 @@ action_class do
   end
 
   def initialized?
-    return true if ::File.exist?("#{data_dir}/initialized.txt")
+    return true if ::File.exist?("#{data_dir}/PG_VERSION")
     false
   end
 

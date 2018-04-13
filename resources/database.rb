@@ -15,18 +15,13 @@
 # limitations under the License.
 #
 
-# name property should take the form:
-# database/extension
-
 property :database,  String, name_property: true
 property :user,      String, default: 'postgres'
-property :encoding,  String, default: 'UTF-8'
-property :locale,    String, default: 'en_US.UTF-8'
-property :template,  String, default: ''
+property :template,  String, default: 'template1'
 property :host,      String
 property :port,      Integer, default: 5432
 property :encoding,  String, default: 'UTF-8'
-property :template,  String, default: 'template0'
+property :locale,    String, default: 'en_US.UTF-8'
 property :owner,     String
 
 action :create do
@@ -34,7 +29,7 @@ action :create do
   createdb << " -U #{new_resource.user}" if new_resource.user
   createdb << " -E #{new_resource.encoding}" if new_resource.encoding
   createdb << " -l #{new_resource.locale}" if new_resource.locale
-  createdb << " -T #{new_resource.template}" if new_resource.template
+  createdb << " -T #{new_resource.template}" unless new_resource.template.empty?
   createdb << " -h #{new_resource.host}" if new_resource.host
   createdb << " -p #{new_resource.port}" if new_resource.port
   createdb << " -O #{new_resource.owner}" if new_resource.owner
@@ -43,7 +38,7 @@ action :create do
   bash "Create Database #{new_resource.database}" do
     code createdb
     user new_resource.user
-    not_if { database_exists?(new_resource) }
+    not_if { slave? || database_exists?(new_resource) }
   end
 end
 
@@ -57,7 +52,8 @@ action :drop do
 
     bash "drop postgresql database #{new_resource.database})" do
       user 'postgres'
-      command dropdb
+      code dropdb
+      not_if { slave? }
       only_if { database_exists?(new_resource) }
     end
   end
@@ -67,12 +63,13 @@ action_class do
   include PostgresqlCookbook::Helpers
 
   def database_exists?(new_resource)
-    sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.name}')
+    sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.database}')
 
-    exists = %(psql -c "#{sql}" postgres)
+    exists = %(psql -c "#{sql}")
+    exists << " -U #{new_resource.user}" if new_resource.user
     exists << " --host #{new_resource.host}" if new_resource.host
     exists << " --port #{new_resource.port}" if new_resource.port
-    exists << " | grep #{new_resource.name}"
+    exists << " | grep #{new_resource.database}"
 
     cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
     cmd.run_command

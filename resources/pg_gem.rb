@@ -17,18 +17,16 @@
 #
 
 property :client_version, String, default: '9.6'
-property :version,       [String, nil], default: '0.21.0'
-property :setup_repo,    [true, false], default: true
-property :source,        [String, nil], default: nil
+property :setup_repo, [true, false], default: true
 # gem options
-property :clear_sources,          [true, false]
+property :version, [String, nil], default: '0.21.0'
+property :clear_sources, [true, false]
 property :include_default_source, [true, false]
-property :gem_binary,             String
-property :options,                [String, Hash]
-property :source,                 [String, Array]
-property :timeout,                Integer, default: 300
-property :version,                String
-property :ruby_binary,            String
+property :gem_binary, String
+property :options, [String, Hash]
+property :timeout, Integer, default: 300
+property :ruby_binary, String
+property :source,	String
 
 action :install do
   # Needed for the client
