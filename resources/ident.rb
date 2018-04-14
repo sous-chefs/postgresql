@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-property :mapname,       String, required: true, name_property: true
+property :mapname,       String, name_property: true
 property :source,        String, required: true, default: 'pg_ident.conf.erb'
 property :cookbook,      String, default: 'postgresql'
 property :system_user,   String, required: true
