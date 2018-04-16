@@ -44,6 +44,9 @@ suites:
 - name: access
   run_list:
     - recipe[test::access]
+- name: ident
+  run_list:
+    - recipe[test::ident]
 - name: pg_gem
   run_list:
     - recipe[test::pg_gem]
