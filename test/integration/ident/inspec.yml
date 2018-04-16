@@ -7,4 +7,4 @@ summary: Check that proper access maps are provided in the pg_ident conf
 version: 0.0.1
 supports:
   - os-family: unix
-  - inspec_version: '~> 1.0'
+inspec_version: '~> 1.0'
