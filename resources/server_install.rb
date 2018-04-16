@@ -39,22 +39,20 @@ action :install do
   end
 
   package server_pkg_name
+
+  execute 'init_db' do
+    command rhel_init_db_command
+    not_if { initialized? }
+    only_if { platform_family?('rhel', 'fedora', 'amazon') }
+  end
+
 end
 
 action :create do
-  if platform_family?('rhel', 'fedora', 'amazon') && !initialized?
-    db_command = rhel_init_db_command
-    if db_command
-      execute 'init_db' do
-        command db_command
-        not_if { initialized? }
-      end
-    else # we don't know about this platform
-      log 'InitDB' do
-        message 'InitDB is not supported on this distro. Skipping.'
-        level :error
-      end
-    end
+  execute 'init_db' do
+    command rhel_init_db_command
+    not_if { initialized? }
+    only_if { platform_family?('rhel', 'fedora', 'amazon') }
   end
 
   log 'Enable and start PostgreSQL service' do
