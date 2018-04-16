@@ -303,21 +303,21 @@ module PostgresqlCookbook
 
     def data_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
-      when 'rhel', 'fedora', 'amazon'
+      when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
+      when 'amazon'
+        "/var/lib/pgsql#{version.delete('.')}/data"
       when 'debian'
         "/var/lib/postgresql/#{version}/main"
       end
     end
 
-    def version
-      node.run_state['postgresql']['version']
-    end
-
     def conf_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
-      when 'rhel', 'fedora', 'amazon'
+      when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
+      when 'amazon'
+        "/var/lib/pgsql#{version.delete('.')}/data"
       when 'debian'
         "/etc/postgresql/#{version}/main"
       end
@@ -325,8 +325,10 @@ module PostgresqlCookbook
 
     # determine the platform specific service name
     def platform_service_name(version = node.run_state['postgresql']['version'])
-      if %w(rhel amazon fedora).include?(node['platform_family'])
+      if %w(rhel fedora).include?(node['platform_family'])
         "postgresql-#{version}"
+      elsif %w(amazon).include?(node['platform_family'])
+        "postgresql#{version}"
       else
         'postgresql'
       end
