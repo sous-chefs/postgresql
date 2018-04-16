@@ -4,6 +4,10 @@
 
 Installs and configures PostgreSQL as a client or a server.
 
+## DEPRECATION NOTICE!!!
+
+There will be an upcoming major version which migrates to a resource based cookbook and _all_ recipes will be removed! You will want to version pin to 6.1.1 to prevent major breaking changes. See the README in the postgresql cookbook repo for migration details.
+
 ## Requirements
 
 ### Platforms
