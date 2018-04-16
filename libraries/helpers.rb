@@ -83,43 +83,13 @@ module PostgresqlCookbook
     end
 
     #######
-    # Locale Configuration
-
-    # Function to test the date order.
-    # Used in recipes/config_initdb.rb to set this attribute:
-    #    node.default['postgresql']['config']['datestyle']
-    def locale_date_order
-      # Test locale conversion of mon=11, day=22, year=33
-      testtime = DateTime.new(2033, 11, 22, 0, 0, 0, '-00:00')
-      #=> #<DateTime: 2033-11-22T00:00:00-0000 ...>
-
-      # %x - Preferred representation for the date alone, no time
-      res = testtime.strftime('%x')
-
-      return 'mdy' if res.nil?
-
-      posM = res.index('11')
-      posD = res.index('22')
-      posY = res.index('33')
-
-      if posM.nil? || posD.nil? || posY.nil?
-        return 'mdy'
-      elsif posY < posM && posM < posD
-        return 'ymd'
-      elsif posD < posM
-        return 'dmy'
-      end
-      'mdy'
-    end
-
-    #######
     # Timezone Configuration
     require 'find'
 
     # Function to determine where the system stored shared timezone data.
     # Used in recipes/config_initdb.rb to detemine where it should have
     # select_default_timezone(tzdir) search.
-    def pg_TZDIR
+    def pg_tzdir
       # System time zone conversions are controlled by a timezone data file
       # identified through environment variables (TZ and TZDIR) and/or file
       # and directory naming conventions specific to the Linux distribution.
@@ -200,8 +170,8 @@ module PostgresqlCookbook
         # in spite of what the sysadmin had specified in the symlink.
         # (There are many duplicates under tzdir, with the same timezone
         # content appearing as an average of 2-3 different file names.)
-        path = ::File.realdirpath('/etc/localtime')
-        bestzonename = path.gsub("#{tzdir}/", '')
+        localtime_path = ::File.realdirpath('/etc/localtime')
+        bestzonename = localtime_path.gsub("#{tzdir}/", '')
       else # /etc/localtime is a file, so scan for it under tzdir
         localtime_content = File.read('/etc/localtime')
 
@@ -214,11 +184,7 @@ module PostgresqlCookbook
           next unless localtime_content == File.read(path)
           tzname = path.gsub("#{tzdir}/", '')
           next unless validate_zone(tzname)
-          if bestzonename.nil? ||
-             tzname.length < bestzonename.length ||
-             (tzname.length == bestzonename.length &&
-             (tzname <=> bestzonename) < 0)
-
+          if bestzonename.nil? || tzname.length < bestzonename.length || (tzname.length == bestzonename.length && (tzname <=> bestzonename) < 0)
             bestzonename = tzname
           end
         end
@@ -335,7 +301,7 @@ module PostgresqlCookbook
     end
 
     def postgresql_service
-      find_resource(:service, 'postgresql') do |new_resource|
+      find_resource(:service, 'postgresql') do |_new_resource|
         service_name lazy { platform_service_name }
         supports restart: true, status: true, reload: true
         action :nothing
