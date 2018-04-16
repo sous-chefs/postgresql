@@ -471,25 +471,6 @@ postgresql_server_conf 'PostgreSQL Config' do
 end
 ```
 
-This cookbook recipe randomly generate a password for postgres user. If you want to set/change the postgres's password you can set `password` parameter of server_install resource.
-The PostgreSQL server is restarted when the `postgresql.conf` configuration file change. This can be changed by set `notification` parameter to `:reload` in `postgresql_server_conf` resource call.
-
-On Debian family systems, SSL will be enabled, as the packages on Debian/Ubuntu also generate the SSL certificates. If you use another platform and wish to use SSL in postgresql, then generate your SSL certificates and distribute them in your own cookbook, and set the `node['postgresql']['config']['ssl']` attribute to true in your role/cookboook/node.
-
-## Contributing
-
-Please refer to each project's style guidelines and guidelines for submitting patches and additions. In general, we follow the "fork-and-pull" Git workflow.
-
- 1. **Fork** the repo on GitHub
- 2. **Clone** the project to your own machine
- 3. **Commit** changes to your own branch
- 4. **Push** your work back up to your fork
- 5. Submit a **Pull request** so that we can review your changes
-
-NOTE: Be sure to merge the latest from "upstream" before making a pull request!
-
-[Contribution informations for this project](CONTRIBUTING.md)
-
 ## Contributing
 
 Please refer to each project's style guidelines and guidelines for submitting patches and additions. In general, we follow the "fork-and-pull" Git workflow.
