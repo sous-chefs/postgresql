@@ -8,7 +8,7 @@ hba_file = '<%= @hba_file %>'
 ident_file = '<%= @ident_file %>'
 external_pid_file = '<%= @external_pid_file %>'
 stats_temp_directory = '<%= @stats_temp_directory %>'
-<% node['postgresql']['config'].sort.each do |key, value| %>
+<% @config.sort.each do |key, value| %>
 <% next if value.nil? -%>
 <% next if /ssl.*/.match(key) -%>
 <%= key %> = <%=

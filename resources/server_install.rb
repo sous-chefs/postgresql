@@ -25,6 +25,8 @@ property :password,          [String, nil], default: 'generate'
 property :port,              [String, Integer], default: 5432
 property :initdb_locale,     String, default: 'UTF-8'
 
+include PostgresqlCookbook::Helpers
+
 default_action :install
 
 action :install do

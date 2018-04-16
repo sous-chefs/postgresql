@@ -310,6 +310,10 @@ module PostgresqlCookbook
       end
     end
 
+    def version
+      node.run_state['postgresql']['version']
+    end
+
     def conf_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
       when 'rhel', 'fedora', 'amazon'
