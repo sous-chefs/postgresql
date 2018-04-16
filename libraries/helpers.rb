@@ -340,11 +340,6 @@ module PostgresqlCookbook
       "psql -d #{database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
     end
 
-    # XXX: Remove me after removing this method elsewhere
-    def psql(database, query)
-      psql_command_string(database, query)
-    end
-
     def slave?
       ::File.exist? "#{data_dir}/recovery.conf"
     end
