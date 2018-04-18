@@ -22,7 +22,7 @@ property :createrole,         [true, false], default: false
 property :inherit,            [true, false], default: true
 property :replication,        [true, false], default: false
 property :login,              [true, false], default: true
-property :password,           String
+property :pass,               String
 property :encrypted_password, String
 property :valid_until,        String
 property :attributes,         Hash, default: {}
@@ -94,8 +94,8 @@ action_class do
 
     sql << if new_resource.encrypted_password
              "ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'"
-           elsif new_resource.password
-             "PASSWORD '#{new_resource.password}'"
+           elsif new_resource.pass
+             "PASSWORD '#{new_resource.pass}'"
            else
              ''
            end
