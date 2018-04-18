@@ -21,7 +21,7 @@ Chef::Log.warn 'This cookbook is being re-written to use resources, not recipes 
 
 #######
 # Load the binaryround(value) method from libraries/default.rb
-::Chef::Recipe.send(:include, Opscode::PostgresqlHelpers)
+::Chef::Recipe.send(:include, PostgresqlCookbook::Helpers)
 
 #######
 # This recipe is based on Greg Smith's pgtune script (the Feb 1, 2012

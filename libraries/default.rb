@@ -302,6 +302,6 @@ module PostgresqlCookbook
       cmd.stdout.chomp
     end
 
-    # End the Opscode::PostgresqlHelpers module
+    # End the PostgresqlCookbook::Helpers module
   end
 end

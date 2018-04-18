@@ -22,6 +22,10 @@ This file is used to list changes made in each version of the postgresql cookboo
 
 - Remove deprecated tests
 
+## v6.1.3 (2018-04-18)
+
+- Fix recipes referencing the old helpers
+
 ## v6.1.2 (2018-04-16)
 
 **this will be the last release of the 6.0 series before all recipes are removed from the cookbook**
