@@ -57,9 +57,15 @@ action :create do
     end
   end
 
+  find_resource(:service, 'postgresql') do
+    service_name lazy { platform_service_name }
+    supports restart: true, status: true, reload: true
+    action :nothing
+  end
+
   log 'Enable and start PostgreSQL service' do
-    notifies :enable, postgresql_service, :immediately
-    notifies :start, postgresql_service, :immediately
+    notifies :enable, 'service[postgresql]', :immediately
+    notifies :start, 'service[postgresql]', :immediately
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password

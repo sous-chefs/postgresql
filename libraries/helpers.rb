@@ -328,14 +328,6 @@ module PostgresqlCookbook
       end
     end
 
-    def postgresql_service
-      find_resource(:service, 'postgresql') do |new_resource|
-        service_name lazy { platform_service_name }
-        supports restart: true, status: true, reload: true
-        action :nothing
-      end
-    end
-
     def psql_command_string(database, query)
       "psql -d #{database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
     end
