@@ -8,7 +8,7 @@ long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version           '6.1.2'
 source_url        'https://github.com/sous-chefs/postgresql'
 issues_url        'https://github.com/sous-chefs/postgresql/issues'
-chef_version      '>= 12.16' if respond_to?(:chef_version)
+chef_version      '>= 13.8'
 
 %w(ubuntu debian fedora amazon redhat centos scientific oracle).each do |os|
   supports os
