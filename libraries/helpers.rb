@@ -77,17 +77,17 @@ module PostgresqlCookbook
 
       sql << if new_resource.encrypted_password
                "ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'"
-      elsif new_resource.password
-        "PASSWORD '#{new_resource.password}'"
-      else
-        ''
-      end
+             elsif new_resource.password
+               "PASSWORD '#{new_resource.password}'"
+             else
+               ''
+             end
 
       sql << if new_resource.valid_until
                " VALID UNTIL '#{new_resource.valid_until}'"
-      else
-        ''
-      end
+             else
+               ''
+             end
     end
 
     def extension_installed?
