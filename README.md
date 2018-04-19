@@ -28,7 +28,7 @@ The earliest supported version is currently:
 
 ### Chef
 
-- Chef 12.16+
+- Chef 13.8+
 
 ### Cookbooks
 
