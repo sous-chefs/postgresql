@@ -25,7 +25,7 @@ property :include_default_source, [true, false]
 property :gem_binary, String
 property :options, [String, Hash]
 property :timeout, Integer, default: 300
-property :ruby_binary, String
+property :ruby_binary, String, default: '/usr/bin/ruby'
 property :source,	String
 
 action :install do
@@ -74,17 +74,5 @@ action :install do
 end
 
 action_class do
-  def ruby_bin
-    if new_resource.ruby_binary
-      new_resource.ruby_binary
-    else
-      '/usr/bin/ruby'
-    end
-  end
-
-  def ruby_version
-    require 'mixlib/shellout'
-    v = Mixlib::ShellOut.new("#{ruby_bin} -v").run_command
-    v.stdout.split('ruby ')[1].split('p')[0].to_f
-  end
+  include PostgresqlCookbook::Helpers
 end
