@@ -315,6 +315,36 @@ module PostgresqlCookbook
       cmd.exitstatus == 0
     end
 
+    def user_exists?(new_resource)
+      exists = %(psql -c "SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'" | grep '#{new_resource.user}')
+
+      cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
+      cmd.run_command
+      cmd.exitstatus == 0
+    end
+
+    def role_sql(new_resource)
+      sql = %(\\\"#{new_resource.user}\\\" WITH )
+
+      %w(superuser createdb createrole inherit replication login).each do |perm|
+        sql << "#{'NO' unless new_resource.send(perm)}#{perm.upcase} "
+      end
+
+      sql << if new_resource.encrypted_password
+               "ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'"
+      elsif new_resource.password
+        "PASSWORD '#{new_resource.password}'"
+      else
+        ''
+      end
+
+      sql << if new_resource.valid_until
+               " VALID UNTIL '#{new_resource.valid_until}'"
+      else
+        ''
+      end
+    end
+
     def data_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
       when 'rhel', 'fedora', 'amazon'
