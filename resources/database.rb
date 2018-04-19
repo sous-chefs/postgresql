@@ -61,18 +61,4 @@ end
 
 action_class do
   include PostgresqlCookbook::Helpers
-
-  def database_exists?(new_resource)
-    sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.database}')
-
-    exists = %(psql -c "#{sql}")
-    exists << " -U #{new_resource.user}" if new_resource.user
-    exists << " --host #{new_resource.host}" if new_resource.host
-    exists << " --port #{new_resource.port}" if new_resource.port
-    exists << " | grep #{new_resource.database}"
-
-    cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
-    cmd.run_command
-    cmd.exitstatus == 0
-  end
 end
