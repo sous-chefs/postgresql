@@ -345,6 +345,11 @@ module PostgresqlCookbook
       end
     end
 
+    def extension_installed?
+      query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
+      !(execute_sql(query, new_resource.database) =~ /^installed$/).nil?
+    end
+
     def data_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
       when 'rhel', 'fedora', 'amazon'

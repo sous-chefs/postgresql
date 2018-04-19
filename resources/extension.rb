@@ -43,9 +43,4 @@ end
 
 action_class do
   include PostgresqlCookbook::Helpers
-
-  def extension_installed?
-    query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
-    !(execute_sql(query, new_resource.database) =~ /^installed$/).nil?
-  end
 end
