@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+include PostgresqlCookbook::Helpers
+
 property :version,           String, default: '9.6'
 property :setup_repo,        [true, false], default: true
 property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
@@ -76,7 +78,6 @@ action :create do
 end
 
 action_class do
-  include PostgresqlCookbook::Helpers
   require 'securerandom'
 
   def secure_random
