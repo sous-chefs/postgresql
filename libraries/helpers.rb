@@ -175,60 +175,6 @@ module PostgresqlCookbook
 
     # Function to support select_default_timezone(tzdir), which is
     # used in recipes/config_initdb.rb.
-    def scan_available_timezones(tzdir)
-      # There should be an /etc/localtime zoneinfo file that is a link to
-      # (or a copy of) a timezone data file under tzdir, which should have
-      # been installed under the "share" directory by the tzdata package.
-      #
-      # The initdb utility determines which shared timezone file is being
-      # used as the system's default /etc/localtime. The timezone name is
-      # the timezone file path relative to the tzdir.
-
-      bestzonename = nil
-
-      if tzdir.nil?
-        Chef::Log.error('The zoneinfo directory not found (looked for /usr/share/zoneinfo and /usr/lib/zoneinfo)')
-      elsif !::File.exist?('/etc/localtime')
-        Chef::Log.error('The system zoneinfo file not found (looked for /etc/localtime)')
-      elsif ::File.directory?('/etc/localtime')
-        Chef::Log.error('The system zoneinfo file not found (/etc/localtime is a directory instead)')
-      elsif ::File.symlink?('/etc/localtime')
-        # PostgreSQL initdb doesn't use the symlink target, but this
-        # certainly will make sense to any system administrator. A full
-        # scan of the tzdir to find the shortest filename could result
-        # "US/Eastern" instead of "America/New_York" as bestzonename,
-        # in spite of what the sysadmin had specified in the symlink.
-        # (There are many duplicates under tzdir, with the same timezone
-        # content appearing as an average of 2-3 different file names.)
-        path = ::File.realdirpath('/etc/localtime')
-        bestzonename = path.gsub("#{tzdir}/", '')
-      else # /etc/localtime is a file, so scan for it under tzdir
-        localtime_content = File.read('/etc/localtime')
-
-        Find.find(tzdir) do |path|
-          # Only consider files (skip directories or symlinks)
-          next unless !::File.directory?(path) && !::File.symlink?(path)
-          # Ignore any file named "posixrules" or "localtime"
-          next unless ::File.basename(path) != 'posixrules' && ::File.basename(path) != 'localtime'
-          # Do consider if content exactly matches /etc/localtime.
-          next unless localtime_content == File.read(path)
-          tzname = path.gsub("#{tzdir}/", '')
-          next unless validate_zone(tzname)
-          if bestzonename.nil? ||
-             tzname.length < bestzonename.length ||
-             (tzname.length == bestzonename.length &&
-             (tzname <=> bestzonename) < 0)
-
-            bestzonename = tzname
-          end
-        end
-      end
-
-      bestzonename
-    end
-
-    # Function to support select_default_timezone(tzdir), which is
-    # used in recipes/config_initdb.rb.
     def identify_system_timezone(tzdir)
       resultbuf = scan_available_timezones(tzdir)
 
