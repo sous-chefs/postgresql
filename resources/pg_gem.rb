@@ -25,7 +25,6 @@ property :include_default_source, [true, false]
 property :gem_binary, String
 property :options, [String, Hash]
 property :timeout, Integer, default: 300
-property :ruby_binary, String, default: '/usr/bin/ruby'
 property :source,	String
 
 action :install do
@@ -58,8 +57,6 @@ action :install do
   build_essential 'essentially essential' do
     compile_time true
   end
-
-  raise ArgumentError, 'pg gem requires a system Ruby installation of 2.0 or higher.' if ruby_version < 2.0
 
   gem_package 'pg' do
     clear_sources new_resource.clear_sources if new_resource.clear_sources

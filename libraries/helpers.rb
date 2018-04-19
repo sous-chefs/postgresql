@@ -384,11 +384,5 @@ module PostgresqlCookbook
     def slave?
       ::File.exist? "#{data_dir}/recovery.conf"
     end
-
-    def ruby_version
-      require 'mixlib/shellout'
-      v = Mixlib::ShellOut.new("#{ruby_bin} -v").run_command
-      v.stdout.split('ruby ')[1].split('p')[0].to_f
-    end
   end
 end
