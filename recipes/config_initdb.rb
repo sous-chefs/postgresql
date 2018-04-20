@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+Chef::Log.warn 'This cookbook is being re-written to use resources, not recipes and will only be Chef 13.8+ compatible. Please version pin to 6.1.1 to prevent the breaking changes from taking effect. See https://github.com/sous-chefs/postgresql/issues/512 for details'
+
 #######
 # Load the locale_date_order() and select_default_timezone(tzdir)
 # methods from libraries/default.rb

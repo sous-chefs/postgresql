@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
+## v6.1.4 (2018-04-20)
+
+**This will be the last release of the 6.0 series before all recipes are removed from the cookbook**
+
+- Deprecate all recipes
+
 ## v6.1.1 (2017-03-08)
 
 - Fix pg gem installation on non-omnibus chef runs
