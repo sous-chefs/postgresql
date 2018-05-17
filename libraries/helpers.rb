@@ -17,6 +17,7 @@
 #
 
 include Chef::Mixin::ShellOut
+require 'securerandom'
 
 module PostgresqlCookbook
   module Helpers
@@ -128,6 +129,33 @@ module PostgresqlCookbook
 
     def slave?
       ::File.exist? "#{data_dir}/recovery.conf"
+    end
+
+    def secure_random
+      r = SecureRandom.hex
+      Chef::Log.debug "Generated password: #{r}"
+      r
+    end
+
+    def initialized?
+      return true if ::File.exist?("#{data_dir}/PG_VERSION")
+      false
+    end
+
+    # determine the platform specific server package name
+    def server_pkg_name
+      platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
+    end
+
+    # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
+    def rhel_init_db_command
+      if platform_family?('fedora') || (platform_family?('rhel') && node['platform_version'].to_i >= 7)
+        "/usr/pgsql-#{new_resource.version}/bin/postgresql#{new_resource.version.delete('.')}-setup initdb"
+      elsif platform_family?('rhel') && node['platform_version'].to_i == 6
+        "service postgresql-#{new_resource.version} initdb"
+      elsif platform?('amazon')
+        "service postgresql#{new_resource.version.delete('.')} initdb"
+      end
     end
   end
 end
