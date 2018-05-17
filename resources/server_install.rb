@@ -79,7 +79,7 @@ action :create do
     echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
-    only_if { node['postgresql']['assign_postgres_password'] }
+    only_if { new_resource.password }
   end
 end
 
