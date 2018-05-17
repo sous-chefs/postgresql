@@ -9,9 +9,10 @@ end
 
 # Using this to generate a service resource to control
 find_resource(:service, 'postgresql') do
-  service_name lazy { PostgresqlCookbook::Helpers.platform_service_name }
+  extend PostgresqlCookbook::Helpers
+  service_name lazy { platform_service_name }
   supports restart: true, status: true, reload: true
-  action :nothing
+  action [:enable, :start]
 end
 
 postgresql_server_conf 'PostgreSQL Config' do
