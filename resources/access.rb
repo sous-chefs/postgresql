@@ -51,7 +51,7 @@ action :grant do
 end
 
 action :trigger do
-  new_resource.updated_by_last_action(true)
+  new_resource.updated_by_last_action(true) # ~FC085
 end
 
 action_class do

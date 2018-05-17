@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-property :mapname,       String, required: true, name_property: true
+property :mapname,       String, required: true
 property :source,        String, required: true, default: 'pg_ident.conf.erb'
 property :cookbook,      String, default: 'postgresql'
 property :system_user,   String, required: true
@@ -47,7 +47,7 @@ action :create do
 end
 
 action :trigger do
-  new_resource.updated_by_last_action(true)
+  new_resource.updated_by_last_action(true) # ~FC085
 end
 
 action_class do
