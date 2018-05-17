@@ -25,7 +25,7 @@ property :include_default_source, [true, false]
 property :gem_binary, String
 property :options, [String, Hash]
 property :timeout, Integer, default: 300
-property :source,	String
+property :source, String
 
 action :install do
   # Needed for the client
