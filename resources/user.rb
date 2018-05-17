@@ -34,7 +34,7 @@ action :create do
     user 'postgres'
     command %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
     sensitive true
-    not_if { slave? || user_exists?(new_resource) }
+    not_if { standby? || user_exists?(new_resource) }
   end
 end
 
@@ -44,7 +44,7 @@ action :update do
       user 'postgres'
       command %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
       sensitive true
-      not_if { slave? }
+      not_if { standby? }
       only_if { user_exists?(new_resource) }
     end
   else
@@ -59,7 +59,7 @@ action :update do
         user 'postgres'
         command %(psql -c "ALTER ROLE \\\"#{new_resource.user}\\\" SET #{attr} = #{v};")
         sensitive true
-        not_if { slave? }
+        not_if { standby? }
         only_if { user_exists?(new_resource) }
       end
     end
@@ -71,7 +71,7 @@ action :drop do
     user 'postgres'
     command %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.user}\\\"')
     sensitive true
-    not_if { slave? }
+    not_if { standby? }
     only_if { user_exists?(new_resource) }
   end
 end

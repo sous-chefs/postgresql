@@ -27,7 +27,7 @@ action :create do
     code psql_command_string(new_resource.database, create_query)
     user 'postgres'
     action :run
-    not_if { slave? || extension_installed? }
+    not_if { standby? || extension_installed? }
   end
 end
 
@@ -36,7 +36,7 @@ action :drop do
     code psql_command_string(new_resource.database, "DROP EXTENSION IF EXISTS \"#{new_resource.extension}\"")
     user 'postgres'
     action :run
-    not_if { slave? }
+    not_if { standby? }
     only_if { extension_installed? }
   end
 end
