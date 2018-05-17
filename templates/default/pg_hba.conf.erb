@@ -16,16 +16,12 @@ local   all             all                                     peer
 host    all             all             127.0.0.1/32            md5
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
-# Allow replication connections from localhost, by a user with the
-# replication privilege.
-#local   replication     postgres                                peer
-#host    replication     postgres        127.0.0.1/32            md5
-#host    replication     postgres        ::1/128                 md5
 
 ###########
-# Other authentication configurations taken from chef node defaults:
+# From the postgresql_access resources
 ###########
 <% @pg_hba.each do |k,v| -%>
+# <%= k %>
 <% if v[:comment] -%>
 # <%= v[:comment] %>
 <% end -%>

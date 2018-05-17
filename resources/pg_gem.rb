@@ -25,8 +25,7 @@ property :include_default_source, [true, false]
 property :gem_binary, String
 property :options, [String, Hash]
 property :timeout, Integer, default: 300
-property :ruby_binary, String
-property :source,	String
+property :source, String
 
 action :install do
   # Needed for the client
@@ -59,8 +58,6 @@ action :install do
     compile_time true
   end
 
-  raise ArgumentError, 'pg gem requires a system Ruby installation of 2.0 or higher.' if ruby_version < 2.0
-
   gem_package 'pg' do
     clear_sources new_resource.clear_sources if new_resource.clear_sources
     include_default_source new_resource.include_default_source if new_resource.include_default_source
@@ -74,17 +71,5 @@ action :install do
 end
 
 action_class do
-  def ruby_bin
-    if new_resource.ruby_binary
-      new_resource.ruby_binary
-    else
-      '/usr/bin/ruby'
-    end
-  end
-
-  def ruby_version
-    require 'mixlib/shellout'
-    v = Mixlib::ShellOut.new("#{ruby_bin} -v").run_command
-    v.stdout.split('ruby ')[1].split('p')[0].to_f
-  end
+  include PostgresqlCookbook::Helpers
 end

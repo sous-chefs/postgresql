@@ -1,0 +1,16 @@
+# This file was automatically generated and dropped off by Chef!
+
+###########
+# From the postgresql_access resources
+###########
+<% @pg_hba.each do |k,v| -%>
+# <%= k %>
+<% if v[:comment] -%>
+# <%= v[:comment] %>
+<% end -%>
+<% if v[:addr] %>
+<%= v[:type].ljust(7) %> <%= v[:db].ljust(15) %> <%= v[:user].ljust(15) %> <%= v[:addr].ljust(23) %> <%= v[:method] %>
+<% else %>
+<%= v[:type].ljust(7) %> <%= v[:db].ljust(15) %> <%= v[:user].ljust(15) %>                         <%= v[:method] %>
+<% end %>
+<% end %>

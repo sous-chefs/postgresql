@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+include PostgresqlCookbook::Helpers
+
 property :version,           String, default: '9.6'
 property :setup_repo,        [true, false], default: true
 property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
@@ -55,9 +57,15 @@ action :create do
     end
   end
 
+  find_resource(:service, 'postgresql') do
+    service_name lazy { platform_service_name }
+    supports restart: true, status: true, reload: true
+    action :nothing
+  end
+
   log 'Enable and start PostgreSQL service' do
-    notifies :enable, postgresql_service, :immediately
-    notifies :start, postgresql_service, :immediately
+    notifies :enable, 'service[postgresql]', :immediately
+    notifies :start, 'service[postgresql]', :immediately
   end
 
   postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
@@ -71,12 +79,11 @@ action :create do
     echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
-    only_if { node['postgresql']['assign_postgres_password'] }
+    only_if { new_resource.password }
   end
 end
 
 action_class do
-  include PostgresqlCookbook::Helpers
   require 'securerandom'
 
   def secure_random
