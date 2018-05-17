@@ -4,6 +4,7 @@ end
 
 postgresql_server_install 'package' do
   version '9.6'
+  action [:install, :create]
 end
 
 # Using this to generate a service resource to control
