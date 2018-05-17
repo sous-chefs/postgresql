@@ -1,5 +1,3 @@
-include_recipe 'locale::default'
-
 postgresql_repository 'install' do
   version '9.6'
 end
