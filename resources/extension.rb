@@ -16,8 +16,8 @@
 # limitations under the License.
 #
 
-property :database,  String, required: true
-property :extension, String, name_property: true
+property :database,    String, required: true
+property :extension,   String, name_property: true
 property :old_version, String
 
 action :create do

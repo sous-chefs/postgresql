@@ -18,14 +18,14 @@
 
 include PostgresqlCookbook::Helpers
 
-property :version, String, default: '9.6'
-property :data_directory, String, default: lazy { data_dir }
-property :hba_file, String, default: lazy { "#{conf_dir}/pg_hba.conf" }
-property :ident_file, String, default: lazy { "#{conf_dir}/pg_ident.conf" }
-property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
+property :version,              String, default: '9.6'
+property :data_directory,       String, default: lazy { data_dir }
+property :hba_file,             String, default: lazy { "#{conf_dir}/pg_hba.conf" }
+property :ident_file,           String, default: lazy { "#{conf_dir}/pg_ident.conf" }
+property :external_pid_file,    String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
 property :stats_temp_directory, String, default: lazy { "/var/run/postgresql/#{version}-main.pg_stat_tmp" }
-property :additional_config, Hash, default: {}
-property :cookbook, String, default: 'postgresql'
+property :additional_config,    Hash, default: {}
+property :cookbook,             String, default: 'postgresql'
 
 action :modify do
   template "#{conf_dir}/postgresql.conf" do
@@ -43,4 +43,8 @@ action :modify do
       additional_config: new_resource.additional_config
     )
   end
+end
+
+action_class do
+  include PostgresqlCookbook::Helpers
 end
