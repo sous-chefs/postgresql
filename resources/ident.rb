@@ -17,7 +17,7 @@
 #
 
 property :mapname,     String, required: true
-property :source,      String, required: true, default: 'pg_ident.conf.erb'
+property :source,      String, default: 'pg_ident.conf.erb'
 property :cookbook,    String, default: 'postgresql'
 property :system_user, String, required: true
 property :pg_user,     String, required: true

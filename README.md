@@ -79,23 +79,15 @@ This resource installs PostgreSQL client and server packages.
 
 #### Properties
 
-Name         | Types   | Description                                   | Default | Required?
------------- | ------- | --------------------------------------------- | ------- | ---------
-`version`    | String  | Version of PostgreSQL to install              | '9.6'   | no
-`setup_repo` | Boolean | Define if you want to add the PostgreSQL repo | true    | no
-`hba_file`   | String  | Path of pg_hba.conf file                      |         |
-
-<default_os_path>/pg_hba.conf'</default_os_path>
-
-| no `ident_file` | String | Path of pg_ident.conf file | '
-
-<default_os_path>/pg_ident.conf'</default_os_path>
-
-| no `external_pid_file` | String | Path of PID file | '/var/run/postgresql/
-
-<version>-main.pid'</version>
-
-| no `password` | String, nil | Set postgres user password | 'generate' | no `port` | String, Integer | Set listen port of postgresql service | 5432 | no
+Name                | Types           | Description                                   | Default                                            | Required?
+------------------- | --------------- | --------------------------------------------- | -------------------------------------------------- | ---------
+`version`           | String          | Version of PostgreSQL to install              | '9.6'                                              | no
+`setup_repo`        | Boolean         | Define if you want to add the PostgreSQL repo | true                                               | no
+`hba_file`          | String          | Path of pg_hba.conf file                      | `<default_os_path>/pg_hba.conf'`                   | no
+`ident_file`        | String          | Path of pg_ident.conf file                    | `<default_os_path>/pg_ident.conf`                  | no
+`external_pid_file` | String          | Path of PID file                              | `/var/run/postgresql/<version>-main.pid</version>` | no
+`password`          | String, nil     | Set postgres user password                    | 'generate'                                         | no
+`port`              | String, Integer | Set listen port of postgresql service         | 5432                                               | no
 
 #### Examples
 
@@ -145,11 +137,9 @@ postgresql_server_conf 'My PostgreSQL Config' do
 end
 ```
 
-### postgresql_extention
+### postgresql_extension
 
-This resource manages postgresql extensions with a given database to ease installation/removal.
-
-**Deprecation Note:** The format `database/extension` to determine the database and extention to install has been deprecated. Please use the properties 'database' and 'extension' instead.
+This resource manages postgresql extensions for a given database.
 
 #### Actions
 
@@ -160,13 +150,13 @@ This resource manages postgresql extensions with a given database to ease instal
 
 Name          | Types  | Description                                                                      | Default          | Required?
 ------------- | ------ | -------------------------------------------------------------------------------- | ---------------- | ---------
-`database`    | String | Name of the database to install the extention into                               | Name of resource | yes
-`extention`   | String | Name of the extention to install the database                                    | Name of resource | yes
-`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query | None             | no
+`database`    | String | Name of the database to install the extension into                               |                  | yes
+`extension`   | String | Name of the extension to install the database                                    | Name of resource | yes
+`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query |                  | no
 
 #### Examples
 
-To install the adminpack extension:
+To install the `adminpack` extension:
 
 ```ruby
 # Add the contrib package in Ubuntu/Debian
@@ -244,7 +234,7 @@ This resource generate `pg_ident.conf` configuration file to manage user mapping
 Name           | Types       | Description                                                                | Default             | Required?
 -------------- | ----------- | -------------------------------------------------------------------------- | ------------------- | ---------
 `mapname`      | String      | Name of the user mapping                                                   | Resource name       | yes
-`source`       | String      | The cookbook template filename if you want to use your own custom template | 'pg_ident.conf.erb' | yes
+`source`       | String      | The cookbook template filename if you want to use your own custom template | 'pg_ident.conf.erb' | no
 `cookbook`     | String      | The cookbook to look in for the template source                            | 'postgresql'        | no
 `comment`      | String, nil | A comment to leave above the entry in `pg_ident`                           | nil                 | no
 `system_user`  | String      | System user or regexp used for the mapping                                 | None                | yes
@@ -306,7 +296,7 @@ This resource manages PostgreSQL databases.
 
 Name       | Types   | Description                                                         | Default             | Required?
 ---------- | ------- | ------------------------------------------------------------------- | ------------------- | ---------
-`database` | String  | Name of the database to create                                      | Name of resource    | yes
+`database` | String  | Name of the database to create                                      | Resource name       | yes
 `user`     | String  | User which run psql command                                         | 'postgres'          | no
 `template` | String  | Template used to create the new database                            | 'template1'         | no
 `host`     | String  | Define the host server where the database creation will be executed | Not set (localhost) | no
@@ -339,15 +329,16 @@ This resource manage PostgreSQL users.
 
 Name                 | Types   | Description                                     | Default | Required?
 -------------------- | ------- | ----------------------------------------------- | ------- | ---------
+`user`               | String  | User to create                                  |         | Yes
 `superuser`          | Boolean | Define if user needs superuser role             | false   | no
 `createdb`           | Boolean | Define if user needs createdb role              | false   | no
 `createrole`         | Boolean | Define if user needs createrole role            | false   | no
 `inherit`            | Boolean | Define if user inherits the privileges of roles | true    | no
 `replication`        | Boolean | Define if user needs replication role           | false   | no
 `login`              | Boolean | Define if user can login                        | true    | no
-`password`           | String  | Set user's password                             | Not Set | no
-`encrypted_password` | String  | Set user's password with an hashed password     | Not set | no
-`valid_until`        | String  | Define an account expiration date               | Not set | no
+`password`           | String  | Set user's password                             |         | no
+`encrypted_password` | String  | Set user's password with an hashed password     |         | no
+`valid_until`        | String  | Define an account expiration date               |         | no
 
 #### Examples
 
@@ -361,19 +352,17 @@ postgresql_user 'user1' do
 end
 ```
 
-## Recipes
-
-_None_
-
-There are no recipes. Please use the cookbook resources to install, config, and manage your PostgreSQL server.
-
 ## Usage
 
 To install and configure your PostgreSQL instance you need to create your own cookbook and call needed resources with your own parameters.
 
+More examples can be found in `test/cookbooks/test/recipes`
+
+## Example Useage
+
 Example: cookbooks/my_postgresql/recipes/default.rb
 
-```
+```ruby
 postgresql_client_install 'Postgresql Client' do
   setup_repo false
   version '9.5'
