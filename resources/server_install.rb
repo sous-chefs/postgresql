@@ -27,8 +27,6 @@ property :password,          [String, nil], default: 'generate'
 property :port,              [String, Integer], default: 5432
 property :initdb_locale,     String, default: 'UTF-8'
 
-default_action :install
-
 action :install do
   node.run_state['postgresql'] ||= {}
   node.run_state['postgresql']['version'] = new_resource.version
@@ -42,19 +40,10 @@ action :install do
 end
 
 action :create do
-  if platform_family?('rhel', 'fedora', 'amazon') && !initialized?
-    db_command = rhel_init_db_command
-    if db_command
-      execute 'init_db' do
-        command db_command
-        not_if { initialized? }
-      end
-    else # we don't know about this platform
-      log 'InitDB' do
-        message 'InitDB is not supported on this distro. Skipping.'
-        level :error
-      end
-    end
+  execute 'init_db' do
+    command rhel_init_db_command
+    not_if { initialized? }
+    only_if { platform_family?('rhel', 'fedora', 'amazon') }
   end
 
   find_resource(:service, 'postgresql') do
@@ -84,32 +73,5 @@ action :create do
 end
 
 action_class do
-  require 'securerandom'
-
-  def secure_random
-    r = SecureRandom.hex
-    Chef::Log.debug "Generated password: #{r}"
-    r
-  end
-
-  def initialized?
-    return true if ::File.exist?("#{data_dir}/PG_VERSION")
-    false
-  end
-
-  # determine the platform specific server package name
-  def server_pkg_name
-    platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
-  end
-
-  # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
-  def rhel_init_db_command
-    if platform_family?('fedora') || (platform_family?('rhel') && node['platform_version'].to_i >= 7)
-      "/usr/pgsql-#{new_resource.version}/bin/postgresql#{new_resource.version.delete('.')}-setup initdb"
-    elsif platform_family?('rhel') && node['platform_version'].to_i == 6
-      "service postgresql-#{new_resource.version} initdb"
-    elsif platform?('amazon')
-      "service postgresql#{new_resource.version.delete('.')} initdb"
-    end
-  end
+  include PostgresqlCookbook::Helpers
 end

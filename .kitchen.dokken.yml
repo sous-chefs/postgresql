@@ -16,14 +16,6 @@ platforms:
     image: dokken/amazonlinux
     pid_one_command: /sbin/init
 
-- name: debian-7
-  driver:
-    image: dokken/debian-7
-    pid_one_command: /sbin/init
-    intermediate_instructions:
-      - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get -y install sudo
-
 - name: debian-8
   driver:
     image: dokken/debian-8
@@ -50,22 +42,22 @@ platforms:
     image: dokken/centos-7
     pid_one_command: /usr/lib/systemd/systemd
 
-- name: fedora-26
+- name: fedora-27
   driver:
-    image: dokken/fedora-26
+    image: dokken/fedora-27
     pid_one_command: /usr/lib/systemd/systemd
-
-- name: ubuntu-14.04
-  driver:
-    image: dokken/ubuntu-14.04
-    pid_one_command: /sbin/init
-    intermediate_instructions:
-      - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get -y install sudo
 
 - name: ubuntu-16.04
   driver:
     image: dokken/ubuntu-16.04
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      - RUN /usr/bin/apt-get -y install sudo
+
+- name: ubuntu-18.04
+  driver:
+    image: dokken/ubuntu-18.04
     pid_one_command: /bin/systemd
     intermediate_instructions:
       - RUN /usr/bin/apt-get update

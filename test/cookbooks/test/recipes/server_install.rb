@@ -1,9 +1,6 @@
-postgresql_repository 'install' do
-  version '9.6'
-end
+postgresql_repository 'install'
 
 postgresql_server_install 'package' do
-  version '9.6'
   action [:install, :create]
 end
 
@@ -16,6 +13,5 @@ find_resource(:service, 'postgresql') do
 end
 
 postgresql_server_conf 'PostgreSQL Config' do
-  version '9.6'
   notifies :reload, 'service[postgresql]'
 end

@@ -1,18 +1,11 @@
-<%
-rpm_based_platforms = %w(centos-6 centos-7 fedora-25)
-deb_based_platforms = %w(ubuntu-14.04 ubuntu-16.04 debian-7 debian-8)
-opensuse_platforms = %w(opensuse-leap)
-%>
 ---
 driver:
   name: vagrant
-  customize:
-    cableconnected1: 'on'
 
 provisioner:
   name: chef_zero
   product_name: chef
-  product_version: 13
+  product_version: 14
   deprecations_as_errors: true
 
 verifier:
@@ -24,12 +17,11 @@ platforms:
       box: mvbcoding/awslinux
   - name: centos-6
   - name: centos-7
-  - name: debian-7
   - name: debian-8
   - name: debian-9
-  - name: fedora-26
-  - name: ubuntu-14.04
+  - name: fedora-27
   - name: ubuntu-16.04
+  - name: ubuntu-18.04
 
 suites:
 - name: repo
@@ -47,7 +39,3 @@ suites:
 - name: ident
   run_list:
     - recipe[test::ident]
-- name: pg_gem
-  run_list:
-    - recipe[test::pg_gem]
-

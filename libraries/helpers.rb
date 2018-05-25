@@ -1,7 +1,6 @@
 #
 # Cookbook:: postgresql
 # Library:: helpers
-# Author:: David Crane (<davidc@donorschoose.org>)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +15,12 @@
 # limitations under the License.
 #
 
-include Chef::Mixin::ShellOut
-
 module PostgresqlCookbook
   module Helpers
+    include Chef::Mixin::ShellOut
+
+    require 'securerandom'
+
     #######
     # Function to execute an SQL statement in the default database.
     #   Input: Query could be a single String or an Array of String.
@@ -36,7 +37,7 @@ module PostgresqlCookbook
       # If psql fails, generally the postgresql service is down.
       # Instead of aborting chef with a fatal error, let's just
       # pass these non-zero exitstatus back as empty cmd.stdout.
-      if cmd.exitstatus == 0 && !cmd.stderr.empty?
+      if cmd.exitstatus == 0 && !cmd.error?
         # An SQL failure is still a zero exitstatus, but then the
         # stderr explains the error, so let's rais that as fatal.
         Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
@@ -55,7 +56,7 @@ module PostgresqlCookbook
       exists << " --port #{new_resource.port}" if new_resource.port
       exists << " | grep #{new_resource.database}"
 
-      cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
+      cmd = shell_out(exists, user: 'postgresql')
       cmd.run_command
       cmd.exitstatus == 0
     end
@@ -97,8 +98,10 @@ module PostgresqlCookbook
 
     def data_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
-      when 'rhel', 'fedora', 'amazon'
+      when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
+      when 'amazon'
+        "/var/lib/pgsql#{version.delete('.')}/data"
       when 'debian'
         "/var/lib/postgresql/#{version}/main"
       end
@@ -106,8 +109,14 @@ module PostgresqlCookbook
 
     def conf_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
-      when 'rhel', 'fedora', 'amazon'
+      when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
+      when 'amazon'
+        if node['virtualization']['system'] == 'docker'
+          "/var/lib/pgsql#{version.delete('.')}/data"
+        else
+          "/var/lib/pgsql/#{version}/data"
+        end
       when 'debian'
         "/etc/postgresql/#{version}/main"
       end
@@ -115,8 +124,15 @@ module PostgresqlCookbook
 
     # determine the platform specific service name
     def platform_service_name(version = node.run_state['postgresql']['version'])
-      if %w(rhel amazon fedora).include?(node['platform_family'])
+      case node['platform_family']
+      when 'rhel', 'fedora'
         "postgresql-#{version}"
+      when 'amazon'
+        if node['virtualization']['system'] == 'docker'
+          "postgresql#{version.delete('.')}"
+        else
+          "postgresql-#{version}"
+        end
       else
         'postgresql'
       end
@@ -128,6 +144,54 @@ module PostgresqlCookbook
 
     def slave?
       ::File.exist? "#{data_dir}/recovery.conf"
+    end
+
+    def initialized?
+      return true if ::File.exist?("#{conf_dir}/PG_VERSION")
+      false
+    end
+
+    def secure_random
+      r = SecureRandom.hex
+      Chef::Log.debug "Generated password: #{r}"
+      r
+    end
+
+    # determine the platform specific server package name
+    def server_pkg_name
+      platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
+    end
+
+    # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
+    def rhel_init_db_command
+      if platform_family?('fedora') || (platform_family?('rhel') && node['platform_version'].to_i >= 7)
+        "/usr/pgsql-#{new_resource.version}/bin/postgresql#{new_resource.version.delete('.')}-setup initdb"
+      else
+        "service #{platform_service_name} initdb"
+      end
+    end
+
+    # given the base URL build the complete URL string for a yum repo
+    def yum_repo_url(base_url)
+      "#{base_url}/#{new_resource.version}/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
+    end
+
+    # the postgresql yum repos URLs are organized into redhat and fedora directories.s
+    # route things to the right place based on platform_family
+    def yum_repo_platform_family_string
+      platform_family?('fedora') ? 'fedora' : 'redhat'
+    end
+
+    # build the platform string that makes up the final component of the yum repo URL
+    def yum_repo_platform_string
+      platform = platform?('fedora') ? 'fedora' : 'rhel'
+      release = platform?('amazon') ? '6' : '$releasever'
+      "#{platform}-#{release}-$basearch"
+    end
+
+    # on amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
+    def yum_releasever
+      platform?('amazon') ? '6' : '$releasever'
     end
   end
 end

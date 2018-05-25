@@ -1,5 +1,4 @@
 postgresql_server_install 'postgresql' do
-  version '9.6'
   password '12345'
   port 5432
   setup_repo true

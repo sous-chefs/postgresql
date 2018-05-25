@@ -1,10 +1,6 @@
-postgresql_repository 'install' do
-  version '9.6'
-end
+postgresql_repository 'install'
 
-postgresql_server_install 'package' do
-  version '9.6'
-end
+postgresql_server_install 'package'
 
 postgresql_database 'test_1'
 

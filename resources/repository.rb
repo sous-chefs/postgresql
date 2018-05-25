@@ -84,26 +84,5 @@ action :add do
 end
 
 action_class do
-  # given the base URL build the complete URL string for a yum repo
-  def yum_repo_url(base_url)
-    "#{base_url}/#{new_resource.version}/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
-  end
-
-  # the postgresql yum repos URLs are organized into redhat and fedora directories.s
-  # route things to the right place based on platform_family
-  def yum_repo_platform_family_string
-    platform_family?('fedora') ? 'fedora' : 'redhat'
-  end
-
-  # build the platform string that makes up the final component of the yum repo URL
-  def yum_repo_platform_string
-    platform = platform?('fedora') ? 'fedora' : 'rhel'
-    release = platform?('amazon') ? '6' : '$releasever'
-    "#{platform}-#{release}-$basearch"
-  end
-
-  # on amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
-  def yum_releasever
-    platform?('amazon') ? '6' : '$releasever'
-  end
+  include PostgresqlCookbook::Helpers
 end

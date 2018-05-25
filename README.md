@@ -4,9 +4,9 @@
 
 Installs and configures PostgreSQL as a client or a server.
 
-## DEPRECATION NOTICE!!!
+## Upgrading
 
-There will be an upcoming major version which migrates to a resource based cookbook and _all_ recipes will be removed! You will want to version pin to 6.1.1 to prevent major breaking changes. See the README in the postgresql cookbook repo for migration details.
+If you are wondering where all the recipes went in v7.0+, or how on earth I use this new cookbook please see upgrading.md for a full description.
 
 ## Requirements
 
@@ -24,81 +24,16 @@ We follow the currently supported versions listed on <https://www.postgresql.org
 
 The earliest supported version is currently:
 
-- 9.3 (9.3.19)
+- 9.3 (9.3.23)
 
 ### Chef
 
 - Chef 13.8+
 
-### Cookbooks
+### Cookbook Dependencies
 
 - `openssl`
 - `build-essential`
-
-## Deprecation notice for pg_hba.conf
-
-Updating the pg_hba configuration can now be done with the `postgresql_access` resource which is documented below. There is a backward-compatible migration left in the `server_conf` recipe, but it will be removed in the next major release.
-
-For each of the `node['postgresql']['pg_hba']` hashes, you want to make a corresponding postgresql_access resource like the following example:
-
-```ruby
-# What used to be this:
-default['postgresql']['pg_hba'] = {
-  type: 'local',
-  db: 'all',
-  user: 'postgres',
-  addr: nil,
-  method: 'ident'
-}
-
-# Is now this:
-postgresql_access 'local_postgres_superuser' do
-  access_type 'local'
-  access_db 'all'
-  access_user 'postgres'
-  access_addr nil
-  access_method 'ident'
-end
-```
-
-**Note**: The default notification for the new `postgresql_access` resource is now `:reload` which is the recommended method of notifying PostgreSQL of access changes without requiring a full database restart. Before, the access template would defer to the notification method specified by node['postgresql']['server']['config_change_notify']
-
-## Configuration
-
-The `postgresql.conf` file is dynamically generated from attributes. Each key in `node['postgresql']['config']` is a postgresql configuration directive, and will be rendered in the config file. For example, the attribute:
-
-```ruby
-node['postgresql']['config']['listen_addresses'] = 'localhost'
-```
-
-Will result in the following line in the `postgresql.conf` file:
-
-```ruby
-listen_addresses = 'localhost'
-```
-
-The attributes file contains default values for Debian and RHEL platform families (per the `node['platform_family']`). These defaults have disparity between the platforms because they were originally extracted from the postgresql.conf files in the previous version of this cookbook, which differed in their default config. The resulting configuration files will be the same as before, but the content will be dynamically rendered from the attributes. The helpful commentary will no longer be present. You should consult the PostgreSQL documentation for specific configuration details.
-
-For values that are "on" or "off", they should be specified as literal `true` or `false`. String values will be used with single quotes. Any configuration option set to the literal `nil` will be skipped entirely. All other values (e.g., numeric literals) will be used as is. So for example:
-
-```ruby
-node.default['postgresql']['config']['logging_collector'] = true
-node.default['postgresql']['config']['datestyle'] = 'iso, mdy'
-node.default['postgresql']['config']['ident_file'] = nil
-node.default['postgresql']['config']['port'] = 5432
-```
-
-Will result in the following config lines:
-
-```ruby
-logging_collector = 'on'
-datestyle = 'iso,mdy'
-port = 5432
-```
-
-(no line printed for `ident_file` as it is `nil`)
-
-Note that the `unix_socket_directory` configuration was renamed to `unix_socket_directories` in Postgres 9.3 so make sure to use the `node['postgresql']['unix_socket_directories']` attribute instead of `node['postgresql']['unix_socket_directory']`.
 
 ## Resources
 
@@ -112,14 +47,21 @@ This resource installs PostgreSQL client packages.
 
 #### Properties
 
-Name         | Types   | Description                                        | Default  | Required?
------------- | ------- | -------------------------------------------------- | -------- | ---------
-`version`    | String  | Version of PostgreSQL to install                   | '9.6'    | no
-`setup_repo` | Boolean | Define if you want to add the PostgreSQL repo      | true     | no
+Name                | Types             | Description                                                   | Default                                   | Required?
+------------------- | ----------------- | ------------------------------------------------------------- | ----------------------------------------- | ---------
+`version`           | String            | Version of PostgreSQL to install                              | '9.6'                                     | no
+`setup_repo`        | Boolean           | Define if you want to add the PostgreSQL repo                 | true                                      | no
+`hba_file`          | String            |                                                               | `#{conf_dir}/main/pg_hba.conf`            | no
+`ident_file`        | String            |                                                               | `#{conf_dir}/main/pg_ident.conf`          | no
+`external_pid_file` | String            |                                                               | `/var/run/postgresql/#{version}-main.pid` | no
+`password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | 'generate'                                | no
+`port`              | [String, Integer] | Database listen port                                          | 5432                                      | no
+`initdb_locale`     | String            | Locale to initialize the database with                        | 'UTF-8'                                   | no
 
 #### Examples
 
 To install '9.5' version:
+
 ```
 postgresql_client_install 'My Postgresql Client install' do
   version '9.5'
@@ -137,20 +79,20 @@ This resource installs PostgreSQL client and server packages.
 
 #### Properties
 
-Name                | Types           | Description                                    | Default                                  | Required?
-------------------- | --------------- | ---------------------------------------------- | ---------------------------------------- | ---------
-`version`           | String          | Version of PostgreSQL to install               | '9.6'                                    | no
-`setup_repo`        | Boolean         | Define if you want to add the PostgreSQL repo  | true                                     | no
-`hba_file`          | String          | Path of pg_hba.conf file                       | '<default_os_path>/pg_hba.conf'          | no
-`ident_file`        | String          | Path of pg_ident.conf file                     | '<default_os_path>/pg_ident.conf'        | no
-`external_pid_file` | String          | Path of PID file                               | '/var/run/postgresql/<version>-main.pid' | no
-`password`          | String, nil     | Set postgres user password                     | 'generate'                               | no
-`port`              | String, Integer | Set listen port of postgresql service          | 5432                                     | no
-
+Name                | Types           | Description                                   | Default                                            | Required?
+------------------- | --------------- | --------------------------------------------- | -------------------------------------------------- | ---------
+`version`           | String          | Version of PostgreSQL to install              | '9.6'                                              | no
+`setup_repo`        | Boolean         | Define if you want to add the PostgreSQL repo | true                                               | no
+`hba_file`          | String          | Path of pg_hba.conf file                      | `<default_os_path>/pg_hba.conf'`                   | no
+`ident_file`        | String          | Path of pg_ident.conf file                    | `<default_os_path>/pg_ident.conf`                  | no
+`external_pid_file` | String          | Path of PID file                              | `/var/run/postgresql/<version>-main.pid</version>` | no
+`password`          | String, nil     | Set postgres user password                    | 'generate'                                         | no
+`port`              | String, Integer | Set listen port of postgresql service         | 5432                                               | no
 
 #### Examples
 
 To install PostgreSQL server, set you own postgres password and set another service port.
+
 ```
 postgresql_server_install 'My Postgresql Server install' do
   action :install
@@ -163,7 +105,6 @@ postgresql_server_install 'Setup my postgresql 9.5 server' do
 end
 ```
 
-
 ### postgresql_server_conf
 
 This resource manages postgresql.conf configuration file.
@@ -174,20 +115,20 @@ This resource manages postgresql.conf configuration file.
 
 #### Properties
 
-Name                   | Types  | Description                                 | Default                                          | Required?
----------------------- | ------ | ------------------------------------------- | ------------------------------------------------ | ---------
-`version`              | String | Version of PostgreSQL to install            | '9.6'                                            | no
-`data_directory`       | String | Path of postgresql data directory           | '<default_os_data_path>'                         | no
-`hba_file`             | String | Path of pg_hba.conf file                    | '<default_os_conf_path>/pg_hba.conf'             | no
-`ident_file`           | String | Path of pg_ident.conf file                  | '<default_os_conf_path>/pg_ident.conf'           | no
-`external_pid_file`    | String | Path of PID file                            | '/var/run/postgresql/<version>-main.pid'         | no
-`stats_temp_directory` | String | Path of stats file                          | '/var/run/postgresql/<version>-main.pg_stat_tmp' | no
-`notification`         | Symbol | How to notify Postgres of the access change | :restart                                         | yes
-
+Name                   | Types  | Description                             | Default                                             | Required?
+---------------------- | ------ | --------------------------------------- | --------------------------------------------------- | ---------
+`version`              | String | Version of PostgreSQL to install        | '9.6'                                               | no
+`data_directory`       | String | Path of postgresql data directory       | `<default_os_data_path>`                            | no
+`hba_file`             | String | Path of pg_hba.conf file                | `<default_os_conf_path>/pg_hba.conf`                | no
+`ident_file`           | String | Path of pg_ident.conf file              | `<default_os_conf_path>/pg_ident.conf`              | no
+`external_pid_file`    | String | Path of PID file                        | `/var/run/postgresql/<postgresql_version>-main.pid` | no
+`stats_temp_directory` | String | Path of stats file                      | `/var/run/postgresql/version>-main.pg_stat_tmp`     | no
+`additional_config`    | Hash   | Extra configuration for the config file | {}                                                  | no
 
 #### Examples
 
 To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.
+
 ```
 postgresql_server_conf 'My PostgreSQL Config' do
   version '9.5'
@@ -196,12 +137,9 @@ postgresql_server_conf 'My PostgreSQL Config' do
 end
 ```
 
+### postgresql_extension
 
-### postgresql_extention
-
-This resource manages postgresql extensions with a given database to ease installation/removal.
-
-**Deprecation Note:** The format `database/extension` to determine the database and extention to install has been deprecated. Please use the properties 'database' and 'extension' instead.
+This resource manages postgresql extensions for a given database.
 
 #### Actions
 
@@ -210,15 +148,15 @@ This resource manages postgresql extensions with a given database to ease instal
 
 #### Properties
 
-Name          | Types  | Description                                                                       | Default          | Required?
-------------- | ------ | --------------------------------------------------------------------------------- | ---------------- | ---------
-`database`    | String | Name of the database to install the extention into                                | Name of resource | yes
-`extention`   | String | Name of the extention to install the database                                     | Name of resource | yes
-`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query  | None             | no
+Name          | Types  | Description                                                                      | Default          | Required?
+------------- | ------ | -------------------------------------------------------------------------------- | ---------------- | ---------
+`database`    | String | Name of the database to install the extension into                               |                  | yes
+`extension`   | String | Name of the extension to install the database                                    | Name of resource | yes
+`old_version` | String | Older module name for new extension replacement. Appends FROM to extension query |                  | no
 
 #### Examples
 
-To install the adminpack extension:
+To install the `adminpack` extension:
 
 ```ruby
 # Add the contrib package in Ubuntu/Debian
@@ -231,30 +169,6 @@ postgresql_extension 'postgres adminpack' do
 end
 ```
 
-### postgresql_pg_gem
-
-This resource installs the pg rubygem and replaces the previously used 'ruby' recipe with a single resource.
-
-#### Actions
-
-- `install` - (default) Installs the pg ruby gem
-
-#### Properties
-
-Name                     | Types           | Description                                                                                          | Default  | Required?
------------------------- | --------------- | ---------------------------------------------------------------------------------------------------- | -------- | ---------
-`client_version`         | String          | PostgreSQL Client Version                                                                            | '9.6'    | no
-`version`                | String or nil   | PG gem version to install                                                                            | '0.21.0' | no
-`setup_repo`             | Boolean         | Automatically setup pgdg repo for the client library?                                                | true     | no
-`source`                 | String          | Gem source file path                                                                                 | None     | no
-`clear_sources`          | Boolean         | Set to true to download a gem from the path specified by the source property (and not from RubyGems) | None     | no
-`include_default_source` | Boolean         | Set to false to not include Chef::Config[:rubygems_url] in the sources                               | None     | no
-`gem_binary`             | String          | Path to the rubygems `gem` binary                                                                    | None     | no
-`options`                | String          | One (or more) additional options that are passed to the gem install                                  | None     | no
-`timeout`                | Integer         | The amount of time (in seconds) to wait before timing out                                            | 300      | no
-`ruby_binary`            | String          | Path to the ruby binary                                                                              | None     | no
-
-
 ### postgresql_access
 
 This resource uses the accumulator pattern to build up the `pg_hba.conf` file via chef resources instead of piling on a mountain of chef attributes to make this cookbook more reusable. It directly mirrors the configuration options of the postgres hba file in the resource and by default notifies the server with a reload to avoid a full restart, causing a potential outage of service. To revoke access, simply remove the resource and the access change won't be computed into the final `pg_hba.conf`
@@ -265,18 +179,18 @@ This resource uses the accumulator pattern to build up the `pg_hba.conf` file vi
 
 #### Properties
 
-Name            | Types       | Description                                                                               | Default           | Required?
---------------- | ----------- | ----------------------------------------------------------------------------------------- | ----------------- | ---------
-`name`          | String      | Name of the access resource, this is left as a comment inside the `pg_hba` config         | Resource name     | yes
-`source`        | String      | The cookbook template filename if you want to use your own custom template                | 'pg_hba.conf.erb' | yes
-`cookbook`      | String      | The cookbook to look in for the template source                                           | 'postgresql'      | yes
-`comment`       | String, nil | A comment to leave above the entry in `pg_hba`                                            | nil               | no
-`access_type`   | String      | The type of access, e.g. local or host                                                    | 'local'           | yes
-`access_db`     | String      | The database to access. Can use 'all' for all databases                                   | 'all'             | yes
-`access_user`   | String      | The user accessing the database. Can use 'all' for any user                               | 'all'             | yes
-`access_addr`   | String, nil | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil               | no
-`access_method` | String      | Authentication method to use                                                              | 'ident'           | yes
-`notification`  | Symbol      | How to notify Postgres of the access change.                                              | :reload           | yes
+Name            | Types  | Description                                                                               | Default           | Required?
+--------------- | ------ | ----------------------------------------------------------------------------------------- | ----------------- | ---------
+`name`          | String | Name of the access resource, this is left as a comment inside the `pg_hba` config         | Resource name     | yes
+`source`        | String | The cookbook template filename if you want to use your own custom template                | 'pg_hba.conf.erb' | yes
+`cookbook`      | String | The cookbook to look in for the template source                                           | 'postgresql'      | yes
+`comment`       | String | A comment to leave above the entry in `pg_hba`                                            | nil               | no
+`access_type`   | String | The type of access, e.g. local or host                                                    | 'local'           | yes
+`access_db`     | String | The database to access. Can use 'all' for all databases                                   | 'all'             | yes
+`access_user`   | String | The user accessing the database. Can use 'all' for any user                               | 'all'             | yes
+`access_addr`   | String | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil               | no
+`access_method` | String | Authentication method to use                                                              | 'ident'           | yes
+`notification`  | Symbol | How to notify Postgres of the access change.                                              | :reload           | yes
 
 #### Examples
 
@@ -305,8 +219,7 @@ local   all             postgres                                ident
 ```
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
-```   
-
+```
 
 ### postgresql_ident
 
@@ -321,13 +234,12 @@ This resource generate `pg_ident.conf` configuration file to manage user mapping
 Name           | Types       | Description                                                                | Default             | Required?
 -------------- | ----------- | -------------------------------------------------------------------------- | ------------------- | ---------
 `mapname`      | String      | Name of the user mapping                                                   | Resource name       | yes
-`source`       | String      | The cookbook template filename if you want to use your own custom template | 'pg_ident.conf.erb' | yes
+`source`       | String      | The cookbook template filename if you want to use your own custom template | 'pg_ident.conf.erb' | no
 `cookbook`     | String      | The cookbook to look in for the template source                            | 'postgresql'        | no
 `comment`      | String, nil | A comment to leave above the entry in `pg_ident`                           | nil                 | no
 `system_user`  | String      | System user or regexp used for the mapping                                 | None                | yes
 `pg_user`      | String      | Pg user or regexp used for the mapping                                     | None                | yes
 `notification` | Symbol      | How to notify Postgres of the access change.                               | :reload             | no
-
 
 #### Examples
 
@@ -348,7 +260,7 @@ This generates the following line in the `pg_ident.conf`:
 # MAPNAME       SYSTEM-USERNAME         PG-USERNAME
 
 # John Mapping
-mymapping       john                    user1  
+mymapping       john                    user1
 ```
 
 To grant access to the foo user with password authentication:
@@ -371,7 +283,6 @@ This generates the following line in the `pg_hba.conf`:
 host   all             foo               127.0.0.1/32           ident
 ```
 
-
 ### postgresql_database
 
 This resource manages PostgreSQL databases.
@@ -385,7 +296,7 @@ This resource manages PostgreSQL databases.
 
 Name       | Types   | Description                                                         | Default             | Required?
 ---------- | ------- | ------------------------------------------------------------------- | ------------------- | ---------
-`database` | String  | Name of the database to create                                      | Name of resource    | yes
+`database` | String  | Name of the database to create                                      | Resource name       | yes
 `user`     | String  | User which run psql command                                         | 'postgres'          | no
 `template` | String  | Template used to create the new database                            | 'template1'         | no
 `host`     | String  | Define the host server where the database creation will be executed | Not set (localhost) | no
@@ -404,7 +315,6 @@ postgresql_database 'my_app' do
 end
 ```
 
-
 ### postgresql_user
 
 This resource manage PostgreSQL users.
@@ -419,15 +329,16 @@ This resource manage PostgreSQL users.
 
 Name                 | Types   | Description                                     | Default | Required?
 -------------------- | ------- | ----------------------------------------------- | ------- | ---------
+`user`               | String  | User to create                                  |         | Yes
 `superuser`          | Boolean | Define if user needs superuser role             | false   | no
 `createdb`           | Boolean | Define if user needs createdb role              | false   | no
 `createrole`         | Boolean | Define if user needs createrole role            | false   | no
 `inherit`            | Boolean | Define if user inherits the privileges of roles | true    | no
 `replication`        | Boolean | Define if user needs replication role           | false   | no
 `login`              | Boolean | Define if user can login                        | true    | no
-`password`           | String  | Set user's password                             | Not Set | no
-`encrypted_password` | String  | Set user's password with an hashed password     | Not set | no
-`valid_until`        | String  | Define an account expiration date               | Not set | no
+`password`           | String  | Set user's password                             |         | no
+`encrypted_password` | String  | Set user's password with an hashed password     |         | no
+`valid_until`        | String  | Define an account expiration date               |         | no
 
 #### Examples
 
@@ -441,20 +352,17 @@ postgresql_user 'user1' do
 end
 ```
 
-## Recipes
-
-_None_
-
-There are no recipes. Please use the cookbook resources to install, config, and manage your PostgreSQL server.
-
-
 ## Usage
 
 To install and configure your PostgreSQL instance you need to create your own cookbook and call needed resources with your own parameters.
 
-Example:
-cookbooks/my_postgresql/recipes/default.rb
-```
+More examples can be found in `test/cookbooks/test/recipes`
+
+## Example Useage
+
+Example: cookbooks/my_postgresql/recipes/default.rb
+
+```ruby
 postgresql_client_install 'Postgresql Client' do
   setup_repo false
   version '9.5'
@@ -475,11 +383,11 @@ end
 
 Please refer to each project's style guidelines and guidelines for submitting patches and additions. In general, we follow the "fork-and-pull" Git workflow.
 
- 1. **Fork** the repo on GitHub
- 2. **Clone** the project to your own machine
- 3. **Commit** changes to your own branch
- 4. **Push** your work back up to your fork
- 5. Submit a **Pull request** so that we can review your changes
+1. **Fork** the repo on GitHub
+2. **Clone** the project to your own machine
+3. **Commit** changes to your own branch
+4. **Push** your work back up to your fork
+5. Submit a **Pull request** so that we can review your changes
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
