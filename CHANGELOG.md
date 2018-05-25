@@ -2,7 +2,9 @@
 
 This file is used to list changes made in each version of the postgresql cookbook.
 
-## v7.0.0 (tbc)
+_Breaking Change_ Please see UPGRADING.md and the README.md for information how to use.
+
+## v7.0.0 (25-05-2018)
 
 - Add custom resources for:
 
