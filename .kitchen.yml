@@ -7,6 +7,8 @@ provisioner:
   product_name: chef
   product_version: 14
   deprecations_as_errors: true
+  enforce_idempotency: true
+  multiple_converge: 2
 
 verifier:
   name: inspec
@@ -42,6 +44,3 @@ suites:
 - name: extension
   run_list:
     - recipe[test::extension]
-  provisioner:
-    enforce_idempotency: true
-    multiple_converge: 2

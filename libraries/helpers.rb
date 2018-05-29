@@ -21,6 +21,15 @@ module PostgresqlCookbook
 
     require 'securerandom'
 
+    def psql_command_string(new_resource, query, database=nil)
+      cmd = "psql -tc #{query}"
+      cmd << " -f -" # Specify filename and stdin as input for better error output
+      cmd << " -d #{new_resource.database}" if database
+      cmd << " -U #{new_resource.user}"     if new_resource.user
+      cmd << " --host #{new_resource.host}" if new_resource.host
+      cmd << " --port #{new_resource.port}" if new_resource.port
+    end
+
     #######
     # Function to execute an SQL statement in the default database.
     #   Input: Query could be a single String or an Array of String.
@@ -28,18 +37,24 @@ module PostgresqlCookbook
     #           Note an empty output could mean psql couldn't connect.
     # This is easiest for 1-field (1-row, 1-col) results, otherwise
     # it will be complex to parse the results.
-    def execute_sql(query, db_name)
-      # query could be a String or an Array of String
+    def execute_sql(new_resource, query)
+      # Let's build up a full command
+      psql = psql_command_string(new_resource, query, new_resource.database)
+
+      # If we don't pass in a user to the resource
+      # default to the postgres user
+      user = new_resource.user ? new_resource.user : 'postgres'
+
+      # query could be a String or an Array of Strings
       statement = query.is_a?(String) ? query : query.join("\n")
-      cmd = shell_out("psql -q --tuples-only --no-align -d #{db_name} -f -",
-                      user: 'postgres',
-                      input: statement)
+
+      cmd = shell_out(psql, user: user, input: statement)
       # If psql fails, generally the postgresql service is down.
       # Instead of aborting chef with a fatal error, let's just
       # pass these non-zero exitstatus back as empty cmd.stdout.
       if cmd.exitstatus == 0 && !cmd.error?
         # An SQL failure is still a zero exitstatus, but then the
-        # stderr explains the error, so let's rais that as fatal.
+        # stderr explains the error, so let's raise that as fatal.
         Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
         Chef::Log.fatal(cmd.stderr)
         raise 'SQL ERROR'
@@ -56,17 +71,14 @@ module PostgresqlCookbook
       exists << " --port #{new_resource.port}" if new_resource.port
       exists << " | grep #{new_resource.database}"
 
-      cmd = shell_out(exists, user: new_resource.user)
+      cmd = shell_out(exists, user: 'postgresql')
       cmd.run_command
       cmd.exitstatus == 0
     end
 
     def user_exists?(new_resource)
-      exists = %(psql -c "SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'" | grep '#{new_resource.user}')
-
-      cmd = Mixlib::ShellOut.new(exists, user: 'postgres')
-      cmd.run_command
-      cmd.exitstatus == 0
+      sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'" | grep '#{new_resource.user}')
+      execute_sql(new_resource, sql)
     end
 
     def role_sql(new_resource)
@@ -136,10 +148,6 @@ module PostgresqlCookbook
       else
         'postgresql'
       end
-    end
-
-    def psql_command_string(database, query)
-      "psql -d #{database} <<< '\\set ON_ERROR_STOP on\n#{query};'"
     end
 
     def slave?

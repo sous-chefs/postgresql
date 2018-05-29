@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-property :source,        String, required: true, default: 'pg_hba.conf.erb'
-property :cookbook,      String, default: 'postgresql'
-property :comment,       [String, nil], default: nil
 property :access_type,   String, required: true, default: 'local'
 property :access_db,     String, required: true, default: 'all'
 property :access_user,   String, required: true, default: 'postgres'
-property :access_addr,   [String, nil], default: nil
 property :access_method, String, required: true, default: 'ident'
+property :cookbook,      String,                 default: 'postgresql'
+property :source,        String,                 default: 'pg_hba.conf.erb'
+property :access_addr,   String
+property :comment,       String
 
 action :grant do
   config_resource = new_resource
