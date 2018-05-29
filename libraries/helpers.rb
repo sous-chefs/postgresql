@@ -56,7 +56,7 @@ module PostgresqlCookbook
       exists << " --port #{new_resource.port}" if new_resource.port
       exists << " | grep #{new_resource.database}"
 
-      cmd = shell_out(exists, user: 'postgresql')
+      cmd = shell_out(exists, user: new_resource.user)
       cmd.run_command
       cmd.exitstatus == 0
     end

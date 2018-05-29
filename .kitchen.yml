@@ -39,3 +39,9 @@ suites:
 - name: ident
   run_list:
     - recipe[test::ident]
+- name: extension
+  run_list:
+    - recipe[test::extension]
+  provisioner:
+    enforce_idempotency: true
+    multiple_converge: 2
