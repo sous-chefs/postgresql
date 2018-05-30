@@ -78,4 +78,49 @@ RSpec.describe PostgresqlCookbook::Helpers do
       end
     end
   end
+
+  describe '#psql_command_string' do
+    before do
+      @new_resource = double(database: 'db_foo',
+                             user: 'postgres',
+                             host: 'localhost',
+                             port: '5432'
+                            )
+      @query = 'THIS IS A COMMAND STRING'
+    end
+
+    it 'returns a full command string given all the parameters' do
+      grep_for = 'FOO'
+      result = "psql -tc 'THIS IS A COMMAND STRING' -d db_foo -U postgres --host localhost --port 5432 | grep FOO"
+
+      expect(subject.psql_command_string(@new_resource, @query, grep_for)).to eq(result)
+    end
+
+    it 'returns a command without grep' do
+      result = "psql -tc 'THIS IS A COMMAND STRING' -d db_foo -U postgres --host localhost --port 5432"
+
+      expect(subject.psql_command_string(@new_resource, @query)).to eq(result)
+    end
+
+    it 'Allow us to connect to postgresql without specifying the database name' do
+      new_resource = double(database: nil,
+                            user: 'postgres',
+                            port: '5432',
+                            host: nil
+                            )
+
+      db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
+      grep_for = 'test_1234'
+
+      result = "psql -tc 'SELECT datname from pg_database WHERE datname='test_1234'' -U postgres --port 5432 | grep test_1234"
+
+      expect(subject.psql_command_string(new_resource, db_query, grep_for.to_s)).to eq(result)
+    end
+  end
+
+  # describe '#database_exists(new_resource)' do
+  #   before do
+  #
+  #   end
+  # end
 end

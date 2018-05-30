@@ -32,7 +32,7 @@ control 'postgresl-sous-chef-access' do
   end
 
   postgres_access = postgres_session('sous_chef', '67890', '127.0.0.1')
-  
+
   describe postgres_access.query('SELECT 1;', ['postgres']) do
     its('output') { should eq '1' }
   end
