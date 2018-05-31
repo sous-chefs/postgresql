@@ -23,7 +23,7 @@ property :setup_repo,        [true, false], default: true
 property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
 property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.conf" }
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
-property :password,          [String, nil], default: 'generate'
+property :password,          String, default: 'generate'
 property :port,              [String, Integer], default: 5432
 property :initdb_locale,     String, default: 'UTF-8'
 
@@ -44,6 +44,7 @@ action :create do
     command rhel_init_db_command
     not_if { initialized? }
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
+    notifies :write ,'log[Enable and start PostgreSQL service]', :immediately
   end
 
   find_resource(:service, 'postgresql') do
@@ -55,20 +56,24 @@ action :create do
   log 'Enable and start PostgreSQL service' do
     notifies :enable, 'service[postgresql]', :immediately
     notifies :start, 'service[postgresql]', :immediately
+    action :nothing
   end
 
-  postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
-
-  # Generate a ramdom password or set the a password defined with node['postgresql']['password']['postgres'].
+  # Generate a random password or set it as per new_resource.password.
   # The password is set or change at each run. It is good for security if you choose to set a random password and
   # allow you to change the postgres password if needed.
   bash 'generate-postgres-password' do
     user 'postgres'
     code <<-EOH
-    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
+    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password(new_resource)}\';" | psql -p #{new_resource.port}
     EOH
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
-    only_if { new_resource.password }
+    not_if { new_resource.password.nil? }
+  end
+
+  file "#{data_dir}/recovery.conf" do
+    user 'postgres'
+    group 'postgres'
   end
 end
 

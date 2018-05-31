@@ -103,24 +103,24 @@ RSpec.describe PostgresqlCookbook::Helpers do
     end
 
     it 'Allow us to connect to postgresql without specifying the database name' do
-      new_resource = double(database: nil,
+      new_resource = double(database: 'test_1234',
                             user: 'postgres',
                             port: '5432',
                             host: nil
                             )
+      res = double(
+        user: new_resource.user,
+        port: new_resource.port,
+        database: nil,
+        host: nil,
+      )
 
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
       grep_for = 'test_1234'
 
       result = "psql -tc 'SELECT datname from pg_database WHERE datname='test_1234'' -U postgres --port 5432 | grep test_1234"
 
-      expect(subject.psql_command_string(new_resource, db_query, grep_for.to_s)).to eq(result)
+      expect(subject.psql_command_string(res, db_query, grep_for.to_s)).to eq(result)
     end
   end
-
-  # describe '#database_exists(new_resource)' do
-  #   before do
-  #
-  #   end
-  # end
 end

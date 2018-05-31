@@ -65,8 +65,13 @@ module PostgresqlCookbook
 
     def database_exists?(new_resource)
       sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.database}')
-
-      exists = psql_command_string(new_resource, sql)
+      res = {
+        user: new_resource.user,
+        port: new_resource.port,
+        database: nil,
+        host: nil
+      }
+      exists = psql_command_string(res, sql, new_resource.database)
 
       cmd = shell_out(exists, user: 'postgresql')
       cmd.run_command
@@ -74,8 +79,9 @@ module PostgresqlCookbook
     end
 
     def user_exists?(new_resource)
-      sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'" | grep '#{new_resource.user}')
-      execute_sql(new_resource, sql)
+      sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'")
+      grep_for = new_resource.user
+      execute_sql(new_resource, sql, grep_for)
     end
 
     def role_sql(new_resource)
@@ -197,6 +203,11 @@ module PostgresqlCookbook
     # on amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
     def yum_releasever
       platform?('amazon') ? '6' : '$releasever'
+    end
+
+    # Generate a password if the value is set to generate.
+    def postgres_password(new_resource)
+      new_resource.password == 'generate' ? secure_random : new_resource.password
     end
   end
 end
