@@ -38,7 +38,7 @@ action :drop do
     user 'postgres'
     action :run
     not_if { slave? }
-    only_if { extension_installed? }
+    only_if { extension_installed?(new_resource) }
   end
 end
 

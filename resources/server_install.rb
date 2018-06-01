@@ -44,7 +44,7 @@ action :create do
     command rhel_init_db_command
     not_if { initialized? }
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
-    notifies :write ,'log[Enable and start PostgreSQL service]', :immediately
+    notifies :write, 'log[Enable and start PostgreSQL service]', :immediately
   end
 
   find_resource(:service, 'postgresql') do

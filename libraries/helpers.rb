@@ -31,17 +31,7 @@ module PostgresqlCookbook
       cmd
     end
 
-    #######
-    # Function to execute an SQL statement in the default database.
-    #   Input: Query could be a single String or an Array of String.
-    #   Output: A String with |-separated columns and \n-separated rows.
-    #           Note an empty output could mean psql couldn't connect.
-    # This is easiest for 1-field (1-row, 1-col) results, otherwise
-    # it will be complex to parse the results.
     def execute_sql(new_resource, query)
-      # Let's build up a full command
-      psql = psql_command_string(new_resource, query, new_resource.database)
-
       # If we don't pass in a user to the resource
       # default to the postgres user
       user = new_resource.user ? new_resource.user : 'postgres'
@@ -60,21 +50,24 @@ module PostgresqlCookbook
         Chef::Log.fatal(cmd.stderr)
         raise 'SQL ERROR'
       end
-      cmd.stdout.chomp
+
+      # Pass back cmd so we can decide what to do with it in the calling method.
+      cmd
     end
 
     def database_exists?(new_resource)
       sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.database}')
+
+      # Set some values to nil so we can use the generic psql_command_string method.
       res = {
         user: new_resource.user,
         port: new_resource.port,
         database: nil,
-        host: nil
+        host: nil,
       }
       exists = psql_command_string(res, sql, new_resource.database)
 
-      cmd = shell_out(exists, user: 'postgresql')
-      cmd.run_command
+      cmd = execute_sql(new_resource, exists)
       cmd.exitstatus == 0
     end
 
@@ -82,6 +75,11 @@ module PostgresqlCookbook
       sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'")
       grep_for = new_resource.user
       execute_sql(new_resource, sql, grep_for)
+    end
+
+    def extension_installed?(new_resource)
+      query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
+      !(execute_sql(new_resource, query) =~ /^installed$/).nil?
     end
 
     def role_sql(new_resource)
@@ -104,11 +102,6 @@ module PostgresqlCookbook
              else
                ''
              end
-    end
-
-    def extension_installed?
-      query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
-      !(execute_sql(query, new_resource.database) =~ /^installed$/).nil?
     end
 
     def data_dir(version = node.run_state['postgresql']['version'])

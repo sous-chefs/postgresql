@@ -107,12 +107,12 @@ RSpec.describe PostgresqlCookbook::Helpers do
                             user: 'postgres',
                             port: '5432',
                             host: nil
-                            )
+                           )
       res = double(
         user: new_resource.user,
         port: new_resource.port,
         database: nil,
-        host: nil,
+        host: nil
       )
 
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
