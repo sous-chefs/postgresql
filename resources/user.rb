@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-property :user,               String, name_property: true
+property :create_user,        String, name_property: true
 property :superuser,          [true, false], default: false
 property :createdb,           [true, false], default: false
 property :createrole,         [true, false], default: false
@@ -26,21 +26,29 @@ property :password,           String
 property :encrypted_password, String
 property :valid_until,        String
 property :attributes,         Hash, default: {}
+property :sensitive,          [true,false], default: true
+
+# Connection prefernces
+property :user,               String, default: 'postgres'
+property :database,           String
+property :host,               String
+property :port,               Integer, default: 5432
 
 action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?
 
-  execute "create postgresql user #{new_resource.user}" do # ~FC009
+  execute "create postgresql user #{new_resource.create_user}" do # ~FC009
     user 'postgres'
     command %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
-    sensitive true
-    not_if { slave? || user_exists?(new_resource) }
+    sensitive new_resource.sensitive
+    # not_if { slave? } # Commented out whilst we debug user_exists
+    not_if { user_exists?(new_resource) }
   end
 end
 
 action :update do
   if new_resource.attributes.empty?
-    execute "update postgresql user #{new_resource.user}" do
+    execute "update postgresql user #{new_resource.create_user}" do
       user 'postgres'
       command %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
       sensitive true
@@ -55,9 +63,9 @@ action :update do
             "'#{value}'"
           end
 
-      execute "Update postgresql user #{new_resource.user} to set #{attr}" do
+      execute "Update postgresql user #{new_resource.create_user} to set #{attr}" do
         user 'postgres'
-        command %(psql -c "ALTER ROLE \\\"#{new_resource.user}\\\" SET #{attr} = #{v};")
+        command %(psql -c "ALTER ROLE \\\"#{new_resource.create_user}\\\" SET #{attr} = #{v};")
         sensitive true
         not_if { slave? }
         only_if { user_exists?(new_resource) }
@@ -67,9 +75,9 @@ action :update do
 end
 
 action :drop do
-  execute "drop postgresql user #{new_resource.user}" do
+  execute "drop postgresql user #{new_resource.create_user}" do
     user 'postgres'
-    command %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.user}\\\"')
+    command %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.create_user}\\\"')
     sensitive true
     not_if { slave? }
     only_if { user_exists?(new_resource) }

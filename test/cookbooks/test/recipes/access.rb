@@ -14,10 +14,10 @@ postgresql_access 'postgresql host superuser' do
   notifies :reload, 'service[postgresql]'
 end
 
-postgresql_user 'sous_chef test user' do
-  user 'sous_chef'
+postgresql_user 'sous_chef' do
   superuser true
   password '67890'
+  sensitive false
 end
 
 postgresql_access 'a sous_chef local superuser' do

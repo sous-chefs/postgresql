@@ -39,7 +39,8 @@ module PostgresqlCookbook
       # query could be a String or an Array of Strings
       statement = query.is_a?(String) ? query : query.join("\n")
 
-      cmd = shell_out(psql, user: user, input: statement)
+      cmd = shell_out(statement, user: user)
+
       # If psql fails, generally the postgresql service is down.
       # Instead of aborting chef with a fatal error, let's just
       # pass these non-zero exitstatus back as empty cmd.stdout.
@@ -65,6 +66,7 @@ module PostgresqlCookbook
         database: nil,
         host: nil,
       }
+
       exists = psql_command_string(res, sql, new_resource.database)
 
       cmd = execute_sql(new_resource, exists)
@@ -72,9 +74,12 @@ module PostgresqlCookbook
     end
 
     def user_exists?(new_resource)
-      sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.user}'")
-      grep_for = new_resource.user
-      execute_sql(new_resource, sql, grep_for)
+      sql = %(SELECT rolname FROM pg_roles WHERE rolname="#{new_resource.create_user}")
+
+      exists = psql_command_string(new_resource, sql, new_resource.create_user)
+
+      cmd = execute_sql(new_resource, exists)
+      cmd.exitstatus == 0
     end
 
     def extension_installed?(new_resource)
@@ -83,7 +88,7 @@ module PostgresqlCookbook
     end
 
     def role_sql(new_resource)
-      sql = %(\\\"#{new_resource.user}\\\" WITH )
+      sql = %(#{new_resource.create_user} WITH )
 
       %w(superuser createdb createrole inherit replication login).each do |perm|
         sql << "#{'NO' unless new_resource.send(perm)}#{perm.upcase} "
