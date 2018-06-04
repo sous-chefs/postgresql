@@ -41,7 +41,7 @@ control 'shef and postgres roles should exist' do
   postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
 
   describe postgres_access.query('SELECT rolname FROM pg_roles;') do
-    its('output') { should eq 'postgres' }
-    its('output') { should eq 'shef' }
+    its('output') { should contain 'postgres' }
+    its('output') { should contain 'shef' }
   end
 end

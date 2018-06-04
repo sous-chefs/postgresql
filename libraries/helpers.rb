@@ -22,7 +22,7 @@ module PostgresqlCookbook
     require 'securerandom'
 
     def psql_command_string(new_resource, query, grep_for = nil)
-      cmd = "psql -tc '#{query}'"
+      cmd = "psql -tc \"#{query}\""
       cmd << " -d #{new_resource.database}" if new_resource.database
       cmd << " -U #{new_resource.user}"     if new_resource.user
       cmd << " --host #{new_resource.host}" if new_resource.host
@@ -36,7 +36,7 @@ module PostgresqlCookbook
       # default to the postgres user
       user = new_resource.user ? new_resource.user : 'postgres'
 
-      # query could be a String or an Array of Strings
+      # Query could be a String or an Array of Strings
       statement = query.is_a?(String) ? query : query.join("\n")
 
       cmd = shell_out(statement, user: user)
@@ -44,13 +44,13 @@ module PostgresqlCookbook
       # If psql fails, generally the postgresql service is down.
       # Instead of aborting chef with a fatal error, let's just
       # pass these non-zero exitstatus back as empty cmd.stdout.
-      if cmd.exitstatus == 0 && !cmd.error?
-        # An SQL failure is still a zero exitstatus, but then the
-        # stderr explains the error, so let's raise that as fatal.
-        Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
-        Chef::Log.fatal(cmd.stderr)
-        raise 'SQL ERROR'
-      end
+      # if cmd.exitstatus == 0 && !cmd.error?
+      #   # An SQL failure is still a zero exitstatus, but then the
+      #   # stderr explains the error, so let's raise that as fatal.
+      #   Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
+      #   Chef::Log.fatal(cmd.stderr)
+      #   raise 'SQL ERROR'
+      # end
 
       # Pass back cmd so we can decide what to do with it in the calling method.
       cmd
@@ -74,7 +74,7 @@ module PostgresqlCookbook
     end
 
     def user_exists?(new_resource)
-      sql = %(SELECT rolname FROM pg_roles WHERE rolname="#{new_resource.create_user}")
+      sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.create_user}')
 
       exists = psql_command_string(new_resource, sql, new_resource.create_user)
 
@@ -180,25 +180,25 @@ module PostgresqlCookbook
       end
     end
 
-    # given the base URL build the complete URL string for a yum repo
+    # Given the base URL build the complete URL string for a yum repo
     def yum_repo_url(base_url)
       "#{base_url}/#{new_resource.version}/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
     end
 
-    # the postgresql yum repos URLs are organized into redhat and fedora directories.s
+    # The postgresql yum repos URLs are organized into redhat and fedora directories.s
     # route things to the right place based on platform_family
     def yum_repo_platform_family_string
       platform_family?('fedora') ? 'fedora' : 'redhat'
     end
 
-    # build the platform string that makes up the final component of the yum repo URL
+    # Build the platform string that makes up the final component of the yum repo URL
     def yum_repo_platform_string
       platform = platform?('fedora') ? 'fedora' : 'rhel'
       release = platform?('amazon') ? '6' : '$releasever'
       "#{platform}-#{release}-$basearch"
     end
 
-    # on amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
+    # On Amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
     def yum_releasever
       platform?('amazon') ? '6' : '$releasever'
     end
