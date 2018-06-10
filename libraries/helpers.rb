@@ -110,14 +110,7 @@ module PostgresqlCookbook
     end
 
     def data_dir(version = node.run_state['postgresql']['version'])
-      case node['platform_family']
-      when 'rhel', 'fedora'
-        "/var/lib/pgsql/#{version}/data"
-      when 'amazon'
-        "/var/lib/pgsql#{version.delete('.')}/data"
-      when 'debian'
-        "/var/lib/postgresql/#{version}/main"
-      end
+      conf_dir
     end
 
     def conf_dir(version = node.run_state['postgresql']['version'])
