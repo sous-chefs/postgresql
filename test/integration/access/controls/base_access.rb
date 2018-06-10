@@ -27,21 +27,21 @@ control 'postgresl-sous-chef-access' do
     its('address') { should cmp '127.0.0.1/32' }
   end
 
-  postgres_access = postgres_session('sous_chef', '67890', '127.0.0.1')
+  postgres_access = postgres_session('sous_chef', '67890')
 
   describe postgres_access.query('SELECT 1;', ['postgres']) do
     its('output') { should eq '1' }
   end
 end
 
-control 'shef and postgres roles should exist' do
+control 'sous_chef and postgres roles should exist' do
   impact 1.0
-  desc 'The shef & postgres database user role should exist'
+  desc 'The sous_chef & postgres database user role should exist'
 
-  postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
+  postgres_access = postgres_session('postgres', '12345')
 
   describe postgres_access.query('SELECT rolname FROM pg_roles;') do
-    its('output') { should contain 'postgres' }
-    its('output') { should contain 'shef' }
+    its('output') { should cmp /postgres/ }
+    its('output') { should cmp /sous_chef/ }
   end
 end
