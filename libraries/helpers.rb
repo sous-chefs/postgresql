@@ -83,8 +83,13 @@ module PostgresqlCookbook
     end
 
     def extension_installed?(new_resource)
-      query = "SELECT 'installed' FROM pg_extension WHERE extname = '#{new_resource.extension}';"
+      query = %(SELECT 'installed' FROM pg_extension WHERE extname='#{new_resource.extension}';)
       !(execute_sql(new_resource, query) =~ /^installed$/).nil?
+    end
+
+    def alter_role_sql(new_resource)
+      sql = %(ALTER ROLE postgres ENCRYPTED PASSWORD '#{postgres_password(new_resource)}';)
+      execute_sql(new_resource, sql)
     end
 
     def role_sql(new_resource)
@@ -110,7 +115,18 @@ module PostgresqlCookbook
     end
 
     def data_dir(version = node.run_state['postgresql']['version'])
-      conf_dir
+      case node['platform_family']
+      when 'rhel', 'fedora'
+        "/var/lib/pgsql/#{version}/data"
+      when 'amazon'
+        if node['virtualization']['system'] == 'docker'
+          "/var/lib/pgsql#{version.delete('.')}/data"
+        else
+          "/var/lib/pgsql/#{version}/data"
+        end
+      when 'debian'
+        "/var/lib/postgresql/#{version}/main"
+      end
     end
 
     def conf_dir(version = node.run_state['postgresql']['version'])

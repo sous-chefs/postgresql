@@ -64,9 +64,7 @@ action :create do
   # allow you to change the postgres password if needed.
   bash 'generate-postgres-password' do
     user 'postgres'
-    code <<-EOH
-    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password(new_resource)}\';" | psql -p #{new_resource.port}
-    EOH
+    code alter_role_sql(new_resource)
     not_if { ::File.exist? "#{data_dir}/recovery.conf" }
     not_if { new_resource.password.nil? }
   end
