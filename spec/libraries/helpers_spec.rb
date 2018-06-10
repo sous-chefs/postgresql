@@ -91,13 +91,13 @@ RSpec.describe PostgresqlCookbook::Helpers do
 
     it 'returns a full command string given all the parameters' do
       grep_for = 'FOO'
-      result = 'psql -tc "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432 | grep FOO'
+      result = 'psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432 | grep FOO'
 
       expect(subject.psql_command_string(@new_resource, @query, grep_for)).to eq(result)
     end
 
     it 'returns a command without grep' do
-      result = 'psql -tc "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432'
+      result = 'psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432'
 
       expect(subject.psql_command_string(@new_resource, @query)).to eq(result)
     end
@@ -118,7 +118,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
       grep_for = 'test_1234'
 
-      result = 'psql -tc "SELECT datname from pg_database WHERE datname=\'test_1234\'" -U postgres --port 5432 | grep test_1234'
+      result = 'psql -c "SELECT datname from pg_database WHERE datname=\'test_1234\'" -U postgres --port 5432 | grep test_1234'
 
       expect(subject.psql_command_string(res, db_query, grep_for.to_s)).to eq(result)
     end
@@ -130,7 +130,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
                             host: '127.0.0.1'
                            )
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
-      result = 'psql -tc "SELECT datname from pg_database WHERE datname=\'test_1234\'" -U postgres --host 127.0.0.1 --port 5432'
+      result = 'psql -c "SELECT datname from pg_database WHERE datname=\'test_1234\'" -U postgres --host 127.0.0.1 --port 5432'
 
       expect(subject.psql_command_string(new_resource, db_query)).to eq(result)
     end
@@ -139,20 +139,21 @@ RSpec.describe PostgresqlCookbook::Helpers do
   describe '#role_sql' do
     before do
       @new_resource = double(
-        user: 'sous_chef',
+        create_user: 'sous_chef',
         superuser: true,
-        createdb: true,
-        createrole: true,
-        inherit: false,
-        replication: true,
+        password: '67890',
+        createdb: nil,
+        sensitive: false,
+        createrole: nil,
+        inherit: nil,
+        replication: nil,
         login: true,
         encrypted_password: nil,
-        password: '67890',
         valid_until: nil
       )
     end
     it 'Should return a correctly formatted role creation string' do
-      result = "sous_chef WITH SUPERUSER CREATEDB CREATEROLE NOINHERIT REPLICATION LOGIN PASSWORD '67890'"
+      result = "sous_chef WITH SUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION LOGIN PASSWORD '67890'"
       expect(subject.role_sql(@new_resource)).to eq result
     end
   end
