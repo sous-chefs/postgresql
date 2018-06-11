@@ -89,7 +89,13 @@ module PostgresqlCookbook
 
     def alter_role_sql(new_resource)
       sql = %(ALTER ROLE postgres ENCRYPTED PASSWORD '#{postgres_password(new_resource)}';)
-      execute_sql(new_resource, sql)
+      psql_command_string(new_resource, sql)
+    end
+
+    def user_has_password?(new_resource)
+      sql = %(SELECT rolpassword from pg_authid WHERE rolname='postgres' AND rolpassword IS NOT NULL)
+      cmd = psql_command_string(new_resource, sql, '1 rows')
+      execute_sql(new_resource, cmd)
     end
 
     def role_sql(new_resource)
@@ -112,6 +118,26 @@ module PostgresqlCookbook
              else
                ''
              end
+    end
+
+    def create_user(new_resource)
+      query = %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
+      execute_sql(new_resource, sql)
+    end
+
+    def update_user(new_resource)
+      sql = %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
+      execute_sql(new_resource, sql)
+    end
+
+    def update_user_with_attributes(new_resource)
+      sql = %(psql -c "ALTER ROLE \\\"#{new_resource.create_user}\\\" SET #{attr} = #{v};")
+      execute_sql(new_resource, sql)
+    end
+
+    def drop_user(new_resource)
+      sql = %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.create_user}\\\"')
+      execute_sql(new_resource, sql)
     end
 
     def data_dir(version = node.run_state['postgresql']['version'])

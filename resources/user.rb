@@ -41,8 +41,7 @@ action :create do
     user 'postgres'
     command %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
     sensitive new_resource.sensitive
-    # This currently always exists even on a master
-    # not_if { slave? } # Commented out whilst we debug user_exists
+    not_if { slave? }
     not_if { user_exists?(new_resource) }
   end
 end

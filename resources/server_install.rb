@@ -27,6 +27,12 @@ property :password,          String, default: 'generate'
 property :port,              [String, Integer], default: 5432
 property :initdb_locale,     String, default: 'UTF-8'
 
+# Connection prefernces
+property :user,               String, default: 'postgres'
+property :database,           String
+property :host,               String
+property :port,               Integer, default: 5432
+
 action :install do
   node.run_state['postgresql'] ||= {}
   node.run_state['postgresql']['version'] = new_resource.version
@@ -60,18 +66,11 @@ action :create do
   end
 
   # Generate a random password or set it as per new_resource.password.
-  # The password is set or change at each run. It is good for security if you choose to set a random password and
-  # allow you to change the postgres password if needed.
   bash 'generate-postgres-password' do
     user 'postgres'
     code alter_role_sql(new_resource)
-    not_if { ::File.exist? "#{data_dir}/recovery.conf" }
+    not_if { user_has_password?(new_resource) }
     not_if { new_resource.password.nil? }
-  end
-
-  file "#{data_dir}/recovery.conf" do
-    user 'postgres'
-    group 'postgres'
   end
 end
 
