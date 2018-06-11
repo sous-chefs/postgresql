@@ -39,7 +39,7 @@ action :create do
 
   execute "create postgresql user #{new_resource.create_user}" do # ~FC009
     user 'postgres'
-    command %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
+    command create_user_sql(new_resource)
     sensitive new_resource.sensitive
     not_if { slave? }
     not_if { user_exists?(new_resource) }
@@ -50,7 +50,7 @@ action :update do
   if new_resource.attributes.empty?
     execute "update postgresql user #{new_resource.create_user}" do
       user 'postgres'
-      command %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
+      command update_user_sql(new_resource)
       sensitive true
       not_if { slave? }
       only_if { user_exists?(new_resource) }
@@ -65,7 +65,7 @@ action :update do
 
       execute "Update postgresql user #{new_resource.create_user} to set #{attr}" do
         user 'postgres'
-        command %(psql -c "ALTER ROLE \\\"#{new_resource.create_user}\\\" SET #{attr} = #{v};")
+        command update_user_with_attributes_sql(new_resource)
         sensitive true
         not_if { slave? }
         only_if { user_exists?(new_resource) }
@@ -77,7 +77,7 @@ end
 action :drop do
   execute "drop postgresql user #{new_resource.create_user}" do
     user 'postgres'
-    command %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.create_user}\\\"')
+    command drop_user_sql(new_resource)
     sensitive true
     not_if { slave? }
     only_if { user_exists?(new_resource) }

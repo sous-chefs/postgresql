@@ -120,24 +120,24 @@ module PostgresqlCookbook
              end
     end
 
-    def create_user(new_resource)
+    def create_user_sql(new_resource)
       query = %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
-      execute_sql(new_resource, sql)
+      psql_command_string(new_resource, sql)
     end
 
-    def update_user(new_resource)
+    def update_user_sql(new_resource)
       sql = %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
-      execute_sql(new_resource, sql)
+      psql_command_string(new_resource, sql)
     end
 
-    def update_user_with_attributes(new_resource)
+    def update_user_with_attributes_sql(new_resource)
       sql = %(psql -c "ALTER ROLE \\\"#{new_resource.create_user}\\\" SET #{attr} = #{v};")
-      execute_sql(new_resource, sql)
+      psql_command_string(new_resource, sql)
     end
 
-    def drop_user(new_resource)
+    def drop_user_sql(new_resource)
       sql = %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.create_user}\\\"')
-      execute_sql(new_resource, sql)
+      psql_command_string(new_resource, sql)
     end
 
     def data_dir(version = node.run_state['postgresql']['version'])
