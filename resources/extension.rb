@@ -17,8 +17,13 @@
 #
 
 property :extension,   String, name_property: true
-property :database,    String, required: true
 property :old_version, String
+
+# Connection prefernces
+property :user,     String, default: 'postgres'
+property :database, String, required: true
+property :host,     String
+property :port,     Integer, default: 5432
 
 action :create do
   create_query = "CREATE EXTENSION IF NOT EXISTS \"#{new_resource.extension}\""

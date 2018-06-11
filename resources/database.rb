@@ -15,14 +15,16 @@
 # limitations under the License.
 #
 
-property :database,  String, name_property: true
-property :user,      String, default: 'postgres'
-property :template,  String, default: 'template1'
-property :host,      String
-property :port,      Integer, default: 5432
-property :encoding,  String, default: 'UTF-8'
-property :locale,    String, default: 'en_US.UTF-8'
-property :owner,     String
+property :template, String, default: 'template1'
+property :encoding, String, default: 'UTF-8'
+property :locale,   String, default: 'en_US.UTF-8'
+property :owner,    String
+
+# Connection prefernces
+property :user,     String, default: 'postgres'
+property :database, String, name_property: true
+property :host,     String
+property :port,     Integer, default: 5432
 
 action :create do
   createdb = 'createdb'

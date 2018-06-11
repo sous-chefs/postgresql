@@ -29,10 +29,11 @@ property :attributes,         Hash, default: {}
 property :sensitive,          [true, false], default: true
 
 # Connection prefernces
-property :user,               String, default: 'postgres'
-property :database,           String
-property :host,               String
-property :port,               Integer, default: 5432
+property :user,     String, default: 'postgres'
+property :database, String
+property :host,     String
+property :port,     Integer, default: 5432
+
 
 action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?

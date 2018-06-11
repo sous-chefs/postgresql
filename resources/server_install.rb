@@ -28,10 +28,10 @@ property :port,              [String, Integer], default: 5432
 property :initdb_locale,     String, default: 'UTF-8'
 
 # Connection prefernces
-property :user,               String, default: 'postgres'
-property :database,           String
-property :host,               String
-property :port,               Integer, default: 5432
+property :user,     String, default: 'postgres'
+property :database, String
+property :host,     String
+property :port,     Integer, default: 5432
 
 action :install do
   node.run_state['postgresql'] ||= {}
