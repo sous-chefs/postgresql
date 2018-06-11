@@ -74,7 +74,7 @@ module PostgresqlCookbook
     end
 
     def user_exists?(new_resource)
-      sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.create_user}')
+      sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.create_user}';)
 
       exists = psql_command_string(new_resource, sql, new_resource.create_user)
 
@@ -93,7 +93,7 @@ module PostgresqlCookbook
     end
 
     def user_has_password?(new_resource)
-      sql = %(SELECT rolpassword from pg_authid WHERE rolname='postgres' AND rolpassword IS NOT NULL)
+      sql = %(SELECT rolpassword from pg_authid WHERE rolname='postgres' AND rolpassword IS NOT NULL;)
       cmd = psql_command_string(new_resource, sql, '1 rows')
       execute_sql(new_resource, cmd)
     end
@@ -121,22 +121,22 @@ module PostgresqlCookbook
     end
 
     def create_user_sql(new_resource)
-      query = %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
+      sql = %(CREATE ROLE #{role_sql(new_resource)})
       psql_command_string(new_resource, sql)
     end
 
     def update_user_sql(new_resource)
-      sql = %(psql -c "ALTER ROLE #{role_sql(new_resource)}")
+      sql = %(ALTER ROLE #{role_sql(new_resource)})
       psql_command_string(new_resource, sql)
     end
 
-    def update_user_with_attributes_sql(new_resource)
-      sql = %(psql -c "ALTER ROLE \\\"#{new_resource.create_user}\\\" SET #{attr} = #{v};")
+    def update_user_with_attributes_sql(new_resource, value)
+      sql = %(ALTER ROLE '#{new_resource.create_user}' SET #{attr} = #{value})
       psql_command_string(new_resource, sql)
     end
 
     def drop_user_sql(new_resource)
-      sql = %(psql -c 'DROP ROLE IF EXISTS \\\"#{new_resource.create_user}\\\"')
+      sql = %(DROP ROLE IF EXISTS '#{new_resource.create_user}')
       psql_command_string(new_resource, sql)
     end
 

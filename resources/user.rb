@@ -34,7 +34,6 @@ property :database, String
 property :host,     String
 property :port,     Integer, default: 5432
 
-
 action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?
 
@@ -66,7 +65,7 @@ action :update do
 
       execute "Update postgresql user #{new_resource.create_user} to set #{attr}" do
         user 'postgres'
-        command update_user_with_attributes_sql(new_resource)
+        command update_user_with_attributes_sql(new_resource, v)
         sensitive true
         not_if { slave? }
         only_if { user_exists?(new_resource) }

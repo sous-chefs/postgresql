@@ -10,6 +10,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
   describe '#data_dir(version)' do
     before do
       allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
+      pg_version = double(version: 9.6)
     end
 
     let(:pg_version) { '9.6' }
