@@ -158,4 +158,30 @@ RSpec.describe PostgresqlCookbook::Helpers do
       expect(subject.role_sql(@new_resource)).to eq result
     end
   end
+
+  describe '#alter_role_sql' do
+    before do
+      @new_resource = double(
+        version: '9.6',
+        setup_repo: true,
+        hba_file: nil,
+        ident_file: nil,
+        external_pid_file: nil,
+        password: '12345',
+        port: '5432',
+        initdb_locale: 'UTF-8',
+        user: 'postgres',
+        database: nil,
+        host: nil,
+        port: 5432
+      )
+    end
+
+    it 'should return a correct SQL string to set a password' do
+      result = 'psql -c "ALTER ROLE postgres ENCRYPTED PASSWORD \'12345\';" -U postgres --port 5432'
+
+      expect(subject.alter_role_sql(@new_resource)).to eq result
+    end
+
+  end
 end

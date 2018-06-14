@@ -69,6 +69,7 @@ action :create do
   bash 'generate-postgres-password' do
     user 'postgres'
     code alter_role_sql(new_resource)
+    # TODO: user seems to have a password on first boot so we don't set it
     not_if { user_has_password?(new_resource) }
     not_if { new_resource.password.nil? }
   end

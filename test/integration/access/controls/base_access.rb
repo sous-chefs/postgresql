@@ -34,14 +34,13 @@ control 'postgresl-sous-chef-access' do
   end
 end
 
-control 'sous_chef and postgres roles should exist' do
+control 'sous_chef role should exist' do
   impact 1.0
-  desc 'The sous_chef & postgres database user role should exist'
+  desc 'The sous_chef database user role should exist'
 
-  postgres_access = postgres_session('postgres', '12345')
+  postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
 
   describe postgres_access.query('SELECT rolname FROM pg_roles;') do
-    its('output') { should cmp /postgres/ }
     its('output') { should cmp /sous_chef/ }
   end
 end
