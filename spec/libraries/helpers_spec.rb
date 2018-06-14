@@ -182,6 +182,5 @@ RSpec.describe PostgresqlCookbook::Helpers do
 
       expect(subject.alter_role_sql(@new_resource)).to eq result
     end
-
   end
 end

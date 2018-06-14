@@ -94,8 +94,10 @@ module PostgresqlCookbook
 
     def user_has_password?(new_resource)
       sql = %(SELECT rolpassword from pg_authid WHERE rolname='postgres' AND rolpassword IS NOT NULL;)
-      cmd = psql_command_string(new_resource, sql, '1 rows')
-      execute_sql(new_resource, cmd)
+      cmd = psql_command_string(new_resource, sql)
+
+      res = execute_sql(new_resource, cmd)
+      res.stdout =~ /1 row/ ? true : false
     end
 
     def role_sql(new_resource)
