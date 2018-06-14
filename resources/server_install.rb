@@ -30,7 +30,7 @@ property :initdb_locale,     String, default: 'UTF-8'
 # Connection prefernces
 property :user,     String, default: 'postgres'
 property :database, String
-property :host,     String
+property :host,     [String, nil]
 property :port,     Integer, default: 5432
 
 action :install do

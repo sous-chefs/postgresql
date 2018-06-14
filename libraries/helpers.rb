@@ -41,17 +41,6 @@ module PostgresqlCookbook
 
       cmd = shell_out(statement, user: user)
 
-      # If psql fails, generally the postgresql service is down.
-      # Instead of aborting chef with a fatal error, let's just
-      # pass these non-zero exitstatus back as empty cmd.stdout.
-      # if cmd.exitstatus == 0 && !cmd.error?
-      #   # An SQL failure is still a zero exitstatus, but then the
-      #   # stderr explains the error, so let's raise that as fatal.
-      #   Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
-      #   Chef::Log.fatal(cmd.stderr)
-      #   raise 'SQL ERROR'
-      # end
-
       # Pass back cmd so we can decide what to do with it in the calling method.
       cmd
     end
@@ -60,14 +49,14 @@ module PostgresqlCookbook
       sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.database}')
 
       # Set some values to nil so we can use the generic psql_command_string method.
-      res = {
-        user: new_resource.user,
-        port: new_resource.port,
-        database: nil,
-        host: nil,
-      }
+      # res = {
+      #   user: new_resource.user,
+      #   port: new_resource.port,
+      #   database: nil,
+      #   host: nil,
+      # }
 
-      exists = psql_command_string(res, sql, new_resource.database)
+      exists = psql_command_string(new_resource, sql, new_resource.database)
 
       cmd = execute_sql(new_resource, exists)
       cmd.exitstatus == 0
@@ -89,6 +78,13 @@ module PostgresqlCookbook
 
     def alter_role_sql(new_resource)
       sql = %(ALTER ROLE postgres ENCRYPTED PASSWORD '#{postgres_password(new_resource)}';)
+      psql_command_string(new_resource, sql)
+    end
+
+    def create_extension_sql(new_resource)
+      sql = "CREATE EXTENSION IF NOT EXISTS #{new_resource.extension}"
+      sql << " FROM \"#{new_resource.old_version}\"" if new_resource.old_version
+
       psql_command_string(new_resource, sql)
     end
 

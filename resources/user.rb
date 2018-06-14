@@ -31,7 +31,7 @@ property :sensitive,          [true, false], default: true
 # Connection prefernces
 property :user,     String, default: 'postgres'
 property :database, String
-property :host,     String
+property :host,     [String, nil]
 property :port,     Integer, default: 5432
 
 action :create do

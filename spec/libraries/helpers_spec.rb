@@ -10,7 +10,6 @@ RSpec.describe PostgresqlCookbook::Helpers do
   describe '#data_dir(version)' do
     before do
       allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
-      pg_version = double(version: 9.6)
     end
 
     let(:pg_version) { '9.6' }
@@ -92,13 +91,13 @@ RSpec.describe PostgresqlCookbook::Helpers do
 
     it 'returns a full command string given all the parameters' do
       grep_for = 'FOO'
-      result = 'psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432 | grep FOO'
+      result = %(psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432 | grep FOO)
 
       expect(subject.psql_command_string(@new_resource, @query, grep_for)).to eq(result)
     end
 
     it 'returns a command without grep' do
-      result = 'psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432'
+      result = %(psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432)
 
       expect(subject.psql_command_string(@new_resource, @query)).to eq(result)
     end
@@ -119,7 +118,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
       grep_for = 'test_1234'
 
-      result = 'psql -c "SELECT datname from pg_database WHERE datname=\'test_1234\'" -U postgres --port 5432 | grep test_1234'
+      result = %(psql -c "SELECT datname from pg_database WHERE datname='test_1234'" -U postgres --port 5432 | grep test_1234)
 
       expect(subject.psql_command_string(res, db_query, grep_for.to_s)).to eq(result)
     end
@@ -131,15 +130,27 @@ RSpec.describe PostgresqlCookbook::Helpers do
                             host: '127.0.0.1'
                            )
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
-      result = 'psql -c "SELECT datname from pg_database WHERE datname=\'test_1234\'" -U postgres --host 127.0.0.1 --port 5432'
+      result = %(psql -c "SELECT datname from pg_database WHERE datname='test_1234'" -U postgres --host 127.0.0.1 --port 5432)
 
       expect(subject.psql_command_string(new_resource, db_query)).to eq(result)
+    end
+
+    it 'Allow the host to not be set' do
+      new_resource = double(database: nil,
+                            user: 'postgres',
+                            port: '5432',
+                            host: nil
+                           )
+      query = 'SELECT datname from pg_database WHERE datname=\'postgres\''
+      result = %(psql -c "SELECT datname from pg_database WHERE datname='postgres'" -U postgres --port 5432)
+
+      expect(subject.psql_command_string(new_resource, query)).to eq(result)
     end
   end
 
   describe '#role_sql' do
-    before do
-      @new_resource = double(
+    it 'Should return a correctly formatted role creation string' do
+      new_resource = double(
         create_user: 'sous_chef',
         superuser: true,
         password: '67890',
@@ -152,16 +163,15 @@ RSpec.describe PostgresqlCookbook::Helpers do
         encrypted_password: nil,
         valid_until: nil
       )
-    end
-    it 'Should return a correctly formatted role creation string' do
-      result = "sous_chef WITH SUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION LOGIN PASSWORD '67890'"
-      expect(subject.role_sql(@new_resource)).to eq result
+      result = %(sous_chef WITH SUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION LOGIN PASSWORD '67890')
+
+      expect(subject.role_sql(new_resource)).to eq result
     end
   end
 
   describe '#alter_role_sql' do
-    before do
-      @new_resource = double(
+    it 'should return a correct SQL string to set a password' do
+      new_resource = double(
         version: '9.6',
         setup_repo: true,
         hba_file: nil,
@@ -172,15 +182,28 @@ RSpec.describe PostgresqlCookbook::Helpers do
         initdb_locale: 'UTF-8',
         user: 'postgres',
         database: nil,
+        host: nil
+      )
+      result = %(psql -c "ALTER ROLE postgres ENCRYPTED PASSWORD '12345';" -U postgres --port 5432)
+
+      expect(subject.alter_role_sql(new_resource)).to eq result
+    end
+  end
+
+  describe '#create_extension_sql' do
+    it 'should return sql formatted correctly' do
+      new_resource = double(
+        extension: 'adminpack',
+        old_version: nil,
+        source_directory: '/usr/share/pgsql/extension',
+        user: 'postgres',
+        database: nil,
         host: nil,
         port: 5432
       )
-    end
+      result = %(psql -c "CREATE EXTENSION IF NOT EXISTS adminpack" -U postgres --port 5432)
 
-    it 'should return a correct SQL string to set a password' do
-      result = 'psql -c "ALTER ROLE postgres ENCRYPTED PASSWORD \'12345\';" -U postgres --port 5432'
-
-      expect(subject.alter_role_sql(@new_resource)).to eq result
+      expect(subject.create_extension_sql(new_resource)).to eq result
     end
   end
 end
