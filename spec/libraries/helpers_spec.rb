@@ -91,13 +91,13 @@ RSpec.describe PostgresqlCookbook::Helpers do
 
     it 'returns a full command string given all the parameters' do
       grep_for = 'FOO'
-      result = %(psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432 | grep FOO)
+      result = %(/usr/bin/psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432 | grep FOO)
 
       expect(subject.psql_command_string(@new_resource, @query, grep_for)).to eq(result)
     end
 
     it 'returns a command without grep' do
-      result = %(psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432)
+      result = %(/usr/bin/psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432)
 
       expect(subject.psql_command_string(@new_resource, @query)).to eq(result)
     end
@@ -118,7 +118,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
       grep_for = 'test_1234'
 
-      result = %(psql -c "SELECT datname from pg_database WHERE datname='test_1234'" -U postgres --port 5432 | grep test_1234)
+      result = %(/usr/bin/psql -c "SELECT datname from pg_database WHERE datname='test_1234'" -U postgres --port 5432 | grep test_1234)
 
       expect(subject.psql_command_string(res, db_query, grep_for.to_s)).to eq(result)
     end
@@ -130,7 +130,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
                             host: '127.0.0.1'
                            )
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
-      result = %(psql -c "SELECT datname from pg_database WHERE datname='test_1234'" -U postgres --host 127.0.0.1 --port 5432)
+      result = %(/usr/bin/psql -c "SELECT datname from pg_database WHERE datname='test_1234'" -U postgres --host 127.0.0.1 --port 5432)
 
       expect(subject.psql_command_string(new_resource, db_query)).to eq(result)
     end
@@ -142,7 +142,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
                             host: nil
                            )
       query = 'SELECT datname from pg_database WHERE datname=\'postgres\''
-      result = %(psql -c "SELECT datname from pg_database WHERE datname='postgres'" -U postgres --port 5432)
+      result = %(/usr/bin/psql -c "SELECT datname from pg_database WHERE datname='postgres'" -U postgres --port 5432)
 
       expect(subject.psql_command_string(new_resource, query)).to eq(result)
     end
@@ -184,7 +184,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
         database: nil,
         host: nil
       )
-      result = %(psql -c "ALTER ROLE postgres ENCRYPTED PASSWORD '12345';" -U postgres --port 5432)
+      result = %(/usr/bin/psql -c "ALTER ROLE postgres ENCRYPTED PASSWORD '12345';" -U postgres --port 5432)
 
       expect(subject.alter_role_sql(new_resource)).to eq result
     end
@@ -201,7 +201,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
         host: nil,
         port: 5432
       )
-      result = %(psql -c "CREATE EXTENSION IF NOT EXISTS adminpack" -U postgres --port 5432)
+      result = %(/usr/bin/psql -c "CREATE EXTENSION IF NOT EXISTS adminpack" -U postgres --port 5432)
 
       expect(subject.create_extension_sql(new_resource)).to eq result
     end
