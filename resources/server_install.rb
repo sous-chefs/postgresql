@@ -52,11 +52,17 @@ action :create do
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
     # notifies :write, 'log[Enable and start PostgreSQL service]', :immediately
   end
+  #
+  # find_resource(:service, 'postgresql') do
+  #   service_name lazy { platform_service_name }
+  #   supports restart: true, status: true, reload: true
+  #   action :start
+  # end
 
-  find_resource(:service, 'postgresql') do
-    service_name lazy { platform_service_name }
+  service 'postgresql' do
+    service_name platform_service_name
     supports restart: true, status: true, reload: true
-    action :enable, :start
+    action [:enable, :start]
   end
 
   # log 'Enable and start PostgreSQL service' do
