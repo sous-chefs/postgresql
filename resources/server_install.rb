@@ -56,20 +56,19 @@ action :create do
   find_resource(:service, 'postgresql') do
     service_name lazy { platform_service_name }
     supports restart: true, status: true, reload: true
-    action :nothing
+    action :enable, :start
   end
 
-  log 'Enable and start PostgreSQL service' do
-    notifies :enable, 'service[postgresql]', :immediately
-    notifies :start, 'service[postgresql]', :immediately
-    action :nothing
-  end
+  # log 'Enable and start PostgreSQL service' do
+  #   notifies :enable, 'service[postgresql]', :immediately
+  #   notifies :start, 'service[postgresql]', :immediately
+  #   action :nothing
+  # end
 
   # Generate a random password or set it as per new_resource.password.
   bash 'generate-postgres-password' do
     user 'postgres'
     code alter_role_sql(new_resource)
-    # TODO: user seems to have a password on first boot so we don't set it
     not_if { user_has_password?(new_resource) }
     not_if { new_resource.password.nil? }
   end
