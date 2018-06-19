@@ -8,7 +8,6 @@ transport:
 
 provisioner:
   name: dokken
-  deprecations_as_errors: true
 
 platforms:
 - name: amazonlinux
