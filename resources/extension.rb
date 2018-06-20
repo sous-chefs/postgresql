@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 #
 # Cookbook:: postgresql
 # Resource:: extension
@@ -16,18 +15,41 @@
 # limitations under the License.
 #
 
-property :database,    String, required: true
-property :extension,   String, name_property: true
-property :old_version, String
+property :extension,        String, name_property: true
+property :old_version,      String
+property :source_directory, String
+property :version,          String, default: '--1.0'
+
+# Connection prefernces
+property :user,     String, default: 'postgres'
+property :database, String, required: true
+property :host,     [String, nil]
+property :port,     Integer, default: 5432
 
 action :create do
-  create_query = "CREATE EXTENSION IF NOT EXISTS \"#{new_resource.extension}\""
-  create_query << " FROM \"#{new_resource.old_version}\"" if property_is_set?(:old_version)
-  bash "CREATE EXTENSION #{new_resource.name}" do
-    code psql_command_string(new_resource.database, create_query)
+  extension_path = ::File.join(new_resource.source_directory, "#{new_resource.extension}#{new_resource.version}.sql")
+  cmd = %(psql -f "#{extension_path}" -d test_1 -U postgres --port 5432)
+
+  bash "Load extension #{new_resource.name}" do
+    code cmd
     user 'postgres'
     action :run
-    not_if { slave? || extension_installed? }
+    not_if { slave? }
+    not_if { extension_installed?(new_resource) }
+  end
+
+  control_file_path = ::File.join(new_resource.source_directory, "#{new_resource.extension}.control")
+
+  link control_file_path do
+    to "/usr/pgsql-#{node.run_state['postgresql']['version']}/share/extension/#{new_resource.extension}.control"
+  end
+
+  bash "CREATE EXTENSION #{new_resource.name}" do
+    code create_extension_sql(new_resource)
+    user 'postgres'
+    action :run
+    not_if { slave? }
+    not_if { extension_installed?(new_resource) }
   end
 end
 
@@ -37,7 +59,7 @@ action :drop do
     user 'postgres'
     action :run
     not_if { slave? }
-    only_if { extension_installed? }
+    only_if { extension_installed?(new_resource) }
   end
 end
 

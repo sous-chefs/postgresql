@@ -23,9 +23,15 @@ property :setup_repo,        [true, false], default: true
 property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
 property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.conf" }
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
-property :password,          [String, nil], default: 'generate'
+property :password,          [String, nil], default: 'generate' # Set to nil if we do not want to set a password
 property :port,              [String, Integer], default: 5432
 property :initdb_locale,     String, default: 'UTF-8'
+
+# Connection prefernces
+property :user,     String, default: 'postgres'
+property :database, String
+property :host,     [String, nil]
+property :port,     Integer, default: 5432
 
 action :install do
   node.run_state['postgresql'] ||= {}
@@ -46,29 +52,22 @@ action :create do
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
   end
 
-  find_resource(:service, 'postgresql') do
-    service_name lazy { platform_service_name }
+  # We use to use find_resource here.
+  # But that required the user to do the same in t heir recipe.
+  # This also seemed to never trigger notifications, therefore requiring a log resource
+  # to notify the enable/start on the service, which always fires (Check v7.0 tag for more)
+  service 'postgresql' do
+    service_name platform_service_name
     supports restart: true, status: true, reload: true
-    action :nothing
+    action [:enable, :start]
   end
 
-  log 'Enable and start PostgreSQL service' do
-    notifies :enable, 'service[postgresql]', :immediately
-    notifies :start, 'service[postgresql]', :immediately
-  end
-
-  postgres_password = new_resource.password == 'generate' || new_resource.password.nil? ? secure_random : new_resource.password
-
-  # Generate a ramdom password or set the a password defined with node['postgresql']['password']['postgres'].
-  # The password is set or change at each run. It is good for security if you choose to set a random password and
-  # allow you to change the postgres password if needed.
+  # Generate a random password or set it as per new_resource.password.
   bash 'generate-postgres-password' do
     user 'postgres'
-    code <<-EOH
-    echo "ALTER ROLE postgres ENCRYPTED PASSWORD \'#{postgres_password}\';" | psql -p #{new_resource.port}
-    EOH
-    not_if { ::File.exist? "#{data_dir}/recovery.conf" }
-    only_if { new_resource.password }
+    code alter_role_sql(new_resource)
+    not_if { user_has_password?(new_resource) }
+    not_if { new_resource.password.nil? }
   end
 end
 

@@ -24,7 +24,7 @@ property :hba_file,             String, default: lazy { "#{conf_dir}/pg_hba.conf
 property :ident_file,           String, default: lazy { "#{conf_dir}/pg_ident.conf" }
 property :external_pid_file,    String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
 property :stats_temp_directory, String, default: lazy { "/var/run/postgresql/#{version}-main.pg_stat_tmp" }
-property :additional_config,    Hash, default: {}
+property :additional_config,    Hash,   default: {}
 property :cookbook,             String, default: 'postgresql'
 
 action :modify do

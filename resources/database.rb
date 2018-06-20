@@ -15,30 +15,33 @@
 # limitations under the License.
 #
 
-property :database,  String, name_property: true
-property :user,      String, default: 'postgres'
-property :template,  String, default: 'template1'
-property :host,      String
-property :port,      Integer, default: 5432
-property :encoding,  String, default: 'UTF-8'
-property :locale,    String, default: 'en_US.UTF-8'
-property :owner,     String
+property :template, String, default: 'template1'
+property :encoding, String, default: 'UTF-8'
+property :locale,   String, default: 'en_US.UTF-8'
+property :owner,    String
+
+# Connection prefernces
+property :user,     String, default: 'postgres'
+property :database, String, name_property: true
+property :host,     [String, nil], default: nil
+property :port,     Integer, default: 5432
 
 action :create do
   createdb = 'createdb'
-  createdb << " -U #{new_resource.user}" if new_resource.user
   createdb << " -E #{new_resource.encoding}" if new_resource.encoding
   createdb << " -l #{new_resource.locale}" if new_resource.locale
   createdb << " -T #{new_resource.template}" unless new_resource.template.empty?
+  createdb << " -O #{new_resource.owner}" if new_resource.owner
+  createdb << " -U #{new_resource.user}" if new_resource.user
   createdb << " -h #{new_resource.host}" if new_resource.host
   createdb << " -p #{new_resource.port}" if new_resource.port
-  createdb << " -O #{new_resource.owner}" if new_resource.owner
   createdb << " #{new_resource.database}"
 
   bash "Create Database #{new_resource.database}" do
     code createdb
     user new_resource.user
-    not_if { slave? || database_exists?(new_resource) }
+    not_if { slave? }
+    not_if { database_exists?(new_resource) }
   end
 end
 

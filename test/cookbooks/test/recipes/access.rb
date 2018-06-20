@@ -6,18 +6,18 @@ postgresql_server_install 'postgresql' do
 end
 
 postgresql_access 'postgresql host superuser' do
-  access_type 'host'
-  access_db 'all'
-  access_user 'postgres'
-  access_addr '127.0.0.1/32'
-  access_method 'md5'
+  access_type       'host'
+  access_db         'all'
+  access_user       'postgres'
+  access_addr       '127.0.0.1/32'
+  access_method     'md5'
   notifies :reload, 'service[postgresql]'
 end
 
-postgresql_user 'sous_chef test user' do
-  user 'sous_chef'
+postgresql_user 'sous_chef' do
   superuser true
   password '67890'
+  sensitive false
 end
 
 postgresql_access 'a sous_chef local superuser' do

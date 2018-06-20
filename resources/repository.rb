@@ -69,6 +69,8 @@ action :add do
     end
 
   when 'debian'
+    apt_update
+
     package 'apt-transport-https'
 
     apt_repository 'postgresql_org_repository' do
