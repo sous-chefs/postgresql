@@ -50,26 +50,17 @@ action :create do
     command rhel_init_db_command
     not_if { initialized? }
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
-    # notifies :write, 'log[Enable and start PostgreSQL service]', :immediately
   end
-  #
-  # find_resource(:service, 'postgresql') do
-  #   service_name lazy { platform_service_name }
-  #   supports restart: true, status: true, reload: true
-  #   action :start
-  # end
 
+  # We use to use find_resource here.
+  # But that required the user to do the same in t heir recipe.
+  # This also seemed to never trigger notifications, therefore requiring a log resource
+  # to notify the enable/start on the service, which always fires (Check v7.0 tag for more)
   service 'postgresql' do
     service_name platform_service_name
     supports restart: true, status: true, reload: true
     action [:enable, :start]
   end
-
-  # log 'Enable and start PostgreSQL service' do
-  #   notifies :enable, 'service[postgresql]', :immediately
-  #   notifies :start, 'service[postgresql]', :immediately
-  #   action :nothing
-  # end
 
   # Generate a random password or set it as per new_resource.password.
   bash 'generate-postgres-password' do
