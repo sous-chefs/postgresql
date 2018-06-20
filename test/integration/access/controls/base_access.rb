@@ -1,4 +1,4 @@
-control 'postgresl-local-access' do
+control 'postgresql-local-access' do
   impact 1.0
   desc 'This test ensures postgres has localhost access to the database'
 
@@ -16,7 +16,7 @@ control 'postgresl-local-access' do
   end
 end
 
-control 'postgresl-sous-chef-access' do
+control 'postgresql-sous-chef-access' do
   impact 1.0
   desc 'This test ensures sous_chefs have local trust access to the database'
 
