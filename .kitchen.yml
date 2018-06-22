@@ -47,3 +47,7 @@ suites:
 - name: extension
   run_list:
     - recipe[test::extension]
+- name: initdb_locale
+  run_list:
+    - recipe[test::initdb_locale]
+  includes: [centos-7]

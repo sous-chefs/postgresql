@@ -1,0 +1,15 @@
+name: initdb_locale
+title: PostgreSQL server
+maintainer: Sous Chefs
+copyright_email: help@sous-chefs.org
+license: Apache
+summary: Verify the locale is set correctly when we pass in a non-default locale
+version: 0.0.1
+supports:
+  - os-family: unix
+inspec_version: '~> 2.0'
+# depends:
+#     - name: client
+#       path: ./test/integration/client_install
+#     - name: server_install
+#       path: ./test/integration/server_install
