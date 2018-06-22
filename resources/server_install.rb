@@ -25,7 +25,7 @@ property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
 property :password,          [String, nil], default: 'generate' # Set to nil if we do not want to set a password
 property :port,              [String, Integer], default: 5432
-property :initdb_locale,     String, default: 'UTF-8'
+property :initdb_locale,     String
 
 # Connection prefernces
 property :user,     String, default: 'postgres'
@@ -47,7 +47,8 @@ end
 
 action :create do
   execute 'init_db' do
-    command rhel_init_db_command
+    command rhel_init_db_command(new_resource)
+    user new_resource.user
     not_if { initialized? }
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
   end

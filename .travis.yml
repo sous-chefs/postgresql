@@ -62,6 +62,7 @@ env:
   - INSTANCE=ident-debian-9
   - INSTANCE=ident-ubuntu-1604
   - INSTANCE=ident-ubuntu-1804
+  - INSTANCE=initdb-locale-centos-7
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
@@ -69,6 +70,7 @@ before_script:
   - chef --version
   - cookstyle --version
   - foodcritic --version
+  - locale -a
 
 script: kitchen verify ${INSTANCE}
 

@@ -56,7 +56,7 @@ Name                | Types             | Description                           
 `external_pid_file` | String            |                                                               | `/var/run/postgresql/#{version}-main.pid` | no
 `password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | 'generate'                                | no
 `port`              | [String, Integer] | Database listen port                                          | 5432                                      | no
-`initdb_locale`     | String            | Locale to initialize the database with                        | 'UTF-8'                                   | no
+`initdb_locale`     | String            | Locale to initialise the database with                        | 'C'                                       | no
 
 #### Examples
 
@@ -86,7 +86,7 @@ Name                | Types           | Description                             
 `hba_file`          | String          | Path of pg_hba.conf file                      | `<default_os_path>/pg_hba.conf'`                   | no
 `ident_file`        | String          | Path of pg_ident.conf file                    | `<default_os_path>/pg_ident.conf`                  | no
 `external_pid_file` | String          | Path of PID file                              | `/var/run/postgresql/<version>-main.pid</version>` | no
-`password`          | String, nil     | Set postgres user password                    | 'generate'                                         | no
+`password`          | String, nil     | Set postgresql user password                  | 'generate'                                         | no
 `port`              | String, Integer | Set listen port of postgresql service         | 5432                                               | no
 
 #### Examples
