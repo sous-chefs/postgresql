@@ -24,14 +24,13 @@ property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.co
 property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.conf" }
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
 property :password,          [String, nil], default: 'generate' # Set to nil if we do not want to set a password
-property :port,              [String, Integer], default: 5432
+property :port,              Integer, default: 5432
 property :initdb_locale,     String
 
-# Connection prefernces
+# Connection preferences
 property :user,     String, default: 'postgres'
 property :database, String
 property :host,     [String, nil]
-property :port,     Integer, default: 5432
 
 action :install do
   node.run_state['postgresql'] ||= {}
