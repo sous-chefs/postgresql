@@ -12,21 +12,21 @@ RSpec.describe PostgresqlCookbook::Helpers do
       allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
     end
 
-    let(:pg_version) { '9.6' }
+    let(:pg_version) { '10' }
 
-    context 'with rhel family and Postgres 9.6' do
+    context 'with rhel family and Postgres 10' do
       let(:platform_family) { 'rhel' }
 
       it 'returns the correct path' do
-        expect(subject.data_dir(pg_version)).to eq '/var/lib/pgsql/9.6/data'
+        expect(subject.data_dir(pg_version)).to eq '/var/lib/pgsql/10/data'
       end
     end
 
-    context 'with debian family and Postgres 9.6' do
+    context 'with debian family and Postgres 10' do
       let(:platform_family) { 'debian' }
 
       it 'returns the correct path' do
-        expect(subject.data_dir(pg_version)).to eq '/var/lib/postgresql/9.6/main'
+        expect(subject.data_dir(pg_version)).to eq '/var/lib/postgresql/10/main'
       end
     end
   end
@@ -36,21 +36,21 @@ RSpec.describe PostgresqlCookbook::Helpers do
       allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
     end
 
-    let(:pg_version) { '9.6' }
+    let(:pg_version) { '10' }
 
-    context 'with rhel family and Postgres 9.6' do
+    context 'with rhel family and Postgres 10' do
       let(:platform_family) { 'rhel' }
 
       it 'returns the correct path' do
-        expect(subject.conf_dir(pg_version)).to eq '/var/lib/pgsql/9.6/data'
+        expect(subject.conf_dir(pg_version)).to eq '/var/lib/pgsql/10/data'
       end
     end
 
-    context 'with debian family and Postgres 9.6' do
+    context 'with debian family and Postgres 10' do
       let(:platform_family) { 'debian' }
 
       it 'returns the correct path' do
-        expect(subject.conf_dir(pg_version)).to eq '/etc/postgresql/9.6/main'
+        expect(subject.conf_dir(pg_version)).to eq '/etc/postgresql/10/main'
       end
     end
   end
@@ -60,17 +60,17 @@ RSpec.describe PostgresqlCookbook::Helpers do
       allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
     end
 
-    let(:pg_version) { '9.6' }
+    let(:pg_version) { '10' }
 
-    context 'with rhel family and Postgres 9.6' do
+    context 'with rhel family and Postgres 10' do
       let(:platform_family) { 'rhel' }
 
       it 'returns the correct service name' do
-        expect(subject.platform_service_name(pg_version)).to eq 'postgresql-9.6'
+        expect(subject.platform_service_name(pg_version)).to eq 'postgresql-10'
       end
     end
 
-    context 'with debian family and Postgres 9.6' do
+    context 'with debian family and Postgres 10' do
       let(:platform_family) { 'debian' }
 
       it 'returns the correct service name' do
@@ -172,7 +172,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
   describe '#alter_role_sql' do
     it 'should return a correct SQL string to set a password' do
       new_resource = double(
-        version: '9.6',
+        version: '10',
         setup_repo: true,
         hba_file: nil,
         ident_file: nil,
