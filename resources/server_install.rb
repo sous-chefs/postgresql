@@ -18,7 +18,7 @@
 
 include PostgresqlCookbook::Helpers
 
-property :version,           String, default: '9.6'
+property :version,           String, default: '10'
 property :setup_repo,        [true, false], default: true
 property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
 property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.conf" }
