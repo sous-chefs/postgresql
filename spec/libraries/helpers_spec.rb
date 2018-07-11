@@ -195,7 +195,6 @@ RSpec.describe PostgresqlCookbook::Helpers do
       new_resource = double(
         extension: 'adminpack',
         old_version: nil,
-        source_directory: '/usr/share/pgsql/extension',
         user: 'postgres',
         database: nil,
         host: nil,

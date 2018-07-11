@@ -21,12 +21,13 @@ module PostgresqlCookbook
 
     require 'securerandom'
 
-    def psql_command_string(new_resource, query, grep_for = nil)
+    def psql_command_string(new_resource, query, grep_for = nil, value_only = false)
       cmd = "/usr/bin/psql -c \"#{query}\""
       cmd << " -d #{new_resource.database}" if new_resource.database
       cmd << " -U #{new_resource.user}"     if new_resource.user
       cmd << " --host #{new_resource.host}" if new_resource.host
       cmd << " --port #{new_resource.port}" if new_resource.port
+      cmd << ' --tuples-only'               if value_only
       cmd << " | grep #{grep_for}"          if grep_for
       cmd
     end
@@ -72,8 +73,14 @@ module PostgresqlCookbook
     end
 
     def extension_installed?(new_resource)
-      query = %(SELECT 'installed' FROM pg_extension WHERE extname='#{new_resource.extension}';)
-      !(execute_sql(new_resource, query) =~ /^installed$/).nil?
+      query = %(SELECT extversion FROM pg_extension WHERE extname='#{new_resource.extension}';)
+      check_extension_version = psql_command_string(new_resource, query, new_resource.database)
+      version_result = execute_sql(new_resource, check_extension_version)
+      if new_resource.version
+        version_result.stdout == new_resource.version
+      else
+        !version_result.stdout.nil?
+      end
     end
 
     def alter_role_sql(new_resource)
