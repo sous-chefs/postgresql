@@ -215,7 +215,11 @@ module PostgresqlCookbook
     # initdb defaults to the execution environment.
     # https://www.postgresql.org/docs/9.5/static/locale.html
     def rhel_init_db_command(new_resource)
-      cmd = "/usr/pgsql-#{new_resource.version}/bin/initdb"
+      cmd = if platform_family?('amazon')
+              '/usr/bin/initdb'
+            else
+              "/usr/pgsql-#{new_resource.version}/bin/initdb"
+            end
       cmd << " --locale '#{new_resource.initdb_locale}'" if new_resource.initdb_locale
       cmd << " -D '#{data_dir(new_resource.version)}'"
     end
