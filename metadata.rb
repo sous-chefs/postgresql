@@ -13,5 +13,3 @@ chef_version      '>= 13.8'
 %w(ubuntu debian fedora amazon redhat centos scientific oracle).each do |os|
   supports os
 end
-
-depends 'openssl', '>= 4.0'
