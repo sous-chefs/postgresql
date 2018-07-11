@@ -14,5 +14,4 @@ chef_version      '>= 13.8'
   supports os
 end
 
-depends 'build-essential', '>= 2.0.0' # ~FC121
 depends 'openssl', '>= 4.0'
