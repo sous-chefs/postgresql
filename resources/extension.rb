@@ -36,7 +36,7 @@ end
 
 action :drop do
   bash "DROP EXTENSION #{new_resource.name}" do
-    code psql_command_string(new_resource.database, "DROP EXTENSION IF EXISTS \"#{new_resource.extension}\"")
+    code psql_command_string(new_resource, "DROP EXTENSION IF EXISTS \"#{new_resource.extension}\"")
     user 'postgres'
     action :run
     not_if { slave? }

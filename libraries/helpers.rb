@@ -21,7 +21,7 @@ module PostgresqlCookbook
 
     require 'securerandom'
 
-    def psql_command_string(new_resource, query, grep_for = nil, value_only = false)
+    def psql_command_string(new_resource, query, grep_for: nil, value_only: false)
       cmd = "/usr/bin/psql -c \"#{query}\""
       cmd << " -d #{new_resource.database}" if new_resource.database
       cmd << " -U #{new_resource.user}"     if new_resource.user
@@ -57,7 +57,7 @@ module PostgresqlCookbook
       #   host: nil,
       # }
 
-      exists = psql_command_string(new_resource, sql, new_resource.database)
+      exists = psql_command_string(new_resource, sql)
 
       cmd = execute_sql(new_resource, exists)
       cmd.exitstatus == 0
@@ -66,7 +66,7 @@ module PostgresqlCookbook
     def user_exists?(new_resource)
       sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.create_user}';)
 
-      exists = psql_command_string(new_resource, sql, new_resource.create_user)
+      exists = psql_command_string(new_resource, sql)
 
       cmd = execute_sql(new_resource, exists)
       cmd.exitstatus == 0
@@ -74,7 +74,7 @@ module PostgresqlCookbook
 
     def extension_installed?(new_resource)
       query = %(SELECT extversion FROM pg_extension WHERE extname='#{new_resource.extension}';)
-      check_extension_version = psql_command_string(new_resource, query, new_resource.database)
+      check_extension_version = psql_command_string(new_resource, query, value_only: true)
       version_result = execute_sql(new_resource, check_extension_version)
       if new_resource.version
         version_result.stdout == new_resource.version

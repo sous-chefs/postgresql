@@ -90,10 +90,10 @@ RSpec.describe PostgresqlCookbook::Helpers do
     end
 
     it 'returns a full command string given all the parameters' do
-      grep_for = 'FOO'
+      grep_string = 'FOO'
       result = %(/usr/bin/psql -c "THIS IS A COMMAND STRING" -d db_foo -U postgres --host localhost --port 5432 | grep FOO)
 
-      expect(subject.psql_command_string(@new_resource, @query, grep_for)).to eq(result)
+      expect(subject.psql_command_string(@new_resource, @query, grep_for: grep_string)).to eq(result)
     end
 
     it 'returns a command without grep' do
@@ -116,11 +116,11 @@ RSpec.describe PostgresqlCookbook::Helpers do
       )
 
       db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
-      grep_for = 'test_1234'
+      grep_string = 'test_1234'
 
       result = %(/usr/bin/psql -c "SELECT datname from pg_database WHERE datname='test_1234'" -U postgres --port 5432 | grep test_1234)
 
-      expect(subject.psql_command_string(res, db_query, grep_for.to_s)).to eq(result)
+      expect(subject.psql_command_string(res, db_query, grep_for: grep_string)).to eq(result)
     end
 
     it 'Allows new_resource.database to be nil or not set' do
