@@ -30,7 +30,7 @@ env:
   - INSTANCE=repo-fedora-28
   - INSTANCE=repo-ubuntu-1604
   # - INSTANCE=repo-ubuntu-1804 This is not working in travis
-  - INSTANCE=server-install-amazonlinux
+  # - INSTANCE=server-install-amazonlinux Networing is broken on Amazon linux. See Travis.yml for explanation
   - INSTANCE=server-install-centos-6
   - INSTANCE=server-install-centos-7
   - INSTANCE=server-install-debian-8
@@ -54,7 +54,7 @@ env:
   - INSTANCE=access-debian-9
   - INSTANCE=access-fedora-28
   - INSTANCE=access-ubuntu-1604
-  - INSTANCE=ident-amazonlinux
+  # - INSTANCE=ident-amazonlinux
   - INSTANCE=ident-centos-6
   - INSTANCE=ident-centos-7
   - INSTANCE=ident-fedora-28
