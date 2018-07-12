@@ -32,9 +32,6 @@ The earliest supported version is currently:
 
 ### Cookbook Dependencies
 
-- `openssl`
-- `build-essential`
-
 ## Resources
 
 ### postgresql_client_install

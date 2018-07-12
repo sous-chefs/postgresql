@@ -14,6 +14,10 @@ platforms:
   driver:
     image: dokken/amazonlinux
     pid_one_command: /sbin/init
+    # intermediate_instructions:
+    #   - RUN echo NETWORKING=yes > /etc/sysconfig/network
+    # Note for future cokobook contributors: faking out the network like we do above breaks the network
+    # e.g. `getaddrinfo: Temporary failure in name resolution`
 
 - name: debian-8
   driver:
