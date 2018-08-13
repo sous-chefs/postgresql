@@ -6,20 +6,10 @@
 # Refer to the "Client Authentication" section in the PostgreSQL
 # documentation for a complete description of this file.
 
-local   all             postgres                                peer
-
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
-
-# "local" is for Unix domain socket connections only
-local   all             all                                     peer
-# IPv4 local connections:
-host    all             all             127.0.0.1/32            md5
-# IPv6 local connections:
-host    all             all             ::1/128                 md5
-
 ###########
 # From the postgresql_access resources
 ###########
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
 <% @pg_hba.each do |k,v| -%>
 # <%= k %>
 <% if v[:comment] -%>
@@ -31,3 +21,16 @@ host    all             all             ::1/128                 md5
 <%= v[:type].ljust(7) %> <%= v[:db].ljust(15) %> <%= v[:user].ljust(15) %>                         <%= v[:method] %>
 <% end %>
 <% end %>
+
+############
+# Defaults from postgresql cookbook
+############
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+# Local postgres user can access postgres account
+local   all             postgres                                peer
+# Local users can access accounts with their username
+local   all             all                                     peer
+# IPv4 local connections (use password)
+host    all             all             127.0.0.1/32            md5
+# IPv6 local connections (use password)
+host    all             all             ::1/128                 md5
