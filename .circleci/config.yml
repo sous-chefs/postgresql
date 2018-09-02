@@ -1,3 +1,23 @@
+kitchen: &kitchen
+  machine: true
+  environment:
+    KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+  steps:
+    - checkout
+    - run:
+        name: Install Chef
+        command: |
+          wget https://packages.chef.io/files/stable/chefdk/2.4.17/ubuntu/16.04/chefdk_2.4.17-1_amd64.deb
+          sudo dpkg -i ./chefdk_2.4.17-1_amd64.deb
+          RUBY_ABI_VERSION=`ls /opt/chefdk/embedded/lib/ruby/gems/`
+          export GEM_ROOT="/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
+          export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
+          export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
+          echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
+    - run:
+        name: kitchen test
+        command: kitchen test $CIRCLE_JOB
+
 version: 2
 jobs:
   danger:
@@ -31,28 +51,21 @@ jobs:
       - run:
           name: Unit Test
           command: chef exec delivery local all
-      - persist_to_workspace:
-          root: /opt
-          paths:
-            - chefdk
 
-    repo:
-      machine: true
-      environment:
-        KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
-      steps:
-        - checkout
-        - attach_workspace:
-            at: /opt
-        - run:
-            name: kitchen test repo
-            command: |
-              RUBY_ABI_VERSION=`ls /opt/chefdk/embedded/lib/ruby/gems/`
-              export GEM_ROOT="/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
-              export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
-              export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
-              echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
-              kitchen test repo
+  repo:
+    <<: *kitchen
+  server:
+    <<: *kitchen
+  client:
+    <<: *kitchen
+  access:
+    <<: *kitchen
+  ident:
+    <<: *kitchen
+  extension:
+    <<: *kitchen
+  initdb:
+    <<: *kitchen
 
 workflows:
   version: 2
@@ -61,3 +74,31 @@ workflows:
       - danger:
           context: Danger
       - lint
+      - repo:
+          requires:
+            - lint
+            - danger
+      - server:
+          requires:
+            - lint
+            - danger
+      - client:
+          requires:
+            - lint
+            - danger
+      - access:
+          requires:
+            - lint
+            - danger
+      - ident:
+          requires:
+            - lint
+            - danger
+      - extension:
+          requires:
+            - lint
+            - danger
+      - initdb:
+          requires:
+            - lint
+            - danger
