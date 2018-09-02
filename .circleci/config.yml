@@ -12,9 +12,25 @@ jobs:
           name: Run Danger
           command: danger
 
+  lint:
+    machine: true
+    environment:
+      KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+    steps:
+      - checkout
+      - run:
+          name: Install Chef
+          command: |
+            wget https://packages.chef.io/files/stable/chefdk/2.4.17/ubuntu/16.04/chefdk_2.4.17-1_amd64.deb
+            sudo apt-get install -f ./chefdk_2.4.17-1_amd64.deb
+            echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
+            kitchen list
+            kitchen test repo-amazonlinux
+
 workflows:
   version: 2
-  danger-flow:
+  build:
     jobs:
       - danger:
           context: Danger
+      - lint
