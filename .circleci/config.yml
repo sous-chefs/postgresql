@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  danger:
+    docker:
+       - image: circleci/ruby
+    steps:
+      - checkout
+      - run:
+          name: Install Danger
+          command: gem install danger
+      - run:
+          name: Run Danger
+          command: danger
+
+workflows:
+  version: 2
+  danger-flow:
+    jobs:
+      - danger:
+          context: Danger
