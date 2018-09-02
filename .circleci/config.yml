@@ -21,9 +21,12 @@ jobs:
       - run:
           name: Install Chef
           command: |
-            rvm implode
             wget https://packages.chef.io/files/stable/chefdk/2.4.17/ubuntu/16.04/chefdk_2.4.17-1_amd64.deb
             sudo dpkg -i ./chefdk_2.4.17-1_amd64.deb
+            RUBY_ABI_VERSION=`ls /opt/chefdk/embedded/lib/ruby/gems/`
+            export GEM_ROOT="/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
+            export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
+            export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
             echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
             chef exec delivery local all
             kitchen list
