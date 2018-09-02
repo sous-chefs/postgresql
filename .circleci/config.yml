@@ -28,9 +28,31 @@ jobs:
             export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
             export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
             echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
-            chef exec delivery local all
-            kitchen list
-            kitchen test repo-amazonlinux
+      - run:
+          name: Unit Test
+          command: chef exec delivery local all
+      - persist_to_workspace:
+          root: /opt
+          paths:
+            - chefdk
+
+    repo:
+      machine: true
+      environment:
+        KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+      steps:
+        - checkout
+        - attach_workspace:
+            at: /opt
+        - run:
+            name: kitchen test repo
+            command: |
+              RUBY_ABI_VERSION=`ls /opt/chefdk/embedded/lib/ruby/gems/`
+              export GEM_ROOT="/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
+              export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
+              export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
+              echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
+              kitchen test repo
 
 workflows:
   version: 2
