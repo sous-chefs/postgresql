@@ -15,8 +15,6 @@ provisioner:
 
 verifier:
   name: inspec
-  format: junit
-  output: output.xml
 
 platforms:
   - name: amazonlinux

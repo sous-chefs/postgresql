@@ -14,9 +14,9 @@ kitchen: &kitchen
           export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
           export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
           echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
-    - run:
-        name: amazonlinux
-        command: kitchen test $CIRCLE_JOB-amazonlinux
+    # - run:
+    #     name: amazonlinux
+    #     command: kitchen test $CIRCLE_JOB-amazonlinux
     - run:
         name: centos-6
         command: kitchen test $CIRCLE_JOB-centos-6
@@ -34,10 +34,10 @@ kitchen: &kitchen
         command: kitchen test $CIRCLE_JOB-fedora-28
     - run:
         name: ubuntu-16.04
-        command: kitchen test $CIRCLE_JOB-ubuntu-16.04
+        command: kitchen test $CIRCLE_JOB-ubuntu-1604
     - run:
         name: ubuntu-18.04
-        command: kitchen test $CIRCLE_JOB-ubuntu-18.04
+        command: kitchen test $CIRCLE_JOB-ubuntu-1804
 
 version: 2
 jobs:
@@ -75,9 +75,9 @@ jobs:
 
   repo:
     <<: *kitchen
-  server:
+  server-install:
     <<: *kitchen
-  client:
+  client-install:
     <<: *kitchen
   access:
     <<: *kitchen
@@ -115,11 +115,11 @@ workflows:
           requires:
             - lint
             - danger
-      - server:
+      - server-install:
           requires:
             - lint
             - danger
-      - client:
+      - client-install:
           requires:
             - lint
             - danger
