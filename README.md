@@ -54,7 +54,6 @@ Name                | Types             | Description                           
 `ident_file`        | String            |                                                               | `#{conf_dir}/main/pg_ident.conf`          | no
 `external_pid_file` | String            |                                                               | `/var/run/postgresql/#{version}-main.pid` | no
 `password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | 'generate'                                | no
-`initdb_locale`     | String            | Locale to initialise the database with                        | 'C'                                       | no
 
 #### Examples
 
@@ -86,6 +85,7 @@ Name                | Types           | Description                             
 `external_pid_file` | String          | Path of PID file                              | `/var/run/postgresql/<version>-main.pid</version>` | no
 `password`          | String, nil     | Set postgresql user password                  | 'generate'                                         | no
 `port`              | Integer         | Set listen port of postgresql service         | 5432                                               | no
+`initdb_locale`     | String          | Locale to initialise the database with        | 'C'                                                | no
 
 #### Examples
 
