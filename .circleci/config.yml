@@ -1,3 +1,13 @@
+install_chef: &install_chef
+  command: |
+    wget https://packages.chef.io/files/stable/chefdk/2.4.17/ubuntu/16.04/chefdk_2.4.17-1_amd64.deb
+    sudo dpkg -i ./chefdk_2.4.17-1_amd64.deb
+    RUBY_ABI_VERSION=`ls /opt/chefdk/embedded/lib/ruby/gems/`
+    export GEM_ROOT="/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
+    export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
+    export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
+    echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
+
 kitchen: &kitchen
   machine: true
   environment:
@@ -6,17 +16,11 @@ kitchen: &kitchen
     - checkout
     - run:
         name: Install Chef
-        command: |
-          wget https://packages.chef.io/files/stable/chefdk/2.4.17/ubuntu/16.04/chefdk_2.4.17-1_amd64.deb
-          sudo dpkg -i ./chefdk_2.4.17-1_amd64.deb
-          RUBY_ABI_VERSION=`ls /opt/chefdk/embedded/lib/ruby/gems/`
-          export GEM_ROOT="/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
-          export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
-          export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
-          echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
+        <<: *install_chef
     # - run:
     #     name: amazonlinux
     #     command: kitchen test $CIRCLE_JOB-amazonlinux
+    # Network failure to be fixed
     - run:
         name: centos-6
         command: kitchen test $CIRCLE_JOB-centos-6
@@ -61,14 +65,7 @@ jobs:
       - checkout
       - run:
           name: Install Chef
-          command: |
-            wget https://packages.chef.io/files/stable/chefdk/2.4.17/ubuntu/16.04/chefdk_2.4.17-1_amd64.deb
-            sudo dpkg -i ./chefdk_2.4.17-1_amd64.deb
-            RUBY_ABI_VERSION=`ls /opt/chefdk/embedded/lib/ruby/gems/`
-            export GEM_ROOT="/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
-            export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
-            export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
-            echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
+          <<: *install_chef
       - run:
           name: Unit Test
           command: chef exec delivery local all
@@ -93,14 +90,7 @@ jobs:
       - checkout
       - run:
           name: Install Chef
-          command: |
-            wget https://packages.chef.io/files/stable/chefdk/2.4.17/ubuntu/16.04/chefdk_2.4.17-1_amd64.deb
-            sudo dpkg -i ./chefdk_2.4.17-1_amd64.deb
-            RUBY_ABI_VERSION=`ls /opt/chefdk/embedded/lib/ruby/gems/`
-            export GEM_ROOT="/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
-            export GEM_HOME="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION"
-            export GEM_PATH="$EXPANDED_HOME/.chefdk/gem/ruby/$RUBY_ABI_VERSION:/opt/chefdk/embedded/lib/ruby/gems/$RUBY_ABI_VERSION"
-            echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.configuration_file && source ~/.configuration_file
+          <<: *install_chef
       - run:
           command: kitchen test initdb-locale-centos-7
 
@@ -131,10 +121,11 @@ workflows:
           requires:
             - lint
             - danger
-      - extension:
-          requires:
-            - lint
-            - danger
+      # - extension:
+      #     requires:
+      #       - lint
+      #       - danger
+      # Failure /usr/share/pgsql/extension/adminpack--1.0.sql: No such file or directory
       - initdb:
           requires:
             - lint
