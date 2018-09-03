@@ -18,7 +18,7 @@ If you are wondering where all the recipes went in v7.0+, or how on earth I use 
 - Red Hat/CentOS/Scientific 6+
 - Fedora
 
-## PostgreSQL version
+### Postgresql version
 
 We follow the currently supported versions listed on <https://www.postgresql.org/support/versioning/>
 
@@ -31,6 +31,8 @@ The earliest supported version is currently:
 - Chef 13.8+
 
 ### Cookbook Dependencies
+
+None.
 
 ## Resources
 
@@ -100,6 +102,12 @@ postgresql_server_install 'Setup my postgresql 9.5 server' do
   action :create
 end
 ```
+
+#### Known issues
+
+On some platforms (e.g. Ubuntu 18.04), `initdb_locale` should be set to
+`en_US.utf8` instead of `en_US.UTF-8` due to
+[GH-555](https://github.com/sous-chefs/postgresql/issues/555).
 
 ### postgresql_server_conf
 
@@ -312,6 +320,12 @@ postgresql_database 'my_app' do
   owner 'user1'
 end
 ```
+
+#### Known issues
+
+On some platforms (e.g. Ubuntu 18.04), `locale` should be set to `en_US.utf8`
+instead of `en_US.UTF-8` due to
+[GH-555](https://github.com/sous-chefs/postgresql/issues/555).
 
 ### postgresql_user
 
