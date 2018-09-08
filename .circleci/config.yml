@@ -10,7 +10,6 @@ install_chef: &install_chef
 
 kitchen: &kitchen
   machine: true
-  parallelism: 4
   environment:
     KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
   steps:
