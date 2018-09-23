@@ -28,24 +28,28 @@ workflows:
       - sous-chefs/dokken:
           name: access
           suite: access
+          platform: centos-7
           requires:
             - Lint
             - Danger
       - sous-chefs/dokken:
           name: ident
           suite: ident
+          platform: centos-7
           requires:
             - Lint
             - Danger
-      - sous-chefs/dokken:
+      - sous-chefs/dokken-single:
           name: extension
           suite: extension
+          platform: centos-7
           requires:
             - Lint
             - Danger
-      - sous-chefs/dokken:
+      - sous-chefs/dokken-single:
           name: initdb
           suite: initdb
+          platform: centos-7
           requires:
             - Lint
             - Danger
@@ -122,5 +126,27 @@ orbs:
               name: ubuntu-16.04
               command: kitchen test <<parameters.suite>>-ubuntu-1604
           - run:
-             name: ubuntu-18.04
-             command: kitchen test <<parameters.suite>>-ubuntu-1604
+              name: ubuntu-18.04
+              command: kitchen test <<parameters.suite>>-ubuntu-1604
+      dokken-single:
+        executor: chef
+        parameters:
+          suite:
+            description: Test Kitchen suite name
+            type: string
+          platform:
+            description: Test platform
+            type: string
+          channel:
+            description: ChefDK channel stable or current
+            type: string
+            default: current
+        environment:
+          KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+        steps:
+          - checkout
+          - run:
+              name: Install Chef
+              command: curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -c <<parameters.channel>> -P chefdk
+          - run:
+              command: kitchen test <<parameters.suite>>-<<parameters.platform>>
