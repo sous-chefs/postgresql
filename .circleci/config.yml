@@ -27,7 +27,7 @@ orbs:
               name: Run Danger
               command: danger
       lint:
-        executor: chef
+        executor: ruby
         parameters:
           channel:
             description: ChefDK channel stable or current
