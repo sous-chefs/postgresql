@@ -6,54 +6,54 @@ workflows:
           context: Danger
           name: Danger
       - sous-chefs/lint:
-          name: lint
+          name: Lint
 
       - sous-chefs/dokken:
           name: repo
           suite: repo
           requires:
-            - lint
-            - danger
+            - Lint
+            - Danger
       - sous-chefs/dokken:
           name: server-install
           suite: server-install
           requires:
-            - lint
-            - danger
+            - Lint
+            - Danger
       - sous-chefs/dokken:
           name: client-install
           suite: client-install
           requires:
-            - lint
-            - danger
+            - Lint
+            - Danger
 
       - sous-chefs/dokken:
           name: access
           suite: access
           requires:
-            - lint
-            - danger
+            - Lint
+            - Danger
             - client-install
       - sous-chefs/dokken:
           name: ident
           suite: ident
           requires:
-            - lint
-            - danger
+            - Lint
+            - Danger
             - client-install
       - sous-chefs/dokken:
           name: extension
           suite: extension
           requires:
-            - lint
-            - danger
+            - Lint
+            - Danger
             - client-install
       - sous-chefs/dokken:
           name: initdb
           suite: initdb
           requires:
-            - lint
-            - danger
+            - Lint
+            - Danger
             - client-install
 
 orbs:
