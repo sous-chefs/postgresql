@@ -34,6 +34,8 @@ workflows:
             - Lint
             - Danger
             - client-install
+            - server-install
+            - repo
       - sous-chefs/dokken:
           name: ident
           suite: ident
@@ -41,6 +43,8 @@ workflows:
             - Lint
             - Danger
             - client-install
+            - server-install
+            - repo
       - sous-chefs/dokken:
           name: extension
           suite: extension
@@ -48,6 +52,8 @@ workflows:
             - Lint
             - Danger
             - client-install
+            - server-install
+            - repo
       - sous-chefs/dokken:
           name: initdb
           suite: initdb
@@ -55,6 +61,8 @@ workflows:
             - Lint
             - Danger
             - client-install
+            - server-install
+            - repo
 
 orbs:
   sous-chefs:
