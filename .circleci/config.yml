@@ -114,9 +114,9 @@ orbs:
           - run:
               name: Install Chef
               command: curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -c <<parameters.channel>> -P chefdk
-          - run:
-              name: amazonlinux
-              command: kitchen test <<parameters.suite>>-amazonlinux
+          # - run:
+          #     name: amazonlinux
+          #     command: kitchen test <<parameters.suite>>-amazonlinux
           - run:
               name: centos-6
               command: kitchen test <<parameters.suite>>-centos-6
