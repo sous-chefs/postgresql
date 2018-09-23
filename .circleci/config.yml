@@ -50,6 +50,10 @@ orbs:
           suite:
             description: Test Kitchen suite name
             type: string
+          channel:
+            description: ChefDK channel stable or current
+            type: string
+            default: current
         environment:
           KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
         steps:
