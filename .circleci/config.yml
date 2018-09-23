@@ -7,6 +7,9 @@ workflows:
           name: Danger
       - sous-chefs/lint:
           name: Lint
+      - sous-chefs/dokken:
+          name: repo
+          parameters: [suite: repo]
 
 orbs:
   sous-chefs:
@@ -41,3 +44,40 @@ orbs:
           - run:
               name: Unit Test
               command: chef exec delivery local all
+      dokken:
+        executor: chef
+        parameters:
+          suite:
+            description: Test Kitchen suite name
+            type: string
+        environment:
+          KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+        steps:
+          - checkout
+          - run:
+              name: Install Chef
+              command: curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -c <<parameters.channel>> -P chefdk
+          - run:
+              name: amazonlinux
+              command: kitchen test <<parameters.suite>>-amazonlinux
+          - run:
+              name: centos-6
+              command: kitchen test <<parameters.suite>>-centos-6
+          - run:
+              name: centos-7
+              command: kitchen test <<parameters.suite>>-centos-7
+          - run:
+              name: debian-8
+              command: kitchen test <<parameters.suite>>-debian-8
+          - run:
+              name: debian-9
+              command: kitchen test <<parameters.suite>>-debian-9
+          - run:
+              name: fedora-latest
+              command: kitchen test <<parameters.suite>>-fedora-latest
+          - run:
+              name: ubuntu-16.04
+              command: kitchen test <<parameters.suite>>-ubuntu-1604
+          - run:
+             name: ubuntu-18.04
+             command: kitchen test <<parameters.suite>>-ubuntu-1604
