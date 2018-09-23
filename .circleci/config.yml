@@ -25,7 +25,7 @@ workflows:
           requires:
             - Lint
             - Danger
-      - sous-chefs/dokken:
+      - sous-chefs/dokken-single:
           name: access
           suite: access
           platform: centos-7
