@@ -32,7 +32,7 @@ workflows:
           requires:
             - Lint
             - Danger
-      - sous-chefs/dokken:
+      - sous-chefs/dokken-single:
           name: ident
           suite: ident
           platform: centos-7
