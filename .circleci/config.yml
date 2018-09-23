@@ -9,7 +9,7 @@ workflows:
           name: Lint
       - sous-chefs/dokken:
           name: repo
-          parameters: [suite: repo]
+          suite: repo
 
 orbs:
   sous-chefs:
