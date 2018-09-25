@@ -41,13 +41,13 @@ workflows:
             - Danger
       # STDERR: ERROR:  could not open extension control file "/usr/pgsql-9.6/share/extension/adminpack.control":
       # No such file or directory
-      # - sous-chefs/dokken-single:
-      #     name: extension
-      #     suite: extension
-      #     platform: centos-7
-      #     requires:
-      #       - Lint
-      #       - Danger
+      - sous-chefs/dokken-single:
+          name: extension
+          suite: extension
+          platform: centos-7
+          requires:
+            - Lint
+            - Danger
       - sous-chefs/dokken-single:
           name: initdb
           suite: initdb-locale
