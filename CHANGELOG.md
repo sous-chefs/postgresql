@@ -2,6 +2,10 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## v7.1.1 (tbc)
+
+- Use CircleCI for testing 
+
 ## v7.1.0 (22-06-2018)
 
 - Update the `initdb` script to use initdb rather than a service. #542
