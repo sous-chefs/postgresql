@@ -4,7 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## v7.1.1 (tbc)
 
-- Use CircleCI for testing 
+- Use CircleCI for testing
+- Simplyfy extension resource
 
 ## v7.1.0 (22-06-2018)
 
