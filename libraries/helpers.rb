@@ -49,15 +49,7 @@ module PostgresqlCookbook
     def database_exists?(new_resource)
       sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.database}')
 
-      # Set some values to nil so we can use the generic psql_command_string method.
-      # res = {
-      #   user: new_resource.user,
-      #   port: new_resource.port,
-      #   database: nil,
-      #   host: nil,
-      # }
-
-      exists = psql_command_string(new_resource, sql)
+      exists = psql_command_string(new_resource, sql, grep_for: new_resource.database)
 
       cmd = execute_sql(new_resource, exists)
       cmd.exitstatus == 0
@@ -66,7 +58,7 @@ module PostgresqlCookbook
     def user_exists?(new_resource)
       sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.create_user}';)
 
-      exists = psql_command_string(new_resource, sql)
+      exists = psql_command_string(new_resource, sql, grep_for: new_resource.create_user)
 
       cmd = execute_sql(new_resource, exists)
       cmd.exitstatus == 0

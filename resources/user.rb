@@ -31,7 +31,7 @@ property :sensitive,          [true, false], default: true
 # Connection prefernces
 property :user,     String, default: 'postgres'
 property :database, String
-property :host,     [String, nil]
+property :host,     String
 property :port,     Integer, default: 5432
 
 action :create do
@@ -41,8 +41,7 @@ action :create do
     user 'postgres'
     command create_user_sql(new_resource)
     sensitive new_resource.sensitive
-    not_if { slave? }
-    not_if { user_exists?(new_resource) }
+    not_if { slave? || user_exists?(new_resource) }
   end
 end
 
