@@ -138,32 +138,40 @@ module PostgresqlCookbook
     end
 
     def data_dir(version = node.run_state['postgresql']['version'])
-      case node['platform_family']
-      when 'rhel', 'fedora'
-        "/var/lib/pgsql/#{version}/data"
-      when 'amazon'
-        if node['virtualization']['system'] == 'docker'
-          "/var/lib/pgsql#{version.delete('.')}/data"
-        else
+      unless node.run_state['postgresql']['data_dir']
+        case node['platform_family']
+        when 'rhel', 'fedora'
           "/var/lib/pgsql/#{version}/data"
+        when 'amazon'
+          if node['virtualization']['system'] == 'docker'
+            "/var/lib/pgsql#{version.delete('.')}/data"
+          else
+            "/var/lib/pgsql/#{version}/data"
+          end
+        when 'debian'
+          "/var/lib/postgresql/#{version}/main"
         end
-      when 'debian'
-        "/var/lib/postgresql/#{version}/main"
+      else
+        node.run_state['postgresql']['data_dir']
       end
     end
 
     def conf_dir(version = node.run_state['postgresql']['version'])
-      case node['platform_family']
-      when 'rhel', 'fedora'
-        "/var/lib/pgsql/#{version}/data"
-      when 'amazon'
-        if node['virtualization']['system'] == 'docker'
-          "/var/lib/pgsql#{version.delete('.')}/data"
-        else
+      unless node.run_state['postgresql']['conf_dir']
+        case node['platform_family']
+        when 'rhel', 'fedora'
           "/var/lib/pgsql/#{version}/data"
+        when 'amazon'
+          if node['virtualization']['system'] == 'docker'
+            "/var/lib/pgsql#{version.delete('.')}/data"
+          else
+            "/var/lib/pgsql/#{version}/data"
+          end
+        when 'debian'
+          "/etc/postgresql/#{version}/main"
         end
-      when 'debian'
-        "/etc/postgresql/#{version}/main"
+      else
+        node.run_state['postgresql']['conf_dir']
       end
     end
 
