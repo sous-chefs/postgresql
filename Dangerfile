@@ -23,15 +23,15 @@ def test_changes?
   false
 end
 
-raise 'Please provide a summary of your Pull Request.' if github.pr_body.length < 10
+fail 'Please provide a summary of your Pull Request.' if github.pr_body.length < 10
 
-raise 'Please add labels to this Pull Request' if github.pr_labels.empty?
+fail 'Please add labels to this Pull Request' if github.pr_labels.empty?
 
 warn 'This is a big Pull Request.' if git.lines_of_code > 400
 
 # Require a CHANGELOG entry for non-test changes.
 if !git.modified_files.include?('CHANGELOG.md') && code_changes?
-  raise 'Please include a [CHANGELOG](https://github.com/sous-chefs/line-cookbook/blob/master/CHANGELOG.md) entry.'
+  fail 'Please include a [CHANGELOG](https://github.com/sous-chefs/line-cookbook/blob/master/CHANGELOG.md) entry.'
 end
 
 # A sanity check for tests.

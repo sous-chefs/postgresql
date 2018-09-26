@@ -149,6 +149,7 @@ Name          | Types  | Description                                            
 ------------- | ------ | -------------------------------------------------------------------------------- | ---------------- | ---------
 `database`    | String | Name of the database to install the extension into                               |                  | yes
 `extension`   | String | Name of the extension to install the database                                    | Name of resource | yes
+`version`     | String | Version of the extension to install                                              |                  | no
 `old_version` | String | Older module name for new extension replacement. Appends FROM to extension query |                  | no
 
 #### Examples
