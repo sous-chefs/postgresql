@@ -105,9 +105,8 @@ end
 
 #### Known issues
 
-On some platforms (e.g. Ubuntu 18.04), `initdb_locale` should be set to
-`en_US.utf8` instead of `en_US.UTF-8` due to
-[GH-555](https://github.com/sous-chefs/postgresql/issues/555).
+On some platforms (e.g. Ubuntu 18.04), your `initdb_locale` should be set to the
+same as the template database [GH-555](https://github.com/sous-chefs/postgresql/issues/555).
 
 ### postgresql_server_conf
 
@@ -323,9 +322,8 @@ end
 
 #### Known issues
 
-On some platforms (e.g. Ubuntu 18.04), `locale` should be set to `en_US.utf8`
-instead of `en_US.UTF-8` due to
-[GH-555](https://github.com/sous-chefs/postgresql/issues/555).
+On some platforms (e.g. Ubuntu 18.04), your `initdb_locale` should be set to the
+same as the template database [GH-555](https://github.com/sous-chefs/postgresql/issues/555).
 
 ### postgresql_user
 
