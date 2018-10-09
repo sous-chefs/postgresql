@@ -4,6 +4,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## v7.1.1 (26-09-2018)
 
+- Rename slave to follower
 - Use CircleCI for testing
 - Simplyfy extension resource
 
