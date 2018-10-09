@@ -183,7 +183,7 @@ module PostgresqlCookbook
       end
     end
 
-    def slave?
+    def follower?
       ::File.exist? "#{data_dir}/recovery.conf"
     end
 
