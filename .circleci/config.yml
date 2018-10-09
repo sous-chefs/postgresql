@@ -11,34 +11,34 @@ workflows:
           context: Danger
       - kitchen/lint:
           name: lint
-      - sous-chefs/dokken:
+      - kitchen/dokken:
           name: repo
           suite: repo
           requires: [ lint, danger ]
-      - sous-chefs/dokken:
+      - kitchen/dokken:
           name: server-install
           suite: server-install
           requires: [ lint, danger ]
-      - sous-chefs/dokken:
+      - kitchen/dokken:
           name: client-install
           suite: client-install
           requires: [ lint, danger ]
-      - sous-chefs/dokken-single:
+      - kitchen/dokken-single:
           name: access
           suite: access
           platform: centos-7
           requires: [ lint, danger ]
-      - sous-chefs/dokken-single:
+      - kitchen/dokken-single:
           name: ident
           suite: ident
           platform: centos-7
           requires: [ lint, danger ]
-      - sous-chefs/dokken-single:
+      - kitchen/dokken-single:
           name: extension
           suite: extension
           platform: centos-7
           requires: [ lint, danger ]
-      - sous-chefs/dokken-single:
+      - kitchen/dokken-single:
           name: initdb
           suite: initdb-locale
           platform: centos-7
