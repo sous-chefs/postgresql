@@ -41,7 +41,7 @@ action :create do
     user 'postgres'
     command create_user_sql(new_resource)
     sensitive new_resource.sensitive
-    not_if { slave? || user_exists?(new_resource) }
+    not_if { follower? || user_exists?(new_resource) }
   end
 end
 
@@ -51,7 +51,7 @@ action :update do
       user 'postgres'
       command update_user_sql(new_resource)
       sensitive true
-      not_if { slave? }
+      not_if { follower? }
       only_if { user_exists?(new_resource) }
     end
   else
@@ -66,7 +66,7 @@ action :update do
         user 'postgres'
         command update_user_with_attributes_sql(new_resource, v)
         sensitive true
-        not_if { slave? }
+        not_if { follower? }
         only_if { user_exists?(new_resource) }
       end
     end
@@ -78,7 +78,7 @@ action :drop do
     user 'postgres'
     command drop_user_sql(new_resource)
     sensitive true
-    not_if { slave? }
+    not_if { follower? }
     only_if { user_exists?(new_resource) }
   end
 end

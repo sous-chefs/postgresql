@@ -1,152 +1,45 @@
 version: 2.1
+
+orbs:
+  kitchen: sous-chefs/kitchen@1.0.0
+
 workflows:
-  build:
+  kitchen:
     jobs:
-      - sous-chefs/danger:
+      - kitchen/danger:
+          name: danger
           context: Danger
-          name: Danger
-      - sous-chefs/lint:
-          name: Lint
-      - sous-chefs/dokken:
+      - kitchen/lint:
+          name: lint
+      - kitchen/dokken:
           name: repo
           suite: repo
-          requires:
-            - Lint
-            - Danger
-      - sous-chefs/dokken:
+          requires: [ lint, danger ]
+      - kitchen/dokken:
           name: server-install
           suite: server-install
-          requires:
-            - Lint
-            - Danger
-      - sous-chefs/dokken:
+          requires: [ lint, danger ]
+      - kitchen/dokken:
           name: client-install
           suite: client-install
-          requires:
-            - Lint
-            - Danger
-      - sous-chefs/dokken-single:
+          requires: [ lint, danger ]
+      - kitchen/dokken-single:
           name: access
           suite: access
           platform: centos-7
-          requires:
-            - Lint
-            - Danger
-      - sous-chefs/dokken-single:
+          requires: [ lint, danger ]
+      - kitchen/dokken-single:
           name: ident
           suite: ident
           platform: centos-7
-          requires:
-            - Lint
-            - Danger
-      - sous-chefs/dokken-single:
+          requires: [ lint, danger ]
+      - kitchen/dokken-single:
           name: extension
           suite: extension
           platform: centos-7
-          requires:
-            - Lint
-            - Danger
-      - sous-chefs/dokken-single:
+          requires: [ lint, danger ]
+      - kitchen/dokken-single:
           name: initdb
           suite: initdb-locale
           platform: centos-7
-          requires:
-            - Lint
-            - Danger
-
-orbs:
-  sous-chefs:
-    executors:
-      ruby:
-        docker: [ image: circleci/ruby ]
-      chef:
-        machine: true
-    jobs:
-      danger:
-        executor: ruby
-        steps:
-          - checkout
-          - run:
-              name: Install Danger
-              command: gem install danger
-          - run:
-              name: Run Danger
-              command: danger
-      lint:
-        executor: ruby
-        parameters:
-          channel:
-            description: ChefDK channel stable or current
-            type: string
-            default: current
-        steps:
-          - checkout
-          - run:
-              name: Install Chef
-              command: curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -c <<parameters.channel>> -P chefdk
-          - run:
-              name: Unit Test
-              command: chef exec delivery local all
-      dokken:
-        executor: chef
-        parameters:
-          suite:
-            description: Test Kitchen suite name
-            type: string
-          channel:
-            description: ChefDK channel stable or current
-            type: string
-            default: current
-        environment:
-          KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
-        steps:
-          - checkout
-          - run:
-              name: Install Chef
-              command: curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -c <<parameters.channel>> -P chefdk
-          # - run:
-          #     name: amazonlinux
-          #     command: kitchen test <<parameters.suite>>-amazonlinux
-          - run:
-              name: centos-6
-              command: kitchen test <<parameters.suite>>-centos-6
-          - run:
-              name: centos-7
-              command: kitchen test <<parameters.suite>>-centos-7
-          - run:
-              name: debian-8
-              command: kitchen test <<parameters.suite>>-debian-8
-          - run:
-              name: debian-9
-              command: kitchen test <<parameters.suite>>-debian-9
-          - run:
-              name: fedora-latest
-              command: kitchen test <<parameters.suite>>-fedora-latest
-          - run:
-              name: ubuntu-16.04
-              command: kitchen test <<parameters.suite>>-ubuntu-1604
-          - run:
-              name: ubuntu-18.04
-              command: kitchen test <<parameters.suite>>-ubuntu-1604
-      dokken-single:
-        executor: chef
-        parameters:
-          suite:
-            description: Test Kitchen suite name
-            type: string
-          platform:
-            description: Test platform
-            type: string
-          channel:
-            description: ChefDK channel stable or current
-            type: string
-            default: current
-        environment:
-          KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
-        steps:
-          - checkout
-          - run:
-              name: Install Chef
-              command: curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -c <<parameters.channel>> -P chefdk
-          - run:
-              command: kitchen test <<parameters.suite>>-<<parameters.platform>>
+          requires: [ lint, danger ]

@@ -40,7 +40,7 @@ action :create do
   bash "Create Database #{new_resource.database}" do
     code createdb
     user new_resource.user
-    not_if { slave? }
+    not_if { follower? }
     not_if { database_exists?(new_resource) }
   end
 end
@@ -56,7 +56,7 @@ action :drop do
     bash "drop postgresql database #{new_resource.database})" do
       user 'postgres'
       code dropdb
-      not_if { slave? }
+      not_if { follower? }
       only_if { database_exists?(new_resource) }
     end
   end
