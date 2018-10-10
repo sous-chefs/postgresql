@@ -1,4 +1,4 @@
-# postgresql cookbook
+# PostgreSQL cookbook
 
 [![CircleCI](https://circleci.com/gh/sous-chefs/postgresql/tree/master.svg?style=svg)](https://circleci.com/gh/sous-chefs/postgresql/tree/master) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
 
@@ -18,7 +18,7 @@ If you are wondering where all the recipes went in v7.0+, or how on earth I use 
 - Red Hat/CentOS/Scientific 6+
 - Fedora
 
-## PostgreSQL version
+### PostgreSQL version
 
 We follow the currently supported versions listed on <https://www.postgresql.org/support/versioning/>
 
@@ -31,6 +31,8 @@ The earliest supported version is currently:
 - Chef 13.8+
 
 ### Cookbook Dependencies
+
+None.
 
 ## Resources
 
@@ -52,14 +54,13 @@ Name                | Types             | Description                           
 `ident_file`        | String            |                                                               | `#{conf_dir}/main/pg_ident.conf`          | no
 `external_pid_file` | String            |                                                               | `/var/run/postgresql/#{version}-main.pid` | no
 `password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | 'generate'                                | no
-`initdb_locale`     | String            | Locale to initialise the database with                        | 'C'                                       | no
 
 #### Examples
 
 To install '9.5' version:
 
 ```
-postgresql_client_install 'My Postgresql Client install' do
+postgresql_client_install 'My PostgreSQL Client install' do
   version '9.5'
 end
 ```
@@ -82,24 +83,30 @@ Name                | Types           | Description                             
 `hba_file`          | String          | Path of pg_hba.conf file                      | `<default_os_path>/pg_hba.conf'`                   | no
 `ident_file`        | String          | Path of pg_ident.conf file                    | `<default_os_path>/pg_ident.conf`                  | no
 `external_pid_file` | String          | Path of PID file                              | `/var/run/postgresql/<version>-main.pid</version>` | no
-`password`          | String, nil     | Set postgresql user password                  | 'generate'                                         | no
-`port`              | Integer         | Set listen port of postgresql service         | 5432                                               | no
+`password`          | String, nil     | Set PostgreSQL user password                  | 'generate'                                         | no
+`port`              | Integer         | Set listen port of PostgreSQL service         | 5432                                               | no
+`initdb_locale`     | String          | Locale to initialise the database with        | 'C'                                                | no
 
 #### Examples
 
 To install PostgreSQL server, set you own postgres password using non-default service port.
 
 ```
-postgresql_server_install 'My Postgresql Server install' do
+postgresql_server_install 'My PostgreSQL Server install' do
   action :install
 end
 
-postgresql_server_install 'Setup my postgresql 9.5 server' do
+postgresql_server_install 'Setup my PostgreSQL 9.5 server' do
   password 'MyP4ssw0d'
   port 5433
   action :create
 end
 ```
+
+#### Known issues
+
+On some platforms (e.g. Ubuntu 18.04), your `initdb_locale` should be set to the
+same as the template database [GH-555](https://github.com/sous-chefs/postgresql/issues/555).
 
 ### postgresql_server_conf
 
@@ -114,12 +121,12 @@ This resource manages postgresql.conf configuration file.
 Name                   | Types   | Description                             | Default                                             | Required?
 ---------------------- | ------- | --------------------------------------- | --------------------------------------------------- | ---------
 `version`              | String  | Version of PostgreSQL to install        | '9.6'                                               | no
-`data_directory`       | String  | Path of postgresql data directory       | `<default_os_data_path>`                            | no
+`data_directory`       | String  | Path of PostgreSQL data directory       | `<default_os_data_path>`                            | no
 `hba_file`             | String  | Path of pg_hba.conf file                | `<default_os_conf_path>/pg_hba.conf`                | no
 `ident_file`           | String  | Path of pg_ident.conf file              | `<default_os_conf_path>/pg_ident.conf`              | no
 `external_pid_file`    | String  | Path of PID file                        | `/var/run/postgresql/<postgresql_version>-main.pid` | no
 `stats_temp_directory` | String  | Path of stats file                      | `/var/run/postgresql/version>-main.pg_stat_tmp`     | no
-`port`                 | Integer | Set listen port of postgresql service   | 5432                                                | no
+`port`                 | Integer | Set listen port of PostgreSQL service   | 5432                                                | no
 `additional_config`    | Hash    | Extra configuration for the config file | {}                                                  | no
 
 #### Examples
@@ -136,7 +143,7 @@ end
 
 ### postgresql_extension
 
-This resource manages postgresql extensions for a given database.
+This resource manages PostgreSQL extensions for a given database.
 
 #### Actions
 
@@ -192,7 +199,7 @@ Name            | Types  | Description                                          
 
 #### Examples
 
-To grant access to the postgresql user with ident authentication:
+To grant access to the PostgreSQL user with ident authentication:
 
 ```ruby
 postgresql_access 'local_postgres_superuser' do
@@ -298,7 +305,7 @@ Name       | Types   | Description                                              
 `user`     | String  | User which run psql command                                         | 'postgres'          | no
 `template` | String  | Template used to create the new database                            | 'template1'         | no
 `host`     | String  | Define the host server where the database creation will be executed | Not set (localhost) | no
-`port`     | Integer | Define the port of Postgresql server                                | 5432                | no
+`port`     | Integer | Define the port of PostgreSQL server                                | 5432                | no
 `encoding` | String  | Define database encoding                                            | 'UTF-8'             | no
 `locale`   | String  | Define database locale                                              | 'en_US.UTF-8'       | no
 `owner`    | String  | Define the owner of the database                                    | Not set             | no
@@ -312,6 +319,11 @@ postgresql_database 'my_app' do
   owner 'user1'
 end
 ```
+
+#### Known issues
+
+On some platforms (e.g. Ubuntu 18.04), your `initdb_locale` should be set to the
+same as the template database [GH-555](https://github.com/sous-chefs/postgresql/issues/555).
 
 ### postgresql_user
 
@@ -361,12 +373,12 @@ More examples can be found in `test/cookbooks/test/recipes`
 Example: cookbooks/my_postgresql/recipes/default.rb
 
 ```ruby
-postgresql_client_install 'Postgresql Client' do
+postgresql_client_install 'PostgreSQL Client' do
   setup_repo false
   version '9.5'
 end
 
-postgresql_server_install 'Postgresql Server' do
+postgresql_server_install 'PostgreSQL Server' do
   version '9.5'
   setup_repo false
   password 'P0sgresP4ssword'
