@@ -137,7 +137,7 @@ To setup your PostgreSQL configuration with a specific data directory. If you ha
 postgresql_server_conf 'My PostgreSQL Config' do
   version '9.5'
   data_directory '/data/postgresql/9.5/main'
-  notification :reload
+  notifies :reload, 'service['postgresql']
 end
 ```
 
@@ -195,7 +195,6 @@ Name            | Types  | Description                                          
 `access_user`   | String | The user accessing the database. Can use 'all' for any user                               | 'all'             | yes
 `access_addr`   | String | The address(es) allowed access. Can be nil if method ident is used since it is local then | nil               | no
 `access_method` | String | Authentication method to use                                                              | 'ident'           | yes
-`notification`  | Symbol | How to notify Postgres of the access change.                                              | :reload           | yes
 
 #### Examples
 
@@ -244,7 +243,6 @@ Name           | Types       | Description                                      
 `comment`      | String, nil | A comment to leave above the entry in `pg_ident`                           | nil                 | no
 `system_user`  | String      | System user or regexp used for the mapping                                 | None                | yes
 `pg_user`      | String      | Pg user or regexp used for the mapping                                     | None                | yes
-`notification` | Symbol      | How to notify Postgres of the access change.                               | :reload             | no
 
 #### Examples
 
@@ -385,7 +383,7 @@ postgresql_server_install 'PostgreSQL Server' do
 end
 
 postgresql_server_conf 'PostgreSQL Config' do
-  notification :reload
+  notifies :reload, 'service['postgresql']
 end
 ```
 
