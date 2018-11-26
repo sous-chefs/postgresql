@@ -137,7 +137,7 @@ To setup your PostgreSQL configuration with a specific data directory. If you ha
 postgresql_server_conf 'My PostgreSQL Config' do
   version '9.5'
   data_directory '/data/postgresql/9.5/main'
-  notifies :reload, 'service['postgresql']
+  notifies :reload, 'service[postgresql]'
 end
 ```
 
@@ -383,7 +383,7 @@ postgresql_server_install 'PostgreSQL Server' do
 end
 
 postgresql_server_conf 'PostgreSQL Config' do
-  notifies :reload, 'service['postgresql']
+  notifies :reload, 'service[postgresql]'
 end
 ```
 
