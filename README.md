@@ -399,7 +399,7 @@ Please refer to each project's style guidelines and guidelines for submitting pa
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
-[Contribution informations for this project] (CONTRIBUTING.md)
+[Contribution informations for this project](CONTRIBUTING.md)
 
 ## License
 
