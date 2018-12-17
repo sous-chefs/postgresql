@@ -57,9 +57,9 @@ Name                | Types             | Description                           
 
 #### Examples
 
-To install '9.5' version:
+To install version 9.5:
 
-```
+```ruby
 postgresql_client_install 'My PostgreSQL Client install' do
   version '9.5'
 end
@@ -89,15 +89,15 @@ Name                | Types           | Description                             
 
 #### Examples
 
-To install PostgreSQL server, set you own postgres password using non-default service port.
+To install PostgreSQL server, set your own postgres password using non-default service port.
 
-```
+```ruby
 postgresql_server_install 'My PostgreSQL Server install' do
   action :install
 end
 
-postgresql_server_install 'Setup my PostgreSQL 9.5 server' do
-  password 'MyP4ssw0d'
+postgresql_server_install 'Setup my PostgreSQL 9.6 server' do
+  password 'MyP4ssw0rd'
   port 5433
   action :create
 end
@@ -133,7 +133,7 @@ Name                   | Types   | Description                             | Def
 
 To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.
 
-```
+```ruby
 postgresql_server_conf 'My PostgreSQL Config' do
   version '9.5'
   data_directory '/data/postgresql/9.5/main'
