@@ -366,20 +366,20 @@ To install and configure your PostgreSQL instance you need to create your own co
 
 More examples can be found in `test/cookbooks/test/recipes`
 
-## Example Useage
-
-Example: cookbooks/my_postgresql/recipes/default.rb
+## Example Usage
 
 ```ruby
+# cookbooks/my_postgresql/recipes/default.rb
+
 postgresql_client_install 'PostgreSQL Client' do
   setup_repo false
-  version '9.5'
+  version '10.6'
 end
 
 postgresql_server_install 'PostgreSQL Server' do
-  version '9.5'
+  version '10.6'
   setup_repo false
-  password 'P0sgresP4ssword'
+  password 'P0stgresP4ssword'
 end
 
 postgresql_server_conf 'PostgreSQL Config' do
@@ -399,7 +399,7 @@ Please refer to each project's style guidelines and guidelines for submitting pa
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
-[Contribution informations for this project] (CONTRIBUTING.md)
+[Contribution informations for this project](CONTRIBUTING.md)
 
 ## License
 
