@@ -335,24 +335,23 @@ This resource manage PostgreSQL users.
 
 #### Properties
 
-Name                 | Types   | Description                                     | Default | Required?
--------------------- | ------- | ----------------------------------------------- | ------- | ---------
-`create_user`        | String  | User to create (defaults to the resource name)  |         | Yes
-`superuser`          | Boolean | Define if user needs superuser role             | false   | no
-`createdb`           | Boolean | Define if user needs createdb role              | false   | no
-`createrole`         | Boolean | Define if user needs createrole role            | false   | no
-`inherit`            | Boolean | Define if user inherits the privileges of roles | true    | no
-`replication`        | Boolean | Define if user needs replication role           | false   | no
-`login`              | Boolean | Define if user can login                        | true    | no
-`password`           | String  | Set user's password                             |         | no
-`encrypted_password` | String  | Set user's password with an hashed password     |         | no
-`valid_until`        | String  | Define an account expiration date               |         | no
-`attributes`         | Hash    | Additional attributes for :update action        | {}      | no
-`attributes`         | Hash    | Additional attributes for :update action        |         | no
+Name                 | Types   | Description                                     | Default  | Required?
+-------------------- | ------- | ----------------------------------------------- | -------- | ---------
+`create_user`        | String  | User to create (defaults to the resource name)  |          | Yes
+`superuser`          | Boolean | Define if user needs superuser role             | false    | no
+`createdb`           | Boolean | Define if user needs createdb role              | false    | no
+`createrole`         | Boolean | Define if user needs createrole role            | false    | no
+`inherit`            | Boolean | Define if user inherits the privileges of roles | true     | no
+`replication`        | Boolean | Define if user needs replication role           | false    | no
+`login`              | Boolean | Define if user can login                        | true     | no
+`password`           | String  | Set user's password                             |          | no
+`encrypted_password` | String  | Set user's password with an hashed password     |          | no
+`valid_until`        | String  | Define an account expiration date               |          | no
+`attributes`         | Hash    | Additional attributes for :update action        | {}       | no
 `user`               | String  | User for command                                | postgres | no
-`database`           | String  | Database for command                            |         | no
-`host`               | String  | Hostname for command                            |         | no
-`port`               | Integer | Port number to connect to postgres              | 5432    | no
+`database`           | String  | Database for command                            |          | no
+`host`               | String  | Hostname for command                            |          | no
+`port`               | Integer | Port number to connect to postgres              | 5432     | no
 
 #### Examples
 
