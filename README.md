@@ -329,7 +329,7 @@ This resource manage PostgreSQL users.
 
 #### Actions
 
-- `create_user` - (default) Creates the given user with default or given privileges.
+- `create` - (default) Creates the given user with default or given privileges.
 - `update` - Update user privilieges.
 - `drop` - Deletes the given user.
 
@@ -337,7 +337,7 @@ This resource manage PostgreSQL users.
 
 Name                 | Types   | Description                                     | Default | Required?
 -------------------- | ------- | ----------------------------------------------- | ------- | ---------
-`user`               | String  | User to create                                  |         | Yes
+`create_user`        | String  | User to create (defaults to the resource name)  |         | Yes
 `superuser`          | Boolean | Define if user needs superuser role             | false   | no
 `createdb`           | Boolean | Define if user needs createdb role              | false   | no
 `createrole`         | Boolean | Define if user needs createrole role            | false   | no
@@ -347,10 +347,26 @@ Name                 | Types   | Description                                    
 `password`           | String  | Set user's password                             |         | no
 `encrypted_password` | String  | Set user's password with an hashed password     |         | no
 `valid_until`        | String  | Define an account expiration date               |         | no
+`attributes`         | Hash    | Additional attributes for :update action        | {}      | no
+`attributes`         | Hash    | Additional attributes for :update action        |         | no
+`user`               | String  | User for command                                | postgres | no
+`database`           | String  | Database for command                            |         | no
+`host`               | String  | Hostname for command                            |         | no
+`port`               | Integer | Port number to connect to postgres              | 5432    | no
 
 #### Examples
 
-Create an user `user1` with a password, with `createdb` role and set an expiration date to 2018, Dec 21.
+Create a user `user1` with a password, with `createdb` role and set an expiration date to 2018, Dec 21.
+
+```ruby
+postgresql_user 'user1' do
+  password 'UserP4ssword'
+  createdb true
+  valid_until '2018-12-31'
+end
+```
+
+Create a user `user1` with a password, with `createdb` role and set an expiration date to 2018, Dec 21.
 
 ```ruby
 postgresql_user 'user1' do
