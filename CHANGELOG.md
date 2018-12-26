@@ -2,6 +2,10 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## v7.1.2 (Unreleased)
+
+- Ensure version number is passed along in the config resource instead of relying on run_state
+
 ## v7.1.1 (26-09-2018)
 
 - Rename slave to follower
