@@ -7,30 +7,6 @@ RSpec.describe PostgresqlCookbook::Helpers do
   end
   subject { DummyClass.new }
 
-  describe '#conf_dir(version)' do
-    before do
-      allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
-    end
-
-    let(:pg_version) { '9.6' }
-
-    context 'with rhel family and Postgres 9.6' do
-      let(:platform_family) { 'rhel' }
-
-      it 'returns the correct path' do
-        expect(subject.conf_dir(pg_version)).to eq '/var/lib/pgsql/9.6/data'
-      end
-    end
-
-    context 'with debian family and Postgres 9.6' do
-      let(:platform_family) { 'debian' }
-
-      it 'returns the correct path' do
-        expect(subject.conf_dir(pg_version)).to eq '/etc/postgresql/9.6/main'
-      end
-    end
-  end
-
   describe '#platform_service_name(version)' do
     before do
       allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
