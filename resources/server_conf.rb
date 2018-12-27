@@ -18,7 +18,7 @@
 
 include PostgresqlCookbook::Helpers
 
-property :version,              String, default: '9.6'
+property :version,              String, default: lazy { default_postgresql_version }
 property :data_directory,       String, default: lazy { data_dir(version) }
 property :hba_file,             String, default: lazy { "#{conf_dir(version)}/pg_hba.conf" }
 property :ident_file,           String, default: lazy { "#{conf_dir(version)}/pg_ident.conf" }
@@ -45,8 +45,4 @@ action :modify do
       additional_config: new_resource.additional_config
     )
   end
-end
-
-action_class do
-  include PostgresqlCookbook::Helpers
 end

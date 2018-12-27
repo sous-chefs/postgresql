@@ -21,6 +21,10 @@ module PostgresqlCookbook
 
     require 'securerandom'
 
+    def default_postgresql_version
+      '9.6'
+    end
+
     def psql_command_string(new_resource, query, grep_for: nil, value_only: false)
       cmd = "/usr/bin/psql -c \"#{query}\""
       cmd << " -d #{new_resource.database}" if new_resource.database
@@ -137,7 +141,7 @@ module PostgresqlCookbook
       psql_command_string(new_resource, sql)
     end
 
-    def data_dir(version = node.run_state['postgresql']['version'])
+    def data_dir(version = default_postgresql_version)
       case node['platform_family']
       when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
@@ -152,7 +156,7 @@ module PostgresqlCookbook
       end
     end
 
-    def conf_dir(version = node.run_state['postgresql']['version'])
+    def conf_dir(version = default_postgresql_version)
       case node['platform_family']
       when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
