@@ -18,10 +18,10 @@
 
 include PostgresqlCookbook::Helpers
 
-property :version,           String, default: '9.6'
+property :version,           String, default: lazy { default_postgresql_version }
 property :setup_repo,        [true, false], default: true
-property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
-property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.conf" }
+property :hba_file,          String, default: lazy { "#{conf_dir(version)}/pg_hba.conf" }
+property :ident_file,        String, default: lazy { "#{conf_dir(version)}/pg_ident.conf" }
 property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{version}-main.pid" }
 property :password,          [String, nil], default: 'generate' # Set to nil if we do not want to set a password
 property :port,              Integer, default: 5432
@@ -33,9 +33,6 @@ property :database, String
 property :host,     [String, nil]
 
 action :install do
-  node.run_state['postgresql'] ||= {}
-  node.run_state['postgresql']['version'] = new_resource.version
-
   postgresql_client_install 'Install PostgreSQL Client' do
     version new_resource.version
     setup_repo new_resource.setup_repo
@@ -69,8 +66,4 @@ action :create do
     not_if { user_has_password?(new_resource) }
     not_if { new_resource.password.nil? }
   end
-end
-
-action_class do
-  include PostgresqlCookbook::Helpers
 end
