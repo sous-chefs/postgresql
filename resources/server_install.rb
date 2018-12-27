@@ -54,7 +54,7 @@ action :create do
   # This also seemed to never trigger notifications, therefore requiring a log resource
   # to notify the enable/start on the service, which always fires (Check v7.0 tag for more)
   service 'postgresql' do
-    service_name platform_service_name
+    service_name platform_service_name(new_resource.version)
     supports restart: true, status: true, reload: true
     action [:enable, :start]
   end

@@ -172,7 +172,7 @@ module PostgresqlCookbook
     end
 
     # determine the platform specific service name
-    def platform_service_name(version = node.run_state['postgresql']['version'])
+    def platform_service_name(version = default_postgresql_version)
       case node['platform_family']
       when 'rhel', 'fedora'
         "postgresql-#{version}"
