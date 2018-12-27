@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'postgresql_server_conf' do
-  step_into :server_conf
+  step_into :postgresql_server_conf
 
   context 'default data dir' do
     recipe do

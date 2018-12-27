@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'postgresql_server_install' do
-  step_into :server_install
-
   context 'default ident conf' do
     recipe do
       postgresql_server_install 'test' do
@@ -52,54 +50,58 @@ describe 'postgresql_server_install' do
   end
 
   # Also another ChefSpec bug
-  # context 'install the correct package' do
-  #   recipe do
-  #     postgresql_server_install 'test' do
-  #       version '10'
-  #       action :install
-  #     end
-  #   end
+  context 'install the correct package' do
+    step_into :postgresql_server_install
 
-  #   context 'on ubuntu' do
-  #     platform 'ubuntu'
+    recipe do
+      postgresql_server_install 'test' do
+        version '10'
+        action :install
+      end
+    end
 
-  #     it do
-  #       expect(chef_run).to install_package('postgresql-10')
-  #     end
-  #   end
+    context 'on ubuntu' do
+      platform 'ubuntu'
 
-  #   context 'on fedora' do
-  #     platform 'fedora'
+      it do
+        expect(chef_run).to install_package('postgresql-10')
+      end
+    end
 
-  #     it do
-  #       expect(chef_run).to install_package('postgresql-10-server')
-  #     end
-  #   end
-  # end
+    context 'on fedora' do
+      platform 'fedora'
+
+      it do
+        expect(chef_run).to install_package('postgresql10-server')
+      end
+    end
+  end
 
   # Commented out for now, think I found a ChefSpec Bug
-  # context 'signal the correct service' do
-  #   recipe do
-  #     postgresql_server_install 'test' do
-  #       version '10'
-  #       action :create
-  #     end
-  #   end
+  context 'signal the correct service' do
+    step_into :postgresql_server_install
 
-  #   context 'on ubuntu' do
-  #     platform 'ubuntu'
+    recipe do
+      postgresql_server_install 'test' do
+        version '10'
+        action :create
+      end
+    end
 
-  #     it do
-  #       expect(chef_run).to enable_service('postgresql').with(service_name: 'postgresql')
-  #     end
-  #   end
+    context 'on ubuntu' do
+      platform 'ubuntu'
 
-  #   context 'on fedora' do
-  #     platform 'fedora'
+      it do
+        expect(chef_run).to enable_service('postgresql').with(service_name: 'postgresql')
+      end
+    end
 
-  #     it do
-  #       expect(chef_run).to start_service('postgresql').with(service_name: 'postgresql-10')
-  #     end
-  #   end
-  # end
+    context 'on fedora' do
+      platform 'fedora'
+
+      it do
+        expect(chef_run).to start_service('postgresql').with(service_name: 'postgresql-10')
+      end
+    end
+  end
 end
