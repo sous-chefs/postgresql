@@ -41,7 +41,7 @@ action :install do
   end
 
   package value_for_platform('debian' => { 'default' => "postgresql-#{new_resource.version}" },
-                             'default' => "postgresql-#{new_resource.version.delete('.')}-server")
+                             'default' => "postgresql#{new_resource.version.delete('.')}-server")
 end
 
 action :create do
