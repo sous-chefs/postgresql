@@ -26,6 +26,8 @@ The earliest supported version is currently:
 
 - 9.3 (9.3.23)
 
+As of Postgresql version 10, the minor version does not need to be specified for installation or configuration due to the new versioning scheme. Every major release will be breaking while every minor and patch release will always be backward compatible and thus safe to upgrade to. This means if you want version 10 or 11 of Postgresql, simply specify the major version number and the latest minor version will be installed and referenced. Specifying a minor version could cause major issues with this cookbook and how it references configurations and support for it will be eliminated in a future release.
+
 ### Chef
 
 - Chef 13.8+

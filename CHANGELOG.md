@@ -4,7 +4,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## v7.1.2 (Unreleased)
 
-- Ensure version number is passed along in the config resource instead of relying on run_state
+- Eliminate usage of node.run_state to track postgres version between resources. It will always default to the helper method `default_postgresql_version` unless otherwise specified which is currently Postgres 9.6.
 
 ## v7.1.1 (26-09-2018)
 
