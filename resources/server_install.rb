@@ -40,8 +40,8 @@ action :install do
     setup_repo new_resource.setup_repo
   end
 
-  package value_for_platform('debian' => { 'default' => "postgresql-#{new_resource.version}" },
-                             'default' => "postgresql#{new_resource.version.delete('.')}-server")
+  package value_for_platform_family('debian' => "postgresql-#{new_resource.version}",
+                                    'default' => "postgresql#{new_resource.version.delete('.')}-server")
 end
 
 action :create do
