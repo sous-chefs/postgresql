@@ -32,13 +32,16 @@ property :user,     String, default: 'postgres'
 property :database, String
 property :host,     [String, nil]
 
+default_action :install
+
 action :install do
   postgresql_client_install 'Install PostgreSQL Client' do
     version new_resource.version
     setup_repo new_resource.setup_repo
   end
 
-  package server_pkg_name
+  package value_for_platform('debian' => { 'default' => "postgresql-#{new_resource.version}" },
+                             'default' => "postgresql-#{new_resource.version.delete('.')}-server")
 end
 
 action :create do

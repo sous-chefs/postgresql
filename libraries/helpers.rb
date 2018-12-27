@@ -202,11 +202,6 @@ module PostgresqlCookbook
       r
     end
 
-    # determine the platform specific server package name
-    def server_pkg_name
-      platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
-    end
-
     # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
     # initdb defaults to the execution environment.
     # https://www.postgresql.org/docs/9.5/static/locale.html

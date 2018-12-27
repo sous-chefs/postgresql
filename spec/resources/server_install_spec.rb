@@ -51,6 +51,32 @@ describe 'postgresql_server_install' do
     end
   end
 
+  # Also another ChefSpec bug
+  # context 'install the correct package' do
+  #   recipe do
+  #     postgresql_server_install 'test' do
+  #       version '10'
+  #       action :install
+  #     end
+  #   end
+
+  #   context 'on ubuntu' do
+  #     platform 'ubuntu'
+
+  #     it do
+  #       expect(chef_run).to install_package('postgresql-10')
+  #     end
+  #   end
+
+  #   context 'on fedora' do
+  #     platform 'fedora'
+
+  #     it do
+  #       expect(chef_run).to install_package('postgresql-10-server')
+  #     end
+  #   end
+  # end
+
   # Commented out for now, think I found a ChefSpec Bug
   # context 'signal the correct service' do
   #   recipe do
