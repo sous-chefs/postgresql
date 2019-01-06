@@ -2,7 +2,9 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## v7.1.2 (Unreleased)
+## Unreleased
+
+## v7.1.2 (06-01-2019)
 
 - Cleanup and update the user resource documentation and code. Removed extraneous 'sensitive' property which is a common property in all Chef resources.
 - Change default permissions on the postgres.conf to be world readable so that psql can work.
