@@ -53,7 +53,7 @@ action :create do
   end
 
   # We use to use find_resource here.
-  # But that required the user to do the same in t heir recipe.
+  # But that required the user to do the same in their recipe.
   # This also seemed to never trigger notifications, therefore requiring a log resource
   # to notify the enable/start on the service, which always fires (Check v7.0 tag for more)
   service 'postgresql' do
