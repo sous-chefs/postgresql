@@ -1,6 +1,6 @@
 # PostgreSQL cookbook
 
-[![CircleCI](https://circleci.com/gh/sous-chefs/postgresql/tree/master.svg?style=svg)](https://circleci.com/gh/sous-chefs/postgresql/tree/master) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
+[![CircleCI](https://circleci.com/gh/sous-chefs/postgresql/tree/master.svg?style=svg)](https://circleci.com/gh/sous-chefs/postgresql/tree/master) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql) [![pullreminders](https://pullreminders.com/badge.svg)](https://pullreminders.com?ref=badge)
 
 Installs and configures PostgreSQL as a client or a server.
 
