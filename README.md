@@ -22,10 +22,6 @@ If you are wondering where all the recipes went in v7.0+, or how on earth I use 
 
 We follow the currently supported versions listed on <https://www.postgresql.org/support/versioning/>
 
-The earliest supported version is currently:
-
-- 9.3 (9.3.23)
-
 ### Chef
 
 - Chef 13.8+
@@ -53,7 +49,7 @@ Name                | Types             | Description                           
 `hba_file`          | String            |                                                               | `#{conf_dir}/main/pg_hba.conf`            | no
 `ident_file`        | String            |                                                               | `#{conf_dir}/main/pg_ident.conf`          | no
 `external_pid_file` | String            |                                                               | `/var/run/postgresql/#{version}-main.pid` | no
-`password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | 'generate'                                | no
+`password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | <random string>                                | no
 
 #### Examples
 
