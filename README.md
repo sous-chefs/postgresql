@@ -22,10 +22,6 @@ If you are wondering where all the recipes went in v7.0+, or how on earth I use 
 
 We follow the currently supported versions listed on <https://www.postgresql.org/support/versioning/>
 
-The earliest supported version is currently:
-
-- 9.3 (9.3.23)
-
 ### Chef
 
 - Chef 13.8+
