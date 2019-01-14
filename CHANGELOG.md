@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Fix installation of extensions.
+
 ## v7.1.3 (15-01-2019)
 
 - Added support for dash in database role name.
