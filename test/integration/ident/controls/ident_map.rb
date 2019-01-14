@@ -1,8 +1,6 @@
-control 'postgresl-ident-map' do
+control 'postgresql-ident-map' do
   impact 1.0
-  desc '
-    This test ensures postgres configures ident access correctly
-  '
+  desc 'This test ensures postgres configures ident access correctly'
 
   describe command("sudo -u shef bash -c \"psql -U sous_chef -d postgres -c 'SELECT 1;'\"") do
     its('exit_status') { should eq 0 }
