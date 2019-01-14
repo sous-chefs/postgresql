@@ -1,6 +1,6 @@
-control 'shef and postgres roles should exist' do
+control 'postgresql-initdb-locale' do
   impact 1.0
-  desc "The check database's locale setting for collation"
+  desc 'This test ensures the locales are correcly set'
 
   postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
 
