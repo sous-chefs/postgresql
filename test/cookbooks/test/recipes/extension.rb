@@ -1,6 +1,7 @@
 postgresql_repository 'install'
 
 postgresql_server_install 'package' do
+  password '12345'
   action [:install, :create]
   initdb_locale 'en_US.utf8'
 end
