@@ -44,3 +44,14 @@ control 'sous_chef role should exist' do
     its('output') { should cmp /sous_chef/ }
   end
 end
+
+control 'name-with-dash role should exist' do
+  impact 1.0
+  desc 'The name-with-dash database user role should exist'
+
+  postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
+
+  describe postgres_access.query('SELECT rolname FROM pg_roles;') do
+    its('output') { should cmp /name-with-dash/ }
+  end
+end
