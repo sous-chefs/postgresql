@@ -71,7 +71,7 @@ module PostgresqlCookbook
       if new_resource.version
         version_result.stdout == new_resource.version
       else
-        !version_result.stdout.nil?
+        !version_result.stdout.chomp.empty?
       end
     end
 
