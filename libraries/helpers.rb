@@ -149,6 +149,8 @@ module PostgresqlCookbook
         end
       when 'debian'
         "/var/lib/postgresql/#{version}/main"
+      when 'arch'
+        '/var/lib/postgres/data'
       end
     end
 
@@ -164,6 +166,8 @@ module PostgresqlCookbook
         end
       when 'debian'
         "/etc/postgresql/#{version}/main"
+      when 'arch'
+        '/var/lib/postgres/data'
       end
     end
 
@@ -200,14 +204,21 @@ module PostgresqlCookbook
 
     # determine the platform specific server package name
     def server_pkg_name
-      platform_family?('debian') ? "postgresql-#{new_resource.version}" : "postgresql#{new_resource.version.delete('.')}-server"
+      case node['platform_family']
+      when 'debian'
+        "postgresql-#{new_resource.version}"
+      when 'arch'
+        'postgresql'
+      else
+        "postgresql#{new_resource.version.delete('.')}-server"
+      end
     end
 
     # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
     # initdb defaults to the execution environment.
     # https://www.postgresql.org/docs/9.5/static/locale.html
-    def rhel_init_db_command(new_resource)
-      cmd = if platform_family?('amazon')
+    def init_db_command(new_resource)
+      cmd = if platform_family?('amazon', 'arch')
               '/usr/bin/initdb'
             else
               "/usr/pgsql-#{new_resource.version}/bin/initdb"

@@ -46,10 +46,10 @@ end
 
 action :create do
   execute 'init_db' do
-    command rhel_init_db_command(new_resource)
+    command init_db_command(new_resource)
     user new_resource.user
     not_if { initialized? }
-    only_if { platform_family?('rhel', 'fedora', 'amazon') }
+    only_if { platform_family?('rhel', 'fedora', 'amazon', 'arch') }
   end
 
   # We use to use find_resource here.

@@ -31,5 +31,7 @@ action :install do
   when 'rhel', 'fedora', 'amazon'
     ver = new_resource.version.delete('.')
     package "postgresql#{ver}"
+  when 'arch'
+    package 'postgresql-libs'
   end
 end

@@ -80,6 +80,8 @@ action :add do
       key new_resource.apt_gpg_key_uri
       cache_rebuild true
     end
+  when 'arch'
+    Chef::Log.warn('No postgresql repo enabled for Arch Linux')
   else
     raise "The platform_family '#{node['platform_family']}' or platform '#{node['platform']}' is not supported by the postgresql_repository resource. If you believe this platform can/should be supported by this resource please file and issue or open a pull request at https://github.com/sous-chefs/postgresql"
   end
