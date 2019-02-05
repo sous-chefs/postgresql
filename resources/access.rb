@@ -24,7 +24,7 @@ property :cookbook,      String,                 default: 'postgresql'
 property :source,        String,                 default: 'pg_hba.conf.erb'
 property :access_addr,   String
 property :comment,       String
-property :version,       String,                 default: lazy { default_postgresql_version }
+property :version,       String, default: lazy { default_postgresql_version }
 
 action :grant do
   config_resource = new_resource
