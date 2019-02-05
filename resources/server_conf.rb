@@ -29,7 +29,7 @@ property :additional_config,    Hash,   default: {}
 property :cookbook,             String, default: 'postgresql'
 
 action :modify do
-  template "#{conf_dir}/postgresql.conf" do
+  template "#{conf_dir(version)}/postgresql.conf" do
     cookbook new_resource.cookbook
     source 'postgresql.conf.erb'
     owner 'postgres'
