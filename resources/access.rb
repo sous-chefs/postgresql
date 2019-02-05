@@ -24,11 +24,12 @@ property :cookbook,      String,                 default: 'postgresql'
 property :source,        String,                 default: 'pg_hba.conf.erb'
 property :access_addr,   String
 property :comment,       String
+property :version,       String,                 default: lazy { default_postgresql_version }
 
 action :grant do
   config_resource = new_resource
   with_run_context :root do # ~FC037
-    edit_resource(:template, "#{conf_dir}/pg_hba.conf") do |new_resource|
+    edit_resource(:template, "#{conf_dir(version)}/pg_hba.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
       owner 'postgres'
