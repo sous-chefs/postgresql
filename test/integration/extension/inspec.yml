@@ -1,0 +1,9 @@
+name: extension
+title: PostgreSQL extension tests
+maintainer: Sous Chefs
+copyright_email: help@sous-chefs.org
+license: Apache
+summary: Check that extensions are installed
+version: 0.0.1
+supports:
+  - os-family: unix

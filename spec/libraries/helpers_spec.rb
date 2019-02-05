@@ -115,7 +115,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
         encrypted_password: nil,
         valid_until: nil
       )
-      result = %(sous_chef WITH SUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION LOGIN PASSWORD '67890')
+      result = %(\\"sous_chef\\" WITH SUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION LOGIN PASSWORD '67890')
 
       expect(subject.role_sql(new_resource)).to eq result
     end

@@ -29,6 +29,10 @@ postgresql_access 'a sous_chef local superuser' do
   notifies :reload, 'service[postgresql]'
 end
 
+postgresql_user 'name-with-dash' do
+  password '1234'
+end
+
 service 'postgresql' do
   extend PostgresqlCookbook::Helpers
   service_name lazy { platform_service_name }

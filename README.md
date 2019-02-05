@@ -1,6 +1,8 @@
 # PostgreSQL cookbook
 
-[![CircleCI](https://circleci.com/gh/sous-chefs/postgresql/tree/master.svg?style=svg)](https://circleci.com/gh/sous-chefs/postgresql/tree/master) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
+[![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
+[![Build Status](https://img.shields.io/circleci/project/github/sous-chefs/postgresql/master.svg)](https://circleci.com/gh/sous-chefs/postgresql)
+[![pullreminders](https://pullreminders.com/badge.svg)](https://pullreminders.com?ref=badge)
 
 Installs and configures PostgreSQL as a client or a server.
 
@@ -21,12 +23,6 @@ If you are wondering where all the recipes went in v7.0+, or how on earth I use 
 ### PostgreSQL version
 
 We follow the currently supported versions listed on <https://www.postgresql.org/support/versioning/>
-
-The earliest supported version is currently:
-
-- 9.3 (9.3.23)
-
-As of Postgresql version 10, the minor version does not need to be specified for installation or configuration due to the new versioning scheme. Every major release will be breaking while every minor and patch release will always be backward compatible and thus safe to upgrade to. This means if you want version 10 or 11 of Postgresql, simply specify the major version number and the latest minor version will be installed and referenced. Specifying a minor version could cause major issues with this cookbook and how it references configurations and support for it will be eliminated in a future release.
 
 ### Chef
 
@@ -55,13 +51,13 @@ Name                | Types             | Description                           
 `hba_file`          | String            |                                                               | `#{conf_dir}/main/pg_hba.conf`            | no
 `ident_file`        | String            |                                                               | `#{conf_dir}/main/pg_ident.conf`          | no
 `external_pid_file` | String            |                                                               | `/var/run/postgresql/#{version}-main.pid` | no
-`password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | 'generate'                                | no
+`password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | <random string>                                | no
 
 #### Examples
 
-To install '9.5' version:
+To install version 9.5:
 
-```
+```ruby
 postgresql_client_install 'My PostgreSQL Client install' do
   version '9.5'
 end
@@ -91,15 +87,15 @@ Name                | Types           | Description                             
 
 #### Examples
 
-To install PostgreSQL server, set you own postgres password using non-default service port.
+To install PostgreSQL server, set your own postgres password using non-default service port.
 
-```
+```ruby
 postgresql_server_install 'My PostgreSQL Server install' do
   action :install
 end
 
-postgresql_server_install 'Setup my PostgreSQL 9.5 server' do
-  password 'MyP4ssw0d'
+postgresql_server_install 'Setup my PostgreSQL 9.6 server' do
+  password 'MyP4ssw0rd'
   port 5433
   action :create
 end
@@ -135,7 +131,7 @@ Name                   | Types   | Description                             | Def
 
 To setup your PostgreSQL configuration with a specific data directory. If you have installed a specific version of PostgreSQL (different from 9.6), you must specify version in this resource too.
 
-```
+```ruby
 postgresql_server_conf 'My PostgreSQL Config' do
   version '9.5'
   data_directory '/data/postgresql/9.5/main'

@@ -75,7 +75,7 @@ module PostgresqlCookbook
       if new_resource.version
         version_result.stdout == new_resource.version
       else
-        !version_result.stdout.nil?
+        !version_result.stdout.chomp.empty?
       end
     end
 
@@ -100,7 +100,7 @@ module PostgresqlCookbook
     end
 
     def role_sql(new_resource)
-      sql = %(#{new_resource.create_user} WITH )
+      sql = %(\\"#{new_resource.create_user}\\" WITH )
 
       %w(superuser createdb createrole inherit replication login).each do |perm|
         sql << "#{'NO' unless new_resource.send(perm)}#{perm.upcase} "

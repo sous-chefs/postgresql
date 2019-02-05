@@ -2,10 +2,19 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## v7.1.2 (Unreleased)
+## Unreleased
+
+- Fix installation of extensions.
+
+## v7.1.3 (15-01-2019)
+
+- Added support for dash in database role name.
+
+## v7.1.2 (06-01-2019)
 
 - Eliminate usage of node.run_state to track postgres version between resources. It will always default to the helper method `default_postgresql_version` unless otherwise specified which is currently Postgres 9.6.
 - Cleanup and update the user resource documentation and code. Removed extraneous 'sensitive' property which is a common property in all Chef resources.
+- Change default permissions on the postgres.conf to be world readable so that psql can work.
 
 ## v7.1.1 (26-09-2018)
 
