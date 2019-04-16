@@ -10,7 +10,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       "7" => {
         "x86_64" => {
           "url" => "http://yum.postgresql.org/10/redhat/rhel-7-x86_64/",
-          "package" => "pgdg-redhat10-10-2.noarch.rpm"
+          "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         }
       },
       "6" => {
@@ -28,7 +28,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       "7" => {
         "x86_64" => {
           "url" => "http://yum.postgresql.org/10/redhat/rhel-7-x86_64/",
-          "package" => "pgdg-centos10-10-2.noarch.rpm"
+          "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         }
       },
       "6" => {
@@ -48,7 +48,7 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       "7" => {
         "x86_64" => {
           "url" => "http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/",
-          "package" => "pgdg-redhat95-9.5-3.noarch.rpm"
+          "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         }
       },
       "6" => {
