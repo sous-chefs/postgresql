@@ -35,7 +35,7 @@ module PostgresqlCookbook
     def execute_sql(new_resource, query)
       # If we don't pass in a user to the resource
       # default to the postgres user
-      user = new_resource.user ? new_resource.user : 'postgres'
+      user = new_resource.user || 'postgres'
 
       # Query could be a String or an Array of Strings
       statement = query.is_a?(String) ? query : query.join("\n")
