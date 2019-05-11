@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+## v7.1.4 (28-03-2019)
+
 - Fix installation of extensions.
 - Add Arch Linux support.
 - Drop Chef version restriction.

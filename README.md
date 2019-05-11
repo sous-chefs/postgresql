@@ -1,6 +1,10 @@
 # PostgreSQL cookbook
 
-[![CircleCI](https://circleci.com/gh/sous-chefs/postgresql/tree/master.svg?style=svg)](https://circleci.com/gh/sous-chefs/postgresql/tree/master) [![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql) [![pullreminders](https://pullreminders.com/badge.svg)](https://pullreminders.com?ref=badge)
+[![Cookbook Version](https://img.shields.io/cookbook/v/postgresql.svg)](https://supermarket.chef.io/cookbooks/postgresql)
+[![Build Status](https://img.shields.io/circleci/project/github/sous-chefs/postgresql/master.svg)](https://circleci.com/gh/sous-chefs/postgresql)
+[![OpenCollective](https://opencollective.com/sous-chefs/backers/badge.svg)](#backers)
+[![OpenCollective](https://opencollective.com/sous-chefs/sponsors/badge.svg)](#sponsors)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Installs and configures PostgreSQL as a client or a server.
 
@@ -49,7 +53,7 @@ Name                | Types             | Description                           
 `hba_file`          | String            |                                                               | `#{conf_dir}/main/pg_hba.conf`            | no
 `ident_file`        | String            |                                                               | `#{conf_dir}/main/pg_ident.conf`          | no
 `external_pid_file` | String            |                                                               | `/var/run/postgresql/#{version}-main.pid` | no
-`password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | <random string>                                | no
+`password`          | String, nil       | Pass in a password, or have the cookbook generate one for you | random string                             | no
 
 #### Examples
 
@@ -209,14 +213,14 @@ end
 
 This generates the following line in the `pg_hba.conf`:
 
-```
+```config
 # Local postgres superuser access
 local   all             postgres                                ident
 ```
 
 **Note**: The template by default generates a local access for Unix domain sockets only to support running the SQL execute resources. In Postgres version 9.1 and higher, the method is 'peer' instead of 'ident' which is identical. It looks like this:
 
-```
+```config
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
 ```
@@ -255,7 +259,7 @@ end
 
 This generates the following line in the `pg_ident.conf`:
 
-```
+```config
 # MAPNAME       SYSTEM-USERNAME         PG-USERNAME
 
 # John Mapping
@@ -277,7 +281,7 @@ end
 
 This generates the following line in the `pg_hba.conf`:
 
-```
+```config
 # Local postgres superuser access
 host   all             foo               127.0.0.1/32           ident
 ```
@@ -412,20 +416,27 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
 [Contribution informations for this project](CONTRIBUTING.md)
 
-## License
+## Contributors
 
-Copyright 2010-2017, Chef Software, Inc.
+This project exists thanks to all the people who [contribute.](https://opencollective.com/sous-chefs/contributors.svg?width=890&button=false)
 
-```text
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+### Backers
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Thank you to all our backers!
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+![https://opencollective.com/sous-chefs#backers](https://opencollective.com/sous-chefs/backers.svg?width=600&avatarHeight=40)
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website.
+
+![https://opencollective.com/sous-chefs/sponsor/0/website](https://opencollective.com/sous-chefs/sponsor/0/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/1/website](https://opencollective.com/sous-chefs/sponsor/1/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/2/website](https://opencollective.com/sous-chefs/sponsor/2/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/3/website](https://opencollective.com/sous-chefs/sponsor/3/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/4/website](https://opencollective.com/sous-chefs/sponsor/4/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/5/website](https://opencollective.com/sous-chefs/sponsor/5/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/6/website](https://opencollective.com/sous-chefs/sponsor/6/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/7/website](https://opencollective.com/sous-chefs/sponsor/7/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/8/website](https://opencollective.com/sous-chefs/sponsor/8/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/9/website](https://opencollective.com/sous-chefs/sponsor/9/avatar.svg?avatarHeight=100)
