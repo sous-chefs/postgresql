@@ -137,7 +137,8 @@ module PostgresqlCookbook
       psql_command_string(new_resource, sql)
     end
 
-    def data_dir(version = node.run_state['postgresql']['version'])
+    def data_dir(override_path = node.read['postgresql']['data_dir'], version = node.run_state['postgresql']['version'])
+      return override_path if override_path
       case node['platform_family']
       when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
@@ -152,7 +153,8 @@ module PostgresqlCookbook
       end
     end
 
-    def conf_dir(version = node.run_state['postgresql']['version'])
+    def conf_dir(override_path = node.read['postgresql']['conf_dir'], version = node.run_state['postgresql']['version'])
+      return override_path if override_path
       case node['platform_family']
       when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
