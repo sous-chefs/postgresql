@@ -57,7 +57,7 @@ _Breaking Change_ Please see UPGRADING.md and the README.md for information how 
 
 ## v6.1.2 (2018-04-16)
 
-**this will be the last release of the 6.0 series before all recipes are removed from the cookbook**
+this will be the last release of the 6.0 series before all recipes are removed from the cookbook
 
 - Deprecate all recipes
 
