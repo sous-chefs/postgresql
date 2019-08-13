@@ -1,45 +1,60 @@
-version: 2.1
+---
+lint_and_unit: &lint_and_unit
+  - delivery
+  - danger
+  - lint-yaml
+  - lint-markdown
 
+version: 2.1
 orbs:
-  kitchen: sous-chefs/kitchen@1.0.0
+  kitchen: sous-chefs/kitchen@2
 
 workflows:
   kitchen:
     jobs:
+      # Lint and Unit Test
+      - kitchen/yamllint:
+          name: lint-yaml
+      - kitchen/mdlint:
+          name: lint-markdown
       - kitchen/danger:
           name: danger
           context: Danger
-      - kitchen/lint:
-          name: lint
-      - kitchen/dokken:
+      - kitchen/delivery:
+          name: delivery
+
+      - kitchen/dokken-single:
           name: repo
           suite: repo
-          requires: [ lint, danger ]
-      - kitchen/dokken:
+          requires:
+            *lint_and_unit
+      - kitchen/dokken-single:
           name: server-install
           suite: server-install
-          requires: [ lint, danger ]
-      - kitchen/dokken:
+          requires:
+            *lint_and_unit
+      - kitchen/dokken-single:
           name: client-install
           suite: client-install
-          requires: [ lint, danger ]
+          requires:
+            *lint_and_unit
       - kitchen/dokken-single:
-          name: access
-          suite: access
-          platform: centos-7
-          requires: [ lint, danger ]
+          name: access-centos-7
+          suite: access-centos-7
+          requires:
+            *lint_and_unit
       - kitchen/dokken-single:
-          name: ident
-          suite: ident
-          platform: centos-7
-          requires: [ lint, danger ]
+          name: ident-centos-7
+          suite: ident-centos-7
+          requires:
+            *lint_and_unit
       - kitchen/dokken-single:
-          name: extension
-          suite: extension
-          platform: centos-7
-          requires: [ lint, danger ]
+          name: extension-centos-7
+          suite: extension-centos-7
+          requires:
+            *lint_and_unit
       - kitchen/dokken-single:
-          name: initdb
-          suite: initdb-locale
-          platform: centos-7
-          requires: [ lint, danger ]
+          name: initdb-locale-centos-7
+          suite: initdb-locale-centos-7
+          requires:
+            *lint_and_unit
