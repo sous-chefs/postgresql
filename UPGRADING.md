@@ -2,21 +2,21 @@
 
 From v7.0.0 of the postgresql cookbook we have removed all recipes and attributes from the cookbook.
 
-# Deprecations
+## Deprecations
 
-## Gem
+### Gem
 
 Due to limitations in the gem compile process (libssl related) we have removed the pg_gem.
 
 We no longer support accessing the database via the gem, and internally use the cli.
 
-## PG Tune
+### PG Tune
 
 We currently do not implement the PG Tune functionality.
 
 This may be added in a future release.
 
-# Major Changes
+## Major Changes
 
 Recipes are no longer supported so you should take a look at the examples in `test/cookbooks/test/recipes`
 

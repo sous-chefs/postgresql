@@ -1,3 +1,4 @@
+---
 name: access
 title: PostgreSQL HBA Access integration tests
 maintainer: Aaron Kalin
