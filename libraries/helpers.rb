@@ -22,7 +22,7 @@ module PostgresqlCookbook
     require 'securerandom'
 
     def psql_command_string(new_resource, query, grep_for: nil, value_only: false)
-      cmd = format("/usr/bin/psql -c \"%{query}\"", query: query)
+      cmd = format('/usr/bin/psql -c %{query}', query: query)
       cmd << " -d #{new_resource.database}" if new_resource.database
       cmd << " -U #{new_resource.user}"     if new_resource.user
       cmd << " --host #{new_resource.host}" if new_resource.host
