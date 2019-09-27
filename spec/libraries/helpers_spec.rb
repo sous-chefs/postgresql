@@ -204,5 +204,21 @@ RSpec.describe PostgresqlCookbook::Helpers do
 
       expect(subject.create_extension_sql(new_resource)).to eq result
     end
+
+    context 'when using hyphenated extension' do
+      it 'should return sql formatted correctly with quotes' do
+        new_resource = double(
+          extension: '"uuid-ossp"',
+          old_version: nil,
+          user: 'postgres',
+          database: nil,
+          host: nil,
+          port: 5432
+        )
+        result = %(/usr/bin/psql -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"" -U postgres --port 5432)
+
+        expect(subject.create_extension_sql(new_resource)).to eq result
+      end
+    end
   end
 end
