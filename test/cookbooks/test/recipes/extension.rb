@@ -20,3 +20,7 @@ end
 postgresql_extension 'adminpack' do
   database 'test_1'
 end
+
+postgresql_extension '"uuid-ossp"' do
+  database 'test_1'
+end
