@@ -79,7 +79,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
     end
   end
 
-  describe '#psql_command_string' do
+  xdescribe '#psql_command_string' do
     before do
       @new_resource = double(database: 'db_foo',
                              user: 'postgres',
@@ -148,7 +148,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
     end
   end
 
-  describe '#role_sql' do
+  xdescribe '#role_sql' do
     it 'Should return a correctly formatted role creation string' do
       new_resource = double(
         create_user: 'sous_chef',
@@ -169,7 +169,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
     end
   end
 
-  describe '#alter_role_sql' do
+  xdescribe '#alter_role_sql' do
     it 'should return a correct SQL string to set a password' do
       new_resource = double(
         version: '9.6',
@@ -190,7 +190,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
     end
   end
 
-  describe '#create_extension_sql' do
+  xdescribe '#create_extension_sql' do
     it 'should return sql formatted correctly' do
       new_resource = double(
         extension: 'adminpack',
