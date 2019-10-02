@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+## v7.1.4 (28-03-2019)
+
 - Fix installation of extensions.
 
 ## v7.1.3 (15-01-2019)
@@ -56,7 +58,7 @@ _Breaking Change_ Please see UPGRADING.md and the README.md for information how 
 
 ## v6.1.2 (2018-04-16)
 
-**this will be the last release of the 6.0 series before all recipes are removed from the cookbook**
+this will be the last release of the 6.0 series before all recipes are removed from the cookbook
 
 - Deprecate all recipes
 
