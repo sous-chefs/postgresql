@@ -11,7 +11,7 @@ postgresql_database 'test_1' do
   locale 'en_US.utf8'
 end
 
-if node['platform_family'] == 'rhel'
+if platform_family?('rhel')
   package 'postgresql96-contrib'
 else
   package 'postgresql-contrib'
