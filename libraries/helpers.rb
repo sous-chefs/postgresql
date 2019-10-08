@@ -213,6 +213,7 @@ module PostgresqlCookbook
               "/usr/pgsql-#{new_resource.version}/bin/initdb"
             end
       cmd << " --locale '#{new_resource.initdb_locale}'" if new_resource.initdb_locale
+      cmd << " -E '#{new_resource.initdb_encoding}'" if new_resource.initdb_encoding
       cmd << " -D '#{data_dir(new_resource.version)}'"
     end
 
