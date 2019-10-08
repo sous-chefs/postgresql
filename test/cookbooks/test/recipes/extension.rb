@@ -3,12 +3,12 @@ postgresql_repository 'install'
 postgresql_server_install 'package' do
   password '12345'
   action [:install, :create]
-  initdb_locale 'C.utf8'
+  initdb_locale 'C.UTF-8'
   version '9.6'
 end
 
 postgresql_database 'test_1' do
-  locale 'C.utf8'
+  locale 'C.UTF-8'
 end
 
 if platform_family?('rhel')
