@@ -18,6 +18,9 @@ platforms:
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
+        - RUN /bin/sed -i '/^#.* en_US.UTF\-8 /s/^#//' /etc/locale.gen
+        - RUN /usr/sbin/locale-gen en_US.UTF-8
+        - RUN /usr/sbin/update-locale LANG=en_US.utf8
 
   - name: centos-6
     driver:
@@ -40,6 +43,9 @@ platforms:
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
+        - RUN /bin/sed -i '/^#.* en_US.UTF\-8 /s/^#//' /etc/locale.gen
+        - RUN /usr/sbin/locale-gen en_US.UTF-8
+        - RUN /usr/sbin/update-locale LANG=en_US.utf8
 
   - name: ubuntu-18.04
     driver:
@@ -47,3 +53,6 @@ platforms:
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
+        - RUN /bin/sed -i '/^#.* en_US.UTF\-8 /s/^#//' /etc/locale.gen
+        - RUN /usr/sbin/locale-gen en_US.UTF-8
+        - RUN /usr/sbin/update-locale LANG=en_US.utf8
