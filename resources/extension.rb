@@ -30,6 +30,7 @@ action :create do
     code create_extension_sql(new_resource)
     user 'postgres'
     action :run
+    environment(psql_environment)
     not_if { follower? || extension_installed?(new_resource) }
   end
 end
@@ -39,6 +40,7 @@ action :drop do
     code psql_command_string(new_resource, "DROP EXTENSION IF EXISTS \"#{new_resource.extension}\"")
     user 'postgres'
     action :run
+    environment(psql_environment)
     not_if { follower? }
     only_if { extension_installed?(new_resource) }
   end
