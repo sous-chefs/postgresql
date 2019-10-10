@@ -151,3 +151,4 @@ this will be the last release of the 6.0 series before all recipes are removed f
 - Remove logic in the apt_pgdg_postgresql recipe that made Chef fail when new distro releases came out
 - Avoid node.set deprecation warnings
 - Avoid managed_home deprecation warnings in server_redhat recipe
+- Run latest cookstyle
