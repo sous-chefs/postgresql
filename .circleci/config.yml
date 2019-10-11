@@ -32,10 +32,6 @@ workflows:
           suite: repo-centos-7
           requires: *lint_and_unit
       - kitchen/dokken-single:
-          name: repo-fedora-latest
-          suite: repo-fedora-latest
-          requires: *lint_and_unit
-      - kitchen/dokken-single:
           name: repo-ubuntu-1604
           suite: repo-ubuntu-1604
           requires: *lint_and_unit
@@ -54,10 +50,6 @@ workflows:
       - kitchen/dokken-single:
           name: server-install-centos-7
           suite: server-install-centos-7
-          requires: *lint_and_unit
-      - kitchen/dokken-single:
-          name: server-install-fedora-latest
-          suite: server-install-fedora-latest
           requires: *lint_and_unit
       - kitchen/dokken-single:
           name: server-install-ubuntu-1604
@@ -80,10 +72,6 @@ workflows:
           suite: client-install-centos-7
           requires: *lint_and_unit
       - kitchen/dokken-single:
-          name: client-install-fedora-latest
-          suite: client-install-fedora-latest
-          requires: *lint_and_unit
-      - kitchen/dokken-single:
           name: client-install-ubuntu-1604
           suite: client-install-ubuntu-1604
           requires: *lint_and_unit
@@ -102,10 +90,6 @@ workflows:
       - kitchen/dokken-single:
           name: access-centos-7
           suite: access-centos-7
-          requires: *lint_and_unit
-      - kitchen/dokken-single:
-          name: access-fedora-latest
-          suite: access-fedora-latest
           requires: *lint_and_unit
       - kitchen/dokken-single:
           name: access-ubuntu-1604
@@ -128,10 +112,6 @@ workflows:
           suite: ident-centos-7
           requires: *lint_and_unit
       - kitchen/dokken-single:
-          name: ident-fedora-latest
-          suite: ident-fedora-latest
-          requires: *lint_and_unit
-      - kitchen/dokken-single:
           name: ident-ubuntu-1604
           suite: ident-ubuntu-1604
           requires: *lint_and_unit
@@ -150,10 +130,6 @@ workflows:
       - kitchen/dokken-single:
           name: extension-centos-7
           suite: extension-centos-7
-          requires: *lint_and_unit
-      - kitchen/dokken-single:
-          name: extension-fedora-latest
-          suite: extension-fedora-latest
           requires: *lint_and_unit
       - kitchen/dokken-single:
           name: extension-ubuntu-1604
