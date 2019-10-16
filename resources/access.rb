@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-property :access_type,   String, required: true, default: 'local'
-property :access_db,     String, required: true, default: 'all'
-property :access_user,   String, required: true, default: 'postgres'
-property :access_method, String, required: true, default: 'ident'
-property :cookbook,      String,                 default: 'postgresql'
-property :source,        String,                 default: 'pg_hba.conf.erb'
+property :access_type,   String, default: 'local'
+property :access_db,     String, default: 'all'
+property :access_user,   String, default: 'postgres'
+property :access_method, String, default: 'ident'
+property :cookbook,      String, default: 'postgresql'
+property :source,        String, default: 'pg_hba.conf.erb'
 property :access_addr,   String
 property :comment,       String
 
