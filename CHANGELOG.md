@@ -4,6 +4,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Allow to install extensions with hyphens, ex: `postgresql_extension '"uuid-ossp"'`
 - Update Circle CI config to match sous-chefs defaults #617
 - Remove Fedora testing from CI, not an official supported OS by sous-chefs, PR welcome #617
 
