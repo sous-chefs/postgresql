@@ -24,7 +24,6 @@ If you are wondering where all the recipes went in v7.0+, or how on earth I use 
 - Debian 7+
 - Ubuntu 14.04+
 - Red Hat/CentOS/Scientific 6+
-- Fedora
 
 ### PostgreSQL version
 

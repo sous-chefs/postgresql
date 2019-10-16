@@ -193,14 +193,14 @@ RSpec.describe PostgresqlCookbook::Helpers do
   xdescribe '#create_extension_sql' do
     it 'should return sql formatted correctly' do
       new_resource = double(
-        extension: 'adminpack',
+        extension: 'plpgsql',
         old_version: nil,
         user: 'postgres',
         database: nil,
         host: nil,
         port: 5432
       )
-      result = %(/usr/bin/psql -c "CREATE EXTENSION IF NOT EXISTS adminpack" -U postgres --port 5432)
+      result = %(/usr/bin/psql -c "CREATE EXTENSION IF NOT EXISTS plpgsql" -U postgres --port 5432)
 
       expect(subject.create_extension_sql(new_resource)).to eq result
     end

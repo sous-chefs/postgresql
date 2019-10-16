@@ -40,7 +40,7 @@ module PostgresqlCookbook
       # Query could be a String or an Array of Strings
       statement = query.is_a?(String) ? query : query.join("\n")
 
-      cmd = shell_out(statement, user: user)
+      cmd = shell_out(statement, user: user, environment: psql_environment)
 
       # Pass back cmd so we can decide what to do with it in the calling method.
       cmd
@@ -237,6 +237,12 @@ module PostgresqlCookbook
     # On Amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
     def yum_releasever
       platform?('amazon') ? '6' : '$releasever'
+    end
+
+    # Fedora doesn't seem to know the right symbols for psql
+    def psql_environment
+      return {} unless platform?('fedora')
+      { LD_LIBRARY_PATH: '/usr/lib64' }
     end
 
     # Generate a password if the value is set to generate.
