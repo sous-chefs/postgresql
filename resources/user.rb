@@ -40,6 +40,7 @@ action :create do
     user 'postgres'
     command create_user_sql(new_resource)
     sensitive new_resource.sensitive
+    environment(psql_environment)
     not_if { follower? || user_exists?(new_resource) }
   end
 end
@@ -49,6 +50,7 @@ action :update do
     execute "update postgresql user #{new_resource.create_user}" do
       user 'postgres'
       command update_user_sql(new_resource)
+      environment(psql_environment)
       sensitive true
       not_if { follower? }
       only_if { user_exists?(new_resource) }
@@ -64,6 +66,7 @@ action :update do
       execute "Update postgresql user #{new_resource.create_user} to set #{attr}" do
         user 'postgres'
         command update_user_with_attributes_sql(new_resource, v)
+        environment(psql_environment)
         sensitive true
         not_if { follower? }
         only_if { user_exists?(new_resource) }
@@ -76,6 +79,7 @@ action :drop do
   execute "drop postgresql user #{new_resource.create_user}" do
     user 'postgres'
     command drop_user_sql(new_resource)
+    environment(psql_environment)
     sensitive true
     not_if { follower? }
     only_if { user_exists?(new_resource) }
