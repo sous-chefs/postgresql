@@ -53,7 +53,6 @@ action :install do
       source 'createcluster.conf.erb'
       cookbook 'postgresql'
       variables(
-        data_dir: data_dir(new_resource.version),
         initdb_options: initdb_options
       )
     end
