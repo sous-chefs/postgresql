@@ -1,4 +1,12 @@
 ---
+jobs:
+  final:
+    docker:
+      - image: bash:latest
+    steps:
+      - run:
+          name: Finish cooking
+          command: echo "Finished cooking"
 lint_and_unit: &lint_and_unit
   - delivery
   - danger
@@ -143,3 +151,36 @@ workflows:
           name: initdb-locale-centos-7
           suite: initdb-locale-centos-7
           requires: *lint_and_unit
+      - final:
+          requires:
+            - repo-debian-9
+            - repo-centos-6
+            - repo-centos-7
+            - repo-ubuntu-1604
+            - repo-ubuntu-1804
+            - server-install-debian-9
+            - server-install-centos-6
+            - server-install-centos-7
+            - server-install-ubuntu-1604
+            - server-install-ubuntu-1804
+            - client-install-debian-9
+            - client-install-centos-6
+            - client-install-centos-7
+            - client-install-ubuntu-1604
+            - client-install-ubuntu-1804
+            - access-debian-9
+            - access-centos-6
+            - access-centos-7
+            - access-ubuntu-1604
+            - access-ubuntu-1804
+            - ident-debian-9
+            - ident-centos-6
+            - ident-centos-7
+            - ident-ubuntu-1604
+            - ident-ubuntu-1804
+            - extension-debian-9
+            - extension-centos-6
+            - extension-centos-7
+            - extension-ubuntu-1604
+            - extension-ubuntu-1804
+            - initdb-locale-centos-7
