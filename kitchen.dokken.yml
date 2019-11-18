@@ -1,7 +1,7 @@
 ---
 driver:
   name: dokken
-  privileged: true
+  privileged: true  # because Docker and SystemD/Upstart
   env: [CHEF_LICENSE=accept]
 
 transport:
