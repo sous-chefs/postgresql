@@ -4,36 +4,38 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+## v7.1.5 (2019-11-18)
+
 - Allow to install extensions with hyphens, ex: `postgresql_extension '"uuid-ossp"'`
 - Update Circle CI config to match sous-chefs defaults #617
 - Remove Fedora testing from CI, not an official supported OS by sous-chefs, PR welcome #617
 
-## v7.1.4 (28-03-2019)
+## v7.1.4 (2019-03-28)
 
 - Fix installation of extensions.
 
-## v7.1.3 (15-01-2019)
+## v7.1.3 (2019-01-15)
 
 - Added support for dash in database role name.
 
-## v7.1.2 (06-01-2019)
+## v7.1.2 (2019-06-01)
 
 - Cleanup and update the user resource documentation and code. Removed extraneous 'sensitive' property which is a common property in all Chef resources.
 - Change default permissions on the postgres.conf to be world readable so that psql can work.
 
-## v7.1.1 (26-09-2018)
+## v7.1.1 (2018-09-26)
 
 - Rename slave to follower
 - Use CircleCI for testing
 - Simplyfy extension resource
 
-## v7.1.0 (22-06-2018)
+## v7.1.0 (2018-06-22)
 
 - Update the `initdb` script to use initdb rather than a service. #542
 - Refactor database commands to use the common connect method. #535
 - Increase the unit test coverage.
 
-## v7.0.0 (25-05-2018)
+## v7.0.0 (2018-05-25)
 
 _Breaking Change_ Please see UPGRADING.md and the README.md for information how to use.
 
