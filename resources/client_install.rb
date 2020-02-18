@@ -17,7 +17,7 @@
 #
 
 property :version,    String, default: '9.6'
-property :setup_repo, [TrueClass, FalseClass], default: true
+property :setup_repo, [true, false], default: true
 
 action :install do
   postgresql_repository 'Add downloads.postgresql.org repository' do
