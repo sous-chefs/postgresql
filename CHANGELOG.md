@@ -4,7 +4,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
-- Use TrueClass and FalseClass in resource properties
+- Remove unnecessary nil default in resource properties
 - Migrate to actions for testing
 
 ## v7.1.5 (2019-11-18)
