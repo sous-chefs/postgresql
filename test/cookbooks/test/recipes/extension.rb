@@ -3,7 +3,7 @@ postgresql_repository 'install'
 # Dokken images don't have all locales available so this is a workaround
 locale = value_for_platform(
   [:debian, :ubuntu, :fedora] => { default: 'C.UTF-8' },
-  centos: { default: 'en_GB' },
+  centos: { default: 'en_GB.utf-8' },
   default: 'en_US'
 )
 
