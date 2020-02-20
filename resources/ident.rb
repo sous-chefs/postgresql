@@ -21,11 +21,11 @@ property :source,      String, default: 'pg_ident.conf.erb'
 property :cookbook,    String, default: 'postgresql'
 property :system_user, String, required: true
 property :pg_user,     String, required: true
-property :comment,     [String, nil], default: nil
+property :comment,     String
 
 action :create do
   ident_resource = new_resource
-  with_run_context :root do # ~FC037
+  with_run_context :root do
     edit_resource(:template, "#{conf_dir}/pg_ident.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook

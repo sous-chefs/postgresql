@@ -23,7 +23,7 @@ property :owner,    String
 # Connection prefernces
 property :user,     String, default: 'postgres'
 property :database, String, name_property: true
-property :host,     [String, nil], default: nil
+property :host,     String
 property :port,     Integer, default: 5432
 
 action :create do
