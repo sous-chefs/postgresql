@@ -1,0 +1,41 @@
+# Default values for pg_createcluster(8)
+# Occurrences of '%v' are replaced by the major version number,
+# and '%c' by the cluster name. Use '%%' for a literal '%'.
+
+# Create a "main" cluster when a new postgresql-x.y server package is installed
+#create_main_cluster = true
+
+# Default start.conf value, must be one of "auto", "manual", and "disabled".
+# See pg_createcluster(8) for more documentation.
+#start_conf = 'auto'
+
+# Default data directory.
+#data_directory = '/var/lib/postgresql/%v/%c'
+
+# Default directory for transaction logs
+# Unset by default, i.e. transaction logs remain in the data directory.
+#waldir = '/var/lib/postgresql/wal/%v/%c/pg_wal'
+
+# Options to pass to initdb.
+initdb_options = '<%= @initdb_options %>'
+
+# The following options are copied into the new cluster's postgresql.conf:
+
+# Enable SSL by default (using the "snakeoil" certificates installed by the
+# ssl-cert package, unless configured otherwise here)
+ssl = on
+
+# Show cluster name in process title
+cluster_name = '%v/%c'
+
+# Put stats_temp_directory on tmpfs
+stats_temp_directory = '/var/run/postgresql/%v-%c.pg_stat_tmp'
+
+# Add prefix to log lines
+log_line_prefix = '%%m [%%p] %%q%%u@%%d '
+
+# Add "include_dir" in postgresql.conf
+add_include_dir = 'conf.d'
+
+# Directory for additional createcluster config
+include_dir '/etc/postgresql-common/createcluster.d'

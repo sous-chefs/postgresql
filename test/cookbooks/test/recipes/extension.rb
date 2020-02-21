@@ -1,21 +1,22 @@
 postgresql_repository 'install'
 
 # Dokken images don't have all locales available so this is a workaround
-encoding = value_for_platform(
+locale = value_for_platform(
   [:debian, :ubuntu, :fedora] => { default: 'C.UTF-8' },
-  centos: { default: 'en_GB.utf8' },
-  default: 'en_US.utf8'
+  centos: { default: 'en_GB.utf-8' },
+  default: 'en_US'
 )
 
 postgresql_server_install 'package' do
   password '12345'
   action [:install, :create]
-  initdb_locale encoding
+  initdb_locale locale
+  initdb_encoding 'UTF-8'
   version '9.6'
 end
 
 postgresql_database 'test_1' do
-  locale encoding
+  locale locale
 end
 
 if platform_family?('rhel')

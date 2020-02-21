@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 #
 # Cookbook:: postgresql
 # Resource:: server_install
@@ -26,6 +25,7 @@ property :external_pid_file, String, default: lazy { "/var/run/postgresql/#{vers
 property :password,          [String, nil], default: 'generate' # Set to nil if we do not want to set a password
 property :port,              Integer, default: 5432
 property :initdb_locale,     String
+property :initdb_encoding,   String
 
 # Connection preferences
 property :user,     String, default: 'postgres'
@@ -39,6 +39,23 @@ action :install do
   postgresql_client_install 'Install PostgreSQL Client' do
     version new_resource.version
     setup_repo new_resource.setup_repo
+  end
+
+  # First install the postgresql-common package
+  if platform_family?('ubuntu', 'debian')
+    package 'postgresql-common'
+
+    initdb_options = ''
+    initdb_options << "--locale #{new_resource.initdb_locale}" if new_resource.initdb_locale
+    initdb_options << " -E #{new_resource.initdb_encoding}" if new_resource.initdb_encoding
+
+    template '/etc/postgresql-common/createcluster.conf' do
+      source 'createcluster.conf.erb'
+      cookbook 'postgresql'
+      variables(
+        initdb_options: initdb_options
+      )
+    end
   end
 
   package server_pkg_name
