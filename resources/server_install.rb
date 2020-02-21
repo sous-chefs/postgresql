@@ -42,7 +42,7 @@ action :install do
   end
 
   # First install the postgresql-common package
-  if platform_family?('ubuntu', 'debian')
+  if platform_family?('debian')
     package 'postgresql-common'
 
     initdb_options = ''
