@@ -2,9 +2,9 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## v7.1.8 (2020-02-22)
 
-- Fix incorrect platform family value
+- Fix incorrect ubuntu platform family value in `postgresql_server_install`
 - Re-add unit tests that were skipped
 
 ## v7.1.7 (2020-02-21)
