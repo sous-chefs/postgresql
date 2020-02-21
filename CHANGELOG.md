@@ -4,12 +4,14 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
-- Correctly configure postgres-common on ubuntu hosts, fixes #596
+## v7.1.7 (2020-02-21)
+
+- Correctly configure postgres-common on Ubuntu hosts (fixes #596)
 
 ## v7.1.6 (2020-02-20)
 
 - Remove unnecessary nil default in resource properties
-- Migrate to actions for testing
+- Migrate to GitHub Actions for testing
 
 ## v7.1.5 (2019-11-18)
 
