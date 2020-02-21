@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Fix incorrect platform family value
+- Re-add unit tests that were skipped
+
 ## v7.1.7 (2020-02-21)
 
 - Correctly configure postgres-common on Ubuntu hosts (fixes #596)
