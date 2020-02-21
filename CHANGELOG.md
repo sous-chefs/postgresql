@@ -3,6 +3,7 @@
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
 ## Unreleased
+- Correctly configure postgres-common on ubuntu hosts, fixes #596
 
 ## v7.1.6 (2020-02-20)
 
@@ -12,7 +13,6 @@ This file is used to list changes made in the last 3 major versions of the postg
 ## v7.1.5 (2019-11-18)
 
 - Allow to install extensions with hyphens, ex: `postgresql_extension '"uuid-ossp"'`
-- Correctly configure postgres-common on ubuntu hosts, fixes #596
 - Update Circle CI config to match sous-chefs defaults #617
 - Remove Fedora testing from CI, not an official supported OS by sous-chefs, PR welcome #617
 
