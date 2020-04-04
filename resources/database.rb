@@ -26,6 +26,9 @@ property :database, String, name_property: true
 property :host,     String
 property :port,     Integer, default: 5432
 
+# System user preferences
+property :system_user,      String, default: 'postgres'
+  
 action :create do
   createdb = 'createdb'
   createdb << " -E #{new_resource.encoding}" if new_resource.encoding
@@ -39,7 +42,7 @@ action :create do
 
   bash "Create Database #{new_resource.database}" do
     code createdb
-    user new_resource.user
+    user new_resource.system_user
     not_if { follower? }
     not_if { database_exists?(new_resource) }
   end
@@ -54,8 +57,8 @@ action :drop do
     dropdb << " #{new_resource.database}"
 
     bash "drop postgresql database #{new_resource.database})" do
-      user 'postgres'
       code dropdb
+      user new_resource.system_user
       not_if { follower? }
       only_if { database_exists?(new_resource) }
     end

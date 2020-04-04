@@ -33,11 +33,14 @@ property :database, String
 property :host,     String
 property :port,     Integer, default: 5432
 
+# System user preferences
+property :system_user,      String, default: 'postgres'
+
 action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?
 
   execute "create postgresql user #{new_resource.create_user}" do # ~FC009
-    user 'postgres'
+    user new_resource.system_user
     command create_user_sql(new_resource)
     sensitive new_resource.sensitive
     environment(psql_environment)
@@ -48,7 +51,7 @@ end
 action :update do
   if new_resource.attributes.empty?
     execute "update postgresql user #{new_resource.create_user}" do
-      user 'postgres'
+      user new_resource.system_user
       command update_user_sql(new_resource)
       environment(psql_environment)
       sensitive true
@@ -64,7 +67,7 @@ action :update do
           end
 
       execute "Update postgresql user #{new_resource.create_user} to set #{attr}" do
-        user 'postgres'
+        user new_resource.system_user
         command update_user_with_attributes_sql(new_resource, v)
         environment(psql_environment)
         sensitive true
@@ -77,7 +80,7 @@ end
 
 action :drop do
   execute "drop postgresql user #{new_resource.create_user}" do
-    user 'postgres'
+    user new_resource.system_user
     command drop_user_sql(new_resource)
     environment(psql_environment)
     sensitive true
