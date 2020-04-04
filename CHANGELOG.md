@@ -2,6 +2,10 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## v7.1.9 (2020-03-04)
+
+- add abililty to pass command execution user from properties in resources (database, user and extenstions)
+
 ## v7.1.8 (2020-02-22)
 
 - Fix incorrect ubuntu platform family value in `postgresql_server_install`
