@@ -40,7 +40,7 @@ action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?
 
   execute "create postgresql user #{new_resource.create_user}" do
-    user 'postgres'
+    user new_resource.system_user
     command create_user_sql(new_resource)
     sensitive new_resource.sensitive
     environment(psql_environment)
