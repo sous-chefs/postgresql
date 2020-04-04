@@ -27,8 +27,8 @@ property :host,     String
 property :port,     Integer, default: 5432
 
 # System user preferences
-property :system_user,      String, default: 'postgres'
-  
+property :system_user, String, default: 'postgres'
+
 action :create do
   createdb = 'createdb'
   createdb << " -E #{new_resource.encoding}" if new_resource.encoding

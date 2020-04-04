@@ -34,7 +34,7 @@ property :host,     String
 property :port,     Integer, default: 5432
 
 # System user preferences
-property :system_user,      String, default: 'postgres'
+property :system_user, String, default: 'postgres'
 
 action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?

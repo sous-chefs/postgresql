@@ -26,7 +26,7 @@ property :host,     [String, nil]
 property :port,     Integer, default: 5432
 
 # System user preferences
-property :system_user,      String, default: 'postgres'
+property :system_user, String, default: 'postgres'
 
 action :create do
   bash "CREATE EXTENSION #{new_resource.name}" do
