@@ -161,7 +161,7 @@ Name          | Types  | Description                                            
 `extension`   | String | Name of the extension to install the database                                    | Name of resource | yes
 `version`     | String | Version of the extension to install                                              |                  | no
 `old_version` | String | Older module name for new extension replacement. Appends FROM to extension query |                  | no
-
+`system_user` | String | Define the user on the system to execute sql command                             | Not set          | no
 #### Examples
 
 To install the `adminpack` extension:
@@ -300,16 +300,17 @@ This resource manages PostgreSQL databases.
 
 #### Properties
 
-Name       | Types   | Description                                                         | Default             | Required?
----------- | ------- | ------------------------------------------------------------------- | ------------------- | ---------
-`database` | String  | Name of the database to create                                      | Resource name       | yes
-`user`     | String  | User which run psql command                                         | 'postgres'          | no
-`template` | String  | Template used to create the new database                            | 'template1'         | no
-`host`     | String  | Define the host server where the database creation will be executed | Not set (localhost) | no
-`port`     | Integer | Define the port of PostgreSQL server                                | 5432                | no
-`encoding` | String  | Define database encoding                                            | 'UTF-8'             | no
-`locale`   | String  | Define database locale                                              | 'en_US.UTF-8'       | no
-`owner`    | String  | Define the owner of the database                                    | Not set             | no
+Name            | Types   | Description                                                         | Default             | Required?
+----------      | ------- | ------------------------------------------------------------------- | ------------------- | ---------
+`database`      | String  | Name of the database to create                                      | Resource name       | yes
+`user`          | String  | User which run psql command                                         | 'postgres'          | no
+`template`      | String  | Template used to create the new database                            | 'template1'         | no
+`host`          | String  | Define the host server where the database creation will be executed | Not set (localhost) | no
+`port`          | Integer | Define the port of PostgreSQL server                                | 5432                | no
+`encoding`      | String  | Define database encoding                                            | 'UTF-8'             | no
+`locale`        | String  | Define database locale                                              | 'en_US.UTF-8'       | no
+`owner`         | String  | Define the owner of the database                                    | Not set             | no
+`system_user`   | String  | Define the user on the system to execute sql command                | Not set             | no
 
 #### Examples
 
@@ -338,23 +339,24 @@ This resource manage PostgreSQL users.
 
 #### Properties
 
-Name                 | Types   | Description                                     | Default  | Required?
--------------------- | ------- | ----------------------------------------------- | -------- | ---------
-`create_user`        | String  | User to create (defaults to the resource name)  |          | Yes
-`superuser`          | Boolean | Define if user needs superuser role             | false    | no
-`createdb`           | Boolean | Define if user needs createdb role              | false    | no
-`createrole`         | Boolean | Define if user needs createrole role            | false    | no
-`inherit`            | Boolean | Define if user inherits the privileges of roles | true     | no
-`replication`        | Boolean | Define if user needs replication role           | false    | no
-`login`              | Boolean | Define if user can login                        | true     | no
-`password`           | String  | Set user's password                             |          | no
-`encrypted_password` | String  | Set user's password with an hashed password     |          | no
-`valid_until`        | String  | Define an account expiration date               |          | no
-`attributes`         | Hash    | Additional attributes for :update action        | {}       | no
-`user`               | String  | User for command                                | postgres | no
-`database`           | String  | Database for command                            |          | no
-`host`               | String  | Hostname for command                            |          | no
-`port`               | Integer | Port number to connect to postgres              | 5432     | no
+Name                 | Types   | Description                                            | Default  | Required?
+-------------------- | ------- | ------------------------------------------------------ | -------- | ---------
+`create_user`        | String  | User to create (defaults to the resource name)         |          | Yes
+`superuser`          | Boolean | Define if user needs superuser role                    | false    | no
+`createdb`           | Boolean | Define if user needs createdb role                     | false    | no
+`createrole`         | Boolean | Define if user needs createrole role                   | false    | no
+`inherit`            | Boolean | Define if user inherits the privileges of roles        | true     | no
+`replication`        | Boolean | Define if user needs replication role                  | false    | no
+`login`              | Boolean | Define if user can login                               | true     | no
+`password`           | String  | Set user's password                                    |          | no
+`encrypted_password` | String  | Set user's password with an hashed password            |          | no
+`valid_until`        | String  | Define an account expiration date                      |          | no
+`attributes`         | Hash    | Additional attributes for :update action               | {}       | no
+`user`               | String  | User for command                                       | postgres | no
+`database`           | String  | Database for command                                   |          | no
+`host`               | String  | Hostname for command                                   |          | no
+`port`               | Integer | Port number to connect to postgres                     | 5432     | no
+`system_user`        | String  | Define the user on the system to execute sql command   | Not set  | no
 
 #### Examples
 
