@@ -162,6 +162,7 @@ Name          | Types  | Description                                            
 `version`     | String | Version of the extension to install                                              |                  | no
 `old_version` | String | Older module name for new extension replacement. Appends FROM to extension query |                  | no
 `system_user` | String | Define the user on the system to execute sql command                             | Not set          | no
+
 #### Examples
 
 To install the `adminpack` extension:
