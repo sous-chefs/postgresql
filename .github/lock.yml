@@ -1,5 +1,5 @@
 ---
-daysUntilLock: 30
+daysUntilLock: 365
 exemptLabels: []
 lockLabel: false
 lockComment: >
