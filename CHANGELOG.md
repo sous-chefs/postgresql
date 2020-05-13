@@ -5,6 +5,16 @@ This file is used to list changes made in the last 3 major versions of the postg
 ## Unreleased
 
 - add abililty to pass command execution user from properties in resources (database, user and extenstions)
+- resolved cookstyle error: resources/access.rb:30:28 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: resources/access.rb:30:29 refactor: `ChefModernize/FoodcriticComments`
+- resolved cookstyle error: resources/access.rb:54:44 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: resources/access.rb:54:45 refactor: `ChefModernize/FoodcriticComments`
+- resolved cookstyle error: resources/ident.rb:50:44 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: resources/ident.rb:50:45 refactor: `ChefModernize/FoodcriticComments`
+- resolved cookstyle error: resources/repository.rb:35:59 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: resources/repository.rb:35:60 refactor: `ChefModernize/FoodcriticComments`
+- resolved cookstyle error: resources/user.rb:39:66 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: resources/user.rb:39:67 refactor: `ChefModernize/FoodcriticComments`
 
 ## v7.1.8 (2020-02-22)
 
