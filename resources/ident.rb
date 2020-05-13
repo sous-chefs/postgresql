@@ -47,7 +47,7 @@ action :create do
 end
 
 action :trigger do
-  new_resource.updated_by_last_action(true) # ~FC085
+  new_resource.updated_by_last_action(true)
 end
 
 action_class do
