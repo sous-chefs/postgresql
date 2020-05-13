@@ -32,7 +32,7 @@ action :add do
       source new_resource.yum_gpg_key_uri
     end
 
-    yum_repository "PostgreSQL #{new_resource.version}" do # ~FC005
+    yum_repository "PostgreSQL #{new_resource.version}" do
       repositoryid "pgdg#{new_resource.version}"
       description "PostgreSQL.org #{new_resource.version}"
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum')

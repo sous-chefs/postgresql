@@ -27,7 +27,7 @@ property :comment,       String
 
 action :grant do
   config_resource = new_resource
-  with_run_context :root do # ~FC037
+  with_run_context :root do
     edit_resource(:template, "#{conf_dir}/pg_hba.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
@@ -51,7 +51,7 @@ action :grant do
 end
 
 action :trigger do
-  new_resource.updated_by_last_action(true) # ~FC085
+  new_resource.updated_by_last_action(true)
 end
 
 action_class do
