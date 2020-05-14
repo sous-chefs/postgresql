@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## v7.1.9 (2020-03-04)
+## Unreleased
 
 - add abililty to pass command execution user from properties in resources (database, user and extenstions)
 
