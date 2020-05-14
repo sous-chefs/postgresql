@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## v7.1.9 (2020-05-14)
 
 - add abililty to pass command execution user from properties in resources (database, user and extenstions)
 - resolved cookstyle error: resources/access.rb:30:28 convention: `Layout/TrailingWhitespace`
