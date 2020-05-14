@@ -311,7 +311,7 @@ Name            | Types   | Description                                         
 `encoding`      | String  | Define database encoding                                            | 'UTF-8'             | no
 `locale`        | String  | Define database locale                                              | 'en_US.UTF-8'       | no
 `owner`         | String  | Define the owner of the database                                    | Not set             | no
-`system_user`   | String  | Define the user on the system to execute sql command                | Not set             | no
+`system_user`   | String  | Define the user on the system to execute sql command                | postgres            | no
 
 #### Examples
 
@@ -357,7 +357,7 @@ Name                 | Types   | Description                                    
 `database`           | String  | Database for command                                   |          | no
 `host`               | String  | Hostname for command                                   |          | no
 `port`               | Integer | Port number to connect to postgres                     | 5432     | no
-`system_user`        | String  | Define the user on the system to execute sql command   | Not set  | no
+`system_user`        | String  | Define the user on the system to execute sql command   | postgres | no
 
 #### Examples
 
