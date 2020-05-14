@@ -161,7 +161,7 @@ Name          | Types  | Description                                            
 `extension`   | String | Name of the extension to install the database                                    | Name of resource | yes
 `version`     | String | Version of the extension to install                                              |                  | no
 `old_version` | String | Older module name for new extension replacement. Appends FROM to extension query |                  | no
-`system_user` | String | Define the user on the system to execute sql command                             | Not set          | no
+`system_user` | String | Define the user on the system to execute sql command                             | postgres         | no
 
 #### Examples
 
