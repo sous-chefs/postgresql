@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## v7.1.8 (2020-05-14)
 
 - resolved cookstyle error: resources/access.rb:30:28 convention: `Layout/TrailingWhitespace`
 - resolved cookstyle error: resources/access.rb:30:29 refactor: `ChefModernize/FoodcriticComments`
