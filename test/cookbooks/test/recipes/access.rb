@@ -20,6 +20,12 @@ postgresql_user 'sous_chef' do
   sensitive false
 end
 
+postgresql_user 'sous_chef' do
+  attributes({ statement_timeout: '8min' })
+  sensitive false
+  action :update
+end
+
 postgresql_access 'a sous_chef local superuser' do
   access_type 'host'
   access_db 'all'

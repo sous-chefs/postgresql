@@ -65,7 +65,7 @@ action :update do
 
       execute "Update postgresql user #{new_resource.create_user} to set #{attr}" do
         user 'postgres'
-        command update_user_with_attributes_sql(new_resource, v)
+        command update_user_with_attributes_sql(new_resource, attr, v)
         environment(psql_environment)
         sensitive true
         not_if { follower? }

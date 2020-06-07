@@ -127,8 +127,8 @@ module PostgresqlCookbook
       psql_command_string(new_resource, sql)
     end
 
-    def update_user_with_attributes_sql(new_resource, value)
-      sql = %(ALTER ROLE '#{new_resource.create_user}' SET #{attr} = #{value})
+    def update_user_with_attributes_sql(new_resource, attr, value)
+      sql = %(ALTER ROLE #{new_resource.create_user} SET #{attr} = #{value})
       psql_command_string(new_resource, sql)
     end
 

@@ -45,6 +45,17 @@ control 'sous_chef role should exist' do
   end
 end
 
+control 'sous_chef has statement_timeout set to 8mins' do
+  impact 1.0
+  desc 'Ensures attributes are applied'
+
+  postgres_access = postgres_session('sous_chef', '67890')
+
+  describe postgres_access.query('SHOW statement_timeout;', ['postgres']) do
+    its('output') { should cmp /8min/ }
+  end
+end
+
 control 'name-with-dash role should exist' do
   impact 1.0
   desc 'The name-with-dash database user role should exist'
