@@ -2,6 +2,17 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
+- Removed testing of ubuntu 16.04
+- Removed testing of centos 6
+- Added testing of amazonlinux 2
+- Added testing of debian 10
+- Added testing of centos 8
+- Added testing of ubuntu 20.04
+- added `attr` to `update_user_with_attributes_sql` to make updates on `postgresql_user` work with attribute hashes.
+- fixed rolename, removed quotes due to syntax error
+
 ## v7.1.9 (2020-05-14)
 
 - resolved cookstyle error: resources/access.rb:30:28 convention: `Layout/TrailingWhitespace`
