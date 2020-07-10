@@ -3,7 +3,7 @@ control 'postgresql-client-install' do
   desc 'These tests ensure a postgresql client installed correctly'
 
   describe command('/usr/bin/psql -V') do
-    its('stdout') { should match(/psql \(PostgreSQL\) [0-9.]+/) }
+    its('stdout') { should match(/psql \(PostgreSQL\) 12.\d/) }
     its('exit_status') { should eq 0 }
   end
 end

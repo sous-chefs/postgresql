@@ -1,28 +1,25 @@
 ---
-driver:
-  name: vagrant
-
-provisioner:
-  name: chef_solo
-  product_name: chef
-  product_version: 14.2
-  enforce_idempotency: true
-  multiple_converge: 2
-  solo_rb:
-    treat_deprecation_warnings_as_errors: true
-
 verifier:
   name: inspec
+provisioner:
+  name: chef_solo
+  enforce_idempotency: true
+  multiple_converge: 2
+  deprecations_as_errors: true
 
 platforms:
   - name: amazonlinux-2
     driver_config:
       box: ywatase/amzn2
-  - name: centos-6
+  - name: centos-8
   - name: centos-7
+  - name: debian-10
   - name: debian-9
-  - name: ubuntu-16.04
   - name: ubuntu-18.04
+  - name: fedora-32
+  - name: fedora-31
+  - name: oraclelinux-8
+  - name: oraclelinux-7
 
 suites:
   - name: repo
@@ -31,18 +28,22 @@ suites:
   - name: server_install
     run_list:
       - recipe[test::server_install]
+    excludes: [amazonlinux-2]
   - name: client_install
     run_list:
       - recipe[test::client_install]
   - name: access
     run_list:
       - recipe[test::access]
+    excludes: [amazonlinux-2]
   - name: ident
     run_list:
       - recipe[test::ident]
+    excludes: [amazonlinux-2]
   - name: extension
     run_list:
       - recipe[test::extension]
+    excludes: [amazonlinux-2]
   - name: initdb_locale
     run_list:
       - recipe[test::initdb_locale]

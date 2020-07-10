@@ -16,8 +16,9 @@
 # limitations under the License.
 #
 
-property :version,                            String, default: '9.6'
+property :version,                            [String], default: '12'
 property :enable_pgdg,                        [true, false], default: true
+property :enable_pgdg_common,                 [true, false], default: true
 property :enable_pgdg_source,                 [true, false], default: false
 property :enable_pgdg_updates_testing,        [true, false], default: false
 property :enable_pgdg_source_updates_testing, [true, false], default: false
@@ -25,11 +26,22 @@ property :yum_gpg_key_uri, String, default: 'https://download.postgresql.org/pub
 property :apt_gpg_key_uri, String, default: 'https://download.postgresql.org/pub/repos/apt/ACCC4CF8.asc'
 
 action :add do
+  # if new_resource.version.to_f >= 10.0 then
+  #   new_resource.version = new_resource.version.to_i
+  # end
+
   case node['platform_family']
 
   when 'rhel', 'fedora', 'amazon'
+
     remote_file "/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}" do
       source new_resource.yum_gpg_key_uri
+    end
+
+    execute 'disable-postgresql-module' do
+      command 'dnf -qy module disable postgresql'
+      action :nothing
+      only_if { node['platform_version'].to_i > 7 && platform_family?('rhel') }
     end
 
     yum_repository "PostgreSQL #{new_resource.version}" do
@@ -39,6 +51,16 @@ action :add do
       enabled     new_resource.enable_pgdg
       gpgcheck    true
       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      notifies :run, 'execute[disable-postgresql-module]'
+    end
+
+    yum_repository 'Postgresql - common' do
+      repositoryid 'pgdg-common'
+      description 'PostgreSQL common RPMs for RHEL/CentOS $releasever - $basearch'
+      baseurl yum_common_repo_url
+      enabled new_resource.enable_pgdg_common
+      gpgcheck true
+      gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
     end
 
     yum_repository "PostgreSQL #{new_resource.version} - source " do

@@ -222,6 +222,11 @@ module PostgresqlCookbook
       "#{base_url}/#{new_resource.version}/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
     end
 
+    # Given the base URL build the complete URL string for a yum repo
+    def yum_common_repo_url
+      "https://download.postgresql.org/pub/repos/yum/common/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
+    end
+
     # The postgresql yum repos URLs are organized into redhat and fedora directories.s
     # route things to the right place based on platform_family
     def yum_repo_platform_family_string
