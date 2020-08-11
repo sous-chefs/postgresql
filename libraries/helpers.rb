@@ -40,10 +40,9 @@ module PostgresqlCookbook
       # Query could be a String or an Array of Strings
       statement = query.is_a?(String) ? query : query.join("\n")
 
-      cmd = shell_out(statement, user: user, environment: psql_environment)
+      shell_out(statement, user: user, environment: psql_environment)
 
       # Pass back cmd so we can decide what to do with it in the calling method.
-      cmd
     end
 
     def database_exists?(new_resource)
