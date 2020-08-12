@@ -26,10 +26,6 @@ property :yum_gpg_key_uri, String, default: 'https://download.postgresql.org/pub
 property :apt_gpg_key_uri, String, default: 'https://download.postgresql.org/pub/repos/apt/ACCC4CF8.asc'
 
 action :add do
-  # if new_resource.version.to_f >= 10.0 then
-  #   new_resource.version = new_resource.version.to_i
-  # end
-
   case node['platform_family']
 
   when 'rhel', 'fedora', 'amazon'
@@ -40,8 +36,8 @@ action :add do
 
     execute 'disable-postgresql-module' do
       command 'dnf -qy module disable postgresql'
-      action :nothing
-      only_if { node['platform_version'].to_i > 7 && platform_family?('rhel') }
+      only_if { (node['platform_version'].to_i > 7 && platform_family?('rhel')) || platform_family?('fedora') }
+      not_if 'dnf module list postgresql | grep -q "^postgresql.*\[x\]"'
     end
 
     yum_repository "PostgreSQL #{new_resource.version}" do
@@ -51,7 +47,6 @@ action :add do
       enabled     new_resource.enable_pgdg
       gpgcheck    true
       gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
-      notifies :run, 'execute[disable-postgresql-module]'
     end
 
     yum_repository 'Postgresql - common' do

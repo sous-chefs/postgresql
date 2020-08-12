@@ -9,13 +9,10 @@ locale = case node['platform_family']
            else
              node['platform_version'].to_i < 8 ? 'en_GB.UTF-8' : 'C.UTF-8'
            end
-         when 'oracle'
-           'C.UTF-8'
          else
            'en_US.UTF-8'
          end
 
-# postgresql_server_install 'package'
 postgresql_server_install 'package' do
   password '12345'
   action [:install, :create]

@@ -13,15 +13,15 @@ depends 'yum-centos'
 depends 'yum-epel'
 depends 'apt'
 
-supports 'ubuntu', '~> 16.04'
-supports 'ubuntu', '~> 18.04'
-supports 'debian', '~> 9.0'
-supports 'debian', '~> 10.0'
-supports 'fedora', '~> 31.0'
-supports 'fedora', '~> 32.0'
-supports 'amazon'
-supports 'redhat'
-supports 'centos', '~> 7.0'
-supports 'centos', '~> 8.0'
-supports 'scientefic'
-supports 'oracle'
+%w(
+  amazon
+  centos
+  debian
+  fedora
+  oracle
+  redhat
+  scientefic
+  ubuntu
+).each do |os|
+  supports os
+end
