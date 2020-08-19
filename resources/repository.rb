@@ -34,8 +34,7 @@ action :add do
       source new_resource.yum_gpg_key_uri
     end
 
-    execute 'disable-postgresql-module' do
-      command 'dnf -qy module disable postgresql'
+    execute 'dnf -qy module disable postgresql' do
       only_if { (node['platform_version'].to_i > 7 && platform_family?('rhel')) || platform_family?('fedora') }
       not_if 'dnf module list postgresql | grep -q "^postgresql.*\[x\]"'
     end

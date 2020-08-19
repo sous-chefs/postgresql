@@ -57,7 +57,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
 
   describe '#platform_service_name(version)' do
     before do
-      allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
+      allow(subject).to receive(:[]).with(:platform_family).and_return(platform_family)
     end
 
     let(:pg_version) { '12' }

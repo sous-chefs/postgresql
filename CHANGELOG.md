@@ -2,6 +2,12 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
+- Bumped default version of postgresql to 12
+- Added support for dnf by disabling the postgresql module on repo configuration
+- Add support for the pgdg-common repository
+
 ## v7.1.9 (2020-05-14)
 
 - resolved cookstyle error: resources/access.rb:30:28 convention: `Layout/TrailingWhitespace`
