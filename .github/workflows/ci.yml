@@ -41,10 +41,17 @@ jobs:
       matrix:
         os:
           - 'debian-9'
-          - 'centos-6'
+          - 'debian-10'
           - 'centos-7'
-          - 'ubuntu-1604'
+          - 'centos-8'
           - 'ubuntu-1804'
+          - 'ubuntu-2004'
+          - 'fedora-31'
+          - 'fedora-32'
+          - 'amazonlinux-2'
+          - 'oracle-7'
+          - 'oracle-8'
+
         suite:
           - 'extension'
           - 'ident'
