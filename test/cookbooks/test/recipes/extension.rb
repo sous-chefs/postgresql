@@ -1,17 +1,10 @@
 postgresql_repository 'install'
 # # Dokken images don't have all locales available so this is a workaround
-locale = case node['platform_family']
-         when /^(debian|ubuntu|fedora)$/
-           'C.UTF-8'
-         when 'rhel'
-           if node['hostname'].match?(/oracle/)
-             'C.UTF-8'
-           else
-             node['platform_version'].to_i < 8 ? 'en_GB.UTF-8' : 'C.UTF-8'
-           end
-         else
-           'en_US.UTF-8'
-         end
+locale = value_for_platform(
+  [:debian, :ubuntu, :fedora, :oracle, :amazon] => { default: 'C.UTF-8' },
+  centos: { default: node['platform_version'].to_i < 8 ? 'en_GB.utf-8' : 'C.UTF-8' },
+  default: 'en_US'
+)
 
 postgresql_server_install 'package' do
   password '12345'

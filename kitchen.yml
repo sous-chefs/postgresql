@@ -28,22 +28,18 @@ suites:
   - name: server_install
     run_list:
       - recipe[test::server_install]
-    excludes: [amazonlinux-2]
   - name: client_install
     run_list:
       - recipe[test::client_install]
   - name: access
     run_list:
       - recipe[test::access]
-    excludes: [amazonlinux-2]
   - name: ident
     run_list:
       - recipe[test::ident]
-    excludes: [amazonlinux-2]
   - name: extension
     run_list:
       - recipe[test::extension]
-    excludes: [amazonlinux-2]
   - name: initdb_locale
     run_list:
       - recipe[test::initdb_locale]
