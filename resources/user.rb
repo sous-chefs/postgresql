@@ -68,7 +68,7 @@ action :update do
         command update_user_with_attributes_sql(new_resource, attr, v)
         environment(psql_environment)
         sensitive true
-        not_if { follower? }
+        not_if { follower? || attribute_is_set?(new_resource.create_user, attr, v) }
         only_if { user_exists?(new_resource) }
       end
     end

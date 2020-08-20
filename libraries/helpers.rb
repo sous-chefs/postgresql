@@ -93,6 +93,15 @@ module PostgresqlCookbook
       res.stdout =~ /1 row/ ? true : false
     end
 
+    def attribute_is_set?(user, attr, value)
+      sql = %(SELECT rolconfig FROM pg_roles WHERE rolname='#{user}';)
+      cmd = psql_command_string(new_resource, sql)
+
+      res = execute_sql(new_resource, cmd)
+      puts "AAAAAAAAA #{res.stdout}"
+      res.stdout.match(/#{attr}=#{value.delete('\'')}/)
+    end
+
     def role_sql(new_resource)
       sql = %(\\"#{new_resource.create_user}\\" WITH )
 

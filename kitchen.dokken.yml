@@ -10,6 +10,8 @@ transport:
 provisioner:
   name: dokken
   product_name: chef
+  enforce_idempotency: true
+  multiple_converge: 2
   product_version: <%= ENV['CHEF_VERSION'] || 'latest' %>
   install_strategy: once
 
