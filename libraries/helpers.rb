@@ -79,7 +79,7 @@ module PostgresqlCookbook
     end
 
     def create_extension_sql(new_resource)
-      sql = %(CREATE EXTENSION IF NOT EXISTS #{new_resource.extension})
+      sql = %(CREATE EXTENSION IF NOT EXISTS \\\"#{new_resource.extension}\\\")
       sql << " FROM \"#{new_resource.old_version}\"" if new_resource.old_version
 
       psql_command_string(new_resource, sql)

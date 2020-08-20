@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+provides :postgresql_database
 
 property :template, String, default: 'template1'
 property :encoding, String, default: 'UTF-8'
