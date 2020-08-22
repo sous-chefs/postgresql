@@ -51,7 +51,7 @@ This resource installs PostgreSQL client packages.
 
 Name                | Types             | Description                                                   | Default                                   | Required?
 ------------------- | ----------------- | ------------------------------------------------------------- | ----------------------------------------- | ---------
-`version`           | String            | Version of PostgreSQL to install                              | '9.6'                                     | no
+`version`           | String            | Version of PostgreSQL to install                              | '12'                                      | no
 `setup_repo`        | Boolean           | Define if you want to add the PostgreSQL repo                 | true                                      | no
 `hba_file`          | String            |                                                               | `#{conf_dir}/main/pg_hba.conf`            | no
 `ident_file`        | String            |                                                               | `#{conf_dir}/main/pg_ident.conf`          | no
@@ -81,7 +81,7 @@ This resource installs PostgreSQL client and server packages.
 
 Name                | Types           | Description                                   | Default                                            | Required?
 ------------------- | --------------- | --------------------------------------------- | -------------------------------------------------- | ---------
-`version`           | String          | Version of PostgreSQL to install              | '9.6'                                              | no
+`version`           | String          | Version of PostgreSQL to install              | '12'                                               | no
 `setup_repo`        | Boolean         | Define if you want to add the PostgreSQL repo | true                                               | no
 `hba_file`          | String          | Path of pg_hba.conf file                      | `<default_os_path>/pg_hba.conf'`                   | no
 `ident_file`        | String          | Path of pg_ident.conf file                    | `<default_os_path>/pg_ident.conf`                  | no
@@ -123,7 +123,7 @@ This resource manages postgresql.conf configuration file.
 
 Name                   | Types   | Description                             | Default                                             | Required?
 ---------------------- | ------- | --------------------------------------- | --------------------------------------------------- | ---------
-`version`              | String  | Version of PostgreSQL to install        | '9.6'                                               | no
+`version`              | String  | Version of PostgreSQL to install        | '12'                                                | no
 `data_directory`       | String  | Path of PostgreSQL data directory       | `<default_os_data_path>`                            | no
 `hba_file`             | String  | Path of pg_hba.conf file                | `<default_os_conf_path>/pg_hba.conf`                | no
 `ident_file`           | String  | Path of pg_ident.conf file              | `<default_os_conf_path>/pg_ident.conf`              | no
@@ -168,7 +168,7 @@ To install the `adminpack` extension:
 
 ```ruby
 # Add the contrib package in Ubuntu/Debian
-package 'postgresql-contrib-9.6'
+package 'postgresql-contrib12'
 
 # Install adminpack extension
 postgresql_extension 'postgres adminpack' do
