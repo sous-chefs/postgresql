@@ -40,13 +40,13 @@ jobs:
     strategy:
       matrix:
         os:
-          - 'debian-9'
-          - 'debian-10'
+          - 'amazonlinux-2'
           - 'centos-7'
           - 'centos-8'
+          - 'debian-10'
+          - 'debian-9'
           - 'ubuntu-1804'
           - 'ubuntu-2004'
-          - 'amazonlinux-2'
 
         suite:
           - 'access-10'
