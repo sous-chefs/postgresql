@@ -20,7 +20,7 @@ end
 if platform_family?('debian')
   package 'postgresql-contrib'
 else
-  package "postgresql#{node['test']['pg_ver']}-contrib"
+  package "postgresql#{node['test']['pg_ver'].delete('.')}-contrib"
 end
 
 postgresql_extension 'plpgsql' do
