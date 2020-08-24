@@ -98,7 +98,6 @@ module PostgresqlCookbook
       cmd = psql_command_string(new_resource, sql)
 
       res = execute_sql(new_resource, cmd)
-      puts "AAAAAAAAA #{res.stdout}"
       res.stdout.match(/#{attr}=#{value.delete('\'')}/)
     end
 

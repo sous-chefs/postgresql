@@ -1,4 +1,4 @@
-# # Dokken images don't have all locales available so this is a workaround
+# Dokken images don't have all locales available so this is a workaround
 locale = value_for_platform(
   [:debian, :ubuntu, :fedora, :oracle, :amazon] => { default: 'C.UTF-8' },
   centos: { default: node['platform_version'].to_i < 8 ? 'en_GB.utf-8' : 'C.UTF-8' },
@@ -10,7 +10,7 @@ postgresql_server_install 'package' do
   action [:install, :create]
   initdb_locale locale
   initdb_encoding 'UTF-8'
-  version node['pg_ver']
+  version node['test']['pg_ver']
 end
 
 postgresql_database 'test_1' do
@@ -20,7 +20,7 @@ end
 if platform_family?('debian')
   package 'postgresql-contrib'
 else
-  package "postgresql#{node['pg_ver']}-contrib"
+  package "postgresql#{node['test']['pg_ver']}-contrib"
 end
 
 postgresql_extension 'plpgsql' do

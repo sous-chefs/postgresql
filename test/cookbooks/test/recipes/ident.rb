@@ -1,7 +1,7 @@
 postgresql_server_install 'postgresql' do
   password '12345'
   port 5432
-  version node['pg_ver']
+  version node['test']['pg_ver']
   setup_repo true
   action [:install, :create]
 end

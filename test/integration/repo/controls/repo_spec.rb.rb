@@ -3,7 +3,7 @@ pg_ver = input('pg_ver')
 
 case os[:family]
 
-when /^(redhat|fedora)$/
+when 'redhat', 'fedora'
 
   describe yum.repo("pgdg#{pg_ver}") do
     it { should exist }
