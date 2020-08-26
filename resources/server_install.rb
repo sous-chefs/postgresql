@@ -14,10 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+provides :postgresql_server_install
 
 include PostgresqlCookbook::Helpers
 
-property :version,           String, default: '9.6'
+property :version,           [String, Integer], default: '12'
 property :setup_repo,        [true, false], default: true
 property :hba_file,          String, default: lazy { "#{conf_dir}/main/pg_hba.conf" }
 property :ident_file,        String, default: lazy { "#{conf_dir}/main/pg_ident.conf" }

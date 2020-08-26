@@ -1,6 +1,5 @@
-postgresql_repository 'install'
-
 postgresql_server_install 'package' do
+  version node['test']['pg_ver']
   action [:install, :create]
 end
 

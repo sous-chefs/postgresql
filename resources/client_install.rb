@@ -15,8 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+provides :postgresql_client_install
 
-property :version,    String, default: '9.6'
+property :version,    String, default: '12'
 property :setup_repo, [true, false], default: true
 
 action :install do

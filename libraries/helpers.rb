@@ -79,7 +79,7 @@ module PostgresqlCookbook
     end
 
     def create_extension_sql(new_resource)
-      sql = %(CREATE EXTENSION IF NOT EXISTS #{new_resource.extension})
+      sql = %(CREATE EXTENSION IF NOT EXISTS \\\"#{new_resource.extension}\\\")
       sql << " FROM \"#{new_resource.old_version}\"" if new_resource.old_version
 
       psql_command_string(new_resource, sql)
@@ -91,6 +91,14 @@ module PostgresqlCookbook
 
       res = execute_sql(new_resource, cmd)
       res.stdout =~ /1 row/ ? true : false
+    end
+
+    def attribute_is_set?(user, attr, value)
+      sql = %(SELECT rolconfig FROM pg_roles WHERE rolname='#{user}';)
+      cmd = psql_command_string(new_resource, sql)
+
+      res = execute_sql(new_resource, cmd)
+      res.stdout.match(/#{attr}=#{value.delete('\'')}/)
     end
 
     def role_sql(new_resource)
@@ -137,14 +145,8 @@ module PostgresqlCookbook
 
     def data_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
-      when 'rhel', 'fedora'
+      when 'rhel', 'fedora', 'amazon'
         "/var/lib/pgsql/#{version}/data"
-      when 'amazon'
-        if node['virtualization']['system'] == 'docker'
-          "/var/lib/pgsql#{version.delete('.')}/data"
-        else
-          "/var/lib/pgsql/#{version}/data"
-        end
       when 'debian'
         "/var/lib/postgresql/#{version}/main"
       end
@@ -152,14 +154,8 @@ module PostgresqlCookbook
 
     def conf_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
-      when 'rhel', 'fedora'
+      when 'rhel', 'fedora', 'amazon'
         "/var/lib/pgsql/#{version}/data"
-      when 'amazon'
-        if node['virtualization']['system'] == 'docker'
-          "/var/lib/pgsql#{version.delete('.')}/data"
-        else
-          "/var/lib/pgsql/#{version}/data"
-        end
       when 'debian'
         "/etc/postgresql/#{version}/main"
       end
@@ -167,15 +163,8 @@ module PostgresqlCookbook
 
     # determine the platform specific service name
     def platform_service_name(version = node.run_state['postgresql']['version'])
-      case node['platform_family']
-      when 'rhel', 'fedora'
+      if platform_family?('rhel', 'fedora', 'amazon')
         "postgresql-#{version}"
-      when 'amazon'
-        if node['virtualization']['system'] == 'docker'
-          "postgresql#{version.delete('.')}"
-        else
-          "postgresql-#{version}"
-        end
       else
         'postgresql'
       end
@@ -205,11 +194,7 @@ module PostgresqlCookbook
     # initdb defaults to the execution environment.
     # https://www.postgresql.org/docs/9.5/static/locale.html
     def rhel_init_db_command(new_resource)
-      cmd = if platform_family?('amazon')
-              '/usr/bin/initdb'
-            else
-              "/usr/pgsql-#{new_resource.version}/bin/initdb"
-            end
+      cmd = "/usr/pgsql-#{new_resource.version}/bin/initdb"
       cmd << " --locale '#{new_resource.initdb_locale}'" if new_resource.initdb_locale
       cmd << " -E '#{new_resource.initdb_encoding}'" if new_resource.initdb_encoding
       cmd << " -D '#{data_dir(new_resource.version)}'"
@@ -218,6 +203,11 @@ module PostgresqlCookbook
     # Given the base URL build the complete URL string for a yum repo
     def yum_repo_url(base_url)
       "#{base_url}/#{new_resource.version}/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
+    end
+
+    # Given the base URL build the complete URL string for a yum repo
+    def yum_common_repo_url
+      "https://download.postgresql.org/pub/repos/yum/common/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
     end
 
     # The postgresql yum repos URLs are organized into redhat and fedora directories.s
@@ -229,13 +219,13 @@ module PostgresqlCookbook
     # Build the platform string that makes up the final component of the yum repo URL
     def yum_repo_platform_string
       platform = platform?('fedora') ? 'fedora' : 'rhel'
-      release = platform?('amazon') ? '6' : '$releasever'
+      release = platform?('amazon') ? '7' : '$releasever'
       "#{platform}-#{release}-$basearch"
     end
 
-    # On Amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
+    # On Amazon use the RHEL 7 packages. Otherwise use the releasever yum variable
     def yum_releasever
-      platform?('amazon') ? '6' : '$releasever'
+      platform?('amazon') ? '7' : '$releasever'
     end
 
     # Fedora doesn't seem to know the right symbols for psql

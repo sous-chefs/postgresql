@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+provides :postgresql_extension
 
 property :extension,        String, name_property: true
 property :old_version,      String

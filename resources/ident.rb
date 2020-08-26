@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+provides :postgresql_ident
 
 property :mapname,     String, required: true
 property :source,      String, default: 'pg_ident.conf.erb'

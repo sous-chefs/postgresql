@@ -1,3 +1,3 @@
 postgresql_repository 'pg repo' do
-  version '9.5'
+  version node['test']['pg_ver']
 end

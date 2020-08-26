@@ -4,6 +4,12 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Bumped default version of postgresql to 12
+- Added support for dnf by disabling the postgresql module on repo configuration
+- Add support for the pgdg-common repository
+- Add provides to resources
+- Add tests for currently supported postgresql releases
+- remove need to surround extension names with "" if they contain a '-'
 - resolved cookstyle error: libraries/helpers.rb:43:7 convention: `Style/RedundantAssignment`
 - resolved cookstyle error: libraries/helpers.rb:46:1 convention: `Layout/EmptyLinesAroundMethodBody`
 - resolved cookstyle error: libraries/helpers.rb:46:1 convention: `Layout/TrailingWhitespace`
