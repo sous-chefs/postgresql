@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## v8.0.0 (2020-08-26)
 
 - Bumped default version of postgresql to 12
 - Added support for dnf by disabling the postgresql module on repo configuration
