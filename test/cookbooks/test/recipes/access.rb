@@ -40,6 +40,11 @@ postgresql_user 'name-with-dash' do
   password '1234'
 end
 
+postgresql_user 'dropable-user' do
+  password '1234'
+  action [:create, :drop]
+end
+
 service 'postgresql' do
   extend PostgresqlCookbook::Helpers
   service_name lazy { platform_service_name }

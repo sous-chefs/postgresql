@@ -139,7 +139,7 @@ module PostgresqlCookbook
     end
 
     def drop_user_sql(new_resource)
-      sql = %(DROP ROLE IF EXISTS '#{new_resource.create_user}')
+      sql = %(DROP ROLE IF EXISTS #{new_resource.create_user})
       psql_command_string(new_resource, sql)
     end
 
