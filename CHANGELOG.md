@@ -4,6 +4,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Use system default locale when creating databases
 - resolved cookstyle error: spec/libraries/helpers_spec.rb:2:18 convention: `Style/RedundantFileExtensionInRequire`
 
 ## v8.0.0 (2020-08-26)
