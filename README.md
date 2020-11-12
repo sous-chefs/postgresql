@@ -307,8 +307,8 @@ Name       | Types   | Description                                              
 `template` | String  | Template used to create the new database                            | 'template1'         | no
 `host`     | String  | Define the host server where the database creation will be executed | Not set (localhost) | no
 `port`     | Integer | Define the port of PostgreSQL server                                | 5432                | no
-`encoding` | String  | Define database encoding                                            | 'UTF-8'             | no
-`locale`   | String  | Define database locale                                              | 'en_US.UTF-8'       | no
+`encoding` | String  | Define database encoding                                            | Not set             | no
+`locale`   | String  | Define database locale                                              | Not set             | no
 `owner`    | String  | Define the owner of the database                                    | Not set             | no
 
 #### Examples

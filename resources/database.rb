@@ -17,8 +17,8 @@
 provides :postgresql_database
 
 property :template, String, default: 'template1'
-property :encoding, String, default: 'UTF-8'
-property :locale,   String, default: 'en_US.UTF-8'
+property :encoding, String
+property :locale,   String
 property :owner,    String
 
 # Connection prefernces
