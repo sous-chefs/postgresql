@@ -40,6 +40,25 @@ postgresql_user 'name-with-dash' do
   password '1234'
 end
 
+postgresql_user 'dropable-user' do
+  password '1234'
+  action [:create, :drop]
+
+  # Prevent the test suite from creating and dropping the user again. This
+  # would raise an error during the second run, as it seems the resource didn't
+  # converge properly.
+  notifies :run, 'ruby_block[user_dropped]'
+  not_if { node.attribute? 'user_dropped' }
+end
+
+ruby_block 'user_dropped' do
+  block do
+    node.normal['user_dropped'] = true
+    node.save
+  end
+  action :nothing
+end
+
 service 'postgresql' do
   extend PostgresqlCookbook::Helpers
   service_name lazy { platform_service_name }
