@@ -2,6 +2,10 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
+- Fix quoting of DROP ROLE query
+
 ## v8.0.1 (2020-11-12)
 
 - Use system default locale when creating databases
