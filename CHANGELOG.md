@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Fix potential password exposure in logs
+
 ## 8.0.2 - *2020-11-20*
 
 - Fix quoting of DROP ROLE query

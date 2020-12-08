@@ -23,7 +23,7 @@ property :createrole,         [true, false], default: false
 property :inherit,            [true, false], default: true
 property :replication,        [true, false], default: false
 property :login,              [true, false], default: true
-property :password,           String
+property :password,           String, sensitive: true
 property :encrypted_password, String
 property :valid_until,        String
 property :attributes,         Hash, default: {}
