@@ -40,6 +40,12 @@ postgresql_user 'name-with-dash' do
   password '1234'
 end
 
+postgresql_user 'name-with-dash' do
+  attributes({ statement_timeout: '8min' })
+  sensitive false
+  action :update
+end
+
 postgresql_user 'dropable-user' do
   password '1234'
   action [:create, :drop]
