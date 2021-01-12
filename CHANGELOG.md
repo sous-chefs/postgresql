@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 8.1.1 - *2021-01-12*
 
 - Fix attribute updates for users with dashes
