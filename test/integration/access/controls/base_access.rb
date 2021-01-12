@@ -66,3 +66,14 @@ control 'name-with-dash role should exist' do
     its('output') { should cmp /name-with-dash/ }
   end
 end
+
+control 'name-with-dash role has statement_timeout set to 8mins' do
+  impact 1.0
+  desc 'Ensures attributes are applied on users with dashes'
+
+  postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
+
+  describe postgres_access.query("SELECT rolconfig FROM pg_roles where rolname = 'name-with-dash';") do
+    its('output') { should cmp /statement_timeout=8min/ }
+  end
+end
