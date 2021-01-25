@@ -33,6 +33,7 @@ property :user,     String, default: 'postgres'
 property :database, String
 property :host,     String
 property :port,     Integer, default: 5432
+property :psqlrc,   [true, false], default: true
 
 action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?

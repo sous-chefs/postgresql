@@ -28,6 +28,7 @@ module PostgresqlCookbook
       cmd << " --host #{new_resource.host}" if new_resource.host
       cmd << " --port #{new_resource.port}" if new_resource.port
       cmd << ' --tuples-only'               if value_only
+      cmd << ' --no-psqlrc'                 unless new_resource.psqlrc
       cmd << " | grep #{grep_for}"          if grep_for
       cmd
     end
