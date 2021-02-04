@@ -25,6 +25,7 @@ property :user,     String, default: 'postgres'
 property :database, String, required: true
 property :host,     [String, nil]
 property :port,     Integer, default: 5432
+property :psqlrc,   [true, false], default: true
 
 action :create do
   bash "CREATE EXTENSION #{new_resource.name}" do

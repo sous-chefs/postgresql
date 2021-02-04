@@ -79,7 +79,8 @@ RSpec.describe PostgresqlCookbook::Helpers do
         @new_resource = double(database: 'db_foo',
                               user: 'postgres',
                               host: 'localhost',
-                              port: '5432'
+                              port: '5432',
+                              psqlrc: true
                               )
         @query = 'THIS IS A COMMAND STRING'
       end
@@ -102,13 +103,15 @@ RSpec.describe PostgresqlCookbook::Helpers do
           database: 'test_1234',
           user: 'postgres',
           port: '5432',
-          host: nil
+          host: nil,
+          psqlrd: true
         )
         res = double(
           user: new_resource.user,
           port: new_resource.port,
           database: nil,
-          host: nil
+          host: nil,
+          psqlrc: true
         )
 
         db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
@@ -124,7 +127,8 @@ RSpec.describe PostgresqlCookbook::Helpers do
           database: nil,
           user: 'postgres',
           port: '5432',
-          host: '127.0.0.1'
+          host: '127.0.0.1',
+          psqlrc: true
         )
         db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
         result = %(/usr/bin/psql -c "SELECT datname from pg_database WHERE datname='test_1234'" -U postgres --host 127.0.0.1 --port 5432)
@@ -137,10 +141,24 @@ RSpec.describe PostgresqlCookbook::Helpers do
           database: nil,
           user: 'postgres',
           port: '5432',
-          host: nil
+          host: nil,
+          psqlrc: true
         )
         query = 'SELECT datname from pg_database WHERE datname=\'postgres\''
         result = %(/usr/bin/psql -c "SELECT datname from pg_database WHERE datname='postgres'" -U postgres --port 5432)
+
+        expect(subject.psql_command_string(new_resource, query)).to eq(result)
+      end
+      it 'Allow psqlrc to be ignored' do
+        new_resource = double(
+          database: nil,
+          user: 'postgres',
+          port: '5432',
+          host: '127.0.0.1',
+          psqlrc: false
+        )
+        query = 'SELECT datname from pg_database WHERE datname=\'postgres\''
+        result = %(/usr/bin/psql -c "SELECT datname from pg_database WHERE datname='postgres'" -U postgres --host 127.0.0.1 --port 5432 --no-psqlrc)
 
         expect(subject.psql_command_string(new_resource, query)).to eq(result)
       end
@@ -180,7 +198,8 @@ RSpec.describe PostgresqlCookbook::Helpers do
           initdb_locale: 'UTF-8',
           user: 'postgres',
           database: nil,
-          host: nil
+          host: nil,
+          psqlrc: true
         )
         result = %(/usr/bin/psql -c "ALTER ROLE postgres ENCRYPTED PASSWORD '12345';" -U postgres --port 5432)
 
@@ -196,7 +215,8 @@ RSpec.describe PostgresqlCookbook::Helpers do
           user: 'postgres',
           database: nil,
           host: nil,
-          port: 5432
+          port: 5432,
+          psqlrc: true
         )
         result = %(/usr/bin/psql -c "CREATE EXTENSION IF NOT EXISTS \\\"plpgsql\\\"" -U postgres --port 5432)
 
@@ -211,7 +231,8 @@ RSpec.describe PostgresqlCookbook::Helpers do
             user: 'postgres',
             database: nil,
             host: nil,
-            port: 5432
+            port: 5432,
+            psqlrc: true
           )
           result = %(/usr/bin/psql -c "CREATE EXTENSION IF NOT EXISTS \\\"uuid-ossp\\\"" -U postgres --port 5432)
 

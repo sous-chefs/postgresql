@@ -32,6 +32,7 @@ property :initdb_encoding,   String
 property :user,     String, default: 'postgres'
 property :database, String
 property :host,     [String, nil]
+property :psqlrc,   [true, false], default: true
 
 action :install do
   node.run_state['postgresql'] ||= {}
