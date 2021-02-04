@@ -4,7 +4,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
-## 8.2.0 - *2021-02-04*
+- Fix changelog formatting
 
 ## 8.2.0 - *2021-02-04*
 
