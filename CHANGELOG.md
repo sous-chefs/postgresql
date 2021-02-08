@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 8.2.1 - *2021-02-08*
 
 - Fix changelog formatting
 
