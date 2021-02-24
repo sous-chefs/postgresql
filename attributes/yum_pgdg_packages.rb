@@ -9,17 +9,17 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
     "redhat" => {
       "7" => {
         "x86_64" => {
-          "url" => "http://yum.postgresql.org/10/redhat/rhel-7-x86_64/",
+          "url" => "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/",
           "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         }
       },
       "6" => {
         "i386" => {
-          "url" => "http://yum.postgresql.org/10/redhat/rhel-6-i386/",
+          "url" => "https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/",
           "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         },
         "x86_64" => {
-          "url" => "http://yum.postgresql.org/10/redhat/rhel-6-x86_64/",
+          "url" => "https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/",
           "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         }
       }
@@ -27,17 +27,17 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
     "centos" => {
       "7" => {
         "x86_64" => {
-          "url" => "http://yum.postgresql.org/10/redhat/rhel-7-x86_64/",
+          "url" => "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/",
           "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         }
       },
       "6" => {
         "i386" => {
-          "url" => "http://yum.postgresql.org/10/redhat/rhel-6-i386/",
+          "url" => "https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/",
           "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         },
         "x86_64" => {
-          "url" => "http://yum.postgresql.org/10/redhat/rhel-6-x86_64/",
+          "url" => "https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/",
           "package" => "pgdg-redhat-repo-latest.noarch.rpm"
         }
       }
