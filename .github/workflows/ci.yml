@@ -59,6 +59,7 @@ jobs:
           - 'client-install-12'
           - 'client-install-95'
           - 'client-install-96'
+          - 'client-multi-install'
           - 'extension-10'
           - 'extension-11'
           - 'extension-12'
