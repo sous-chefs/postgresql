@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 8.3.0 - *2021-03-24*
 
 - Fix idempotency when installing multiple client versions
 
