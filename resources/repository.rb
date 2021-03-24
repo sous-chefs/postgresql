@@ -31,7 +31,7 @@ action :add do
 
   when 'rhel', 'fedora', 'amazon'
 
-    remote_file "/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}" do
+    remote_file '/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG' do
       source new_resource.yum_gpg_key_uri
     end
 
@@ -46,7 +46,7 @@ action :add do
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum')
       enabled     new_resource.enable_pgdg
       gpgcheck    true
-      gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      gpgkey      'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
     end
 
     yum_repository 'Postgresql - common' do
@@ -55,7 +55,7 @@ action :add do
       baseurl yum_common_repo_url
       enabled new_resource.enable_pgdg_common
       gpgcheck true
-      gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
     end
 
     yum_repository "PostgreSQL #{new_resource.version} - source " do
@@ -64,7 +64,7 @@ action :add do
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/srpms')
       enabled     new_resource.enable_pgdg_source
       gpgcheck    true
-      gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      gpgkey      'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
     end
 
     yum_repository "PostgreSQL #{new_resource.version} - updates testing" do
@@ -73,7 +73,7 @@ action :add do
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/testing')
       enabled     new_resource.enable_pgdg_updates_testing
       gpgcheck    true
-      gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      gpgkey      'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
     end
 
     yum_repository "PostgreSQL #{new_resource.version} - source - updates testing" do
@@ -82,7 +82,7 @@ action :add do
       baseurl     yum_repo_url('https://download.postgresql.org/pub/repos/yum/srpms/testing')
       enabled     new_resource.enable_pgdg_source_updates_testing
       gpgcheck    true
-      gpgkey      "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-#{new_resource.version}"
+      gpgkey      'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
     end
 
   when 'debian'
@@ -90,7 +90,7 @@ action :add do
 
     package 'apt-transport-https'
 
-    apt_repository 'postgresql_org_repository' do
+    apt_repository "postgresql_org_repository_#{new_resource.version.to_s}" do
       uri          'https://download.postgresql.org/pub/repos/apt/'
       components   ['main', new_resource.version.to_s]
       distribution "#{node['lsb']['codename']}-pgdg"
