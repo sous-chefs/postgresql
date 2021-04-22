@@ -41,7 +41,7 @@ action :create do
   execute "create postgresql user #{new_resource.create_user}" do
     user 'postgres'
     command create_user_sql(new_resource)
-    sensitive new_resource.sensitive
+    sensitive new_resource.sensitive || !!new_resource.password
     environment(psql_environment)
     not_if { follower? || user_exists?(new_resource) }
   end

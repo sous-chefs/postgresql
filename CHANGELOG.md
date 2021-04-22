@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Prevent leaking the users password during account creation
+
 ## 8.3.0 - *2021-03-24*
 
 - Fix idempotency when installing multiple client versions
