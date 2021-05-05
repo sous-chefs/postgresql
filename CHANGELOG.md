@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Use unified_mode for Chef 17 support
+- Update minimum Chef version top 15.3 where unified mode was introduced
+
 ## 8.3.0 - *2021-03-24*
 
 - Fix idempotency when installing multiple client versions
