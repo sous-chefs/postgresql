@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 provides :postgresql_server_conf
+unified_mode true
 
 include PostgresqlCookbook::Helpers
 

@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 provides :postgresql_repository
+unified_mode true
 
 property :version,                            [String], default: '12'
 property :enable_pgdg,                        [true, false], default: true

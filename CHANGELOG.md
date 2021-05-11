@@ -4,6 +4,15 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- resolved cookstyle error: resources/access.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
+- resolved cookstyle error: resources/client_install.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
+- resolved cookstyle error: resources/database.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
+- resolved cookstyle error: resources/extension.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
+- resolved cookstyle error: resources/ident.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
+- resolved cookstyle error: resources/repository.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
+- resolved cookstyle error: resources/server_conf.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
+- resolved cookstyle error: resources/server_install.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
+- resolved cookstyle error: resources/user.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
 ## 8.3.0 - *2021-03-24*
 
 - Fix idempotency when installing multiple client versions

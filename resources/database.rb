@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 provides :postgresql_database
+unified_mode true
 
 property :template, String, default: 'template1'
 property :encoding, String

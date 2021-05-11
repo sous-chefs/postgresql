@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 provides :postgresql_extension
+unified_mode true
 
 property :extension,        String, name_property: true
 property :old_version,      String

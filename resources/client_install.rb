@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 provides :postgresql_client_install
+unified_mode true
 
 property :version,    String, default: '12'
 property :setup_repo, [true, false], default: true

@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 provides :postgresql_access
+unified_mode true
 
 property :access_type,   String, default: 'local'
 property :access_db,     String, default: 'all'
