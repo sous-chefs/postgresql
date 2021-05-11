@@ -271,7 +271,7 @@ suites:
         - path: test/integration/extension/
     run_list:
       - recipe[test::extension]
-  - name: ident_11
+  - name: ident_10
     attributes:
       test:
         pg_ver: "10"
