@@ -376,6 +376,12 @@ suites:
         pg_ver: "9.6"
     run_list:
       - recipe[test::repository]
+  - name: client_multi_install
+    verifier:
+      inspec_tests:
+        - path: test/integration/client_multi_install/
+    run_list:
+      - recipe[test::multi_client]
   - name: server_install_96
     attributes:
       test:
