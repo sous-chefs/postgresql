@@ -13,10 +13,10 @@ platforms:
       box: ywatase/amzn2
   - name: centos-7
   - name: centos-8
-  - name: debian-11
   - name: debian-9
-  - name: fedora-31
-  - name: fedora-32
+  - name: debian-10
+  - name: debian-11
+  - name: fedora-latest
   - name: oraclelinux-7
   - name: oraclelinux-8
   - name: ubuntu-18.04
