@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Prevent leaking the users password during account creation
+
 ## 9.0.0 - *2021-05-13*
 
 - Use unified_mode for Chef 17 support
