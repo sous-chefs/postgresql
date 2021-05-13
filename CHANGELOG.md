@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 9.0.1 - *2021-05-13*
 
 - Prevent leaking the users password during account creation
