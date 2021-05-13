@@ -31,7 +31,7 @@ We follow the currently supported versions listed on <https://www.postgresql.org
 
 ### Chef
 
-- Chef 13.8+
+- Chef 15.3+
 
 ### Cookbook Dependencies
 
