@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-provides :postgresql_database
+unified_mode true
 
 property :template, String, default: 'template1'
 property :encoding, String

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-provides :postgresql_user
+unified_mode true
 
 property :create_user,        String, name_property: true
 property :superuser,          [true, false], default: false

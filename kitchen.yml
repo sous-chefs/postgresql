@@ -13,20 +13,93 @@ platforms:
       box: ywatase/amzn2
   - name: centos-7
   - name: centos-8
-  - name: debian-10
   - name: debian-9
-  - name: fedora-31
-  - name: fedora-32
+  - name: debian-10
+  - name: debian-11
+  - name: fedora-latest
   - name: oraclelinux-7
   - name: oraclelinux-8
   - name: ubuntu-18.04
   - name: ubuntu-20.04
 
 suites:
+  - name: access_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/access/
+    run_list:
+      - recipe[test::access]
+  - name: client_install_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/client_install/
+      inputs:
+        pg_ver: "13"
+    run_list:
+      - recipe[test::client_install]
+  - name: extension_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/extension/
+    run_list:
+      - recipe[test::extension]
+  - name: ident_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/ident/
+    run_list:
+      - recipe[test::ident]
+  - name: initdb_locale_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/initdb_locale/
+    run_list:
+      - recipe[test::initdb_locale]
+    includes:
+      - centos-7
+      - centos-8
+  - name: repo_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/repo/
+      inputs:
+        pg_ver: "13"
+    run_list:
+      - recipe[test::repository]
+  - name: server_install_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/server_install/
+      inputs:
+        pg_ver: "13"
+    run_list:
+      - recipe[test::server_install]
+
   - name: access_12
     attributes:
       test:
-        pg_ver: '12'
+        pg_ver: "12"
     verifier:
       inspec_tests:
         - path: test/integration/access/
@@ -35,18 +108,18 @@ suites:
   - name: client_install_12
     attributes:
       test:
-        pg_ver: '12'
+        pg_ver: "12"
     verifier:
       inspec_tests:
         - path: test/integration/client_install/
       inputs:
-        pg_ver: '12'
+        pg_ver: "12"
     run_list:
       - recipe[test::client_install]
   - name: extension_12
     attributes:
       test:
-        pg_ver: '12'
+        pg_ver: "12"
     verifier:
       inspec_tests:
         - path: test/integration/extension/
@@ -55,7 +128,7 @@ suites:
   - name: ident_12
     attributes:
       test:
-        pg_ver: '12'
+        pg_ver: "12"
     verifier:
       inspec_tests:
         - path: test/integration/ident/
@@ -64,7 +137,7 @@ suites:
   - name: initdb_locale_12
     attributes:
       test:
-        pg_ver: '12'
+        pg_ver: "12"
     verifier:
       inspec_tests:
         - path: test/integration/initdb_locale/
@@ -76,30 +149,30 @@ suites:
   - name: repo_12
     attributes:
       test:
-        pg_ver: '12'
+        pg_ver: "12"
     verifier:
       inspec_tests:
         - path: test/integration/repo/
       inputs:
-        pg_ver: '12'
+        pg_ver: "12"
     run_list:
       - recipe[test::repository]
   - name: server_install_12
     attributes:
       test:
-        pg_ver: '12'
+        pg_ver: "12"
     verifier:
       inspec_tests:
         - path: test/integration/server_install/
       inputs:
-        pg_ver: '12'
+        pg_ver: "12"
     run_list:
       - recipe[test::server_install]
 
   - name: access_11
     attributes:
       test:
-        pg_ver: '11'
+        pg_ver: "11"
     verifier:
       inspec_tests:
         - path: test/integration/access/
@@ -108,18 +181,18 @@ suites:
   - name: client_install_11
     attributes:
       test:
-        pg_ver: '11'
+        pg_ver: "11"
     verifier:
       inspec_tests:
         - path: test/integration/client_install/
       inputs:
-        pg_ver: '11'
+        pg_ver: "11"
     run_list:
       - recipe[test::client_install]
   - name: extension_11
     attributes:
       test:
-        pg_ver: '11'
+        pg_ver: "11"
     verifier:
       inspec_tests:
         - path: test/integration/extension/
@@ -128,7 +201,7 @@ suites:
   - name: ident_11
     attributes:
       test:
-        pg_ver: '11'
+        pg_ver: "11"
     verifier:
       inspec_tests:
         - path: test/integration/ident/
@@ -137,7 +210,7 @@ suites:
   - name: initdb_locale_11
     attributes:
       test:
-        pg_ver: '11'
+        pg_ver: "11"
     verifier:
       inspec_tests:
         - path: test/integration/initdb_locale/
@@ -149,30 +222,30 @@ suites:
   - name: repo_11
     attributes:
       test:
-        pg_ver: '11'
+        pg_ver: "11"
     verifier:
       inspec_tests:
         - path: test/integration/repo/
       inputs:
-        pg_ver: '11'
+        pg_ver: "11"
     run_list:
       - recipe[test::repository]
   - name: server_install_11
     attributes:
       test:
-        pg_ver: '11'
+        pg_ver: "11"
     verifier:
       inspec_tests:
         - path: test/integration/server_install/
       inputs:
-        pg_ver: '11'
+        pg_ver: "11"
     run_list:
       - recipe[test::server_install]
 
   - name: access_10
     attributes:
       test:
-        pg_ver: '10'
+        pg_ver: "10"
     verifier:
       inspec_tests:
         - path: test/integration/access/
@@ -181,18 +254,18 @@ suites:
   - name: client_install_10
     attributes:
       test:
-        pg_ver: '10'
+        pg_ver: "10"
     verifier:
       inspec_tests:
         - path: test/integration/client_install/
       inputs:
-        pg_ver: '10'
+        pg_ver: "10"
     run_list:
       - recipe[test::client_install]
   - name: extension_10
     attributes:
       test:
-        pg_ver: '10'
+        pg_ver: "10"
     verifier:
       inspec_tests:
         - path: test/integration/extension/
@@ -201,7 +274,7 @@ suites:
   - name: ident_10
     attributes:
       test:
-        pg_ver: '10'
+        pg_ver: "10"
     verifier:
       inspec_tests:
         - path: test/integration/ident/
@@ -210,7 +283,7 @@ suites:
   - name: initdb_locale_10
     attributes:
       test:
-        pg_ver: '10'
+        pg_ver: "10"
     verifier:
       inspec_tests:
         - path: test/integration/initdb_locale/
@@ -222,30 +295,30 @@ suites:
   - name: repo_10
     attributes:
       test:
-        pg_ver: '10'
+        pg_ver: "10"
     verifier:
       inspec_tests:
         - path: test/integration/repo/
       inputs:
-        pg_ver: '10'
+        pg_ver: "10"
     run_list:
       - recipe[test::repository]
   - name: server_install_10
     attributes:
       test:
-        pg_ver: '10'
+        pg_ver: "10"
     verifier:
       inspec_tests:
         - path: test/integration/server_install/
       inputs:
-        pg_ver: '10'
+        pg_ver: "10"
     run_list:
       - recipe[test::server_install]
 
   - name: access_96
     attributes:
       test:
-        pg_ver: '9.6'
+        pg_ver: "9.6"
     verifier:
       inspec_tests:
         - path: test/integration/access/
@@ -254,18 +327,18 @@ suites:
   - name: client_install_96
     attributes:
       test:
-        pg_ver: '9.6'
+        pg_ver: "9.6"
     verifier:
       inspec_tests:
         - path: test/integration/client_install/
       inputs:
-        pg_ver: '9.6'
+        pg_ver: "9.6"
     run_list:
       - recipe[test::client_install]
   - name: extension_96
     attributes:
       test:
-        pg_ver: '9.6'
+        pg_ver: "9.6"
     verifier:
       inspec_tests:
         - path: test/integration/extension/
@@ -274,7 +347,7 @@ suites:
   - name: ident_96
     attributes:
       test:
-        pg_ver: '9.6'
+        pg_ver: "9.6"
     verifier:
       inspec_tests:
         - path: test/integration/ident/
@@ -283,7 +356,7 @@ suites:
   - name: initdb_locale_96
     attributes:
       test:
-        pg_ver: '9.6'
+        pg_ver: "9.6"
     verifier:
       inspec_tests:
         - path: test/integration/initdb_locale/
@@ -295,101 +368,28 @@ suites:
   - name: repo_96
     attributes:
       test:
-        pg_ver: '9.6'
+        pg_ver: "9.6"
     verifier:
       inspec_tests:
         - path: test/integration/repo/
       inputs:
-        pg_ver: '9.6'
+        pg_ver: "9.6"
     run_list:
       - recipe[test::repository]
-  - name: server_install_96
-    attributes:
-      test:
-        pg_ver: '9.6'
-    verifier:
-      inspec_tests:
-        - path: test/integration/server_install/
-      inputs:
-        pg_ver: '9.6'
-    run_list:
-      - recipe[test::server_install]
-
-  - name: access_95
-    attributes:
-      test:
-        pg_ver: '9.5'
-    verifier:
-      inspec_tests:
-        - path: test/integration/access/
-    run_list:
-      - recipe[test::access]
-  - name: client_install_95
-    attributes:
-      test:
-        pg_ver: '9.5'
-    verifier:
-      inspec_tests:
-        - path: test/integration/client_install/
-      inputs:
-        pg_ver: '9.5'
-    run_list:
-      - recipe[test::client_install]
   - name: client_multi_install
     verifier:
       inspec_tests:
         - path: test/integration/client_multi_install/
     run_list:
       - recipe[test::multi_client]
-  - name: extension_95
+  - name: server_install_96
     attributes:
       test:
-        pg_ver: '9.5'
-    verifier:
-      inspec_tests:
-        - path: test/integration/extension/
-    run_list:
-      - recipe[test::extension]
-  - name: ident_95
-    attributes:
-      test:
-        pg_ver: '9.5'
-    verifier:
-      inspec_tests:
-        - path: test/integration/ident/
-    run_list:
-      - recipe[test::ident]
-  - name: initdb_locale_95
-    attributes:
-      test:
-        pg_ver: '9.5'
-    verifier:
-      inspec_tests:
-        - path: test/integration/initdb_locale/
-    run_list:
-      - recipe[test::initdb_locale]
-    includes:
-      - centos-7
-      - centos-8
-  - name: repo_95
-    attributes:
-      test:
-        pg_ver: '9.5'
-    verifier:
-      inspec_tests:
-        - path: test/integration/repo/
-      inputs:
-        pg_ver: '9.5'
-    run_list:
-      - recipe[test::repository]
-  - name: server_install_95
-    attributes:
-      test:
-        pg_ver: '9.5'
+        pg_ver: "9.6"
     verifier:
       inspec_tests:
         - path: test/integration/server_install/
       inputs:
-        pg_ver: '9.5'
+        pg_ver: "9.6"
     run_list:
       - recipe[test::server_install]

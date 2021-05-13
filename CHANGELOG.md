@@ -6,6 +6,13 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 - Prevent leaking the users password during account creation
 
+## 9.0.0 - *2021-05-13*
+
+- Use unified_mode for Chef 17 support
+- Update minimum Chef version top 15.3 where unified mode was introduced
+- Drop testing PostgreSQL 9.5 support now it's EOL
+- Add PostgreSQL 13 testing
+
 ## 8.3.0 - *2021-03-24*
 
 - Fix idempotency when installing multiple client versions

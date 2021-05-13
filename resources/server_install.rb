@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-provides :postgresql_server_install
+unified_mode true
 
 include PostgresqlCookbook::Helpers
 
@@ -71,13 +71,13 @@ action :create do
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
   end
 
-  # We use to use find_resource here.
+  # We previously used find_resource here.
   # But that required the user to do the same in their recipe.
   # This also seemed to never trigger notifications, therefore requiring a log resource
   # to notify the enable/start on the service, which always fires (Check v7.0 tag for more)
   service 'postgresql' do
     service_name platform_service_name
-    supports restart: true, status: true, reload: true
+    supports restart: true, status: true, reload: true, enable: true
     action [:enable, :start]
   end
 
