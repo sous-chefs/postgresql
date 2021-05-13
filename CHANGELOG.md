@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 9.0.0 - *2021-05-13*
 
 - Use unified_mode for Chef 17 support
 - Update minimum Chef version top 15.3 where unified mode was introduced
