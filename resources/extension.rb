@@ -14,13 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-provides :postgresql_extension
+unified_mode true
 
 property :extension,        String, name_property: true
 property :old_version,      String
 property :version,          String
 
-# Connection prefernces
+# Connection preferences
 property :user,     String, default: 'postgres'
 property :database, String, required: true
 property :host,     [String, nil]
