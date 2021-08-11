@@ -81,7 +81,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
                               host: 'localhost',
                               port: '5432',
                               psqlrc: true
-                              )
+        )
         @query = 'THIS IS A COMMAND STRING'
       end
 
