@@ -7,7 +7,7 @@ description       'Installs and configures postgresql for clients or servers'
 version           '9.0.3'
 source_url        'https://github.com/sous-chefs/postgresql'
 issues_url        'https://github.com/sous-chefs/postgresql/issues'
-chef_version      '>= 15.3'
+chef_version      '>= 16.0'
 
 depends 'yum-epel'
 depends 'apt'
