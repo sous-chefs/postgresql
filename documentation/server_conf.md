@@ -25,7 +25,7 @@ This resource manages the postgresql.conf configuration file.
 
 Setup the PostgreSQL configuration with a specific data directory:
 
-*Note: If you have installed a specific version of PostgreSQL (different from the default version), you must specify that version in this resource too*
+> Note: If you have installed a specific version of PostgreSQL (different from the default version), you must specify that version in this resource too
 
 ```ruby
 postgresql_server_conf 'My PostgreSQL Config' do
