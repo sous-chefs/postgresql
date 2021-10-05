@@ -9,7 +9,7 @@ source_url        'https://github.com/sous-chefs/postgresql'
 issues_url        'https://github.com/sous-chefs/postgresql/issues'
 chef_version      '>= 15.3'
 
-depends 'yum'
+depends 'yum', '>= 7.2.0'
 depends 'yum-epel'
 depends 'apt'
 

@@ -5,6 +5,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 ## Unreleased
 
 - Use `dnf_module` resource from yum cookbook instead of manually shelling out
+- Move resource documentation out of README
 
 ## 9.0.3 - *2021-08-30*
 
