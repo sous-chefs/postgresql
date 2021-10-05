@@ -59,8 +59,7 @@ end
 
 ruby_block 'user_dropped' do
   block do
-    node.normal['user_dropped'] = true
-    node.save
+    node.default['user_dropped'] = true
   end
   action :nothing
 end
