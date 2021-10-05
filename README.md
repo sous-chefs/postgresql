@@ -14,16 +14,16 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 
 ## Upgrading
 
-If you are wondering where all the recipes went in v7.0+, or how on earth I use this new cookbook please see upgrading.md for a full description.
+If you are wondering where all the recipes went in v7.0+, or how on earth I use this new cookbook please see UPGRADING.md for a full description.
 
 ## Requirements
 
 ### Platforms
 
 - Amazon Linux
-- Debian 7+
-- Ubuntu 14.04+
-- Red Hat/CentOS/Scientific 6+
+- Debian 9+
+- Ubuntu 18.04+
+- Red Hat/CentOS/Scientific 7+
 
 ### PostgreSQL version
 

@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Use `dnf_module` resource from yum cookbook instead of manually shelling out
+
 ## 9.0.3 - *2021-08-30*
 
 - Standardise files with files in sous-chefs/repo-management

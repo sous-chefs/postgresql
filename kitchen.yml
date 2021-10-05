@@ -1,11 +1,17 @@
 ---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+  product_name: chef
+  chef_license: accept-no-persist
+  multiple_converge: 2
+  enforce_idempotency: true
+  deprecations_as_errors: true
+
 verifier:
   name: inspec
-provisioner:
-  name: chef_solo
-  enforce_idempotency: true
-  multiple_converge: 2
-  deprecations_as_errors: true
 
 platforms:
   - name: amazonlinux-2
@@ -32,6 +38,9 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
   - name: client_install_13
     attributes:
       test:
@@ -105,6 +114,9 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
   - name: client_install_12
     attributes:
       test:
@@ -178,6 +190,9 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
   - name: client_install_11
     attributes:
       test:
@@ -251,6 +266,9 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
   - name: client_install_10
     attributes:
       test:
@@ -324,6 +342,9 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
   - name: client_install_96
     attributes:
       test:
