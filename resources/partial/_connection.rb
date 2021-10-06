@@ -3,8 +3,7 @@ property :user,
          default: 'postgres'
 
 property :database,
-         String,
-         name_property: true
+         String
 
 property :host,
          String

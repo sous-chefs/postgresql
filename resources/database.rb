@@ -1,6 +1,11 @@
 unified_mode true
 use 'partial/_connection'
 
+# Override the database property from the partial
+property :database,
+         String,
+         name_property: true
+
 property :template, String, default: 'template1'
 property :encoding, String
 property :locale,   String
