@@ -9,18 +9,13 @@ source_url        'https://github.com/sous-chefs/postgresql'
 issues_url        'https://github.com/sous-chefs/postgresql/issues'
 chef_version      '>= 15.3'
 
-depends 'yum-epel'
-depends 'apt'
+depends 'yum', '>= 7.2.0'
 
-%w(
-  amazon
-  centos
-  debian
-  fedora
-  oracle
-  redhat
-  scientefic
-  ubuntu
-).each do |os|
-  supports os
-end
+supports 'amazon'
+supports 'centos'
+supports 'debian'
+supports 'fedora'
+supports 'oracle'
+supports 'redhat'
+supports 'scientific'
+supports 'ubuntu'
