@@ -18,9 +18,9 @@ This resource installs PostgreSQL client and server packages.
 | `hba_file`          | String      | Path of pg_hba.conf file               | `<default_os_path>/pg_hba.conf'`                   | no        |
 | `ident_file`        | String      | Path of pg_ident.conf file             | `<default_os_path>/pg_ident.conf`                  | no        |
 | `external_pid_file` | String      | Path of PID file                       | `/var/run/postgresql/<version>-main.pid</version>` | no        |
-| `password`          | String, nil | Set PostgreSQL user password           | `'generate'`                                       | no        |
+| `password`          | String, nil | Set PostgreSQL user password           | `generate`                                         | no        |
 | `port`              | Integer     | Set listen port of PostgreSQL service  | `5432`                                             | no        |
-| `initdb_locale`     | String      | Locale to initialize the database with | `'C'`                                              | no        |
+| `initdb_locale`     | String      | Locale to initialize the database with | `C`                                                | no        |
 
 ## Examples
 

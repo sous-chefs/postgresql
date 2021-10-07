@@ -7,7 +7,7 @@ This resource manage PostgreSQL users.
 ## Actions
 
 - `create` - (default) Creates the given user with default or given privileges.
-- `update` - Update user privilieges.
+- `update` - Update user privileges.
 - `drop` - Deletes the given user.
 
 ## Properties
