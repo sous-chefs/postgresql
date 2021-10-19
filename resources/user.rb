@@ -12,6 +12,7 @@ property :password,           String, sensitive: true
 property :encrypted_password, String
 property :valid_until,        String
 property :attributes,         Hash, default: {}
+property :sensitive,          [true, false], default: true
 
 action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?
@@ -19,8 +20,7 @@ action :create do
   execute "create postgresql user #{new_resource.create_user}" do
     user 'postgres'
     command create_user_sql(new_resource)
-    # sensitive new_resource.sensitive || !!new_resource.password
-    sensitive false
+    sensitive new_resource.sensitive || !!new_resource.password
     environment(psql_environment)
     not_if { follower? || user_exists?(new_resource) }
   end
@@ -61,7 +61,7 @@ action :drop do
     user 'postgres'
     command drop_user_sql(new_resource)
     environment(psql_environment)
-    sensitive true
+    sensitive new_resource.sensitive
     not_if { follower? }
     only_if { user_exists?(new_resource) }
   end
