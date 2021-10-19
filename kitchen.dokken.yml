@@ -1,16 +1,15 @@
 ---
 driver:
   name: dokken
-  # because Docker and SystemD/Upstart
-  privileged: true
-  chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
-  env: [CHEF_LICENSE=accept]
+  privileged: true  # because Docker and systemd
 
 transport:
   name: dokken
 
 provisioner:
   name: dokken
+  chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
+  chef_license: accept-no-persist
 
 platforms:
   - name: debian-9
@@ -23,6 +22,13 @@ platforms:
   - name: debian-10
     driver:
       image: dokken/debian-10
+      pid_one_command: /bin/systemd
+      intermediate_instructions:
+        - RUN /usr/bin/apt-get update
+
+  - name: debian-11
+    driver:
+      image: dokken/debian-11
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
@@ -51,14 +57,9 @@ platforms:
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
 
-  - name: fedora-31
+  - name: fedora-latest
     driver:
-      image: dokken/fedora-31
-      pid_one_command: /usr/lib/systemd/systemd
-
-  - name: fedora-32
-    driver:
-      image: dokken/fedora-32
+      image: dokken/fedora-latest
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: oracle-7

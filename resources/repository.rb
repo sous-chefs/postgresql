@@ -1,6 +1,6 @@
 unified_mode true
 
-property :version,                            [String], default: '12'
+property :version,                            String,        default: '12'
 property :enable_pgdg,                        [true, false], default: true
 property :enable_pgdg_common,                 [true, false], default: true
 property :enable_pgdg_source,                 [true, false], default: false
@@ -18,9 +18,9 @@ action :add do
       source new_resource.yum_gpg_key_uri
     end
 
-    execute 'dnf -qy module disable postgresql' do
-      only_if { (node['platform_version'].to_i > 7 && platform_family?('rhel')) || platform_family?('fedora') }
-      not_if 'dnf module list postgresql | grep -q "^postgresql.*\[x\]"'
+    dnf_module 'postgresql' do
+      action :disable
+      only_if { node['platform_version'].to_i >= 8 && platform_family?('rhel', 'fedora') }
     end
 
     yum_repository "PostgreSQL #{new_resource.version}" do
