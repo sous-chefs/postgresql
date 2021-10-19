@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 10.0.0 - *2021-10-19*
 
 - Move connection options to a resource partial
 - Require Chef 16+ for resource partials
