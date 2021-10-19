@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Move connection options to a resource partial
+- Require Chef 16+ for resource partials
+
 ## 9.1.0 - *2021-10-07*
 
 - Use `dnf_module` resource from yum cookbook instead of manually shelling out

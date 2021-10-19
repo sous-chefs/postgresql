@@ -1,20 +1,5 @@
-#
-# Cookbook:: postgresql
-# Resource:: user
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 unified_mode true
+use 'partial/_connection'
 
 property :create_user,        String, name_property: true
 property :superuser,          [true, false], default: false
@@ -27,13 +12,7 @@ property :password,           String, sensitive: true
 property :encrypted_password, String
 property :valid_until,        String
 property :attributes,         Hash, default: {}
-
-# Connection prefernces
-property :user,     String, default: 'postgres'
-property :database, String
-property :host,     String
-property :port,     Integer, default: 5432
-property :psqlrc,   [true, false], default: true
+property :sensitive,          [true, false], default: true
 
 action :create do
   Chef::Log.warn('You cannot use "attributes" property with create action.') unless new_resource.attributes.empty?
@@ -53,7 +32,7 @@ action :update do
       user 'postgres'
       command update_user_sql(new_resource)
       environment(psql_environment)
-      sensitive true
+      sensitive new_resource.sensitive
       not_if { follower? }
       only_if { user_exists?(new_resource) }
     end
@@ -69,7 +48,7 @@ action :update do
         user 'postgres'
         command update_user_with_attributes_sql(new_resource, attr, v)
         environment(psql_environment)
-        sensitive true
+        sensitive new_resource.sensitive
         not_if { follower? || attribute_is_set?(new_resource.create_user, attr, v) }
         only_if { user_exists?(new_resource) }
       end
@@ -82,7 +61,7 @@ action :drop do
     user 'postgres'
     command drop_user_sql(new_resource)
     environment(psql_environment)
-    sensitive true
+    sensitive new_resource.sensitive
     not_if { follower? }
     only_if { user_exists?(new_resource) }
   end
