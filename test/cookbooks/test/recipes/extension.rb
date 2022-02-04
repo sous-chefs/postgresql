@@ -1,6 +1,6 @@
 # Dokken images don't have all locales available so this is a workaround
 locale = value_for_platform(
-  [:debian, :ubuntu, :fedora, :oracle, :amazon] => { default: 'C.UTF-8' },
+  [:debian, :ubuntu, :fedora, :oracle, :amazon, :almalinux, :rocky] => { default: 'C.UTF-8' },
   centos: { default: node['platform_version'].to_i < 8 ? 'en_GB.utf-8' : 'C.UTF-8' },
   default: 'en_US'
 )

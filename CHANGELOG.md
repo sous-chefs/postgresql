@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Remove delivery and move to calling RSpec directly via a reusable workflow
+- Update tested platforms
+
 ## 10.0.0 - *2021-10-19*
 
 - Move connection options to a resource partial

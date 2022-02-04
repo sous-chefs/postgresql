@@ -8,43 +8,22 @@ name: ci
       - main
 
 jobs:
-  delivery:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run Chef Delivery
-        uses: actionshub/chef-delivery@main
-        env:
-          CHEF_LICENSE: accept-no-persist
-
-  yamllint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run yaml Lint
-        uses: actionshub/yamllint@main
-
-  mdl:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run Markdown Lint
-        uses: actionshub/markdownlint@main
+  lint-unit:
+    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@0.0.3
 
   integration:
-    needs: [mdl, yamllint, delivery]
+    needs: lint-unit
     runs-on: ubuntu-latest
     strategy:
       matrix:
         os:
+          - 'almalinux-8'
           - 'amazonlinux-2'
           - 'centos-7'
-          - 'centos-8'
+          - 'centos-stream-8'
           - 'debian-10'
-          - 'debian-9'
+          - 'debian-11'
+          - 'rockylinux-8'
           - 'ubuntu-1804'
           - 'ubuntu-2004'
 
@@ -60,16 +39,11 @@ jobs:
           - 'client-install-12'
           - 'client-install-13'
           - 'client-multi-install'
-          - 'extension-96'
-          - 'extension-10'
-          - 'extension-11'
           - 'extension-12'
           - 'extension-13'
-          - 'ident-96'
-          - 'ident-10'
-          - 'ident-11'
           - 'ident-12'
           - 'ident-13'
+          - 'initdb-locale-13'
           - 'repo-96'
           - 'repo-10'
           - 'repo-11'
@@ -80,6 +54,17 @@ jobs:
           - 'server-install-11'
           - 'server-install-12'
           - 'server-install-13'
+        exclude:
+          - os: amazonlinux-2
+            suite: initdb-locale-13
+          - os: debian-10
+            suite: initdb-locale-13
+          - os: debian-11
+            suite: initdb-locale-13
+          - os: ubuntu-1804
+            suite: initdb-locale-13
+          - os: ubuntu-2004
+            suite: initdb-locale-13
       fail-fast: false
 
     steps:

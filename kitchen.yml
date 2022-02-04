@@ -3,7 +3,7 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_zero
+  name: chef_infra
   product_name: chef
   chef_license: accept-no-persist
   multiple_converge: 2
@@ -14,17 +14,16 @@ verifier:
   name: inspec
 
 platforms:
+  - name: almalinux-8
   - name: amazonlinux-2
-    driver_config:
-      box: ywatase/amzn2
   - name: centos-7
-  - name: centos-8
-  - name: debian-9
+  - name: centos-stream-8
   - name: debian-10
   - name: debian-11
   - name: fedora-latest
   - name: oraclelinux-7
   - name: oraclelinux-8
+  - name: rockylinux-8
   - name: ubuntu-18.04
   - name: ubuntu-20.04
 
@@ -80,8 +79,10 @@ suites:
     run_list:
       - recipe[test::initdb_locale]
     includes:
+      - almalinux-8
       - centos-7
-      - centos-8
+      - centos-stream-8
+      - rockylinux-8
   - name: repo_13
     attributes:
       test:
@@ -156,8 +157,10 @@ suites:
     run_list:
       - recipe[test::initdb_locale]
     includes:
+      - almalinux-8
       - centos-7
-      - centos-8
+      - centos-stream-8
+      - rockylinux-8
   - name: repo_12
     attributes:
       test:
@@ -232,8 +235,10 @@ suites:
     run_list:
       - recipe[test::initdb_locale]
     includes:
+      - almalinux-8
       - centos-7
-      - centos-8
+      - centos-stream-8
+      - rockylinux-8
   - name: repo_11
     attributes:
       test:
@@ -308,8 +313,10 @@ suites:
     run_list:
       - recipe[test::initdb_locale]
     includes:
+      - almalinux-8
       - centos-7
-      - centos-8
+      - centos-stream-8
+      - rockylinux-8
   - name: repo_10
     attributes:
       test:
@@ -384,8 +391,10 @@ suites:
     run_list:
       - recipe[test::initdb_locale]
     includes:
+      - almalinux-8
       - centos-7
-      - centos-8
+      - centos-stream-8
+      - rockylinux-8
   - name: repo_96
     attributes:
       test:
