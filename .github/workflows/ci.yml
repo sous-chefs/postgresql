@@ -56,15 +56,15 @@ jobs:
           - 'server-install-13'
         exclude:
           - os: amazonlinux-2
-            suite: extension-13
+            suite: initdb-locale-13
           - os: debian-10
-            suite: extension-13
+            suite: initdb-locale-13
           - os: debian-11
-            suite: extension-13
+            suite: initdb-locale-13
           - os: ubuntu-1804
-            suite: extension-13
+            suite: initdb-locale-13
           - os: ubuntu-2004
-            suite: extension-13
+            suite: initdb-locale-13
       fail-fast: false
 
     steps:
