@@ -62,6 +62,7 @@ jobs:
           - 'server-install-12'
           - 'server-install-13'
         exclude:
+          - os: amazonlinux-2
             suite: extension-12
           - os: debian-10
             suite: extension-12
