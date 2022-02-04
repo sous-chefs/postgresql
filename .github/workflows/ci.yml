@@ -39,17 +39,10 @@ jobs:
           - 'client-install-12'
           - 'client-install-13'
           - 'client-multi-install'
-          - 'extension-96'
-          - 'extension-10'
-          - 'extension-11'
           - 'extension-12'
           - 'extension-13'
-          - 'ident-96'
-          - 'ident-10'
-          - 'ident-11'
           - 'ident-12'
           - 'ident-13'
-          - 'initdb-locale-12'
           - 'initdb-locale-13'
           - 'repo-96'
           - 'repo-10'
@@ -62,16 +55,6 @@ jobs:
           - 'server-install-12'
           - 'server-install-13'
         exclude:
-          - os: amazonlinux-2
-            suite: extension-12
-          - os: debian-10
-            suite: extension-12
-          - os: debian-11
-            suite: extension-12
-          - os: ubuntu-1804
-            suite: extension-12
-          - os: ubuntu-2004
-            suite: extension-12
           - os: amazonlinux-2
             suite: extension-13
           - os: debian-10
