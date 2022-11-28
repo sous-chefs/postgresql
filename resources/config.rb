@@ -44,7 +44,7 @@ load_current_value do |new_resource|
   postgresql_server_config = PostgreSQL::Cookbook::ConfigHelpers.postgresql_conf_load_file(new_resource.config_file).fetch('global').deep_sort
   postgresql_server_config.transform_values! { |v| v.is_a?(String) ? v.gsub("'", '') : v }
 
-  %w(data_directory hba_file ident_file).each do |p|
+  %w(data_directory hba_file ident_file external_pid_file).each do |p|
     next unless postgresql_server_config.fetch(p, nil)
 
     send(p, postgresql_server_config.delete(p))
@@ -79,6 +79,33 @@ action :create do
       )
 
       action :create
+    end
+
+    if new_resource.external_pid_file
+      directory "/etc/systemd/system/postgresql-#{new_resource.version}.service.d" do
+        owner 'root'
+        group 'root'
+        mode '0755'
+        action :create
+      end
+
+      template "/etc/systemd/system/postgresql-#{new_resource.version}.service.d/10-pid.conf" do
+        cookbook new_resource.cookbook
+        source 'systemd/10-pid.conf.erb'
+
+        owner 'root'
+        group 'root'
+        mode '0644'
+
+        variables(
+          version: new_resource.version
+        )
+
+        action :create
+      end
+    else
+      directory("/etc/systemd/system/postgresql-#{new_resource.version}.service.d") { action(:delete) }
+      file("/etc/systemd/system/postgresql-#{new_resource.version}.service.d") { action(:delete) }
     end
   end
 end
