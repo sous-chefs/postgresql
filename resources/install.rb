@@ -86,7 +86,7 @@ action_class do
 
       dnf_module 'postgresql' do
         action :disable
-      end if node['platform_version'].to_i >= 8 && platform_family?('rhel', 'fedora')
+      end if dnf_module_platform?
 
       yum_repository "PostgreSQL #{new_resource.version}" do
         repositoryid "pgdg#{new_resource.version}"

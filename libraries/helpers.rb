@@ -80,6 +80,10 @@ module PostgreSQL
         end
       end
 
+      def dnf_module_platform?
+        (platform_family?('rhel') && node['platform_version'].to_i == 8) || platform_family?('fedora')
+      end
+
       # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
       # initdb defaults to the execution environment.
       # https://www.postgresql.org/docs/9.5/static/locale.html
