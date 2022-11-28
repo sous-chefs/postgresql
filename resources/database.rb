@@ -11,7 +11,15 @@ property :encoding, String
 property :locale,   String
 property :owner,    String
 
+action_class do
+  include PostgreSQL::Cookbook::Helpers
+end
+
 action :create do
+  chef_gem 'pg' do
+    action :install
+  end
+
   createdb = 'createdb'
   createdb << " -E #{new_resource.encoding}" if new_resource.encoding
   createdb << " -l #{new_resource.locale}" if new_resource.locale
@@ -45,8 +53,4 @@ action :drop do
       only_if { database_exists?(new_resource) }
     end
   end
-end
-
-action_class do
-  include PostgresqlCookbook::Helpers
 end

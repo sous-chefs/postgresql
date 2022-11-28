@@ -11,6 +11,9 @@ chef_version      '>= 16.0'
 
 depends 'yum', '>= 7.2.0'
 
+gem 'deepsort', '~> 0.4.5'
+gem 'inifile', '~> 3.0'
+
 supports 'amazon'
 supports 'centos'
 supports 'debian'

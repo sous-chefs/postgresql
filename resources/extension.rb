@@ -27,5 +27,5 @@ action :drop do
 end
 
 action_class do
-  include PostgresqlCookbook::Helpers
+  include PostgreSQL::Cookbook::Helpers
 end

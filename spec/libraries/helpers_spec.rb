@@ -1,9 +1,9 @@
 require 'spec_helper'
 require_relative '../../libraries/helpers'
 
-RSpec.describe PostgresqlCookbook::Helpers do
+RSpec.describe PostgreSQLCookbook::Helpers do
   class DummyClass < Chef::Node
-    include PostgresqlCookbook::Helpers
+    include PostgreSQL::Cookbook::Helpers
   end
   subject { DummyClass.new }
 
