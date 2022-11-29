@@ -15,18 +15,19 @@
 # limitations under the License.
 #
 
-require 'deepsort'
-
 include PostgreSQL::Cookbook::Helpers
 
 unified_mode true
 
-property :config_file, String
+property :config_file, String,
+          desired_state: false
 
 property :cookbook, String,
-          default: 'postgresql'
+          default: 'postgresql',
+          desired_state: false
 
-property :source, String
+property :source, String,
+          desired_state: false
 
 property :owner, String,
           default: 'postgres'
@@ -36,3 +37,7 @@ property :group, String,
 
 property :filemode, String,
           default: '0600'
+
+action_class do
+  include PostgreSQL::Cookbook::Helpers
+end

@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+require 'deepsort'
+
 use 'partial/_config_file'
 
 property :config_file, String,
