@@ -4,10 +4,4 @@
 #
 
 # MAPNAME       SYSTEM-USERNAME         PG-USERNAME
-<% @pg_ident.each do |k,v| -%>
-  <% if v[:comment] -%>
-
-# <%= v[:comment] %>
-  <% end -%>
-<%= v[:mapname].ljust(15) %> <%= v[:system_user].ljust(23) %> <%= v[:pg_user].ljust(15) %>
-<% end %>
+<%= @pg_ident.to_s %>
