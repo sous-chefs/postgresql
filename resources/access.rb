@@ -18,47 +18,81 @@
 use 'partial/_config_file'
 
 property :config_file, String,
-          default: lazy { ::File.join(conf_dir, 'pg_hba.conf') }
+          default: lazy { ::File.join(conf_dir, 'pg_hba.conf') },
+          desired_state: false
 
 property :source, String,
-          default: 'pg_hba.conf.erb'
+          default: 'pg_hba.conf.erb',
+          desired_state: false
 
-property :access_type, String
+property :type, String,
+          required: true
 
-property :access_db, String
+property :database, String,
+          required: true
 
-property :access_user, String
+property :user, String,
+          required: true
 
-property :access_method, String
+property :address, String
 
-property :access_addr, String
+property :auth_method, String,
+          required: true
 
-property :comment, String
+property :auth_options, [String, Hash],
+          coerce: proc { |p| p.is_a?(Hash) ? p.map { |k, v| "#{k}=#{v}" }.join(' ') : p }
 
-action_class do
-  include PostgreSQL::Cookbook::Helpers
-end
+property :comment, String,
+          desired_state: false
 
-action :grant do
-  config_resource = new_resource
-  with_run_context :root do
-    edit_resource(:template, new_resource.config_file) do |new_resource|
-      source new_resource.source
-      cookbook new_resource.cookbook
-      owner 'postgres'
-      group 'postgres'
-      mode '0600'
-      variables[:pg_hba] ||= {}
-      variables[:pg_hba][new_resource.name] = {
-        comment: new_resource.comment,
-        type: new_resource.access_type,
-        db: new_resource.access_db,
-        user: new_resource.access_user,
-        addr: new_resource.access_addr,
-        method: new_resource.access_method,
-      }
-      action :nothing
-      delayed_action :create
-    end
+load_current_value do |new_resource|
+  current_value_does_not_exist! unless ::File.exist?(new_resource.config_file)
+
+  if ::File.exist?(new_resource.config_file)
+    owner ::Etc.getpwuid(::File.stat(new_resource.config_file).uid).name
+    group ::Etc.getgrgid(::File.stat(new_resource.config_file).gid).name
+    filemode ::File.stat(new_resource.config_file).mode.to_s(8)[-4..-1]
+  end
+
+  pg_hba_file = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFile.read(new_resource.config_file)
+
+  resource_properties = %i(type database user address auth_method auth_options)
+  resource_property_values = resource_properties.map { |p| new_resource.send(p) }.compact
+  entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(*resource_property_values)
+
+  current_value_does_not_exist! unless pg_hba_file.include?(entry)
+
+  resource_properties.each do |p|
+    next unless entry.respond_to?(p)
+
+    send(p, entry.send(p))
   end
 end
+
+action_class do
+  include PostgreSQL::Cookbook::AccessHelpers::PgHbaTemplate
+end
+
+action :create do
+  converge_if_changed do
+    config_resource_init
+
+    resource_properties = %i(type database user address auth_method auth_options).map { |p| new_resource.send(p) }.compact
+    entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(*resource_properties)
+
+    config_resource.variables[:pg_hba].add(entry)
+  end
+end
+
+action :delete do
+  config_resource_init
+
+  resource_properties = %i(type database user address auth_method auth_options).map { |p| new_resource.send(p) }.compact
+  entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(*resource_properties)
+
+  converge_by('Remove grant entry') do
+    config_resource.variables[:pg_hba].remove(entry)
+  end if config_resource.variables[:pg_hba].include?(entry)
+end
+
+action(:grant) { run_action(:create) }
