@@ -252,14 +252,37 @@ module PostgreSQL
         end
 
         class PgHbaFileEntryAuthOptions
-          attr_accessor :options
+          attr_reader :options
 
           def initialize(options_string)
-            @options = options_string.split.map { |kv| kv.split('=') }.to_h
+            @options = options_string_parse(options_string)
+          end
+
+          def to_h
+            @options.to_h
           end
 
           def to_s
             @options.map { |k, v| "#{k}=#{v}" }.join(' ')
+          end
+
+          def eql?(auth_options)
+            case auth_options
+            when self.class
+              @options.eql?(auth_options.options)
+            when Hash
+              @options.eql?(auth_options)
+            when String
+              to_s.eql?(options_string_parse(auth_options))
+            else
+              false
+            end
+          end
+
+          private
+
+          def options_string_parse(string)
+            string.split.map { |kv| kv.split('=') }.sort
           end
         end
 

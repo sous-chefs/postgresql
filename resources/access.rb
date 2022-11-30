@@ -65,7 +65,7 @@ load_current_value do |new_resource|
   resource_properties.each do |p|
     next unless entry.respond_to?(p)
 
-    send(p, entry.send(p))
+    send(p, entry.send(p).to_s)
   end
 end
 
