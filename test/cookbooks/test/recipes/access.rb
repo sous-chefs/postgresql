@@ -1,59 +1,63 @@
-postgresql_server_install 'postgresql' do
-  password '12345'
-  port 5432
-  version node['test']['pg_ver']
-  setup_repo true
-  action [:install, :create]
+postgresql_install 'postgresql' do
+  action %i(install init_server)
+end
+
+postgresql_access 'postgresql all all trust' do
+  type 'local'
+  database 'all'
+  user 'all'
+  auth_method 'trust'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_access 'postgresql host superuser' do
-  access_type       'host'
-  access_db         'all'
-  access_user       'postgres'
-  access_addr       '127.0.0.1/32'
-  access_method     'md5'
-  notifies :reload, 'service[postgresql]'
+  type 'host'
+  database 'all'
+  user 'postgres'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
-postgresql_user 'sous_chef' do
-  superuser true
-  password '67890'
-  sensitive false
-end
+# postgresql_user 'sous_chef' do
+#   superuser true
+#   password '67890'
+#   sensitive false
+# end
 
-postgresql_user 'sous_chef' do
-  attributes({ statement_timeout: '8min' })
-  sensitive false
-  action :update
-end
+# postgresql_user 'sous_chef' do
+#   attributes({ statement_timeout: '8min' })
+#   sensitive false
+#   action :update
+# end
 
 postgresql_access 'a sous_chef local superuser' do
-  access_type 'host'
-  access_db 'all'
-  access_user 'sous_chef'
-  access_method 'md5'
-  access_addr '127.0.0.1/32'
-  notifies :reload, 'service[postgresql]'
+  type 'host'
+  database 'all'
+  user 'sous_chef'
+  auth_method 'md5'
+  address '127.0.0.1/32'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
-postgresql_user 'name-with-dash' do
-  password '1234'
-end
+# postgresql_user 'name-with-dash' do
+#   password '1234'
+# end
 
-postgresql_user 'name-with-dash' do
-  attributes({ statement_timeout: '8min' })
-  sensitive false
-  action :update
-end
+# postgresql_user 'name-with-dash' do
+#   attributes({ statement_timeout: '8min' })
+#   sensitive false
+#   action :update
+# end
 
-postgresql_user 'dropable-user' do
-  password '1234'
-  action [:create, :drop]
-end
+# postgresql_user 'dropable-user' do
+#   password '1234'
+#   action [:create, :drop]
+# end
 
-service 'postgresql' do
-  extend PostgresqlCookbook::Helpers
-  service_name lazy { platform_service_name }
-  supports restart: true, status: true, reload: true
-  action :nothing
+postgresql_service 'postgresql' do
+  action %i(enable start)
 end

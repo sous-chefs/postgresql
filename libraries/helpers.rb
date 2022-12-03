@@ -20,7 +20,17 @@ module PostgreSQL
     module Helpers
       require 'securerandom'
 
-      def data_dir(version = node.run_state['postgresql']['version'])
+      # private
+
+      def installed_postgresql_major_version
+        pgsql_package = node['packages'].filter { |p| p.match?(/postgresql(\d+)?$/) }
+        pgsql_package_version = pgsql_package.first[1].fetch('version').to_i
+        Chef::Log.info("Deteched PostgreSQL version: #{pgsql_package_version}")
+
+        pgsql_package_version
+      end
+
+      def data_dir(version = installed_postgresql_major_version)
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
           "/var/lib/pgsql/#{version}/data"
@@ -29,7 +39,7 @@ module PostgreSQL
         end
       end
 
-      def conf_dir(version = node.run_state['postgresql']['version'])
+      def conf_dir(version = installed_postgresql_major_version)
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
           "/var/lib/pgsql/#{version}/data"
@@ -39,7 +49,7 @@ module PostgreSQL
       end
 
       # determine the platform specific service name
-      def default_platform_service_name(version = node.run_state['postgresql']['version'])
+      def default_platform_service_name(version = installed_postgresql_major_version)
         if platform_family?('rhel', 'fedora', 'amazon')
           "postgresql-#{version}"
         else

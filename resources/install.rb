@@ -162,6 +162,12 @@ action_class do
     package 'postgresql-client' do
       package_name new_resource.client_packages
       action package_action
+
+      notifies :reload, 'ohai[postgresql_client_packages]', :immediately
+    end
+
+    ohai 'postgresql_client_packages' do
+      action :nothing
     end
   end
 
@@ -169,6 +175,12 @@ action_class do
     package 'postgresql-server' do
       package_name new_resource.server_packages
       action package_action
+
+      notifies :reload, 'ohai[postgresql_server_packages]', :immediately
+    end
+
+    ohai 'postgresql_server_packages' do
+      action :nothing
     end
   end
 end

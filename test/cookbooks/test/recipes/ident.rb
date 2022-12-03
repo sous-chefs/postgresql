@@ -1,43 +1,57 @@
-postgresql_server_install 'postgresql' do
-  password '12345'
-  port 5432
-  version node['test']['pg_ver']
-  setup_repo true
-  action [:install, :create]
+postgresql_install 'postgresql' do
+  action %i(install init_server)
 end
 
 user 'shef'
 
 postgresql_ident 'postgresl mapping' do
-  mapname 'testmap'
-  system_user 'postgres'
-  pg_user 'postgres'
-  notifies :reload, 'service[postgresql]'
+  map_name 'testmap1'
+  system_username 'postgres'
+  database_username 'postgres'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_ident 'shef mapping' do
-  mapname 'testmap'
-  system_user 'shef'
-  pg_user 'sous_chef'
-  notifies :reload, 'service[postgresql]'
+  map_name 'testmap2'
+  system_username 'shef'
+  database_username 'sous_chef'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
+end
+
+postgresql_ident 'shef remove mapping' do
+  map_name 'testmap3'
+  system_username 'shef_remove'
+  database_username 'sous_chef'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
+  action :delete
 end
 
 postgresql_access 'postgresql host superuser' do
-  access_type 'host'
-  access_db 'all'
-  access_user 'postgres'
-  access_addr '127.0.0.1/32'
-  access_method 'md5'
-  notifies :reload, 'service[postgresql]'
+  type 'host'
+  database 'all'
+  user 'postgres'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_access 'shef mapping' do
-  access_type 'local'
-  access_db 'all'
-  access_user 'all'
-  access_method 'peer map=testmap'
+  type 'local'
+  database 'all'
+  user 'all'
+  auth_method 'peer'
+  auth_options 'map=testmap'
   cookbook 'test'
-  notifies :reload, 'service[postgresql]'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
+end
+
+postgresql_service 'postgresql' do
+  action %i(enable start)
 end
 
 postgresql_user 'sous_chef' do
@@ -46,9 +60,8 @@ postgresql_user 'sous_chef' do
   sensitive false
 end
 
-service 'postgresql' do
-  extend PostgresqlCookbook::Helpers
-  service_name lazy { platform_service_name }
-  supports restart: true, status: true, reload: true
-  action :nothing
+postgresql_user 'sous_chef' do
+  superuser false
+  connection_limit 5
+  action :update
 end
