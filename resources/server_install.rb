@@ -22,22 +22,22 @@
 #   include PostgreSQL::Cookbook::Helpers
 # end
 
-  # # First install the postgresql-common package
-  # if platform_family?('debian')
-  #   package 'postgresql-common'
+# # First install the postgresql-common package
+# if platform_family?('debian')
+#   package 'postgresql-common'
 
-  #   initdb_options = ''
-  #   initdb_options << "--locale #{new_resource.initdb_locale}" if new_resource.initdb_locale
-  #   initdb_options << " -E #{new_resource.initdb_encoding}" if new_resource.initdb_encoding
+#   initdb_options = ''
+#   initdb_options << "--locale #{new_resource.initdb_locale}" if new_resource.initdb_locale
+#   initdb_options << " -E #{new_resource.initdb_encoding}" if new_resource.initdb_encoding
 
-  #   template '/etc/postgresql-common/createcluster.conf' do
-  #     source 'createcluster.conf.erb'
-  #     cookbook 'postgresql'
-  #     variables(
-  #       initdb_options: initdb_options
-  #     )
-  #   end
-  # end
+#   template '/etc/postgresql-common/createcluster.conf' do
+#     source 'createcluster.conf.erb'
+#     cookbook 'postgresql'
+#     variables(
+#       initdb_options: initdb_options
+#     )
+#   end
+# end
 # end
 
 # action :create do

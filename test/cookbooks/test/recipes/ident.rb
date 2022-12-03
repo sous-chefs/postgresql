@@ -65,3 +65,7 @@ postgresql_user 'sous_chef' do
   connection_limit 5
   action :update
 end
+
+postgresql_database 'test1' do
+  # action :delete
+end

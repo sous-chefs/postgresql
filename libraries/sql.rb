@@ -88,8 +88,28 @@ module PostgreSQL
         result
       end
 
-      def pg_database?(new_resource)
-        sql = "SELECT datname from pg_database WHERE datname='#{new_resource.database}'"
+      def pg_database(name)
+        sql = "SELECT * from pg_database WHERE datname='#{name}'"
+        database = execute_sql(sql, max_one_result: true)
+
+        return if database.to_a.empty?
+
+        database = database.to_a.pop
+
+        database.transform_values do |v|
+          case v
+          when 't'
+            true
+          when 'f'
+            false
+          else
+            v
+          end
+        end
+      end
+
+      def pg_database?(name)
+        sql = "SELECT datname from pg_database WHERE datname='#{name}'"
         database = execute_sql(sql, max_one_result: true)
 
         !database.empty?
@@ -206,36 +226,92 @@ module PostgreSQL
       end
 
       def create_role(new_resource)
-        sql = "CREATE #{role_sql(new_resource)}"
-        execute_sql(sql)
+        execute_sql("CREATE #{role_sql(new_resource)}")
       end
 
       def update_role(new_resource)
-        sql = "ALTER #{role_sql(new_resource)}"
-        execute_sql(sql)
+        execute_sql("ALTER #{role_sql(new_resource)}")
       end
 
       def drop_role(new_resource)
-        sql = "DROP ROLE #{new_resource.rolename}"
+        execute_sql("DROP ROLE #{new_resource.rolename}")
+      end
+
+      ## Database
+
+      def database_sql(new_resource)
+        sql = []
+
+        sql.push("DATABASE #{new_resource.database}")
+
+        properties = %i(
+                       owner
+                       template
+                       encoding
+                       strategy
+                       locale
+                       lc_collate
+                       lc_ctype
+                       icu_locale
+                       locale_provider
+                       collation_version
+                       tablespace
+                       allow_connections
+                       connection_limit
+                       is_template
+                     )
+
+        if properties.any? { |p| property_is_set?(p) }
+          sql.push('WITH')
+
+          properties.each do |p|
+            next if nil_or_empty?(new_resource.send(p))
+
+            sql.push("#{p.to_s.upcase}=#{new_resource.send(p)}")
+          end
+        end
+
+        "#{sql.join(' ').strip};"
+      end
+
+      def create_database(new_resource)
+        execute_sql("CREATE #{database_sql(new_resource)}")
+      end
+
+      def update_database(new_resource)
+        execute_sql("ALTER #{database_sql(new_resource)}")
+      end
+
+      def update_database_owner(new_resource)
+        execute_sql("ALTER DATABASE #{new_resource.database} OWNER TO #{new_resource.owner}")
+      end
+
+      def update_database_tablespace(new_resource)
+        execute_sql("ALTER DATABASE #{new_resource.database} SET TABLESPACE #{new_resource.tablespace}")
+      end
+
+      def drop_database(new_resource)
+        sql = "DROP DATABASE #{new_resource.database}"
+        sql.concat(' WITH FORCE') if new_resource.force
         execute_sql(sql)
       end
 
-      def alter_role_password_sql(new_resource)
-        sql = %(ALTER ROLE postgres ENCRYPTED PASSWORD '#{postgres_password(new_resource)}';)
-        execute_sql(sql)
-      end
+      # def alter_role_password_sql(new_resource)
+      #   sql = %(ALTER ROLE postgres ENCRYPTED PASSWORD '#{postgres_password(new_resource)}';)
+      #   execute_sql(sql)
+      # end
 
-      def update_role_with_attributes_sql(new_resource, attr, value)
-        sql = %(ALTER ROLE \\"#{new_resource.create_role}\\" SET #{attr} = #{value})
-        execute_sql(sql)
-      end
+      # def update_role_with_attributes_sql(new_resource, attr, value)
+      #   sql = %(ALTER ROLE \\"#{new_resource.create_role}\\" SET #{attr} = #{value})
+      #   execute_sql(sql)
+      # end
 
-      def create_extension_sql(new_resource)
-        sql = %(CREATE EXTENSION IF NOT EXISTS \\\"#{new_resource.extension}\\\")
-        sql << " FROM \"#{new_resource.old_version}\"" if new_resource.old_version
+      # def create_extension_sql(new_resource)
+      #   sql = %(CREATE EXTENSION IF NOT EXISTS \\\"#{new_resource.extension}\\\")
+      #   sql << " FROM \"#{new_resource.old_version}\"" if new_resource.old_version
 
-        execute_sql(sql)
-      end
+      #   execute_sql(sql)
+      # end
     end
   end
 end
