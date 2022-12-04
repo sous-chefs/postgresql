@@ -69,3 +69,7 @@ end
 postgresql_database 'test1' do
   # action :delete
 end
+
+postgresql_database 'test2' do
+  action :delete
+end

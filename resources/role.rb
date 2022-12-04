@@ -72,7 +72,7 @@ property :sensitive, [true, false],
           default: true,
           desired_state: false
 
-include PostgreSQL::Cookbook::SqlHelpers
+include PostgreSQL::Cookbook::SqlHelpers::Role
 
 load_current_value do |new_resource|
   current_value_does_not_exist! unless pg_role?(new_resource.name)
@@ -90,6 +90,10 @@ load_current_value do |new_resource|
   connection_limit(role_data.fetch('rolconnlimit', nil))
   valid_until(role_data.fetch('rolvaluntil', nil))
   config(role_data.fetch('rolconfig', nil))
+end
+
+action_class do
+  include PostgreSQL::Cookbook::SqlHelpers::Role
 end
 
 action :create do

@@ -50,7 +50,7 @@ property :connection_limit, [Integer, String],
 
 property :is_template, [true, false]
 
-include PostgreSQL::Cookbook::SqlHelpers
+include PostgreSQL::Cookbook::SqlHelpers::Database
 
 load_current_value do |new_resource|
   current_value_does_not_exist! unless pg_database?(new_resource.name)
@@ -68,6 +68,10 @@ load_current_value do |new_resource|
   allow_connections(database_data.fetch('datallowconn', nil))
   connection_limit(database_data.fetch('datconnlimit', nil))
   is_template(database_data.fetch('datistemplate', nil))
+end
+
+action_class do
+  include PostgreSQL::Cookbook::SqlHelpers::Database
 end
 
 action :create do

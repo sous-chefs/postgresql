@@ -41,7 +41,3 @@ property :connection_string, String,
           desired_state: false
 
 property :force, [true, false]
-
-action_class do
-  include PostgreSQL::Cookbook::SqlHelpers
-end
