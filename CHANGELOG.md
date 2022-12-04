@@ -6,6 +6,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 Standardise files with files in sous-chefs/repo-management
 
+Standardise files with files in sous-chefs/repo-management
+
 ## 10.0.1 - *2022-02-04*
 
 - Remove delivery and move to calling RSpec directly via a reusable workflow
