@@ -111,314 +111,314 @@ suites:
     run_list:
       - recipe[test::server_install]
 
-  # - name: access_14
-  #   attributes:
-  #     test:
-  #       pg_ver: "14"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/access/
-  #   run_list:
-  #     - recipe[test::access]
-  #   provisioner:
-  #     enforce_idempotency: false
-  #     multiple_converge: 1
-  # - name: client_install_14
-  #   attributes:
-  #     test:
-  #       pg_ver: "14"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/client_install/
-  #     inputs:
-  #       pg_ver: "14"
-  #   run_list:
-  #     - recipe[test::client_install]
-  # - name: extension_14
-  #   attributes:
-  #     test:
-  #       pg_ver: "14"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/extension/
-  #   run_list:
-  #     - recipe[test::extension]
-  # - name: ident_14
-  #   attributes:
-  #     test:
-  #       pg_ver: "14"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/ident/
-  #   run_list:
-  #     - recipe[test::ident]
-  # - name: initdb_locale_14
-  #   attributes:
-  #     test:
-  #       pg_ver: "14"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/initdb_locale/
-  #   run_list:
-  #     - recipe[test::initdb_locale]
-  #   includes:
-  #     - almalinux-8
-  #     - centos-7
-  #     - centos-stream-8
-  #     - rockylinux-8
-  # - name: repo_14
-  #   attributes:
-  #     test:
-  #       pg_ver: "14"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/repo/
-  #     inputs:
-  #       pg_ver: "14"
-  #   run_list:
-  #     - recipe[test::repository]
-  # - name: server_install_14
-  #   attributes:
-  #     test:
-  #       pg_ver: "14"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/server_install/
-  #     inputs:
-  #       pg_ver: "14"
-  #   run_list:
-  #     - recipe[test::server_install]
+  - name: access_14
+    attributes:
+      test:
+        pg_ver: "14"
+    verifier:
+      inspec_tests:
+        - path: test/integration/access/
+    run_list:
+      - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
+  - name: client_install_14
+    attributes:
+      test:
+        pg_ver: "14"
+    verifier:
+      inspec_tests:
+        - path: test/integration/client_install/
+      inputs:
+        pg_ver: "14"
+    run_list:
+      - recipe[test::client_install]
+  - name: extension_14
+    attributes:
+      test:
+        pg_ver: "14"
+    verifier:
+      inspec_tests:
+        - path: test/integration/extension/
+    run_list:
+      - recipe[test::extension]
+  - name: ident_14
+    attributes:
+      test:
+        pg_ver: "14"
+    verifier:
+      inspec_tests:
+        - path: test/integration/ident/
+    run_list:
+      - recipe[test::ident]
+  - name: initdb_locale_14
+    attributes:
+      test:
+        pg_ver: "14"
+    verifier:
+      inspec_tests:
+        - path: test/integration/initdb_locale/
+    run_list:
+      - recipe[test::initdb_locale]
+    includes:
+      - almalinux-8
+      - centos-7
+      - centos-stream-8
+      - rockylinux-8
+  - name: repo_14
+    attributes:
+      test:
+        pg_ver: "14"
+    verifier:
+      inspec_tests:
+        - path: test/integration/repo/
+      inputs:
+        pg_ver: "14"
+    run_list:
+      - recipe[test::repository]
+  - name: server_install_14
+    attributes:
+      test:
+        pg_ver: "14"
+    verifier:
+      inspec_tests:
+        - path: test/integration/server_install/
+      inputs:
+        pg_ver: "14"
+    run_list:
+      - recipe[test::server_install]
 
-  # - name: access_13
-  #   attributes:
-  #     test:
-  #       pg_ver: "13"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/access/
-  #   run_list:
-  #     - recipe[test::access]
-  #   provisioner:
-  #     enforce_idempotency: false
-  #     multiple_converge: 1
-  # - name: client_install_13
-  #   attributes:
-  #     test:
-  #       pg_ver: "13"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/client_install/
-  #     inputs:
-  #       pg_ver: "13"
-  #   run_list:
-  #     - recipe[test::client_install]
-  # - name: extension_13
-  #   attributes:
-  #     test:
-  #       pg_ver: "13"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/extension/
-  #   run_list:
-  #     - recipe[test::extension]
-  # - name: ident_13
-  #   attributes:
-  #     test:
-  #       pg_ver: "13"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/ident/
-  #   run_list:
-  #     - recipe[test::ident]
-  # - name: initdb_locale_13
-  #   attributes:
-  #     test:
-  #       pg_ver: "13"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/initdb_locale/
-  #   run_list:
-  #     - recipe[test::initdb_locale]
-  #   includes:
-  #     - almalinux-8
-  #     - centos-7
-  #     - centos-stream-8
-  #     - rockylinux-8
-  # - name: repo_13
-  #   attributes:
-  #     test:
-  #       pg_ver: "13"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/repo/
-  #     inputs:
-  #       pg_ver: "13"
-  #   run_list:
-  #     - recipe[test::repository]
-  # - name: server_install_13
-  #   attributes:
-  #     test:
-  #       pg_ver: "13"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/server_install/
-  #     inputs:
-  #       pg_ver: "13"
-  #   run_list:
-  #     - recipe[test::server_install]
+  - name: access_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/access/
+    run_list:
+      - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
+  - name: client_install_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/client_install/
+      inputs:
+        pg_ver: "13"
+    run_list:
+      - recipe[test::client_install]
+  - name: extension_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/extension/
+    run_list:
+      - recipe[test::extension]
+  - name: ident_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/ident/
+    run_list:
+      - recipe[test::ident]
+  - name: initdb_locale_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/initdb_locale/
+    run_list:
+      - recipe[test::initdb_locale]
+    includes:
+      - almalinux-8
+      - centos-7
+      - centos-stream-8
+      - rockylinux-8
+  - name: repo_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/repo/
+      inputs:
+        pg_ver: "13"
+    run_list:
+      - recipe[test::repository]
+  - name: server_install_13
+    attributes:
+      test:
+        pg_ver: "13"
+    verifier:
+      inspec_tests:
+        - path: test/integration/server_install/
+      inputs:
+        pg_ver: "13"
+    run_list:
+      - recipe[test::server_install]
 
-  # - name: access_12
-  #   attributes:
-  #     test:
-  #       pg_ver: "12"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/access/
-  #   run_list:
-  #     - recipe[test::access]
-  #   provisioner:
-  #     enforce_idempotency: false
-  #     multiple_converge: 1
-  # - name: client_install_12
-  #   attributes:
-  #     test:
-  #       pg_ver: "12"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/client_install/
-  #     inputs:
-  #       pg_ver: "12"
-  #   run_list:
-  #     - recipe[test::client_install]
-  # - name: extension_12
-  #   attributes:
-  #     test:
-  #       pg_ver: "12"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/extension/
-  #   run_list:
-  #     - recipe[test::extension]
-  # - name: ident_12
-  #   attributes:
-  #     test:
-  #       pg_ver: "12"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/ident/
-  #   run_list:
-  #     - recipe[test::ident]
-  # - name: initdb_locale_12
-  #   attributes:
-  #     test:
-  #       pg_ver: "12"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/initdb_locale/
-  #   run_list:
-  #     - recipe[test::initdb_locale]
-  #   includes:
-  #     - almalinux-8
-  #     - centos-7
-  #     - centos-stream-8
-  #     - rockylinux-8
-  # - name: repo_12
-  #   attributes:
-  #     test:
-  #       pg_ver: "12"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/repo/
-  #     inputs:
-  #       pg_ver: "12"
-  #   run_list:
-  #     - recipe[test::repository]
-  # - name: server_install_12
-  #   attributes:
-  #     test:
-  #       pg_ver: "12"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/server_install/
-  #     inputs:
-  #       pg_ver: "12"
-  #   run_list:
-  #     - recipe[test::server_install]
+  - name: access_12
+    attributes:
+      test:
+        pg_ver: "12"
+    verifier:
+      inspec_tests:
+        - path: test/integration/access/
+    run_list:
+      - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
+  - name: client_install_12
+    attributes:
+      test:
+        pg_ver: "12"
+    verifier:
+      inspec_tests:
+        - path: test/integration/client_install/
+      inputs:
+        pg_ver: "12"
+    run_list:
+      - recipe[test::client_install]
+  - name: extension_12
+    attributes:
+      test:
+        pg_ver: "12"
+    verifier:
+      inspec_tests:
+        - path: test/integration/extension/
+    run_list:
+      - recipe[test::extension]
+  - name: ident_12
+    attributes:
+      test:
+        pg_ver: "12"
+    verifier:
+      inspec_tests:
+        - path: test/integration/ident/
+    run_list:
+      - recipe[test::ident]
+  - name: initdb_locale_12
+    attributes:
+      test:
+        pg_ver: "12"
+    verifier:
+      inspec_tests:
+        - path: test/integration/initdb_locale/
+    run_list:
+      - recipe[test::initdb_locale]
+    includes:
+      - almalinux-8
+      - centos-7
+      - centos-stream-8
+      - rockylinux-8
+  - name: repo_12
+    attributes:
+      test:
+        pg_ver: "12"
+    verifier:
+      inspec_tests:
+        - path: test/integration/repo/
+      inputs:
+        pg_ver: "12"
+    run_list:
+      - recipe[test::repository]
+  - name: server_install_12
+    attributes:
+      test:
+        pg_ver: "12"
+    verifier:
+      inspec_tests:
+        - path: test/integration/server_install/
+      inputs:
+        pg_ver: "12"
+    run_list:
+      - recipe[test::server_install]
 
-  # - name: access_11
-  #   attributes:
-  #     test:
-  #       pg_ver: "11"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/access/
-  #   run_list:
-  #     - recipe[test::access]
-  #   provisioner:
-  #     enforce_idempotency: false
-  #     multiple_converge: 1
-  # - name: client_install_11
-  #   attributes:
-  #     test:
-  #       pg_ver: "11"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/client_install/
-  #     inputs:
-  #       pg_ver: "11"
-  #   run_list:
-  #     - recipe[test::client_install]
-  # - name: extension_11
-  #   attributes:
-  #     test:
-  #       pg_ver: "11"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/extension/
-  #   run_list:
-  #     - recipe[test::extension]
-  # - name: ident_11
-  #   attributes:
-  #     test:
-  #       pg_ver: "11"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/ident/
-  #   run_list:
-  #     - recipe[test::ident]
-  # - name: initdb_locale_11
-  #   attributes:
-  #     test:
-  #       pg_ver: "11"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/initdb_locale/
-  #   run_list:
-  #     - recipe[test::initdb_locale]
-  #   includes:
-  #     - almalinux-8
-  #     - centos-7
-  #     - centos-stream-8
-  #     - rockylinux-8
-  # - name: repo_11
-  #   attributes:
-  #     test:
-  #       pg_ver: "11"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/repo/
-  #     inputs:
-  #       pg_ver: "11"
-  #   run_list:
-  #     - recipe[test::repository]
-  # - name: server_install_11
-  #   attributes:
-  #     test:
-  #       pg_ver: "11"
-  #   verifier:
-  #     inspec_tests:
-  #       - path: test/integration/server_install/
-  #     inputs:
-  #       pg_ver: "11"
-  #   run_list:
-  #     - recipe[test::server_install]
+  - name: access_11
+    attributes:
+      test:
+        pg_ver: "11"
+    verifier:
+      inspec_tests:
+        - path: test/integration/access/
+    run_list:
+      - recipe[test::access]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
+  - name: client_install_11
+    attributes:
+      test:
+        pg_ver: "11"
+    verifier:
+      inspec_tests:
+        - path: test/integration/client_install/
+      inputs:
+        pg_ver: "11"
+    run_list:
+      - recipe[test::client_install]
+  - name: extension_11
+    attributes:
+      test:
+        pg_ver: "11"
+    verifier:
+      inspec_tests:
+        - path: test/integration/extension/
+    run_list:
+      - recipe[test::extension]
+  - name: ident_11
+    attributes:
+      test:
+        pg_ver: "11"
+    verifier:
+      inspec_tests:
+        - path: test/integration/ident/
+    run_list:
+      - recipe[test::ident]
+  - name: initdb_locale_11
+    attributes:
+      test:
+        pg_ver: "11"
+    verifier:
+      inspec_tests:
+        - path: test/integration/initdb_locale/
+    run_list:
+      - recipe[test::initdb_locale]
+    includes:
+      - almalinux-8
+      - centos-7
+      - centos-stream-8
+      - rockylinux-8
+  - name: repo_11
+    attributes:
+      test:
+        pg_ver: "11"
+    verifier:
+      inspec_tests:
+        - path: test/integration/repo/
+      inputs:
+        pg_ver: "11"
+    run_list:
+      - recipe[test::repository]
+  - name: server_install_11
+    attributes:
+      test:
+        pg_ver: "11"
+    verifier:
+      inspec_tests:
+        - path: test/integration/server_install/
+      inputs:
+        pg_ver: "11"
+    run_list:
+      - recipe[test::server_install]

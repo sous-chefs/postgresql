@@ -4,6 +4,15 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Major refactor
+- Condense repository, client_install and server_install into common install resource.
+  - `:repository` action
+  - `:install` action
+  - `:client_install` action
+  - `:server_install` action
+- Refactor database, role (user) and extension resources to use pg gem for database access
+- Rename user resource to role to match PostgreSQL
+
 ## 10.0.2 - *2022-12-04*
 
 Standardise files with files in sous-chefs/repo-management
