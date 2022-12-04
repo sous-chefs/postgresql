@@ -25,15 +25,40 @@ module PostgreSQL
 
         private
 
+        def pg_extension(name)
+          sql = "SELECT * FROM pg_extension WHERE extname='#{name}';"
+
+          execute_sql(sql, max_one_result: true).pop
+        end
+
         def pg_extension?(new_resource)
-          query = %(SELECT extversion FROM pg_extension WHERE extname='#{new_resource.extension}';)
-          check_extension_version = psql_command_string(new_resource, query, value_only: true)
-          version_result = execute_sql(new_resource, check_extension_version)
+          sql = "SELECT extversion FROM pg_extension WHERE extname='#{new_resource.extension}';"
+          version = execute_sql(sql, max_one_result: true).pop
+
           if new_resource.version
-            version_result.stdout == new_resource.version
-          else
-            !version_result.stdout.chomp.empty?
+            return version.fetch('extversion').eql?(new_resource.version)
           end
+
+          !version.empty?
+        end
+
+        def create_extension(new_resource)
+          sql = []
+
+          sql.push("CREATE EXTENSION '#{new_resource.extension}'")
+          sql.push("FROM '#{new_resource.old_version}'") if property_is_set?(new_resource.old_version)
+
+          execute_sql("#{sql.join(' ').strip};")
+        end
+
+        def drop_extension(new_resource)
+          sql = []
+
+          sql.push("DROP EXTENSION #{new_resource.extension}")
+          sql.push('CASCADE') if new_resource.cascade
+          sql.push('RESTRICT') if new_resource.restrict
+
+          execute_sql("#{sql.join(' ').strip};")
         end
       end
     end

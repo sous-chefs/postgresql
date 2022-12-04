@@ -115,13 +115,6 @@ module PostgreSQL
         #   sql = %(ALTER ROLE \\"#{new_resource.create_role}\\" SET #{attr} = #{value})
         #   execute_sql(sql)
         # end
-
-        # def create_extension_sql(new_resource)
-        #   sql = %(CREATE EXTENSION IF NOT EXISTS \\\"#{new_resource.extension}\\\")
-        #   sql << " FROM \"#{new_resource.old_version}\"" if new_resource.old_version
-
-        #   execute_sql(sql)
-        # end
       end
     end
   end

@@ -73,3 +73,5 @@ end
 postgresql_database 'test2' do
   action :delete
 end
+
+postgresql_extension 'plpgsql'
