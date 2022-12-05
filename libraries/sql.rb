@@ -16,6 +16,7 @@
 #
 
 require_relative 'sql/_connection'
+require_relative 'sql/_utils'
 require_relative 'sql/attribute'
 require_relative 'sql/database'
 require_relative 'sql/extension'

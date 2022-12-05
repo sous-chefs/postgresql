@@ -16,12 +16,14 @@
 #
 
 require_relative '_connection'
+require_relative '_utils'
 
 module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Role
         include PostgreSQL::Cookbook::SqlHelpers::Connection
+        include Utils
 
         private
 
@@ -32,17 +34,9 @@ module PostgreSQL
           return if role.to_a.empty?
 
           role = role.to_a.pop
+          map_pg_values!(role)
 
-          role.transform_values do |v|
-            case v
-            when 't'
-              true
-            when 'f'
-              false
-            else
-              v
-            end
-          end
+          role
         end
 
         def pg_role?(name)
@@ -62,7 +56,7 @@ module PostgreSQL
         def role_sql(new_resource)
           sql = []
 
-          sql.push("ROLE #{new_resource.rolename} WITH")
+          sql.push("ROLE \"#{new_resource.rolename}\" WITH")
 
           %i(superuser createdb createrole inherit login replication bypassrls).each do |perm|
             unless new_resource.send(perm)
@@ -98,12 +92,17 @@ module PostgreSQL
           execute_sql("CREATE #{role_sql(new_resource)}")
         end
 
+        def set_role_configuration(new_resource)
+          execute_sql("ALTER ROLE \"#{new_resource.rolename}\" RESET ALL;")
+          new_resource.config.each { |k, v| execute_sql("ALTER ROLE \"#{new_resource.rolename}\" SET \"#{k}\" = \"#{v}\";") }
+        end
+
         def update_role(new_resource)
           execute_sql("ALTER #{role_sql(new_resource)}")
         end
 
         def drop_role(new_resource)
-          execute_sql("DROP ROLE #{new_resource.rolename}")
+          execute_sql("DROP ROLE \"#{new_resource.rolename}\"")
         end
 
         # def alter_role_password_sql(new_resource)

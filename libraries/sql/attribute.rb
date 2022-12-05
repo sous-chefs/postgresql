@@ -16,6 +16,8 @@
 #
 
 require_relative '_connection'
+require_relative '_utils'
+
 
 module PostgreSQL
   module Cookbook
@@ -30,18 +32,8 @@ module PostgreSQL
           attribute_config = execute_sql(sql, max_one_result: true).fetch('rolconfig')
           Chef::Log.warn("AC: #{attribute_config}")
 
-          attribute_config.delete_prefix!('{')
-          attribute_config.delete_suffix!('}')
-          attribute_config = attribute_config.split(',').map { |rcv| rcv.split('=') }.to_h
-          attribute_config.transform_values! do |v|
-            case v
-            when 'on'
-              true
-            when 'off'
-              false
-            else v
-            end
-          end
+          attribute_config = config_string_to_hash(attribute_config)
+          map_pg_values!(attribute_config)
 
           Chef::Log.warn("AC Parsed: #{attribute_config}")
           Chef::Log.warn("AC Testing: #{attribute} | #{value}")
