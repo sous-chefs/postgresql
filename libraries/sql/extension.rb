@@ -21,6 +21,7 @@ module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Extension
+        include PostgreSQL::Cookbook::Utils
         include PostgreSQL::Cookbook::SqlHelpers::Connection
 
         private
@@ -33,7 +34,11 @@ module PostgreSQL
 
         def pg_extension?(new_resource)
           sql = "SELECT extversion FROM pg_extension WHERE extname='#{new_resource.extension}';"
-          version = execute_sql(sql, max_one_result: true).pop
+          version = execute_sql(sql, max_one_result: true)
+
+          return false if nil_or_empty?(version)
+
+          version = version.pop
 
           if new_resource.version
             return version.fetch('extversion').eql?(new_resource.version)
@@ -45,8 +50,12 @@ module PostgreSQL
         def create_extension(new_resource)
           sql = []
 
-          sql.push("CREATE EXTENSION '#{new_resource.extension}'")
-          sql.push("FROM '#{new_resource.old_version}'") if property_is_set?(new_resource.old_version)
+          sql.push("CREATE EXTENSION \"#{new_resource.extension}\"")
+
+          sql.push("SCHEMA \"#{new_resource.schema}\"") if property_is_set?(:schema)
+          sql.push("VERSION \"#{new_resource.version}\"") if property_is_set?(:version)
+          sql.push("FROM \"#{new_resource.old_version}\"") if property_is_set?(:old_version)
+          sql.push('CASCADE') if new_resource.cascade
 
           execute_sql("#{sql.join(' ').strip};")
         end

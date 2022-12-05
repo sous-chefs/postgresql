@@ -23,6 +23,7 @@ module PostgreSQL
       module Database
         include PostgreSQL::Cookbook::Utils
         include PostgreSQL::Cookbook::SqlHelpers::Connection
+        include Utils
 
         private
 
@@ -33,24 +34,16 @@ module PostgreSQL
           return if database.to_a.empty?
 
           database = database.to_a.pop
+          map_pg_values!(database)
 
-          database.transform_values do |v|
-            case v
-            when 't'
-              true
-            when 'f'
-              false
-            else
-              v
-            end
-          end
+          database
         end
 
         def pg_database?(name)
           sql = "SELECT datname from pg_database WHERE datname='#{name}'"
           database = execute_sql(sql, max_one_result: true)
 
-          !database.empty?
+          !nil_or_empty?(database)
         end
 
         def database_sql(new_resource)
@@ -58,7 +51,6 @@ module PostgreSQL
 
           sql.push("DATABASE #{new_resource.database}")
 
-          Chef::Log.warn(new_resource.action)
           properties = case new_resource.action.pop
                        when :create
                          %i(
@@ -91,7 +83,13 @@ module PostgreSQL
             properties.each do |p|
               next if nil_or_empty?(new_resource.send(p))
 
-              sql.push("#{p.to_s.upcase}=#{new_resource.send(p)}")
+              property_string = if %i(allow_connections connection_limit is_template).include?(p)
+                                  "#{p.to_s.upcase}=#{new_resource.send(p)}"
+                                else
+                                  "#{p.to_s.upcase}=\"#{new_resource.send(p)}\""
+                                end
+
+              sql.push(property_string)
             end
           end
 

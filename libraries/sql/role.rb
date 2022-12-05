@@ -22,6 +22,7 @@ module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Role
+        include PostgreSQL::Cookbook::Utils
         include PostgreSQL::Cookbook::SqlHelpers::Connection
         include Utils
 
@@ -43,14 +44,14 @@ module PostgreSQL
           sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{name}';)
           role = execute_sql(sql, max_one_result: true)
 
-          !role.empty?
+          !nil_or_empty?(role)
         end
 
         def pg_role_password?(name)
           sql = "SELECT rolpassword from pg_roles WHERE rolname='#{name}' AND rolpassword IS NOT NULL;"
           password = execute_sql(sql, max_one_result: true)
 
-          !password.empty?
+          !nil_or_empty?(password)
         end
 
         def role_sql(new_resource)

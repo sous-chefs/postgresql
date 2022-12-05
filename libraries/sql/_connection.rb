@@ -60,19 +60,21 @@ module PostgreSQL
           connection_params = pg_connection_params
           Chef::Log.debug("Got params: [#{connection_params.class}] #{connection_params}")
 
-          key = nil_or_empty?(connection_params.fetch(:host, nil)) ? :local_socket : new_resource.host
-          client = node.run_state.dig('postgresql_pg_connection', key)
+          host = connection_params.fetch(:host, nil) || :local_socket
+          dbname = connection_params.fetch(:dbname, 'postgres')
+          client = node.run_state.dig('postgresql_pg_connection', host, dbname)
 
           if client.is_a?(::PG::Connection)
-            Chef::Log.info("Returning pre-existing client for #{key}")
+            Chef::Log.info("Returning pre-existing client for #{host}/#{dbname}")
             return client
           end
 
-          Chef::Log.info("Creating client for #{key}")
+          Chef::Log.info("Creating client for #{host}/#{dbname}")
           node.run_state['postgresql_pg_connection'] ||= {}
-          node.run_state['postgresql_pg_connection'][key] ||= ::PG::Connection.new(**connection_params)
+          node.run_state['postgresql_pg_connection'][host] ||= {}
+          node.run_state['postgresql_pg_connection'][host][dbname] ||= ::PG::Connection.new(**connection_params)
 
-          node.run_state['postgresql_pg_connection'][key]
+          node.run_state['postgresql_pg_connection'][host][dbname]
         end
 
         def execute_sql(query, max_one_result: false)
@@ -83,8 +85,9 @@ module PostgreSQL
           result = pg_client.exec(statement).to_a
 
           Chef::Log.debug("Got result: #{result}")
+          return if result.empty?
 
-          raise "Expected a single result, got #{result.count}" unless result.empty? || (result.one? || !max_one_result)
+          raise "Expected a single result, got #{result.count}" unless result.one? || !max_one_result
 
           result
         end

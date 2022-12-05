@@ -20,6 +20,8 @@ use 'partial/_connection'
 property :extension, String,
           name_property: true
 
+property :schema, String
+
 property :old_version, String
 
 property :version, String
