@@ -1,7 +1,11 @@
-postgresql_client_install '11' do
-  version '11'
+postgresql_install '13' do
+  version '13'
+
+  action :install_client
 end
 
-postgresql_client_install '12' do
-  version '12'
+postgresql_install '15' do
+  version '15'
+
+  action :install_client
 end

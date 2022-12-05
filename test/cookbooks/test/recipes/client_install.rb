@@ -1,4 +1,5 @@
-# This resource should install the postgresql client
-postgresql_client_install 'postgresql client' do
+postgresql_install 'postgresql' do
   version node['test']['pg_ver']
+
+  action %i(install_client)
 end

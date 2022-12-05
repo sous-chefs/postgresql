@@ -1,9 +1,7 @@
 postgresql_install 'postgresql' do
+  version node['test']['pg_ver']
   action %i(install init_server)
 end
-
-# extend PostgreSQL::Cookbook::SqlHelpers
-# install_pg_gem
 
 postgresql_config 'postgresql-server' do
   version '15'

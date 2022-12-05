@@ -5,12 +5,18 @@ locale = value_for_platform(
   default: 'en_US'
 )
 
-postgresql_server_install 'package' do
-  password '12345'
-  action [:install, :create]
-  initdb_locale locale
-  initdb_encoding 'UTF-8'
+# postgresql_server_install 'package' do
+#   password '12345'
+#   action [:install, :create]
+#   initdb_locale locale
+#   initdb_encoding 'UTF-8'
+#   version node['test']['pg_ver']
+# end
+
+postgresql_install 'postgresql' do
   version node['test']['pg_ver']
+
+  action %i(install init_server)
 end
 
 postgresql_database 'test_1' do

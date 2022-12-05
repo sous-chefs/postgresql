@@ -1,4 +1,6 @@
 postgresql_install 'postgresql' do
+  version node['test']['pg_ver']
+
   action %i(install init_server)
 end
 
