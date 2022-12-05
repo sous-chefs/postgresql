@@ -40,4 +40,5 @@ property :password, String,
 property :connection_string, String,
           desired_state: false
 
-property :force, [true, false]
+property :force, [true, false],
+          desired_state: false

@@ -15,8 +15,6 @@
 # limitations under the License.
 #
 
-unified_mode true
-
 use 'partial/_connection'
 
 property :extension, String,

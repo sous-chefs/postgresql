@@ -66,7 +66,8 @@ property :admin, [String, Array],
           coerce: proc { |p| Array(p).join(', ') }
 
 property :config, Hash,
-          default: {}
+          default: {},
+          coerce: proc { |p| p.transform_keys(&:to_s) }
 
 property :sensitive, [true, false],
           default: true,
@@ -89,7 +90,7 @@ load_current_value do |new_resource|
   bypassrls(role_data.fetch('rolbypassrls', nil))
   connection_limit(role_data.fetch('rolconnlimit', nil))
   valid_until(role_data.fetch('rolvaluntil', nil))
-  config(role_data.fetch('rolconfig', nil))
+  config(config_string_to_hash(role_data.fetch('rolconfig', nil)))
 end
 
 action_class do
@@ -97,19 +98,42 @@ action_class do
 end
 
 action :create do
-  converge_if_changed { create_role(new_resource) } unless pg_role?(new_resource.name)
+  return if pg_role?(new_resource.rolename)
+
+  converge_if_changed(
+      :superuser,
+      :createdb,
+      :createrole,
+      :inherit,
+      :login,
+      :replication,
+      :bypassrls,
+      :connection_limit,
+      :unencrypted_password,
+      :encrypted_password,
+      :valid_until,
+      :in_role,
+      :role,
+      :admin
+    ) do
+    create_role(new_resource)
+  end
+
+  converge_if_changed(:config) { set_role_configuration(new_resource) }
 end
 
 action :update do
-  raise CurrentValueDoesNotExist, "Cannot update role '#{new_resource.name}' as it does not exist" unless pg_role?(new_resource.name)
+  raise CurrentValueDoesNotExist, "Cannot update role '#{new_resource.name}' as it does not exist" unless pg_role?(new_resource.rolename)
 
   converge_if_changed(:superuser, :createdb, :createrole, :inherit, :login, :replication, :bypassrls, :connection_limit, :unencrypted_password, :encrypted_password) do
     update_role(new_resource)
   end
+
+  converge_if_changed(:config) { set_role_configuration(new_resource) }
 end
 
 action :drop do
-  converge_by("Drop role #{new_resource.name}") { drop_role(new_resource) } if pg_role?(new_resource.name)
+  converge_by("Drop role #{new_resource.name}") { drop_role(new_resource) } if pg_role?(new_resource.rolename)
 end
 
 action :delete do
