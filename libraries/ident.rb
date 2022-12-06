@@ -53,7 +53,7 @@ module PostgreSQL
 
               variables(pg_ident: file)
 
-              action :nothing
+              action :create
               delayed_action :create
             end
           end

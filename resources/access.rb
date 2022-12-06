@@ -102,7 +102,7 @@ action :delete do
   resource_properties = %i(type database user address auth_method auth_options).map { |p| new_resource.send(p) }.compact
   entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(*resource_properties)
 
-  converge_by('Remove grant entry') do
+  converge_by("Remove grant entry for #{new_resource.type}, #{new_resource.database}, #{new_resource.user}") do
     config_resource.variables[:pg_hba].remove(entry)
   end if config_resource.variables[:pg_hba].include?(entry)
 end

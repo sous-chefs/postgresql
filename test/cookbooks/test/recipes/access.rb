@@ -4,11 +4,22 @@ postgresql_install 'postgresql' do
   action %i(install init_server)
 end
 
-postgresql_access 'postgresql all all trust' do
+postgresql_access 'local all postgresql trust' do
+  type 'local'
+  database 'all'
+  user 'postgres'
+  auth_method 'trust'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
+end
+
+postgresql_access 'local all all trust' do
   type 'local'
   database 'all'
   user 'all'
   auth_method 'trust'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_access 'postgresql host superuser' do
@@ -17,23 +28,33 @@ postgresql_access 'postgresql host superuser' do
   user 'postgres'
   address '127.0.0.1/32'
   auth_method 'md5'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_service 'postgresql' do
   action %i(enable start)
 end
 
-postgresql_user 'sous_chef' do
-  superuser true
-  unencrypted_password '67890'
-  sensitive false
+postgresql_user 'postgres' do
+  unencrypted_password '12345'
+  action :update
 end
 
 postgresql_user 'sous_chef' do
+  unencrypted_password '12345'
+end
+
+postgresql_user 'sous_chef' do
+  superuser true
+  unencrypted_password '67890'
   config({ statement_timeout: '8min' })
+  login true
   sensitive false
   action :update
 end
+
+postgresql_database 'sous_chef'
 
 postgresql_access 'a sous_chef local superuser' do
   type 'host'
