@@ -55,14 +55,11 @@ load_current_value do |new_resource|
   end
 
   pg_hba_file = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFile.read(new_resource.config_file)
+  entry = pg_hba_file.entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
 
-  resource_properties = %i(type database user address auth_method auth_options)
-  resource_property_values = resource_properties.map { |p| new_resource.send(p) }.compact
-  entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(*resource_property_values)
+  current_value_does_not_exist! if nil_or_empty?(entry)
 
-  current_value_does_not_exist! unless pg_hba_file.include?(entry)
-
-  resource_properties.each do |p|
+  %i(type database user address auth_method auth_options).each do |p|
     next unless entry.respond_to?(p)
 
     send(p, entry.send(p).to_s)
@@ -76,11 +73,26 @@ end
 action :create do
   converge_if_changed do
     config_resource_init
+    entry = config_resource.variables[:pg_hba].entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
 
-    resource_properties = %i(type database user address auth_method auth_options).map { |p| new_resource.send(p) }.compact
-    entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(*resource_properties)
+    if nil_or_empty?(entry)
+      resource_properties = %i(type database user address auth_method auth_options).map { |p| new_resource.send(p) }.compact
+      entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(*resource_properties)
+      config_resource.variables[:pg_hba].add(entry)
+    else
+      entry.update(new_resource.auth_method, new_resource.auth_options)
+    end
+  end
+end
 
-    config_resource.variables[:pg_hba].add(entry)
+action :update do
+  converge_if_changed(:auth_method, :auth_options) do
+    config_resource_init
+    entry = config_resource.variables[:pg_hba].entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
+
+    raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update access entry '#{new_resource.name}' as it does not exist" if nil_or_empty?(entry)
+
+    entry.update(new_resource.auth_method, new_resource.auth_options)
   end
 end
 

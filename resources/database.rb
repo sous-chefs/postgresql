@@ -80,7 +80,7 @@ action :create do
 end
 
 action :update do
-  raise CurrentValueDoesNotExist, "Cannot update database '#{new_resource.name}' as it does not exist" unless pg_database?(new_resource.name)
+  raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update database '#{new_resource.name}' as it does not exist" unless pg_database?(new_resource.name)
 
   converge_if_changed(:allow_connections, :connection_limit, :is_template) do
     update_database(new_resource)

@@ -60,12 +60,13 @@ module PostgreSQL
           sql.push("ROLE \"#{new_resource.rolename}\" WITH")
 
           %i(superuser createdb createrole inherit login replication bypassrls).each do |perm|
-            unless new_resource.send(perm)
-              sql.push("NO#{perm.to_s.upcase.gsub('_', ' ')}")
-              next
-            end
+            next unless property_is_set?(perm)
 
-            sql.push("#{perm.to_s.upcase.gsub('_', ' ')}")
+            if new_resource.send(perm)
+              sql.push("#{perm.to_s.upcase.gsub('_', ' ')}")
+            else
+              sql.push("NO#{perm.to_s.upcase.gsub('_', ' ')}")
+            end
           end
 
           sql.push("CONNECTION LIMIT #{new_resource.connection_limit}")
@@ -106,10 +107,21 @@ module PostgreSQL
           execute_sql("DROP ROLE \"#{new_resource.rolename}\"")
         end
 
-        # def alter_role_password_sql(new_resource)
-        #   sql = %(ALTER ROLE postgres ENCRYPTED PASSWORD '#{postgres_password(new_resource)}';)
-        #   execute_sql(sql)
-        # end
+        def update_role_password(new_resource)
+          sql = []
+
+          sql.push("ALTER ROLE \"#{new_resource.rolename}\"")
+
+          if new_resource.encrypted_password
+            sql.push("ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'")
+          elsif new_resource.unencrypted_password
+            sql.push("PASSWORD '#{new_resource.unencrypted_password}'")
+          else
+            sql.push('PASSWORD NULL')
+          end
+
+          execute_sql("#{sql.join(' ').strip};")
+        end
 
         # def update_role_with_attributes_sql(new_resource, attr, value)
         #   sql = %(ALTER ROLE \\"#{new_resource.create_role}\\" SET #{attr} = #{value})

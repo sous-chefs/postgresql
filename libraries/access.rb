@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+require_relative '_utils'
+
 module PostgreSQL
   module Cookbook
     module AccessHelpers
@@ -53,7 +55,7 @@ module PostgreSQL
 
               variables(pg_hba: file)
 
-              action :nothing
+              action :create
               delayed_action :create
             end
           end
@@ -64,6 +66,8 @@ module PostgreSQL
         ENTRY_TYPES = %w(local host hostssl hostnossl hostgssenc hostnogssenc).freeze
 
         class PgHbaFile
+          include PostgreSQL::Cookbook::Utils
+
           attr_reader :entries
 
           def initialize
@@ -96,6 +100,7 @@ module PostgreSQL
             raise PgHbaInvalidEntryType unless entry.is_a?(PgHbaFileEntry)
 
             @entries.push(entry)
+            @entries.uniq!
             sort!
           end
 
@@ -109,6 +114,16 @@ module PostgreSQL
             raise unless entry.is_a?(PgHbaFileEntry)
 
             @entries.any? { |e| e.eql?(entry) }
+          end
+
+          def entry(type, database, user, address = nil)
+            entry = @entries.filter { |e| e.match?(type, database, user, address) }
+
+            return if nil_or_empty?(entry)
+
+            raise "Duplicate entries found for #{type}, #{database}, #{user}, #{address}" unless entry.one?
+
+            entry.pop
           end
 
           def sort!
@@ -190,6 +205,19 @@ module PostgreSQL
             false
           end
 
+          def match?(type, database, user, address = nil)
+            return true if @type.eql?(type) && @database.eql?(database) && @user.eql?(user) && (@address.eql?(address) || address.nil?)
+
+            false
+          end
+
+          def update(auth_method, auth_options = nil)
+            @auth_method = auth_method
+            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options
+
+            self
+          end
+
           def self.create(*properties)
             raise PgHbaInvalidEntryType, "Invalid entry type #{properties.first}" unless ENTRY_TYPES.include?(properties.first)
 
@@ -206,7 +234,8 @@ module PostgreSQL
           attr_accessor :database, :user, :auth_method, :auth_options
 
           ENTRY_FIELDS = %i(type database user auth_method auth_options).freeze
-          private_constant :ENTRY_FIELDS
+          MATCH_FIELDS = %i(type database user).freeze
+          private_constant :ENTRY_FIELDS, :MATCH_FIELDS
 
           def initialize(type, database, user, auth_method, auth_options = nil)
             raise PgHbaInvalidEntryType, "Invalid entry type #{properties.first}" unless type.eql?('local')
@@ -230,7 +259,8 @@ module PostgreSQL
           attr_accessor :database, :user, :address, :auth_method, :auth_options
 
           ENTRY_FIELDS = %i(type database user address auth_method auth_options).freeze
-          private_constant :ENTRY_FIELDS
+          MATCH_FIELDS = %i(type database user address).freeze
+          private_constant :ENTRY_FIELDS, :MATCH_FIELDS
 
           def initialize(type, database, user, address, auth_method, auth_options = nil)
             raise PgHbaInvalidEntryType unless %w(host hostssl hostnossl hostgssenc hostnogssenc).include?(type)

@@ -22,37 +22,28 @@ use 'partial/_connection'
 property :rolename, String,
           name_property: true
 
-property :superuser, [true, false],
-          default: false
+property :superuser, [true, false]
 
-property :createdb, [true, false],
-          default: false
+property :createdb, [true, false]
 
-property :createrole, [true, false],
-          default: false
+property :createrole, [true, false]
 
-property :inherit, [true, false],
-          default: true
+property :inherit, [true, false]
 
-property :login, [true, false],
-          default: true
+property :login, [true, false]
 
-property :replication, [true, false],
-          default: false
+property :replication, [true, false]
 
-property :bypassrls, [true, false],
-          default: false
+property :bypassrls, [true, false]
 
 property :connection_limit, [Integer, String],
           default: -1,
           coerce: proc { |p| p.to_s }
 
 property :unencrypted_password, String,
-          sensitive: true,
-          desired_state: false
+          sensitive: true
 
-property :encrypted_password, String,
-          desired_state: false
+property :encrypted_password, String
 
 property :valid_until, String
 
@@ -120,16 +111,18 @@ action :create do
   end
 
   converge_if_changed(:config) { set_role_configuration(new_resource) }
+  converge_if_changed(:unencrypted_password, :encrypted_password) { update_role_password(new_resource) }
 end
 
 action :update do
-  raise CurrentValueDoesNotExist, "Cannot update role '#{new_resource.name}' as it does not exist" unless pg_role?(new_resource.rolename)
+  raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update role '#{new_resource.name}' as it does not exist" unless pg_role?(new_resource.rolename)
 
-  converge_if_changed(:superuser, :createdb, :createrole, :inherit, :login, :replication, :bypassrls, :connection_limit, :unencrypted_password, :encrypted_password) do
+  converge_if_changed(:superuser, :createdb, :createrole, :inherit, :login, :replication, :bypassrls, :connection_limit) do
     update_role(new_resource)
   end
 
   converge_if_changed(:config) { set_role_configuration(new_resource) }
+  converge_if_changed(:unencrypted_password, :encrypted_password) { update_role_password(new_resource) }
 end
 
 action :drop do
