@@ -13,12 +13,25 @@ postgresql_install 'postgresql' do
   action %i(install init_server)
 end
 
+postgresql_access 'local all postgresql trust' do
+  type 'local'
+  database 'all'
+  user 'postgres'
+  auth_method 'trust'
+end
+
 postgresql_service 'postgresql' do
   action %i(enable start)
 end
 
+postgresql_user 'postgres' do
+  unencrypted_password '12345'
+  action :nothing
+end
+
 postgresql_database 'test_1' do
   locale locale
+  notifies :set_password, 'postgresql_user[postgres]', :before
 end
 
 if platform_family?('debian')
