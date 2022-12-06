@@ -25,7 +25,8 @@ property :config_file, String,
 property :source, String,
           default: 'postgresql.conf.erb'
 
-property :version, String
+property :version, String,
+          desired_state: false
 
 property :data_directory, String,
           default: lazy { data_dir }
