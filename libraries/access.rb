@@ -75,7 +75,7 @@ module PostgreSQL
             @access_entries = []
           end
 
-          def read!(file = 'pg_hba.conf', sort: true)
+          def read!(file = 'pg_hba.conf', sort: false)
             raise ArgumentError, "File #{file} does not exist" unless ::File.exist?(file)
 
             @access_entries.concat(File.read(file).split("\n"))
@@ -91,7 +91,7 @@ module PostgreSQL
             sort! if sort
           end
 
-          def to_s(sort: true)
+          def to_s(sort: false)
             sort! if sort
             @entries.map(&:to_s).join("\n")
           end
@@ -101,7 +101,6 @@ module PostgreSQL
 
             @entries.push(entry)
             @entries.uniq!
-            sort!
           end
 
           def remove(entry)
@@ -130,7 +129,7 @@ module PostgreSQL
             @entries.sort_by!(&:type)
           end
 
-          def self.read(file = 'pg_hba.conf', sort: true)
+          def self.read(file = 'pg_hba.conf', sort: false)
             pg_hba = new
             pg_hba.read!(file, sort: sort)
 
