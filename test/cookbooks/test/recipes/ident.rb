@@ -4,6 +4,10 @@ postgresql_install 'postgresql' do
   action %i(install init_server)
 end
 
+postgresql_service 'postgresql' do
+  action %i(enable start)
+end
+
 user 'shef'
 
 postgresql_ident 'postgresl mapping' do
@@ -50,10 +54,6 @@ postgresql_access 'shef mapping' do
   cookbook 'test'
 
   notifies :reload, 'postgresql_service[postgresql]', :delayed
-end
-
-postgresql_service 'postgresql' do
-  action %i(enable start)
 end
 
 postgresql_user 'sous_chef' do
