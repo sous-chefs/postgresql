@@ -9,8 +9,6 @@ postgresql_access 'local all postgresql trust' do
   database 'all'
   user 'postgres'
   auth_method 'trust'
-
-  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_access 'local all all trust' do
@@ -18,8 +16,6 @@ postgresql_access 'local all all trust' do
   database 'all'
   user 'all'
   auth_method 'trust'
-
-  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_access 'postgresql host superuser' do
@@ -28,8 +24,6 @@ postgresql_access 'postgresql host superuser' do
   user 'postgres'
   address '127.0.0.1/32'
   auth_method 'md5'
-
-  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_service 'postgresql' do
@@ -38,11 +32,13 @@ end
 
 postgresql_user 'postgres' do
   unencrypted_password '12345'
-  action :update
+  action :nothing
 end
 
 postgresql_user 'sous_chef' do
   unencrypted_password '12345'
+
+  notifies :set_password, 'postgresql_user[postgres]', :before
 end
 
 postgresql_user 'sous_chef' do

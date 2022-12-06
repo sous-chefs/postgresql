@@ -9,8 +9,6 @@ postgresql_access 'local all postgresql trust' do
   database 'all'
   user 'postgres'
   auth_method 'trust'
-
-  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_access 'local all all peer delete' do
@@ -20,7 +18,6 @@ postgresql_access 'local all all peer delete' do
   auth_method 'peer'
 
   action :delete
-  notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_service 'postgresql' do
@@ -77,7 +74,7 @@ end
 
 postgresql_user 'postgres' do
   unencrypted_password '12345'
-  action :update
+  action :nothing
 end
 
 postgresql_user 'sous_chef' do
@@ -85,6 +82,8 @@ postgresql_user 'sous_chef' do
   login true
   password '67890'
   sensitive false
+
+  notifies :set_password, 'postgresql_user[postgres]', :before
 end
 
 postgresql_user 'sous_chef' do
