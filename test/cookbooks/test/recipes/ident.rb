@@ -4,6 +4,25 @@ postgresql_install 'postgresql' do
   action %i(install init_server)
 end
 
+postgresql_access 'local all postgresql trust' do
+  type 'local'
+  database 'all'
+  user 'postgres'
+  auth_method 'trust'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
+end
+
+postgresql_access 'local all all peer delete' do
+  type 'local'
+  database 'all'
+  user 'all'
+  auth_method 'peer'
+
+  action :delete
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
+end
+
 postgresql_service 'postgresql' do
   action %i(enable start)
 end
@@ -48,16 +67,22 @@ end
 postgresql_access 'shef mapping' do
   type 'local'
   database 'all'
-  user 'all'
+  user 'sous_chef'
   auth_method 'peer'
-  auth_options 'map=testmap'
+  auth_options 'map=testmap2'
   cookbook 'test'
 
   notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
 
+postgresql_user 'postgres' do
+  unencrypted_password '12345'
+  action :update
+end
+
 postgresql_user 'sous_chef' do
   superuser true
+  login true
   password '67890'
   sensitive false
 end
@@ -68,9 +93,7 @@ postgresql_user 'sous_chef' do
   action :update
 end
 
-postgresql_database 'test1' do
-  # action :delete
-end
+postgresql_database 'test1'
 
 postgresql_database 'test2' do
   action :delete

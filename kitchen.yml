@@ -74,6 +74,9 @@ suites:
         - path: test/integration/ident/
     run_list:
       - recipe[test::ident]
+    provisioner:
+      enforce_idempotency: false
+      multiple_converge: 1
   - name: initdb_locale_15
     attributes:
       test:
