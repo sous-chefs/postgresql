@@ -159,6 +159,11 @@ action_class do
   end
 
   def do_client_package_action(package_action)
+    if platform_family?('rhel') && node['platform_version'].to_i.eql?(7)
+      package 'epel-release'
+      package 'centos-release-scl'
+    end
+
     package 'postgresql-client' do
       package_name new_resource.client_packages
       action package_action
@@ -172,6 +177,11 @@ action_class do
   end
 
   def do_server_package_action(package_action)
+    if platform_family?('rhel') && node['platform_version'].to_i.eql?(7)
+      package 'epel-release'
+      package 'centos-release-scl'
+    end
+
     package 'postgresql-server' do
       package_name new_resource.server_packages
       action package_action

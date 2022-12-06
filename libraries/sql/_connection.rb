@@ -31,6 +31,11 @@ module PostgreSQL
           return if gem_installed?('pg')
 
           with_run_context(:root) do
+            if platform_family?('rhel') && node['platform_version'].to_i.eql?(7)
+              declare_resource(:package, 'epel-release') { compile_time(true) }
+              declare_resource(:package, 'centos-release-scl') { compile_time(true) }
+            end
+
             declare_resource(:build_essential, 'Build Essential') { compile_time(true) }
             declare_resource(:package, postgresql_devel_pkg_name) { compile_time(true) }
             declare_resource(:chef_gem, 'pg') do
