@@ -28,7 +28,7 @@ property :version, String,
 property :source, [String, Symbol],
           default: :repo,
           coerce: proc { |p| p.to_sym },
-          equal_to: %i(repo system)
+          equal_to: %i(repo)
 
 property :client_packages, [String, Array],
           default: lazy { default_client_packages },
@@ -147,8 +147,8 @@ action_class do
       package 'apt-transport-https'
 
       apt_repository "postgresql_org_repository_#{new_resource.version.to_s}" do
-        uri          'https://download.postgresql.org/pub/repos/apt/'
-        components   ['main', new_resource.version.to_s]
+        uri 'https://download.postgresql.org/pub/repos/apt/'
+        components ['main', new_resource.version.to_s]
         distribution "#{node['lsb']['codename']}-pgdg"
         key new_resource.apt_gpg_key_uri
         cache_rebuild true
@@ -196,9 +196,6 @@ action_class do
 end
 
 action :install do
-  node.run_state['postgresql'] ||= {}
-  node.run_state['postgresql']['version'] ||= new_resource.version
-
   run_action(:repository_create) if install_method_repo?
   run_action(:install_client)
   run_action(:install_server)
@@ -253,10 +250,12 @@ action :repository_delete do
 end
 
 action :init_server do
-  execute 'init_db' do
-    command rhel_init_db_command(new_resource)
-    user new_resource.user
+  return if initialized? || !platform_family?('rhel', 'fedora', 'amazon')
 
-    only_if { platform_family?('rhel', 'fedora', 'amazon') }
-  end unless initialized?
+  converge_by('Init Postgresql DB') do
+    execute 'init_db' do
+      command rhel_init_db_command(new_resource)
+      user new_resource.user
+    end
+  end
 end
