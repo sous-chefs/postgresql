@@ -111,7 +111,7 @@ action :create do
   end
 
   converge_if_changed(:config) { set_role_configuration(new_resource) }
-  converge_if_changed(:unencrypted_password, :encrypted_password) { update_role_password(new_resource) }
+  converge_if_changed(:unencrypted_password, :encrypted_password) { update_role_password(new_resource) } unless pg_role_password?(new_resource.rolename)
 end
 
 action :update do
@@ -122,7 +122,7 @@ action :update do
   end
 
   converge_if_changed(:config) { set_role_configuration(new_resource) }
-  converge_if_changed(:unencrypted_password, :encrypted_password) { update_role_password(new_resource) }
+  converge_if_changed(:unencrypted_password, :encrypted_password) { update_role_password(new_resource) } unless pg_role_password?(new_resource.rolename)
 end
 
 action :drop do
@@ -131,4 +131,8 @@ end
 
 action :delete do
   run_action(:drop)
+end
+
+action :set_password do
+  converge_if_changed(:unencrypted_password, :encrypted_password) { update_role_password(new_resource) }
 end
