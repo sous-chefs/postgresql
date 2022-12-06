@@ -15,15 +15,21 @@
 # limitations under the License.
 #
 
+require_relative '_utils'
+
 module PostgreSQL
   module Cookbook
     module Helpers
+      include Utils
       require 'securerandom'
 
       # private
 
       def installed_postgresql_major_version
-        pgsql_package = node['packages'].filter { |p| p.match?(/postgresql(\d+)?$/) }
+        pgsql_package = node['packages'].filter { |p| p.match?(/postgresql-?(\d+)?$/) }
+
+        raise 'Unable to determine installed PostgreSQL version' if nil_or_empty?(pgsql_package)
+
         pgsql_package_version = pgsql_package.first[1].fetch('version').to_i
         Chef::Log.info("Deteched PostgreSQL version: #{pgsql_package_version}")
 
