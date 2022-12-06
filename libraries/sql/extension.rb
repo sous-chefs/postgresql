@@ -21,10 +21,10 @@ module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Extension
+        private
+
         include PostgreSQL::Cookbook::Utils
         include PostgreSQL::Cookbook::SqlHelpers::Connection
-
-        private
 
         def pg_extension(name)
           sql = 'SELECT * FROM pg_extension WHERE extname=$1'

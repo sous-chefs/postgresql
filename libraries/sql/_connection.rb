@@ -19,12 +19,38 @@ module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Connection
-        include PostgreSQL::Cookbook::Utils
-
         private
+
+        include PostgreSQL::Cookbook::Utils
 
         def postgresql_devel_pkg_name
           platform_family?('debian') ? 'libpq-dev' : "postgresql#{node['test']['pg_ver']}-devel"
+        end
+
+        def postgresql_devel_path(suffix = nil)
+          path = case node['platform_family']
+                 when 'rhel', 'fedora', 'amazon'
+                   "/usr/pgsql-#{node['test']['pg_ver']}"
+                 when 'debian'
+                   '/usr/include/postgresql'
+                 else
+                   raise "Unsupported platform family #{node['platform_family']}"
+                 end
+
+          path = ::File.join(path, suffix) unless nil_or_empty?(suffix)
+
+          path
+        end
+
+        def pg_gem_build_options
+          case node['platform_family']
+          when 'rhel', 'fedora', 'amazon'
+            "-- --with-pg-include=#{postgresql_devel_path('include')} --with-pg-lib=#{postgresql_devel_path('lib')}"
+          when 'debian'
+            "-- --with-pg-include=#{postgresql_devel_path} --with-pg-lib=#{postgresql_devel_path}"
+          else
+            raise "Unsupported platform family #{node['platform_family']}"
+          end
         end
 
         def install_pg_gem
@@ -38,8 +64,11 @@ module PostgreSQL
 
             declare_resource(:build_essential, 'Build Essential') { compile_time(true) }
             declare_resource(:package, postgresql_devel_pkg_name) { compile_time(true) }
+
+            gem_build_options = pg_gem_build_options
+
             declare_resource(:chef_gem, 'pg') do
-              options "-- --with-pg-include=/usr/pgsql-#{node['test']['pg_ver']}/include --with-pg-lib=/usr/pgsql-#{node['test']['pg_ver']}/lib"
+              options gem_build_options
               version '~> 1.4'
               compile_time true
             end

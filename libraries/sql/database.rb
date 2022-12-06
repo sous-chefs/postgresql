@@ -21,11 +21,11 @@ module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Database
+        private
+
         include PostgreSQL::Cookbook::Utils
         include PostgreSQL::Cookbook::SqlHelpers::Connection
         include Utils
-
-        private
 
         def pg_database(name)
           sql = 'SELECT * from pg_database WHERE datname=$1'

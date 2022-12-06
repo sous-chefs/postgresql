@@ -19,9 +19,9 @@ module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Utils
-        include PostgreSQL::Cookbook::Utils
-
         private
+
+        include PostgreSQL::Cookbook::Utils
 
         def config_string_to_hash(string)
           return {} if nil_or_empty?(string)

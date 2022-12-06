@@ -22,9 +22,9 @@ module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Attribute
-        include PostgreSQL::Cookbook::SqlHelpers::Connection
-
         private
+
+        include PostgreSQL::Cookbook::SqlHelpers::Connection
 
         def pg_attribute?(role, attribute, value)
           sql = 'SELECT rolconfig FROM pg_roles WHERE rolname=$1'

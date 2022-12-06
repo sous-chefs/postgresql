@@ -22,11 +22,11 @@ module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Role
+        private
+
         include PostgreSQL::Cookbook::Utils
         include PostgreSQL::Cookbook::SqlHelpers::Connection
         include Utils
-
-        private
 
         def pg_role(name)
           sql = 'SELECT * FROM pg_roles WHERE rolname=$1'

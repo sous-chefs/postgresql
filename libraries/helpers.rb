@@ -16,14 +16,12 @@
 #
 
 require_relative '_utils'
+require 'securerandom'
 
 module PostgreSQL
   module Cookbook
     module Helpers
       include Utils
-      require 'securerandom'
-
-      # private
 
       def installed_postgresql_major_version
         pgsql_package = node['packages'].filter { |p| p.match?(/postgresql-?(\d+)?$/) }
