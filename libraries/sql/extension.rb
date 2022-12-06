@@ -27,14 +27,14 @@ module PostgreSQL
         private
 
         def pg_extension(name)
-          sql = "SELECT * FROM pg_extension WHERE extname='#{name}';"
+          sql = 'SELECT * FROM pg_extension WHERE extname=$1'
 
-          execute_sql(sql, max_one_result: true).pop
+          execute_sql_params(sql, [ name ], max_one_result: true).pop
         end
 
         def pg_extension?(new_resource)
-          sql = "SELECT extversion FROM pg_extension WHERE extname='#{new_resource.extension}';"
-          version = execute_sql(sql, max_one_result: true)
+          sql = 'SELECT extversion FROM pg_extension WHERE extname=$1'
+          version = execute_sql_params(sql, [ new_resource.extension ], max_one_result: true)
 
           return false if nil_or_empty?(version)
 

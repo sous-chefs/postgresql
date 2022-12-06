@@ -27,8 +27,8 @@ module PostgreSQL
         private
 
         def pg_attribute?(role, attribute, value)
-          sql = %(SELECT rolconfig FROM pg_roles WHERE rolname='#{role}';)
-          attribute_config = execute_sql(sql, max_one_result: true).fetch('rolconfig')
+          sql = 'SELECT rolconfig FROM pg_roles WHERE rolname=$1'
+          attribute_config = execute_sql_params(sql, [ role ], max_one_result: true).fetch('rolconfig')
           Chef::Log.warn("AC: #{attribute_config}")
 
           attribute_config = config_string_to_hash(attribute_config)

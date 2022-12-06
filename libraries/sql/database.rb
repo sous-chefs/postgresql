@@ -28,8 +28,9 @@ module PostgreSQL
         private
 
         def pg_database(name)
-          sql = "SELECT * from pg_database WHERE datname='#{name}'"
-          database = execute_sql(sql, max_one_result: true)
+          sql = 'SELECT * from pg_database WHERE datname=$1'
+          params = [ name ]
+          database = execute_sql_params(sql, params, max_one_result: true)
 
           return if database.to_a.empty?
 
@@ -40,15 +41,11 @@ module PostgreSQL
         end
 
         def pg_database?(name)
-          sql = "SELECT datname from pg_database WHERE datname='#{name}'"
-          database = execute_sql(sql, max_one_result: true)
-
-          !nil_or_empty?(database)
+          !nil_or_empty?(pg_database(name))
         end
 
         def database_sql(new_resource)
           sql = []
-
           sql.push("DATABASE #{new_resource.database}")
 
           properties = case new_resource.action.pop

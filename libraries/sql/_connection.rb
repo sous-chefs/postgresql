@@ -70,19 +70,31 @@ module PostgreSQL
           end
 
           Chef::Log.info("Creating client for #{host}/#{dbname}")
+          client = ::PG::Connection.new(**connection_params)
+          client.type_map_for_queries = PG::BasicTypeMapForQueries.new(client)
+
           node.run_state['postgresql_pg_connection'] ||= {}
           node.run_state['postgresql_pg_connection'][host] ||= {}
-          node.run_state['postgresql_pg_connection'][host][dbname] ||= ::PG::Connection.new(**connection_params)
+          node.run_state['postgresql_pg_connection'][host][dbname] = client
 
           node.run_state['postgresql_pg_connection'][host][dbname]
         end
 
         def execute_sql(query, max_one_result: false)
-          # Query could be a String or an Array of Strings
-          statement = query.is_a?(String) ? query : query.join("\n")
+          Chef::Log.debug("Executing query: #{query}")
+          result = pg_client.exec(query).to_a
 
-          Chef::Log.debug("Executing query: #{statement}")
-          result = pg_client.exec(statement).to_a
+          Chef::Log.debug("Got result: #{result}")
+          return if result.empty?
+
+          raise "Expected a single result, got #{result.count}" unless result.one? || !max_one_result
+
+          result
+        end
+
+        def execute_sql_params(query, params, max_one_result: false)
+          Chef::Log.debug("Executing query: #{query} with params: #{params}")
+          result = pg_client.exec_params(query, params).to_a
 
           Chef::Log.debug("Got result: #{result}")
           return if result.empty?

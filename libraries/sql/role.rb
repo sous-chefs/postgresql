@@ -29,8 +29,8 @@ module PostgreSQL
         private
 
         def pg_role(name)
-          sql = "SELECT * FROM pg_roles WHERE rolname='#{name}';"
-          role = execute_sql(sql)
+          sql = 'SELECT * FROM pg_roles WHERE rolname=$1'
+          role = execute_sql_params(sql, [ name ])
 
           return if role.to_a.empty?
 
@@ -41,15 +41,15 @@ module PostgreSQL
         end
 
         def pg_role?(name)
-          sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{name}';)
-          role = execute_sql(sql, max_one_result: true)
+          sql = 'SELECT rolname FROM pg_roles WHERE rolname=$1'
+          role = execute_sql_params(sql, [ name ], max_one_result: true)
 
           !nil_or_empty?(role)
         end
 
         def pg_role_password?(name)
-          sql = "SELECT rolpassword from pg_roles WHERE rolname='#{name}' AND rolpassword IS NOT NULL;"
-          password = execute_sql(sql, max_one_result: true)
+          sql = 'SELECT rolpassword from pg_roles WHERE rolname=$1 AND rolpassword IS NOT NULL'
+          password = execute_sql_params(sql, [ name ], max_one_result: true)
 
           !nil_or_empty?(password)
         end
