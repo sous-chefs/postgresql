@@ -54,9 +54,9 @@ property :is_template, [true, false]
 include PostgreSQL::Cookbook::SqlHelpers::Database
 
 load_current_value do |new_resource|
-  current_value_does_not_exist! unless pg_database?(new_resource.name)
+  current_value_does_not_exist! unless pg_database?(new_resource.database)
 
-  database_data = pg_database(new_resource.name)
+  database_data = pg_database(new_resource.database)
 
   database(database_data.fetch('datname', nil))
   owner(database_data.fetch('datdba', nil))
@@ -76,11 +76,11 @@ action_class do
 end
 
 action :create do
-  converge_if_changed { create_database(new_resource) } unless pg_database?(new_resource.name)
+  converge_if_changed { create_database(new_resource) } unless pg_database?(new_resource.database)
 end
 
 action :update do
-  raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update database '#{new_resource.name}' as it does not exist" unless pg_database?(new_resource.name)
+  raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update database '#{new_resource.database}' as it does not exist" unless pg_database?(new_resource.database)
 
   converge_if_changed(:allow_connections, :connection_limit, :is_template) do
     update_database(new_resource)
@@ -96,7 +96,7 @@ action :update do
 end
 
 action :drop do
-  converge_by("Drop database #{new_resource.name}") { drop_database(new_resource) } if pg_database?(new_resource.name)
+  converge_by("Drop database #{new_resource.database}") { drop_database(new_resource) } if pg_database?(new_resource.database)
 end
 
 action :delete do

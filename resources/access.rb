@@ -90,7 +90,7 @@ action :update do
     config_resource_init
     entry = config_resource.variables[:pg_hba].entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
 
-    raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update access entry '#{new_resource.name}' as it does not exist" if nil_or_empty?(entry)
+    raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update access entry for '#{new_resource.name}' as it does not exist" if nil_or_empty?(entry)
 
     entry.update(new_resource.auth_method, new_resource.auth_options)
   end

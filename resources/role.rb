@@ -67,9 +67,9 @@ property :sensitive, [true, false],
 include PostgreSQL::Cookbook::SqlHelpers::Role
 
 load_current_value do |new_resource|
-  current_value_does_not_exist! unless pg_role?(new_resource.name)
+  current_value_does_not_exist! unless pg_role?(new_resource.rolename)
 
-  role_data = pg_role(new_resource.name)
+  role_data = pg_role(new_resource.rolename)
 
   rolename(role_data.fetch('rolname', nil))
   superuser(role_data.fetch('rolsuper', nil))
@@ -115,7 +115,7 @@ action :create do
 end
 
 action :update do
-  raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update role '#{new_resource.name}' as it does not exist" unless pg_role?(new_resource.rolename)
+  raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update role '#{new_resource.rolename}' as it does not exist" unless pg_role?(new_resource.rolename)
 
   converge_if_changed(:superuser, :createdb, :createrole, :inherit, :login, :replication, :bypassrls, :connection_limit) do
     update_role(new_resource)
@@ -126,7 +126,7 @@ action :update do
 end
 
 action :drop do
-  converge_by("Drop role #{new_resource.name}") { drop_role(new_resource) } if pg_role?(new_resource.rolename)
+  converge_by("Drop role #{new_resource.rolename}") { drop_role(new_resource) } if pg_role?(new_resource.rolename)
 end
 
 action :delete do

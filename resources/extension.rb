@@ -35,7 +35,7 @@ include PostgreSQL::Cookbook::SqlHelpers::Extension
 load_current_value do |new_resource|
   current_value_does_not_exist! unless pg_extension?(new_resource)
 
-  extension_data = pg_extension(new_resource.name)
+  extension_data = pg_extension(new_resource.extension)
 
   version(extension_data.fetch('extversion', nil))
 end
