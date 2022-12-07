@@ -26,6 +26,7 @@ property :source, String,
           default: 'postgresql.conf.erb'
 
 property :version, String,
+          default: lazy { installed_postgresql_major_version },
           desired_state: false
 
 property :data_directory, String,

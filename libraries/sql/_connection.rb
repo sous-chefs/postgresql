@@ -23,14 +23,14 @@ module PostgreSQL
 
         include PostgreSQL::Cookbook::Utils
 
-        def postgresql_devel_pkg_name
-          platform_family?('debian') ? 'libpq-dev' : "postgresql#{node['test']['pg_ver']}-devel"
+        def postgresql_devel_pkg_name(version = installed_postgresql_major_version)
+          platform_family?('debian') ? 'libpq-dev' : "postgresql#{version}-devel"
         end
 
-        def postgresql_devel_path(suffix = nil)
+        def postgresql_devel_path(suffix = nil, version: installed_postgresql_major_version)
           path = case node['platform_family']
                  when 'rhel', 'fedora', 'amazon'
-                   "/usr/pgsql-#{node['test']['pg_ver']}"
+                   "/usr/pgsql-#{version}"
                  when 'debian'
                    '/usr/include/postgresql'
                  else
