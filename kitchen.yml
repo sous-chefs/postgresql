@@ -80,11 +80,6 @@ suites:
         - path: test/integration/initdb_locale/
     run_list:
       - recipe[test::initdb_locale]
-    includes:
-      - almalinux-8
-      - centos-7
-      - centos-stream-8
-      - rockylinux-8
   - name: repo_15
     attributes:
       test:
@@ -117,9 +112,6 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
-    provisioner:
-      enforce_idempotency: false
-      multiple_converge: 1
   - name: client_install_14
     attributes:
       test:
@@ -158,11 +150,6 @@ suites:
         - path: test/integration/initdb_locale/
     run_list:
       - recipe[test::initdb_locale]
-    includes:
-      - almalinux-8
-      - centos-7
-      - centos-stream-8
-      - rockylinux-8
   - name: repo_14
     attributes:
       test:
@@ -195,9 +182,6 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
-    provisioner:
-      enforce_idempotency: false
-      multiple_converge: 1
   - name: client_install_13
     attributes:
       test:
@@ -236,11 +220,6 @@ suites:
         - path: test/integration/initdb_locale/
     run_list:
       - recipe[test::initdb_locale]
-    includes:
-      - almalinux-8
-      - centos-7
-      - centos-stream-8
-      - rockylinux-8
   - name: repo_13
     attributes:
       test:
@@ -273,9 +252,6 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
-    provisioner:
-      enforce_idempotency: false
-      multiple_converge: 1
   - name: client_install_12
     attributes:
       test:
@@ -314,11 +290,6 @@ suites:
         - path: test/integration/initdb_locale/
     run_list:
       - recipe[test::initdb_locale]
-    includes:
-      - almalinux-8
-      - centos-7
-      - centos-stream-8
-      - rockylinux-8
   - name: repo_12
     attributes:
       test:
@@ -351,9 +322,6 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
-    provisioner:
-      enforce_idempotency: false
-      multiple_converge: 1
   - name: client_install_11
     attributes:
       test:
@@ -392,11 +360,6 @@ suites:
         - path: test/integration/initdb_locale/
     run_list:
       - recipe[test::initdb_locale]
-    includes:
-      - almalinux-8
-      - centos-7
-      - centos-stream-8
-      - rockylinux-8
   - name: repo_11
     attributes:
       test:

@@ -18,9 +18,9 @@ jobs:
       matrix:
         os:
           - 'almalinux-8'
-          - 'amazonlinux-2'
           - 'centos-7'
           - 'centos-stream-8'
+          - 'centos-stream-9'
           - 'debian-10'
           - 'debian-11'
           - 'rockylinux-8'
@@ -46,28 +46,12 @@ jobs:
           - 'ident-13'
           - 'ident-14'
           - 'ident-15'
-          - 'initdb-locale-13'
-          - 'repo-11'
-          - 'repo-12'
-          - 'repo-13'
-          - 'repo-14'
-          - 'repo-15'
+          - 'initdb-locale-15'
           - 'server-install-11'
           - 'server-install-12'
           - 'server-install-13'
           - 'server-install-14'
           - 'server-install-15'
-        exclude:
-          - os: amazonlinux-2
-            suite: initdb-locale-13
-          - os: debian-10
-            suite: initdb-locale-13
-          - os: debian-11
-            suite: initdb-locale-13
-          - os: ubuntu-2004
-            suite: initdb-locale-13
-          - os: ubuntu-2204
-            suite: initdb-locale-13
       fail-fast: false
 
     steps:
