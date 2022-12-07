@@ -30,7 +30,7 @@ postgresql_user 'postgres' do
 end
 
 postgresql_database 'test_1' do
-  locale locale
+  locale locale if node['test']['pg_ver'].to_i >= 13
   notifies :set_password, 'postgresql_user[postgres]', :immediately
 end
 
