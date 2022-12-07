@@ -25,9 +25,10 @@ property :config_file, String,
 property :source, String,
           default: 'postgresql.conf.erb'
 
-property :version, String,
+property :version, [String, Integer],
           default: lazy { installed_postgresql_major_version },
-          desired_state: false
+          desired_state: false,
+          coerce: proc { |p| p.to_s }
 
 property :data_directory, String,
           default: lazy { data_dir }

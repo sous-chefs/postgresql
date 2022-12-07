@@ -22,8 +22,9 @@ include PostgreSQL::Cookbook::Helpers
 property :sensitive, [true, false],
           default: true
 
-property :version, String,
-          default: '15'
+property :version, [String, Integer],
+          default: '15',
+          coerce: proc { |p| p.to_s }
 
 property :source, [String, Symbol],
           default: :repo,
