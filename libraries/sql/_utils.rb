@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+require_relative '../_utils'
+
 module PostgreSQL
   module Cookbook
     module SqlHelpers

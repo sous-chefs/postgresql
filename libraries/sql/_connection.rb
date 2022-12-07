@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 
+require_relative '../_utils'
+require_relative '../helpers'
+
 module PostgreSQL
   module Cookbook
     module SqlHelpers
@@ -22,6 +25,7 @@ module PostgreSQL
         private
 
         include PostgreSQL::Cookbook::Utils
+        include PostgreSQL::Cookbook::Helpers
 
         def postgresql_devel_pkg_name(version = installed_postgresql_major_version)
           platform_family?('debian') ? 'libpq-dev' : "postgresql#{version}-devel"
