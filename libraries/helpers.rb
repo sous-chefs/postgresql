@@ -79,7 +79,7 @@ module PostgreSQL
       def default_server_packages
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
-          %W(postgresql#{version.delete('.')}-server)
+          %W(postgresql#{version.delete('.')}-contrib postgresql#{version.delete('.')}-libs postgresql#{version.delete('.')}-server)
         when 'debian'
           %W(postgresql-#{version} postgresql-common)
         end
@@ -88,7 +88,7 @@ module PostgreSQL
       def default_client_packages
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
-          %W(postgresql#{version.delete('.')})
+          %W(postgresql#{version.delete('.')} postgresql#{version.delete('.')}-libs)
         when 'debian'
           %W(postgresql-client-#{version})
         end
