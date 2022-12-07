@@ -72,24 +72,24 @@ postgresql_access 'shef mapping' do
   notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
 
-postgresql_user 'postgres' do
-  unencrypted_password '12345'
-  action :nothing
-end
-
 postgresql_user 'sous_chef' do
   superuser true
   login true
   password '67890'
   sensitive false
 
-  notifies :set_password, 'postgresql_user[postgres]', :before
+  notifies :set_password, 'postgresql_user[postgres]', :delayed
 end
 
 postgresql_user 'sous_chef' do
   superuser false
   connection_limit 5
   action :update
+end
+
+postgresql_user 'postgres' do
+  unencrypted_password '12345'
+  action :nothing
 end
 
 postgresql_database 'test1'

@@ -31,7 +31,7 @@ end
 
 postgresql_database 'test_1' do
   locale locale
-  notifies :set_password, 'postgresql_user[postgres]', :before
+  notifies :set_password, 'postgresql_user[postgres]', :immediately
 end
 
 if platform_family?('debian')

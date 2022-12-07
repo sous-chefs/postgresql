@@ -1,16 +1,14 @@
 ---
 driver:
   name: dokken
-  privileged: true # because Docker and systemd
-  chef_version: <%= ENV['CHEF_VERSION'] || 'latest' %>
+  privileged: true
+  chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
 
 transport:
   name: dokken
 
 provisioner:
   name: dokken
-  chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
-  chef_license: accept-no-persist
 
 platforms:
   - name: almalinux-8

@@ -42,9 +42,6 @@ suites:
         - path: test/integration/access/
     run_list:
       - recipe[test::access]
-    provisioner:
-      enforce_idempotency: false
-      multiple_converge: 1
   - name: client_install_15
     attributes:
       test:

@@ -38,7 +38,7 @@ end
 postgresql_user 'sous_chef' do
   unencrypted_password '12345'
 
-  notifies :set_password, 'postgresql_user[postgres]', :before
+  notifies :set_password, 'postgresql_user[postgres]', :immediately
 end
 
 postgresql_user 'sous_chef' do
@@ -75,4 +75,7 @@ end
 postgresql_user 'dropable-user' do
   unencrypted_password '1234'
   action [:create, :drop]
+  not_if { ::File.exist?('/tmp/dropable-user.txt') }
 end
+
+file '/tmp/dropable-user.txt'
