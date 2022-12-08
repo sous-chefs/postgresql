@@ -30,6 +30,7 @@ postgresql_ident 'postgresl mapping' do
   map_name 'testmap1'
   system_username 'postgres'
   database_username 'postgres'
+  comment 'Postgresql 1 test mapping'
 
   notifies :reload, 'postgresql_service[postgresql]', :delayed
 end

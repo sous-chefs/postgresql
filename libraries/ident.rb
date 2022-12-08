@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+require_relative '_utils'
+
 module PostgreSQL
   module Cookbook
     module IdentHelpers
@@ -62,7 +64,12 @@ module PostgreSQL
 
       module PgIdent
         class PgIdentFile
+          include PostgreSQL::Cookbook::Utils
+
           attr_reader :entries
+
+          SPLIT_REGEX = /^(?<map_name>[\w-]+)\s+(?<system_username>[\w-]+)\s+(?<database_username>[\w-]+)(?:\s*)(?<comment>#\s*.*)?$/.freeze
+          private_constant :SPLIT_REGEX
 
           def initialize
             @entries = []
@@ -81,7 +88,9 @@ module PostgreSQL
           def entry(map_name)
             entry = @entries.filter { |e| e.map_name.eql?(map_name) }
 
-            raise PgIdentFileDuplicateEntry unless entry.one?
+            return if nil_or_empty?(entry)
+
+            raise PgIdentFileDuplicateEntry, "Duplicate entries found for #{map_name}" unless entry.one?
 
             entry.pop
           end
@@ -142,31 +151,41 @@ module PostgreSQL
           private
 
           def split_entries
-            @ident_entries.map! { |entry| entry.split(nil, 3) }
+            return if @ident_entries.empty?
+
+            @ident_entries.map! { |entry| SPLIT_REGEX.match(entry).named_captures.compact.transform_keys(&:to_sym) }
           end
 
           def marshall_entries
-            @ident_entries.each { |entry| @entries.push(PgIdentFileEntry.new(*entry)) }
+            return if @ident_entries.empty?
+
+            @ident_entries.each { |entry| @entries.push(PgIdentFileEntry.new(**entry)) }
+
             @entries
           end
         end
 
         class PgIdentFileEntry
-          attr_reader :map_name, :system_username, :database_username
+          include PostgreSQL::Cookbook::Utils
+
+          attr_accessor :map_name, :system_username, :database_username
+          attr_reader :comment
 
           ENTRY_FIELD_FORMAT = {
             map_name: 16,
             system_username: 24,
             database_username: 24,
+            comment: 0,
           }.freeze
           ENTRY_FIELDS = ENTRY_FIELD_FORMAT.keys.dup.freeze
 
           private_constant :ENTRY_FIELD_FORMAT, :ENTRY_FIELDS
 
-          def initialize(map_name, system_username, database_username)
+          def initialize(map_name:, system_username:, database_username:, comment: nil)
             @map_name = map_name
             @system_username = system_username
             @database_username = database_username
+            @comment = comment
           end
 
           def to_s
@@ -186,6 +205,11 @@ module PostgreSQL
             return true if self.class.const_get(:ENTRY_FIELDS).all? { |field| send(field).eql?(entry.send(field)) }
 
             false
+          end
+
+          def comment=(comment)
+            @comment = comment
+            @comment = "# #{@comment}" unless nil_or_empty?(@comment) || @comment.start_with?('#')
           end
         end
 

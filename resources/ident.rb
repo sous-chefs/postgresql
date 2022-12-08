@@ -32,7 +32,8 @@ property :system_username, String,
 property :database_username, String,
           required: true
 
-property :comment, String
+property :comment, String,
+          coerce: proc { |p| p.start_with?('#') ? p : "# #{p}" }
 
 load_current_value do |new_resource|
   current_value_does_not_exist! unless ::File.exist?(new_resource.config_file)
@@ -48,7 +49,7 @@ load_current_value do |new_resource|
   current_value_does_not_exist! unless ident_file.entry?(new_resource.map_name)
 
   entry = ident_file.entry(new_resource.map_name)
-  %i(map_name system_username database_username).each { |p| send(p, entry.send(p)) }
+  %i(map_name system_username database_username comment).each { |p| send(p, entry.send(p)) }
 end
 
 action_class do
@@ -58,11 +59,30 @@ end
 action :create do
   converge_if_changed do
     config_resource_init
+    entry = config_resource.variables[:pg_ident].entry(new_resource.map_name)
 
-    resource_properties = %i(map_name system_username database_username).map { |p| new_resource.send(p) }.compact
-    entry = PostgreSQL::Cookbook::IdentHelpers::PgIdent::PgIdentFileEntry.new(*resource_properties)
+    if nil_or_empty?(entry)
+      resource_properties = %i(map_name system_username database_username comment).map { |p| [ p, new_resource.send(p) ] }.to_h.compact
+      entry = PostgreSQL::Cookbook::IdentHelpers::PgIdent::PgIdentFileEntry.new(**resource_properties)
+      config_resource.variables[:pg_ident].add(entry)
+    else
+      entry.system_username = new_resource.system_username
+      entry.database_username = new_resource.database_username
+      entry.comment = new_resource.comment
+    end
+  end
+end
 
-    config_resource.variables[:pg_ident].add(entry)
+action :update do
+  converge_if_changed(:system_username, :database_username, :comment) do
+    config_resource_init
+    entry = config_resource.variables[:pg_ident].entry(new_resource.map_name)
+
+    raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update ident entry for '#{new_resource.map_name}' as it does not exist" if nil_or_empty?(entry)
+
+    entry.system_username = new_resource.system_username
+    entry.database_username = new_resource.database_username
+    entry.comment = new_resource.comment
   end
 end
 
