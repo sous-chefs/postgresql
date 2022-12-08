@@ -1,4 +1,4 @@
-# postgresql__config_file
+# _config_file
 
 [Back to resource list](../README.md#resources)
 

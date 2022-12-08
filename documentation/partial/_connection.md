@@ -1,4 +1,4 @@
-# postgresql__connection
+# _connection
 
 [Back to resource list](../README.md#resources)
 
