@@ -39,8 +39,6 @@ We follow the currently supported versions listed on <https://www.postgresql.org
 
 ## Resources
 
-## Resources
-
 - [postgresql_access](documentation/postgresql_access.md)
 - [postgresql_config](documentation/postgresql_config.md)
 - [postgresql_database](documentation/postgresql_database.md)

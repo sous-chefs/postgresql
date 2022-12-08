@@ -4,14 +4,16 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
-- Major refactor
-- Condense repository, client_install and server_install into common install resource.
+- Major refactor, see [UPGRADING.md](UPGRADING.md)
+- Condense repository, client_install and server_install into common install resource with actions replacing the previous split resources.
   - `:repository` action
   - `:install` action
   - `:client_install` action
   - `:server_install` action
 - Refactor database, role (user) and extension resources to use pg gem for database access
-- Rename user resource to role to match PostgreSQL
+  - All `load_current_value` support
+- Rename user resource to role to match PostgreSQL (still aliased to `:postgresql_user`)
+- Update various resource properties to match PostgreSQL side
 
 ## 10.0.2 - *2022-12-04*
 
