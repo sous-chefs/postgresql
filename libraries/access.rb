@@ -70,6 +70,9 @@ module PostgreSQL
 
           attr_reader :entries
 
+          SPLIT_REGEX = %r{^(?<type>\w+)\s+(?<database>\w+)\s+(?<user>\w+)\s+(?<address>[\d.:\/]+)?(?:\s*)(?<auth_method>[\w-]+)(?:\s*)(?<auth_options>[\w=-]+)?(?:\s*)(?<comment>#\s*.*)?$}.freeze
+          private_constant :SPLIT_REGEX
+
           def initialize
             @entries = []
             @access_entries = []
@@ -89,6 +92,8 @@ module PostgreSQL
 
             marshall_entries
             sort! if sort
+
+            self
           end
 
           def to_s(sort: false)
@@ -120,7 +125,7 @@ module PostgreSQL
 
             return if nil_or_empty?(entry)
 
-            raise "Duplicate entries found for #{type}, #{database}, #{user}, #{address}" unless entry.one?
+            raise PgHbaFileDuplicateEntry, "Duplicate entries found for #{type}, #{database}, #{user}, #{address}" unless entry.one?
 
             entry.pop
           end
@@ -141,45 +146,37 @@ module PostgreSQL
           def entry_types_valid?
             return unless @access_entries
 
-            @access_entries.all? { |ae| ENTRY_TYPES.include?(ae.first) }
+            @access_entries.all? { |entry| ENTRY_TYPES.include?(entry.fetch(:type)) }
           end
 
           def split_entries
-            @access_entries.map! do |entry|
-              if entry.start_with?('local')
-                entry.split(nil, 5)
-              elsif entry.start_with?('host', 'hostssl', 'hostnossl', 'hostgssenc', 'hostnogssenc')
-                entry.split(nil, 6)
-              end
-            end
+            return if @access_entries.empty?
+
+            @access_entries.map! { |entry| SPLIT_REGEX.match(entry).named_captures.compact.transform_keys(&:to_sym) }
           end
 
           def marshall_entries
-            @access_entries.each do |entry|
-              e = case entry.first
-                  when 'local'
-                    PgHbaFileEntryLocal.new(*entry)
-                  when 'host', 'hostssl', 'hostnossl', 'hostgssenc', 'hostnogssenc'
-                    PgHbaFileEntryHost.new(*entry)
-                  end
+            return if @access_entries.empty?
 
-              @entries.push(e)
-            end
+            @access_entries.each { |entry| @entries.push(PgHbaFileEntry.create(**entry)) }
 
             @entries
           end
         end
 
         class PgHbaFileEntry
-          attr_reader :type
+          include PostgreSQL::Cookbook::Utils
+
+          attr_reader :type, :comment
 
           ENTRY_FIELD_FORMAT = {
             type: 8,
             database: 16,
             user: 16,
             address: 24,
-            auth_method: 8,
-            auth_options: 0,
+            auth_method: 16,
+            auth_options: 24,
+            comment: 0,
           }.freeze
           private_constant :ENTRY_FIELD_FORMAT
 
@@ -188,8 +185,8 @@ module PostgreSQL
           def to_s
             entry_string = ''
             ENTRY_FIELD_FORMAT.each do |field, ljust_count|
-              field = respond_to?(field) ? send(field) : ''
-              field_string = field.to_s.ljust(ljust_count)
+              value = respond_to?(field) ? send(field) : ''
+              field_string = value.to_s.ljust(ljust_count)
               entry_string.concat(field_string)
             end
 
@@ -210,21 +207,27 @@ module PostgreSQL
             false
           end
 
-          def update(auth_method, auth_options = nil)
-            @auth_method = auth_method
+          def update(auth_method: nil, auth_options: nil, comment: nil)
+            @auth_method = auth_method if auth_method
             @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options
+            self.comment = comment if comment
 
             self
           end
 
-          def self.create(*properties)
-            raise PgHbaInvalidEntryType, "Invalid entry type #{properties.first}" unless ENTRY_TYPES.include?(properties.first)
+          def comment=(comment)
+            @comment = comment
+            @comment = "# #{@comment}" unless nil_or_empty?(@comment) || @comment.start_with?('#')
+          end
 
-            case properties.first
+          def self.create(**properties)
+            raise PgHbaInvalidEntryType, "Invalid entry type #{properties.fetch(:type)}" unless ENTRY_TYPES.include?(properties.fetch(:type))
+
+            case properties.fetch(:type)
             when 'local'
-              PgHbaFileEntryLocal.new(*properties)
+              PgHbaFileEntryLocal.new(**properties)
             when 'host', 'hostssl', 'hostnossl', 'hostgssenc', 'hostnogssenc'
-              PgHbaFileEntryHost.new(*properties)
+              PgHbaFileEntryHost.new(**properties)
             end
           end
         end
@@ -236,7 +239,7 @@ module PostgreSQL
           MATCH_FIELDS = %i(type database user).freeze
           private_constant :ENTRY_FIELDS, :MATCH_FIELDS
 
-          def initialize(type, database, user, auth_method, auth_options = nil)
+          def initialize(type:, database:, user:, auth_method:, auth_options: nil, comment: nil)
             raise PgHbaInvalidEntryType, "Invalid entry type #{properties.first}" unless type.eql?('local')
 
             @type = type
@@ -247,10 +250,11 @@ module PostgreSQL
             @auth_method = auth_method
             @auth_options = auth_options
             @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options
+            self.comment = comment
           end
 
           def to_a
-            [@type, @database, @user, @auth_method, @auth_options.to_s]
+            [@type, @database, @user, @auth_method, @auth_options.to_s, @comment]
           end
         end
 
@@ -261,7 +265,7 @@ module PostgreSQL
           MATCH_FIELDS = %i(type database user address).freeze
           private_constant :ENTRY_FIELDS, :MATCH_FIELDS
 
-          def initialize(type, database, user, address, auth_method, auth_options = nil)
+          def initialize(type:, database:, user:, address:, auth_method:, auth_options: nil, comment: nil)
             raise PgHbaInvalidEntryType unless %w(host hostssl hostnossl hostgssenc hostnogssenc).include?(type)
 
             @type = type
@@ -273,10 +277,11 @@ module PostgreSQL
             @auth_method = auth_method
             @auth_options = auth_options
             @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options
+            self.comment = comment
           end
 
           def to_a
-            [@type, @database, @user, @address, @auth_method, @auth_options.to_s]
+            [@type, @database, @user, @address, @auth_method, @auth_options.to_s, @comment]
           end
         end
 
@@ -292,7 +297,11 @@ module PostgreSQL
           end
 
           def to_s
-            @options.map { |k, v| "#{k}=#{v}" }.join(' ')
+            @options.map do |k, v|
+              raise "Nil key or value received when processing #{@options}" if k.nil? || v.nil?
+
+              "#{k}=#{v}"
+            end.join(' ')
           end
 
           def eql?(auth_options)
@@ -316,6 +325,7 @@ module PostgreSQL
         end
 
         class PgHbaInvalidEntryType < StandardError; end
+        class PgHbaFileDuplicateEntry < StandardError; end
       end
     end
   end

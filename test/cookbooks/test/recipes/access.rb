@@ -9,6 +9,7 @@ postgresql_access 'local all postgresql trust' do
   database 'all'
   user 'postgres'
   auth_method 'trust'
+  comment 'Testing local postgres trust'
 end
 
 postgresql_access 'local all all trust' do
