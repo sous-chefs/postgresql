@@ -13,10 +13,10 @@
 
 ## Properties
 
-| Name           | Name? | Type        | Default | Description | Allowed Values |
-| -------------- | ----- | ----------- | ------- | ----------- | -------------- |
-| `service_name` |       | String      |         |             |                |
-| `delay_start`  |       | true, false |         |             |                |
+| Name           | Name? | Type        | Default | Description                          | Allowed Values |
+| -------------- | ----- | ----------- | ------- | ------------------------------------ | -------------- |
+| `service_name` |       | String      |         | Service name to perform actions for  |                |
+| `delay_start`  |       | true, false |         | Delay service start until end of run |                |
 
 ## Libraries
 

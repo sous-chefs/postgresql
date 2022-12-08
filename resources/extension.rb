@@ -18,17 +18,23 @@
 use 'partial/_connection'
 
 property :extension, String,
-          name_property: true
+          name_property: true,
+          description: 'The name of the extension to be installed'
 
-property :schema, String
+property :schema, String,
+          description: 'The name of the schema in which to install the extension objects'
 
-property :old_version, String
+property :old_version, String,
+          description: 'old_version must be specified when, and only when, you are attempting to install an extension that replaces an "old style" module that is just a collection of objects not packaged into an extension.'
 
-property :version, String
+property :version, String,
+          description: 'The version of the extension to install'
 
-property :cascade, [true, false]
+property :cascade, [true, false],
+          description: 'Automatically install any extensions that this extension depends on that are not already installed'
 
-property :restrict, [true, false]
+property :restrict, [true, false],
+          description: 'This option prevents the specified extensions from being dropped if other objects, besides these extensions, their members, and their explicitly dependent routines, depend on them'
 
 include PostgreSQL::Cookbook::SqlHelpers::Extension
 

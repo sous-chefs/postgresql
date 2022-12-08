@@ -19,50 +19,66 @@ provides :postgresql_user
 
 use 'partial/_connection'
 
-property :rolename, String,
-          name_property: true
-
-property :superuser, [true, false]
-
-property :createdb, [true, false]
-
-property :createrole, [true, false]
-
-property :inherit, [true, false]
-
-property :login, [true, false]
-
-property :replication, [true, false]
-
-property :bypassrls, [true, false]
-
-property :connection_limit, [Integer, String],
-          default: -1,
-          coerce: proc { |p| p.to_s }
-
-property :unencrypted_password, String,
-          sensitive: true
-
-property :encrypted_password, String
-
-property :valid_until, String
-
-property :in_role, [String, Array],
-          coerce: proc { |p| Array(p).join(', ') }
-
-property :role, [String, Array],
-          coerce: proc { |p| Array(p).join(', ') }
-
-property :admin, [String, Array],
-          coerce: proc { |p| Array(p).join(', ') }
-
-property :config, Hash,
-          default: {},
-          coerce: proc { |p| p.transform_keys(&:to_s) }
-
 property :sensitive, [true, false],
           default: true,
           desired_state: false
+
+property :rolename, String,
+          name_property: true,
+          description: 'The name of the new role'
+
+property :superuser, [true, false],
+          description: 'Determine whether the new role is a "superuser" who can override all access restrictions within the database'
+
+property :createdb, [true, false],
+          description: 'Define a role\'s ability to create databases'
+
+property :createrole, [true, false],
+          description: 'Determine whether a role will be permitted to create new roles (that is, execute CREATE ROLE)'
+
+property :inherit, [true, false],
+          description: 'Determine whether a role "inherits" the privileges of roles it is a member of'
+
+property :login, [true, false],
+          description: 'Determine whether a role is allowed to log in'
+
+property :replication, [true, false],
+          description: 'Determine whether a role is a replication role'
+
+property :bypassrls, [true, false],
+          description: 'Determine whether a role bypasses every row-level security (RLS) policy'
+
+property :connection_limit, [Integer, String],
+          default: -1,
+          coerce: proc { |p| p.to_s },
+          description: 'If role can log in, this specifies how many concurrent connections the role can make'
+
+property :unencrypted_password, String,
+          sensitive: true,
+          description: 'Sets the role password via a plain text string'
+
+property :encrypted_password, String,
+          description: 'Sets the role password via a pre-encrypted string'
+
+property :valid_until, String,
+          description: 'Sets a date and time after which the role password is no longer valid'
+
+property :in_role, [String, Array],
+          coerce: proc { |p| Array(p).join(', ') },
+          description: 'Lists one or more existing roles to which the new role will be immediately added as a new membe'
+
+property :role, [String, Array],
+          coerce: proc { |p| Array(p).join(', ') },
+          description: 'Lists one or more existing roles which are automatically added as members of the new role'
+
+property :admin, [String, Array],
+          coerce: proc { |p| Array(p).join(', ') },
+          description: 'Like ROLE, but the named roles are added to the new role WITH ADMIN OPTION, giving them the right to grant membership in this role to others'
+
+property :config, Hash,
+          default: {},
+          coerce: proc { |p| p.transform_keys(&:to_s) },
+          description: 'Role config values as a Hash'
 
 include PostgreSQL::Cookbook::SqlHelpers::Role
 

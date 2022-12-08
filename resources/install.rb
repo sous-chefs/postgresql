@@ -24,51 +24,65 @@ property :sensitive, [true, false],
 
 property :version, [String, Integer],
           default: '15',
-          coerce: proc { |p| p.to_s }
+          coerce: proc { |p| p.to_s },
+          description: 'Version to install'
 
 property :source, [String, Symbol],
           default: :repo,
           coerce: proc { |p| p.to_sym },
-          equal_to: %i(repo)
+          equal_to: %i(repo),
+          description: 'Installation source'
 
 property :client_packages, [String, Array],
           default: lazy { default_client_packages },
-          coerce: proc { |p| Array(p) }
+          coerce: proc { |p| Array(p) },
+          description: 'Client packages to install'
 
 property :server_packages, [String, Array],
           default: lazy { default_server_packages },
-          coerce: proc { |p| Array(p) }
+          coerce: proc { |p| Array(p) },
+          description: 'Server packages to install'
 
 property :repo_pgdg, [true, false],
-          default: true
+          default: true,
+          description: 'Create pgdg repo'
 
 property :repo_pgdg_common, [true, false],
-          default: true
+          default: true,
+          description: 'Create pgdg-common repo'
 
 property :repo_pgdg_source, [true, false],
-          default: false
+          default: false,
+          description: 'Create pgdg-source repo'
 
 property :repo_pgdg_updates_testing, [true, false],
-          default: false
+          default: false,
+          description: 'Create pgdg-updates-testing repo'
 
 property :repo_pgdg_source_updates_testing, [true, false],
-          default: false
+          default: false,
+          description: 'Create pgdg-source-updates-testing repo'
 
 property :yum_gpg_key_uri, String,
-          default: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG'
+          default: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG',
+          description: 'YUM/DNF GPG key URL'
 
 property :apt_gpg_key_uri, String,
-          default: 'https://download.postgresql.org/pub/repos/apt/ACCC4CF8.asc'
+          default: 'https://download.postgresql.org/pub/repos/apt/ACCC4CF8.asc',
+          description: 'apt GPG key URL'
 
-# InitDB Stuff
-property :initdb_additional_options, String
+property :initdb_additional_options, String,
+          description: 'Additional options to pass to the initdb command'
 
-property :initdb_locale, String
+property :initdb_locale, String,
+          description: 'Locale to use for the initdb command'
 
-property :initdb_encoding, String
+property :initdb_encoding, String,
+          description: 'Encoding to use for the initdb command'
 
-property :user, String,
-          default: 'postgres'
+property :initdb_user, String,
+          default: 'postgres',
+          description: 'User to run the initdb command as'
 
 action_class do
   include PostgreSQL::Cookbook::Helpers
@@ -256,7 +270,7 @@ action :init_server do
   converge_by('Init Postgresql DB') do
     execute 'init_db' do
       command rhel_init_db_command(new_resource)
-      user new_resource.user
+      user new_resource.initdb_user
     end
   end
 end

@@ -8,13 +8,13 @@
 
 ## Properties
 
-| Name                | Name? | Type        | Default | Description | Allowed Values |
-| ------------------- | ----- | ----------- | ------- | ----------- | -------------- |
-| `host`              |       | String      |         |             |                |
-| `port`              |       | Integer     |         |             |                |
-| `options`           |       | Hash        |         |             |                |
-| `dbname`            |       | String      |         |             |                |
-| `user`              |       | String      |         |             |                |
-| `password`          |       | String      |         |             |                |
-| `connection_string` |       | String      |         |             |                |
-| `force`             |       | true, false |         |             |                |
+| Name                | Name? | Type        | Default | Description                         | Allowed Values |
+| ------------------- | ----- | ----------- | ------- | ----------------------------------- | -------------- |
+| `host`              |       | String      |         | PostgreSQL server hostname          |                |
+| `port`              |       | Integer     |         | PostgreSQL server port number       |                |
+| `options`           |       | Hash        |         | PostgreSQL backend options          |                |
+| `dbname`            |       | String      |         | PostgreSQL database name            |                |
+| `user`              |       | String      |         | PostgreSQL login user name          |                |
+| `password`          |       | String      |         | PostgreSQL login password           |                |
+| `connection_string` |       | String      |         | PostgreSQL server connection string |                |
+| `force`             |       | true, false |         | SQL command FORCE                   |                |

@@ -4,5 +4,5 @@
 
 ## Resources
 
-- [postgresql__config_file](postgresql__config_file.md)
-- [postgresql__connection](postgresql__connection.md)
+- [_config_file](_config_file.md)
+- [_connection](_connection.md)

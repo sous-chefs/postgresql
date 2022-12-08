@@ -17,24 +17,24 @@
 
 ## Properties
 
-| Name                               | Name? | Type            | Default | Description | Allowed Values |
-| ---------------------------------- | ----- | --------------- | ------- | ----------- | -------------- |
-| `sensitive`                        |       | true, false     |         |             |                |
-| `version`                          |       | String, Integer |         |             |                |
-| `source`                           |       | String, Symbol  |         |             | repo           |
-| `client_packages`                  |       | String, Array   |         |             |                |
-| `server_packages`                  |       | String, Array   |         |             |                |
-| `repo_pgdg`                        |       | true, false     |         |             |                |
-| `repo_pgdg_common`                 |       | true, false     |         |             |                |
-| `repo_pgdg_source`                 |       | true, false     |         |             |                |
-| `repo_pgdg_updates_testing`        |       | true, false     |         |             |                |
-| `repo_pgdg_source_updates_testing` |       | true, false     |         |             |                |
-| `yum_gpg_key_uri`                  |       | String          |         |             |                |
-| `apt_gpg_key_uri`                  |       | String          |         |             |                |
-| `initdb_additional_options`        |       | String          |         |             |                |
-| `initdb_locale`                    |       | String          |         |             |                |
-| `initdb_encoding`                  |       | String          |         |             |                |
-| `user`                             |       | String          |         |             |                |
+| Name                               | Name? | Type            | Default | Description                                      | Allowed Values |
+| ---------------------------------- | ----- | --------------- | ------- | ------------------------------------------------ | -------------- |
+| `sensitive`                        |       | true, false     |         |                                                  |                |
+| `version`                          |       | String, Integer |         | Version to install                               |                |
+| `source`                           |       | String, Symbol  |         | Installation source                              | repo           |
+| `client_packages`                  |       | String, Array   |         | Client packages to install                       |                |
+| `server_packages`                  |       | String, Array   |         | Server packages to install                       |                |
+| `repo_pgdg`                        |       | true, false     |         | Create pgdg repo                                 |                |
+| `repo_pgdg_common`                 |       | true, false     |         | Create pgdg-common repo                          |                |
+| `repo_pgdg_source`                 |       | true, false     |         | Create pgdg-source repo                          |                |
+| `repo_pgdg_updates_testing`        |       | true, false     |         | Create pgdg-updates-testing repo                 |                |
+| `repo_pgdg_source_updates_testing` |       | true, false     |         | Create pgdg-source-updates-testing repo          |                |
+| `yum_gpg_key_uri`                  |       | String          |         | YUM/DNF GPG key URL                              |                |
+| `apt_gpg_key_uri`                  |       | String          |         | apt GPG key URL                                  |                |
+| `initdb_additional_options`        |       | String          |         | Additional options to pass to the initdb command |                |
+| `initdb_locale`                    |       | String          |         | Locale to use for the initdb command             |                |
+| `initdb_encoding`                  |       | String          |         | Encoding to use for the initdb command           |                |
+| `initdb_user`                      |       | String          |         | User to run the initdb command as                |                |
 
 ## Libraries
 

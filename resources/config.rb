@@ -28,20 +28,26 @@ property :source, String,
 property :version, [String, Integer],
           default: lazy { installed_postgresql_major_version },
           desired_state: false,
-          coerce: proc { |p| p.to_s }
+          coerce: proc { |p| p.to_s },
+          description: 'PostgreSQL installed version override'
 
 property :data_directory, String,
-          default: lazy { data_dir }
+          default: lazy { data_dir },
+          description: 'PostgreSQL server data directory'
 
-property :hba_file, String
+property :hba_file, String,
+          description: 'PostgreSQL pg_hba.conf file location'
 
-property :ident_file, String
+property :ident_file, String,
+          description: 'PostgreSQL pg_ident.conf file location'
 
-property :external_pid_file, String
+property :external_pid_file, String,
+          description: 'PostgreSQL external PID file location'
 
 property :server_config, Hash,
           default: {},
-          coerce: proc { |p| p.deep_sort }
+          coerce: proc { |p| p.deep_sort },
+          description: 'PostgreSQL server configuration options'
 
 load_current_value do |new_resource|
   current_value_does_not_exist! unless ::File.exist?(new_resource.config_file)

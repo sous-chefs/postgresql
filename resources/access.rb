@@ -26,24 +26,31 @@ property :source, String,
           desired_state: false
 
 property :type, String,
-          required: true
+          required: true,
+          description: 'Access record type'
 
 property :database, String,
-          required: true
+          required: true,
+          description: 'Access record database'
 
 property :user, String,
-          required: true
+          required: true,
+          description: 'Access record user'
 
-property :address, String
+property :address, String,
+          description: 'Access record address'
 
 property :auth_method, String,
-          required: true
+          required: true,
+          description: 'Access record authentication method'
 
 property :auth_options, [String, Hash],
-          coerce: proc { |p| p.is_a?(Hash) ? p.map { |k, v| "#{k}=#{v}" }.join(' ') : p }
+          coerce: proc { |p| p.is_a?(Hash) ? p.map { |k, v| "#{k}=#{v}" }.join(' ') : p },
+          description: 'Access record authentication options'
 
 property :comment, String,
-          coerce: proc { |p| p.start_with?('#') ? p : "# #{p}" }
+          coerce: proc { |p| p.start_with?('#') ? p : "# #{p}" },
+          description: 'Access record comment'
 
 load_current_value do |new_resource|
   current_value_does_not_exist! unless ::File.exist?(new_resource.config_file)

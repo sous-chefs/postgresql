@@ -18,27 +18,35 @@
 unified_mode true
 
 property :host, String,
-          desired_state: false
+          desired_state: false,
+          description: 'PostgreSQL server hostname'
 
 property :port, Integer,
           default: 5432,
-          desired_state: false
+          desired_state: false,
+          description: 'PostgreSQL server port number'
 
 property :options, Hash,
-          desired_state: false
+          desired_state: false,
+          description: 'PostgreSQL backend options'
 
 property :dbname, String,
-          desired_state: false
+          desired_state: false,
+          description: 'PostgreSQL database name'
 
 property :user, String,
           default: 'postgres',
-          desired_state: false
+          desired_state: false,
+          description: 'PostgreSQL login user name'
 
 property :password, String,
-          desired_state: false
+          desired_state: false,
+          description: 'PostgreSQL login password'
 
 property :connection_string, String,
-          desired_state: false
+          desired_state: false,
+          description: 'PostgreSQL server connection string'
 
 property :force, [true, false],
-          desired_state: false
+          desired_state: false,
+          description: 'SQL command FORCE'

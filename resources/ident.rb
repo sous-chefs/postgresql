@@ -24,16 +24,20 @@ property :source, String,
           default: 'pg_ident.conf.erb'
 
 property :map_name, String,
-          name_property: true
+          name_property: true,
+          description: 'Arbitrary name that will be used to refer to this mapping in pg_hba.conf'
 
 property :system_username, String,
-          required: true
+          required: true,
+          description: 'Operating system user name '
 
 property :database_username, String,
-          required: true
+          required: true,
+          description: 'Database user name '
 
 property :comment, String,
-          coerce: proc { |p| p.start_with?('#') ? p : "# #{p}" }
+          coerce: proc { |p| p.start_with?('#') ? p : "# #{p}" },
+          description: 'Ident mapping record comment'
 
 load_current_value do |new_resource|
   current_value_does_not_exist! unless ::File.exist?(new_resource.config_file)

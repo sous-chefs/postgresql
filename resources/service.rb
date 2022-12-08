@@ -20,10 +20,12 @@ unified_mode true
 include PostgreSQL::Cookbook::Helpers
 
 property :service_name, String,
-          default: lazy { default_platform_service_name }
+          default: lazy { default_platform_service_name },
+          description: 'Service name to perform actions for'
 
 property :delay_start, [true, false],
-          default: true
+          default: true,
+          description: 'Delay service start until end of run'
 
 action_class do
   def do_service_action(resource_action)
