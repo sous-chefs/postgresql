@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.0.0 - *2022-12-13*
 
 - Major refactor, see [UPGRADING.md](UPGRADING.md)
 - Condense repository, client_install and server_install into common install resource with actions replacing the previous split resources.
