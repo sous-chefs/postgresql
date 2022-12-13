@@ -31,7 +31,7 @@ We follow the currently supported versions listed on <https://www.postgresql.org
 
 ### Chef
 
-- Chef 15.3+
+- Chef 16
 
 ### Cookbook Dependencies
 
@@ -39,14 +39,14 @@ We follow the currently supported versions listed on <https://www.postgresql.org
 
 ## Resources
 
-- [`postgresql_access`](documentation/access.md)
-- [`postgresql_client_install`](documentation/client_install.md)
-- [`postgresql_database`](documentation/database.md)
-- [`postgresql_extension`](documentation/extension.md)
-- [`postgresql_ident`](documentation/ident.md)
-- [`postgresql_server_conf`](documentation/server_conf.md)
-- [`postgresql_server_install`](documentation/server_install.md)
-- [`postgresql_user`](documentation/user.md)
+- [postgresql_access](documentation/postgresql_access.md)
+- [postgresql_config](documentation/postgresql_config.md)
+- [postgresql_database](documentation/postgresql_database.md)
+- [postgresql_extension](documentation/postgresql_extension.md)
+- [postgresql_ident](documentation/postgresql_ident.md)
+- [postgresql_install](documentation/postgresql_install.md)
+- [postgresql_role](documentation/postgresql_role.md)
+- [postgresql_service](documentation/postgresql_service.md)
 
 ## Contributors
 

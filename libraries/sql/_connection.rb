@@ -1,0 +1,147 @@
+#
+# Cookbook:: postgresql
+# Library:: sql/_connection
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+require_relative '../_utils'
+require_relative '../helpers'
+
+module PostgreSQL
+  module Cookbook
+    module SqlHelpers
+      module Connection
+        private
+
+        include PostgreSQL::Cookbook::Utils
+        include PostgreSQL::Cookbook::Helpers
+
+        def postgresql_devel_pkg_name(version = installed_postgresql_major_version)
+          platform_family?('debian') ? 'libpq-dev' : "postgresql#{version}-devel"
+        end
+
+        def postgresql_devel_path(suffix = nil, version: installed_postgresql_major_version)
+          path = case node['platform_family']
+                 when 'rhel', 'fedora', 'amazon'
+                   "/usr/pgsql-#{version}"
+                 when 'debian'
+                   '/usr/include/postgresql'
+                 else
+                   raise "Unsupported platform family #{node['platform_family']}"
+                 end
+
+          path = ::File.join(path, suffix) unless nil_or_empty?(suffix)
+
+          path
+        end
+
+        def pg_gem_build_options
+          case node['platform_family']
+          when 'rhel', 'fedora', 'amazon'
+            "-- --with-pg-include=#{postgresql_devel_path('include')} --with-pg-lib=#{postgresql_devel_path('lib')}"
+          when 'debian'
+            "-- --with-pg-include=#{postgresql_devel_path} --with-pg-lib=#{postgresql_devel_path}"
+          else
+            raise "Unsupported platform family #{node['platform_family']}"
+          end
+        end
+
+        def install_pg_gem
+          return if gem_installed?('pg')
+
+          if platform_family?('rhel') && node['platform_version'].to_i.eql?(7)
+            declare_resource(:package, 'epel-release') { compile_time(true) }
+            declare_resource(:package, 'centos-release-scl') { compile_time(true) }
+          end
+
+          declare_resource(:build_essential, 'Build Essential') { compile_time(true) }
+          declare_resource(:package, postgresql_devel_pkg_name) { compile_time(true) }
+
+          build_options = pg_gem_build_options
+          declare_resource(:chef_gem, 'pg') do
+            options build_options
+            version '~> 1.4'
+            compile_time true
+          end
+        end
+
+        def pg_connection_params
+          scope = respond_to?(:new_resource) ? new_resource : self
+
+          return scope.connection_string unless nil_or_empty?(scope.connection_string)
+
+          %i(host port options dbname user password).map do |p|
+            next unless scope.respond_to?(p)
+
+            [ p, scope.send(p) ]
+          end.to_h.compact
+        end
+
+        def pg_client
+          install_pg_gem unless gem_installed?('pg')
+
+          raise 'pg Gem Missing' unless gem_installed?('pg')
+
+          require 'pg' unless defined?(::PG)
+
+          connection_params = pg_connection_params
+          Chef::Log.debug("Got params: [#{connection_params.class}] #{connection_params}")
+
+          host = connection_params.fetch(:host, nil) || :local_socket
+          dbname = connection_params.fetch(:dbname, 'postgres')
+          client = node.run_state.dig('postgresql_pg_connection', host, dbname)
+
+          if client.is_a?(::PG::Connection)
+            Chef::Log.info("Returning pre-existing client for #{host}/#{dbname}")
+            return client
+          end
+
+          Chef::Log.info("Creating client for #{host}/#{dbname}")
+          client = ::PG::Connection.new(**connection_params)
+          client.type_map_for_queries = PG::BasicTypeMapForQueries.new(client)
+
+          node.run_state['postgresql_pg_connection'] ||= {}
+          node.run_state['postgresql_pg_connection'][host] ||= {}
+          node.run_state['postgresql_pg_connection'][host][dbname] = client
+
+          node.run_state['postgresql_pg_connection'][host][dbname]
+        end
+
+        def execute_sql(query, max_one_result: false)
+          Chef::Log.debug("Executing query: #{query}")
+          result = pg_client.exec(query).to_a
+
+          Chef::Log.debug("Got result: #{result}")
+          return if result.empty?
+
+          raise "Expected a single result, got #{result.count}" unless result.one? || !max_one_result
+
+          result
+        end
+
+        def execute_sql_params(query, params, max_one_result: false)
+          Chef::Log.debug("Executing query: #{query} with params: #{params}")
+          result = pg_client.exec_params(query, params).to_a
+
+          Chef::Log.debug("Got result: #{result}")
+          return if result.empty?
+
+          raise "Expected a single result, got #{result.count}" unless result.one? || !max_one_result
+
+          result
+        end
+      end
+    end
+  end
+end

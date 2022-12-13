@@ -1,3 +1,3 @@
-postgresql_repository 'pg repo' do
-  version node['test']['pg_ver']
+postgresql_install 'postgresql' do
+  action :repository
 end
