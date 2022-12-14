@@ -16,6 +16,7 @@
 #
 
 provides :postgresql_user
+unified_mode true
 
 use 'partial/_connection'
 
