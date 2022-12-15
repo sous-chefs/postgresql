@@ -30,7 +30,7 @@ property :version, [String, Integer],
 property :source, [String, Symbol],
           default: :repo,
           coerce: proc { |p| p.to_sym },
-          equal_to: %i(repo),
+          equal_to: %i(repo native),
           description: 'Installation source'
 
 property :client_packages, [String, Array],
