@@ -13,13 +13,6 @@ postgresql_install 'postgresql' do
   action %i(install init_server)
 end
 
-postgresql_access 'local all postgresql trust' do
-  type 'local'
-  database 'all'
-  user 'postgres'
-  auth_method 'trust'
-end
-
 postgresql_service 'postgresql' do
   action %i(enable start)
 end

@@ -4,21 +4,6 @@ postgresql_install 'postgresql' do
   action %i(install init_server)
 end
 
-postgresql_access 'local all postgresql trust' do
-  type 'local'
-  database 'all'
-  user 'postgres'
-  auth_method 'trust'
-  comment 'Testing local postgres trust'
-end
-
-postgresql_access 'local all all trust' do
-  type 'local'
-  database 'all'
-  user 'all'
-  auth_method 'trust'
-end
-
 postgresql_access 'postgresql host superuser' do
   type 'host'
   database 'all'
