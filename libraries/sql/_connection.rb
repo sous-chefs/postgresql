@@ -108,7 +108,24 @@ module PostgreSQL
           end
 
           Chef::Log.info("Creating client for #{host}/#{dbname}")
-          client = ::PG::Connection.new(**connection_params)
+
+          # The Chef Infra Client runs as user `root`. In local connnection
+          # mode we have to connect as local user `postgres` to the socket.
+          # This is needed to pass peer authentication for the database
+          # superuser.
+          if host == :local_socket
+            Process::UID.eid = Process::UID.from_name('postgres')
+          end
+
+          begin
+            client = ::PG::Connection.new(**connection_params)
+          ensure
+            if host == :local_socket
+              # Switch back to elevated privileges
+              Process::UID.switch
+            end
+          end
+
           client.type_map_for_queries = PG::BasicTypeMapForQueries.new(client)
 
           node.run_state['postgresql_pg_connection'] ||= {}
