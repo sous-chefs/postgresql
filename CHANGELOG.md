@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.1.0 - *2022-12-20*
 
 - resolved cookstyle error: resources/role.rb:1:1 refactor: `Chef/Deprecations/ResourceWithoutUnifiedTrue`
 - Fix connection to server via local socket
