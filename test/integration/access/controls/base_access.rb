@@ -34,6 +34,18 @@ control 'postgresql-sous-chef-access' do
   end
 end
 
+control 'postgresql-hostname-access' do
+  impact 1.0
+  desc 'This test ensures hostnames may be specified in ACLs'
+
+  describe postgres_hba_conf.where { user == 'hostname_user' } do
+    its('database') { should cmp 'all' }
+    its('type') { should cmp 'host' }
+    its('auth_method') { should cmp 'md5' }
+    its('address') { should cmp 'host.domain' }
+  end
+end
+
 control 'sous_chef role should exist' do
   impact 1.0
   desc 'The sous_chef database user role should exist'

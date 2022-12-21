@@ -65,3 +65,13 @@ postgresql_user 'dropable-user' do
 end
 
 file '/tmp/dropable-user.txt'
+
+postgresql_access 'access with hostname address' do
+  type 'host'
+  database 'all'
+  user 'hostname_user'
+  auth_method 'md5'
+  address 'host.domain'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
+end
