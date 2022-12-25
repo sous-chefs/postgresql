@@ -1,0 +1,13 @@
+---
+name: server
+title: PostgreSQL server
+maintainer: Sous Chefs
+copyright_email: help@sous-chefs.org
+license: Apache
+summary: Verify the correct installation of the postgresql server
+version: 0.0.1
+supports:
+  - os-family: unix
+# depends:
+#   - name: client
+#     path: ./test/integration/client_install

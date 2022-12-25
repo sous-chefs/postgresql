@@ -28,33 +28,58 @@ module PostgreSQL
 
         raise 'Unable to determine installed PostgreSQL version' if nil_or_empty?(pgsql_package)
 
-        pgsql_package_version = pgsql_package.first[1].fetch('version').to_i
-        Chef::Log.info("Deteched PostgreSQL version: #{pgsql_package_version}")
+        pgsql_package = pgsql_package.values.first
+        pgsql_package_version = pgsql_package.fetch('version').to_i
+        pgsql_package_source = if pgsql_package.key?('release')
+                                 pgsql_package.fetch('release').match?('PGDG') ? :repo : :os
+                               else
+                                 pgsql_package.fetch('version').match?('pgdg') ? :repo : :os
+                               end
+
+        Chef::Log.info("Detected installed PostgreSQL version: #{pgsql_package_version} installed from #{pgsql_package_source}")
 
         pgsql_package_version
       end
 
-      def data_dir(version = installed_postgresql_major_version)
+      def installed_postgresql_package_source
+        pgsql_package = node['packages'].filter { |p| p.match?(/postgresql-?(\d+)?$/) }
+
+        raise 'Unable to determine installed PostgreSQL version' if nil_or_empty?(pgsql_package)
+
+        pgsql_package = pgsql_package.values.first
+        pgsql_package_version = pgsql_package.fetch('version').to_i
+        pgsql_package_source = if pgsql_package.key?('release')
+                                 pgsql_package.fetch('release').match?('PGDG') ? :repo : :os
+                               else
+                                 pgsql_package.fetch('version').match?('pgdg') ? :repo : :os
+                               end
+
+        Chef::Log.info("Detected installed PostgreSQL version: #{pgsql_package_version} installed from #{pgsql_package_source}")
+
+        pgsql_package_source
+      end
+
+      def data_dir(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
-          "/var/lib/pgsql/#{version}/data"
+          source.eql?(:repo) ? "/var/lib/pgsql/#{version}/data" : '/var/lib/pgsql/data'
         when 'debian'
           "/var/lib/postgresql/#{version}/main"
         end
       end
 
-      def conf_dir(version = installed_postgresql_major_version)
+      def conf_dir(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
-          "/var/lib/pgsql/#{version}/data"
+          source.eql?(:repo) ? "/var/lib/pgsql/#{version}/data" : '/var/lib/pgsql/data'
         when 'debian'
           "/etc/postgresql/#{version}/main"
         end
       end
 
       # determine the platform specific service name
-      def default_platform_service_name(version = installed_postgresql_major_version)
-        if platform_family?('rhel', 'fedora', 'amazon')
+      def default_platform_service_name(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
+        if platform_family?('rhel', 'fedora', 'amazon') && source.eql?(:repo)
           "postgresql-#{version}"
         else
           'postgresql'
@@ -76,21 +101,33 @@ module PostgreSQL
         r
       end
 
-      def default_server_packages
+      def default_server_packages(version: nil, source: :os)
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
-          %W(postgresql#{version.delete('.')}-contrib postgresql#{version.delete('.')}-libs postgresql#{version.delete('.')}-server)
+          {
+            os: %w(postgresql-contrib postgresql-server),
+            repo: %W(postgresql#{version.delete('.')}-contrib postgresql#{version.delete('.')}-server),
+          }.fetch(source, nil)
         when 'debian'
-          %W(postgresql-#{version} postgresql-common)
+          {
+            os: %w(postgresql postgresql-common),
+            repo: %W(postgresql-#{version} postgresql-common),
+          }.fetch(source, nil)
         end
       end
 
-      def default_client_packages
+      def default_client_packages(version: nil, source: :os)
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
-          %W(postgresql#{version.delete('.')} postgresql#{version.delete('.')}-libs)
+          {
+            os: %w(postgresql),
+            repo: %W(postgresql#{version.delete('.')}),
+          }.fetch(source, nil)
         when 'debian'
-          %W(postgresql-client-#{version})
+          {
+            os: %w(postgresql-client),
+            repo: %W(postgresql-client-#{version}),
+          }.fetch(source, nil)
         end
       end
 
@@ -102,11 +139,11 @@ module PostgreSQL
       # initdb defaults to the execution environment.
       # https://www.postgresql.org/docs/9.5/static/locale.html
       def rhel_init_db_command(new_resource)
-        cmd = "/usr/pgsql-#{new_resource.version}/bin/initdb"
+        cmd = new_resource.source.eql?(:repo) ? "/usr/pgsql-#{new_resource.version}/bin/initdb" : '/usr/bin/initdb'
         cmd << " --locale '#{new_resource.initdb_locale}'" if new_resource.initdb_locale
         cmd << " -E '#{new_resource.initdb_encoding}'" if new_resource.initdb_encoding
         cmd << " #{new_resource.initdb_additional_options}" if new_resource.initdb_additional_options
-        cmd << " -D '#{data_dir(new_resource.version)}'"
+        cmd << " -D '#{data_dir}'"
       end
 
       # Given the base URL build the complete URL string for a yum repo

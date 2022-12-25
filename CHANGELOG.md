@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Allow package installation from OS distribution repository
+
 ## 11.2.12 - *2023-05-16*
 
 ## 11.2.11 - *2023-05-04*

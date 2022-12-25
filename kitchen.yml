@@ -33,6 +33,13 @@ platforms:
   - name: ubuntu-22.04
 
 suites:
+  - name: server_install_os
+    verifier:
+      inspec_tests:
+        - path: test/integration/server_install_os/
+    run_list:
+      - recipe[test::server_install_os]
+
   - name: access_15
     attributes:
       test:

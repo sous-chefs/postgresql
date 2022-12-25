@@ -30,16 +30,16 @@ property :version, [String, Integer],
 property :source, [String, Symbol],
           default: :repo,
           coerce: proc { |p| p.to_sym },
-          equal_to: %i(repo),
+          equal_to: %i(repo os),
           description: 'Installation source'
 
 property :client_packages, [String, Array],
-          default: lazy { default_client_packages },
+          default: lazy { default_client_packages(version: version, source: source) },
           coerce: proc { |p| Array(p) },
           description: 'Client packages to install'
 
 property :server_packages, [String, Array],
-          default: lazy { default_server_packages },
+          default: lazy { default_server_packages(version: version, source: source) },
           coerce: proc { |p| Array(p) },
           description: 'Server packages to install'
 
@@ -187,6 +187,8 @@ action_class do
     end
 
     ohai 'postgresql_client_packages' do
+      plugin 'packages'
+
       action :nothing
     end
   end
@@ -205,6 +207,8 @@ action_class do
     end
 
     ohai 'postgresql_server_packages' do
+      plugin 'packages'
+
       action :nothing
     end
   end
@@ -267,7 +271,7 @@ end
 action :init_server do
   return if initialized? || !platform_family?('rhel', 'fedora', 'amazon')
 
-  converge_by('Init Postgresql DB') do
+  converge_by('Init PostgreSQL') do
     execute 'init_db' do
       command rhel_init_db_command(new_resource)
       user new_resource.initdb_user

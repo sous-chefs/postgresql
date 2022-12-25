@@ -13,19 +13,35 @@ RSpec.describe PostgreSQL::Cookbook::Helpers do
         allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
       end
 
-      context "with rhel family and Postgres #{pg_version}" do
+      context "with rhel family and Postgres #{pg_version} from repo" do
         let(:platform_family) { 'rhel' }
 
         it 'returns the correct path' do
-          expect(subject.data_dir(pg_version)).to eq "/var/lib/pgsql/#{pg_version}/data"
+          expect(subject.data_dir(version: pg_version, source: :repo)).to eq "/var/lib/pgsql/#{pg_version}/data"
         end
       end
 
-      context "with debian family and Postgres #{pg_version}" do
+      context "with rhel family and Postgres #{pg_version} from os" do
+        let(:platform_family) { 'rhel' }
+
+        it 'returns the correct path' do
+          expect(subject.data_dir(version: pg_version, source: :os)).to eq '/var/lib/pgsql/data'
+        end
+      end
+
+      context "with debian family and Postgres #{pg_version} from repo" do
         let(:platform_family) { 'debian' }
 
         it 'returns the correct path' do
-          expect(subject.data_dir(pg_version)).to eq "/var/lib/postgresql/#{pg_version}/main"
+          expect(subject.data_dir(version: pg_version, source: :repo)).to eq "/var/lib/postgresql/#{pg_version}/main"
+        end
+      end
+
+      context "with debian family and Postgres #{pg_version} from os" do
+        let(:platform_family) { 'debian' }
+
+        it 'returns the correct path' do
+          expect(subject.data_dir(version: pg_version, source: :os)).to eq "/var/lib/postgresql/#{pg_version}/main"
         end
       end
     end
@@ -35,19 +51,35 @@ RSpec.describe PostgreSQL::Cookbook::Helpers do
         allow(subject).to receive(:[]).with('platform_family').and_return(platform_family)
       end
 
-      context "with rhel family and Postgres #{pg_version}" do
+      context "with rhel family and Postgres #{pg_version} from repo" do
         let(:platform_family) { 'rhel' }
 
         it 'returns the correct path' do
-          expect(subject.conf_dir(pg_version)).to eq "/var/lib/pgsql/#{pg_version}/data"
+          expect(subject.conf_dir(version: pg_version, source: :repo)).to eq "/var/lib/pgsql/#{pg_version}/data"
         end
       end
 
-      context "with debian family and Postgres #{pg_version}" do
+      context "with rhel family and Postgres #{pg_version} from os" do
+        let(:platform_family) { 'rhel' }
+
+        it 'returns the correct path' do
+          expect(subject.conf_dir(version: pg_version, source: :os)).to eq '/var/lib/pgsql/data'
+        end
+      end
+
+      context "with debian family and Postgres #{pg_version} from repo" do
         let(:platform_family) { 'debian' }
 
         it 'returns the correct path' do
-          expect(subject.conf_dir(pg_version)).to eq "/etc/postgresql/#{pg_version}/main"
+          expect(subject.conf_dir(version: pg_version, source: :repo)).to eq "/etc/postgresql/#{pg_version}/main"
+        end
+      end
+
+      context "with debian family and Postgres #{pg_version} from os" do
+        let(:platform_family) { 'debian' }
+
+        it 'returns the correct path' do
+          expect(subject.conf_dir(version: pg_version, source: :os)).to eq "/etc/postgresql/#{pg_version}/main"
         end
       end
     end
@@ -57,19 +89,35 @@ RSpec.describe PostgreSQL::Cookbook::Helpers do
         allow(subject).to receive(:[]).with(:platform_family).and_return(platform_family)
       end
 
-      context "with rhel family and Postgres #{pg_version}" do
+      context "with rhel family and Postgres #{pg_version} from repo" do
         let(:platform_family) { 'rhel' }
 
         it 'returns the correct service name' do
-          expect(subject.default_platform_service_name(pg_version)).to eq "postgresql-#{pg_version}"
+          expect(subject.default_platform_service_name(version: pg_version, source: :repo)).to eq "postgresql-#{pg_version}"
         end
       end
 
-      context "with debian family and Postgres #{pg_version}" do
+      context "with rhel family and Postgres #{pg_version} from os" do
+        let(:platform_family) { 'rhel' }
+
+        it 'returns the correct service name' do
+          expect(subject.default_platform_service_name(version: pg_version, source: :os)).to eq 'postgresql'
+        end
+      end
+
+      context "with debian family and Postgres #{pg_version} from repo" do
         let(:platform_family) { 'debian' }
 
         it 'returns the correct service name' do
-          expect(subject.default_platform_service_name(pg_version)).to eq 'postgresql'
+          expect(subject.default_platform_service_name(version: pg_version, source: :repo)).to eq 'postgresql'
+        end
+      end
+
+      context "with debian family and Postgres #{pg_version} from os" do
+        let(:platform_family) { 'debian' }
+
+        it 'returns the correct service name' do
+          expect(subject.default_platform_service_name(version: pg_version, source: :os)).to eq 'postgresql'
         end
       end
     end
