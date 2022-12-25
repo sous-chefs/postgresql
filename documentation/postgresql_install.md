@@ -21,7 +21,7 @@
 | ---------------------------------- | ----- | --------------- | ------- | ------------------------------------------------ | -------------- |
 | `sensitive`                        |       | true, false     |         |                                                  |                |
 | `version`                          |       | String, Integer |         | Version to install                               |                |
-| `source`                           |       | String, Symbol  |         | Installation source                              | repo           |
+| `source`                           |       | String, Symbol  |         | Installation source                              | repo, os       |
 | `client_packages`                  |       | String, Array   |         | Client packages to install                       |                |
 | `server_packages`                  |       | String, Array   |         | Server packages to install                       |                |
 | `repo_pgdg`                        |       | true, false     |         | Create pgdg repo                                 |                |

@@ -27,8 +27,13 @@ module PostgreSQL
         include PostgreSQL::Cookbook::Utils
         include PostgreSQL::Cookbook::Helpers
 
-        def postgresql_devel_pkg_name(version = installed_postgresql_major_version)
-          platform_family?('debian') ? 'libpq-dev' : "postgresql#{version}-devel"
+        def postgresql_devel_pkg_name(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
+          case node['platform_family']
+          when 'rhel', 'fedora', 'amazon'
+            source.eql?(:repo) ? "postgresql#{version}-devel" : 'postgresql-devel'
+          when 'debian'
+            'libpq-dev'
+          end
         end
 
         def postgresql_devel_path(suffix = nil, version: installed_postgresql_major_version)
@@ -65,11 +70,13 @@ module PostgreSQL
             declare_resource(:package, 'epel-release') { compile_time(true) }
             declare_resource(:package, 'centos-release-scl') { compile_time(true) }
           when 8
+            declare_resource(:package, 'libpq') { compile_time(true) }
             declare_resource(:package, 'perl-IPC-Run') do
               compile_time(true)
               options('--enablerepo=powertools')
             end
           when 9
+            declare_resource(:package, 'libpq') { compile_time(true) }
             declare_resource(:package, 'perl-IPC-Run') do
               compile_time(true)
               options('--enablerepo=crb')

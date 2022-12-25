@@ -58,6 +58,7 @@ jobs:
           - "server-install-13"
           - "server-install-14"
           - "server-install-15"
+          - "server-install-os"
       fail-fast: false
 
     steps:
