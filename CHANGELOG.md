@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 11.1.2 - *2023-01-12*
 
 - Fix regex not matching usernames containing characters other than word characters
