@@ -70,7 +70,7 @@ module PostgreSQL
 
           attr_reader :entries
 
-          SPLIT_REGEX = %r{^(((?<type>local)\s+(?<database>\w+)\s+(?<user>[\w\d\-_.$]+))|((?!local)(?<type>\w+)\s+(?<database>\w+)\s+(?<user>[\w\d\-_.$]+)\s+(?<address>[\w\-.:\/]+)))\s+(?<auth_method>[\w-]+)(?:\s*)(?<auth_options>[\w=-]+)?(?:\s*)(?<comment>#\s*.*)?$}.freeze
+          SPLIT_REGEX = %r{^(((?<type>local)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+))|((?!local)(?<type>\w+)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+)\s+(?<address>[\w\-.:\/]+)))\s+(?<auth_method>[\w-]+)(?:\s*)(?<auth_options>[\w=-]+)?(?:\s*)(?<comment>#\s*.*)?$}.freeze
           private_constant :SPLIT_REGEX
 
           def initialize
@@ -171,8 +171,8 @@ module PostgreSQL
 
           ENTRY_FIELD_FORMAT = {
             type: 8,
-            database: 16,
-            user: 16,
+            database: 32,
+            user: 32,
             address: 24,
             auth_method: 16,
             auth_options: 24,

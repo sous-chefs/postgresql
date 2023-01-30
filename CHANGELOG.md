@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Fix regex not matching databases names containing dashes and underscores
+- Update formatting output of pg_hba to support longer values
+
 ## 11.1.2 - *2023-01-12*
 
 - Fix regex not matching usernames containing characters other than word characters

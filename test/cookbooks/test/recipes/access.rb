@@ -85,3 +85,13 @@ postgresql_access 'access with hostname address username with dot' do
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
+
+postgresql_access 'access with database name with an underscore' do
+  type 'host'
+  database 'my_database'
+  user 'hostname.user'
+  auth_method 'md5'
+  address 'host.domain'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
+end
