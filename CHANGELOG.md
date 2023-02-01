@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.1.3 - *2023-02-01*
 
 - Fix regex not matching databases names containing dashes and underscores
 - Update formatting output of pg_hba to support longer values
