@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+Standardise files with files in sous-chefs/repo-management
+
 ## 11.1.3 - *2023-02-01*
 
 - Fix regex not matching databases names containing dashes and underscores
