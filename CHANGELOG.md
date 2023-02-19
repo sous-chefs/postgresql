@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.1.6 - *2023-02-19*
 
 Standardise files with files in sous-chefs/repo-management
 
