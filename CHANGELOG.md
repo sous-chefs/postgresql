@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Allow database encoding to be specified as a String
+
 ## 11.1.6 - *2023-02-19*
 
 Standardise files with files in sous-chefs/repo-management

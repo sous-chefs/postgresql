@@ -28,7 +28,7 @@ property :template, String,
           default: 'template1',
           description: 'The name of the template from which to create the new database, or DEFAULT to use the default template (template1)'
 
-property :encoding, Integer,
+property :encoding, [Integer, String],
           description: 'Character set encoding to use in the new database'
 
 property :strategy, String,

@@ -89,3 +89,14 @@ control 'name-with-dash role has statement_timeout set to 8mins' do
     its('output') { should cmp /statement_timeout=8min/ }
   end
 end
+
+control 'database sous_chef should exist with encoding UTF8' do
+  impact 1.0
+  desc 'Ensures database exists and encoding is correct'
+
+  postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
+
+  describe postgres_access.query("SELECT encoding from pg_database WHERE datname='sous_chef';") do
+    its('output') { should eql '6' }
+  end
+end

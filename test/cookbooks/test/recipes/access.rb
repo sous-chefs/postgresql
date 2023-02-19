@@ -36,7 +36,10 @@ postgresql_user 'sous_chef' do
   action :update
 end
 
-postgresql_database 'sous_chef'
+postgresql_database 'sous_chef' do
+  template 'template0'
+  encoding 'utf8'
+end
 
 postgresql_access 'a sous_chef local superuser' do
   type 'host'
