@@ -13,75 +13,75 @@ provisioner:
 platforms:
   - name: almalinux-8
     driver:
-      image: dokken/almalinux-8
+      image: ghcr.io/test-kitchen/dokken/almalinux-8
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: almalinux-9
     driver:
-      image: dokken/almalinux-9
+      image: ghcr.io/test-kitchen/dokken/almalinux-9
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: debian-10
     driver:
-      image: dokken/debian-10
+      image: ghcr.io/test-kitchen/dokken/debian-10
       pid_one_command: /bin/systemd
 
   - name: debian-11
     driver:
-      image: dokken/debian-11
+      image: ghcr.io/test-kitchen/dokken/debian-11
       pid_one_command: /bin/systemd
 
   - name: centos-7
     driver:
-      image: dokken/centos-7
+      image: ghcr.io/test-kitchen/dokken/centos-7
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: centos-stream-8
     driver:
-      image: dokken/centos-stream-8
+      image: ghcr.io/test-kitchen/dokken/centos-stream-8
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: centos-stream-9
     driver:
-      image: dokken/centos-stream-9
+      image: ghcr.io/test-kitchen/dokken/centos-stream-9
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: ubuntu-20.04
     driver:
-      image: dokken/ubuntu-20.04
+      image: ghcr.io/test-kitchen/dokken/ubuntu-20.04
       pid_one_command: /bin/systemd
 
   - name: ubuntu-22.04
     driver:
-      image: dokken/ubuntu-22.04
+      image: ghcr.io/test-kitchen/dokken/ubuntu-22.04
       pid_one_command: /bin/systemd
 
   - name: fedora-latest
     driver:
-      image: dokken/fedora-latest
+      image: ghcr.io/test-kitchen/dokken/fedora-latest
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: oracle-7
     driver:
-      image: dokken/oraclelinux-7
+      image: ghcr.io/test-kitchen/dokken/oraclelinux-7
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: oracle-8
     driver:
-      image: dokken/oraclelinux-7
+      image: ghcr.io/test-kitchen/dokken/oraclelinux-7
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: amazonlinux-2
     driver:
-      image: dokken/amazonlinux-2
+      image: ghcr.io/test-kitchen/dokken/amazonlinux-2
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: rockylinux-8
     driver:
-      image: dokken/rockylinux-8
+      image: ghcr.io/test-kitchen/dokken/rockylinux-8
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: rockylinux-9
     driver:
-      image: dokken/rockylinux-9
+      image: ghcr.io/test-kitchen/dokken/rockylinux-9
       pid_one_command: /usr/lib/systemd/systemd
