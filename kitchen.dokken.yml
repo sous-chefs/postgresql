@@ -48,7 +48,7 @@ platforms:
 
   - name: ubuntu-20.04
     driver:
-      image: ghcr.io/test-kitchen/dokken/ubuntu-20.04:latest
+      image: ghcr.io/test-kitchen/dokken/ubuntu-20.04:main
       pid_one_command: /bin/systemd
 
   - name: ubuntu-22.04
