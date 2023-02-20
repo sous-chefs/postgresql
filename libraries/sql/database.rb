@@ -82,7 +82,7 @@ module PostgreSQL
             properties.each do |p|
               next if nil_or_empty?(new_resource.send(p))
 
-              property_string = if %i(allow_connections connection_limit is_template).include?(p)
+              property_string = if %i(allow_connections connection_limit is_template).include?(p) || p.is_a?(Integer)
                                   "#{p.to_s.upcase}=#{new_resource.send(p)}"
                                 else
                                   "#{p.to_s.upcase}=\"#{new_resource.send(p)}\""
