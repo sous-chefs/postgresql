@@ -1,7 +1,7 @@
 ---
 version: 2.1
 orbs:
-  kitchen: sous-chefs/kitchen@2
+  kitchen: sous-chefs/kitchen@2.1.1
 workflows:
   danger:
     jobs:
