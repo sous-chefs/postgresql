@@ -60,10 +60,21 @@ module PostgreSQL
         def install_pg_gem
           return if gem_installed?('pg')
 
-          if platform_family?('rhel') && node['platform_version'].to_i.eql?(7)
+          case node['platform_version'].to_i
+          when 7
             declare_resource(:package, 'epel-release') { compile_time(true) }
             declare_resource(:package, 'centos-release-scl') { compile_time(true) }
-          end
+          when 8
+            declare_resource(:package, 'perl-IPC-Run') do
+              compile_time(true)
+              options('--enablerepo=powertools')
+            end
+          when 9
+            declare_resource(:package, 'perl-IPC-Run') do
+              compile_time(true)
+              options('--enablerepo=crb')
+            end
+          end if platform_family?('rhel')
 
           declare_resource(:build_essential, 'Build Essential') { compile_time(true) }
           declare_resource(:package, postgresql_devel_pkg_name) { compile_time(true) }
