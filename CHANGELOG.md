@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 11.2.1 - *2023-02-21*
 
 - Make database names an identifier to allow additional permitted characters
