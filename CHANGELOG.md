@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Make database names an identifier to allow additional permitted characters
+- Make sure perl-IPC-Run package is installed for RHEL 8/9 platforms
+
 ## 11.2.0 - *2023-02-20*
 
 - Allow database encoding to be specified as a String

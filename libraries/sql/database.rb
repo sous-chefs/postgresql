@@ -48,7 +48,7 @@ module PostgreSQL
 
         def database_sql(new_resource)
           sql = []
-          sql.push("DATABASE #{new_resource.database}")
+          sql.push("DATABASE \"#{new_resource.database}\"")
 
           properties = case new_resource.action.pop
                        when :create
