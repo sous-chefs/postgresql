@@ -46,6 +46,18 @@ control 'postgresql-hostname-access' do
   end
 end
 
+control 'postgresql-long-hostname-access' do
+  impact 1.0
+  desc 'This test ensures long hostnames may be specified in ACLs'
+
+  describe postgres_hba_conf.where { address == 'a.very.long.host.domain.that.exceeds.the.max.of.24.characters' } do
+    its('database') { should cmp 'my_database' }
+    its('type') { should cmp 'host' }
+    its('auth_method') { should cmp 'md5' }
+    its('address') { should cmp 'a.very.long.host.domain.that.exceeds.the.max.of.24.characters' }
+  end
+end
+
 control 'sous_chef role should exist' do
   impact 1.0
   desc 'The sous_chef database user role should exist'
