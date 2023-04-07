@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+Standardise files with files in sous-chefs/repo-management
+
 ## 11.2.6 - *2023-04-01*
 
 ## 11.2.5 - *2023-04-01*
