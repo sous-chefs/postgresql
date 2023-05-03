@@ -6,6 +6,20 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 - Fix unparsable pg\_hba.conf when a column value is longer than the max width
 
+## 11.2.8 - *2023-04-17*
+
+## 11.2.7 - *2023-04-07*
+
+Standardise files with files in sous-chefs/repo-management
+
+## 11.2.6 - *2023-04-01*
+
+## 11.2.5 - *2023-04-01*
+
+## 11.2.4 - *2023-04-01*
+
+Standardise files with files in sous-chefs/repo-management
+
 ## 11.2.3 - *2023-03-15*
 
 Standardise files with files in sous-chefs/repo-management
