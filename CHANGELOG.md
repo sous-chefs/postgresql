@@ -6,6 +6,10 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 - Make the encrypted_password property in the role resource idempotent.
 
+## 11.2.10 - *2023-05-04*
+
+- Fix unparsable pg\_hba.conf when a column value is longer than the max width
+
 ## 11.2.9 - *2023-05-04*
 
 - Update CI permissions and remove markdown-link check

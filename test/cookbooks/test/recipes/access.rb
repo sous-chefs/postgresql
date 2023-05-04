@@ -98,3 +98,13 @@ postgresql_access 'access with database name with an underscore' do
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
+
+postgresql_access 'access with hostname long' do
+  type 'host'
+  database 'my_database'
+  user 'hostname.user'
+  auth_method 'md5'
+  address 'a.very.long.host.domain.that.exceeds.the.max.of.24.characters'
+
+  notifies :restart, 'postgresql_service[postgresql]', :delayed
+end
