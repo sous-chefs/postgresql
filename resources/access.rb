@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+unified_mode true
+
 use 'partial/_config_file'
 
 property :config_file, String,
