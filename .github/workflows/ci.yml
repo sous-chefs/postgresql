@@ -10,6 +10,12 @@ name: ci
 jobs:
   lint-unit:
     uses: sous-chefs/.github/.github/workflows/lint-unit.yml@2.0.2
+    permissions:
+      actions: write
+      checks: write
+      pull-requests: write
+      statuses: write
+      issues: write
 
   integration:
     needs: lint-unit
@@ -17,41 +23,41 @@ jobs:
     strategy:
       matrix:
         os:
-          - 'almalinux-8'
-          - 'centos-7'
-          - 'centos-stream-8'
-          - 'centos-stream-9'
-          - 'debian-10'
-          - 'debian-11'
-          - 'rockylinux-8'
-          - 'ubuntu-2004'
-          - 'ubuntu-2204'
+          - "almalinux-8"
+          - "centos-7"
+          - "centos-stream-8"
+          - "centos-stream-9"
+          - "debian-10"
+          - "debian-11"
+          - "rockylinux-8"
+          - "ubuntu-2004"
+          - "ubuntu-2204"
 
         suite:
-          - 'access-11'
-          - 'access-12'
-          - 'access-13'
-          - 'access-14'
-          - 'access-15'
-          - 'client-install-11'
-          - 'client-install-12'
-          - 'client-install-13'
-          - 'client-install-14'
-          - 'client-install-15'
-          - 'extension-12'
-          - 'extension-13'
-          - 'extension-14'
-          - 'extension-15'
-          - 'ident-12'
-          - 'ident-13'
-          - 'ident-14'
-          - 'ident-15'
-          - 'initdb-locale-15'
-          - 'server-install-11'
-          - 'server-install-12'
-          - 'server-install-13'
-          - 'server-install-14'
-          - 'server-install-15'
+          - "access-11"
+          - "access-12"
+          - "access-13"
+          - "access-14"
+          - "access-15"
+          - "client-install-11"
+          - "client-install-12"
+          - "client-install-13"
+          - "client-install-14"
+          - "client-install-15"
+          - "extension-12"
+          - "extension-13"
+          - "extension-14"
+          - "extension-15"
+          - "ident-12"
+          - "ident-13"
+          - "ident-14"
+          - "ident-15"
+          - "initdb-locale-15"
+          - "server-install-11"
+          - "server-install-12"
+          - "server-install-13"
+          - "server-install-14"
+          - "server-install-15"
       fail-fast: false
 
     steps:
