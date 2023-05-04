@@ -99,6 +99,10 @@ load_current_value do |new_resource|
   connection_limit(role_data.fetch('rolconnlimit', nil))
   valid_until(role_data.fetch('rolvaluntil', nil))
   config(config_string_to_hash(role_data.fetch('rolconfig', nil)))
+
+  if new_resource.property_is_set?(:encrypted_password)
+    encrypted_password(pg_role_encrypted_password(new_resource.rolename))
+  end
 end
 
 action_class do

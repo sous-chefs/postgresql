@@ -55,6 +55,13 @@ module PostgreSQL
           !nil_or_empty?(password)
         end
 
+        def pg_role_encrypted_password(name)
+          sql = 'SELECT rolpassword FROM pg_authid WHERE rolname=$1 AND rolpassword IS NOT NULL'
+          authid = execute_sql_params(sql, [ name], max_one_result: true)
+
+          authid&.to_a&.pop&.fetch('rolpassword')
+        end
+
         def role_sql(new_resource)
           sql = []
 
