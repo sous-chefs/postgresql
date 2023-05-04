@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.2.10 - *2023-05-04*
 
 - Fix unparsable pg\_hba.conf when a column value is longer than the max width
 
