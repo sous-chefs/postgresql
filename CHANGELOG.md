@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.2.11 - *2023-05-04*
 
 - Make the encrypted_password property in the role resource idempotent.
 
