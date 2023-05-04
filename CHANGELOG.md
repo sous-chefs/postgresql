@@ -6,6 +6,10 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 - Fix unparsable pg\_hba.conf when a column value is longer than the max width
 
+## 11.2.9 - *2023-05-04*
+
+- Update CI permissions and remove markdown-link check
+
 ## 11.2.8 - *2023-04-17*
 
 ## 11.2.7 - *2023-04-07*
@@ -229,7 +233,7 @@ Standardise files with files in sous-chefs/repo-management
 
 ## v7.0.0 (2018-05-25)
 
-_Breaking Change_ Please see UPGRADING.md and the README.md for information how to use.
+*Breaking Change* Please see UPGRADING.md and the README.md for information how to use.
 
 - Add custom resources for:
 
