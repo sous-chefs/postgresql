@@ -94,15 +94,24 @@ action :create do
       action :create
     end
 
+    service_dir = case installed_postgresql_package_source
+                  when :os
+                    '/etc/systemd/system/postgresql.service.d'
+                  when :repo
+                    "/etc/systemd/system/postgresql-#{new_resource.version}.service.d"
+                  else
+                    raise ArgumentError, "Unknown installation source: #{installed_postgresql_package_source}"
+                  end
+
     if new_resource.external_pid_file
-      directory "/etc/systemd/system/postgresql-#{new_resource.version}.service.d" do
+      directory service_dir do
         owner 'root'
         group 'root'
         mode '0755'
         action :create
       end
 
-      template "/etc/systemd/system/postgresql-#{new_resource.version}.service.d/10-pid.conf" do
+      template "#{service_dir}/10-pid.conf" do
         cookbook new_resource.cookbook
         source 'systemd/10-pid.conf.erb'
 
@@ -117,8 +126,8 @@ action :create do
         action :create
       end
     else
-      directory("/etc/systemd/system/postgresql-#{new_resource.version}.service.d") { action(:delete) }
-      file("/etc/systemd/system/postgresql-#{new_resource.version}.service.d") { action(:delete) }
+      directory(service_dir) { action(:delete) }
+      file("#{service_dir}/10-pid.conf") { action(:delete) }
     end
   end
 end
