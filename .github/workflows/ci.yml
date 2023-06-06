@@ -32,7 +32,6 @@ jobs:
           - "rockylinux-8"
           - "ubuntu-2004"
           - "ubuntu-2204"
-
         suite:
           - "access-11"
           - "access-12"
@@ -59,6 +58,9 @@ jobs:
           - "server-install-14"
           - "server-install-15"
           - "server-install-os"
+        exclude:
+          - os: "centos-7"
+            suite: "server-install-os"
       fail-fast: false
 
     steps:
