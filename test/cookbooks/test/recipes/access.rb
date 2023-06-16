@@ -108,3 +108,12 @@ postgresql_access 'access with hostname long' do
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
+
+postgresql_access 'access with urls as auth_options' do
+  type 'host'
+  database 'all'
+  user 'ldap_url.user'
+  address '127.0.0.1/32'
+  auth_method 'ldap'
+  auth_options 'ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"'
+end
