@@ -70,7 +70,8 @@ module PostgreSQL
 
           attr_reader :entries
 
-          SPLIT_REGEX = %r{^(((?<type>local)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+))|((?!local)(?<type>\w+)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+)\s+(?<address>[\w\-.:\/]+)))\s+(?<auth_method>[\w-]+)(?:\s*)(?<auth_options>[\w=-]+)?(?:\s*)(?<comment>#\s*.*)?$}.freeze
+          AUTH_OPTION_REGEX = /[\w-]+=(?:"[^"]*"|[^\s"]+)/.freeze
+          SPLIT_REGEX = %r{^(((?<type>local)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+))|((?!local)(?<type>\w+)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+)\s+(?<address>[\w\-.:\/]+)))\s+(?<auth_method>[\w-]+)(?:\s*)(?<auth_options>#{AUTH_OPTION_REGEX})*(?:\s*)(?<comment>#\s*.*)?$}.freeze
           private_constant :SPLIT_REGEX
 
           def initialize
@@ -321,7 +322,7 @@ module PostgreSQL
           private
 
           def options_string_parse(string)
-            string.split.map { |kv| kv.split('=') }.sort
+            string.scan(PgHbaFile::AUTH_OPTION_REGEX).sort!.map! { |s| s.split('=', 2) }
           end
         end
 
