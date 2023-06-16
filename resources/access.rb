@@ -47,7 +47,7 @@ property :auth_method, String,
           description: 'Access record authentication method'
 
 property :auth_options, [String, Hash],
-          coerce: proc { |p| p.is_a?(Hash) ? p.map { |k, v| "#{k}=#{v}" }.join(' ') : p },
+          coerce: proc { |v| sorted_auth_options_string(v) },
           description: 'Access record authentication options'
 
 property :comment, String,
