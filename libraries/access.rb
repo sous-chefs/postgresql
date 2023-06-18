@@ -70,7 +70,7 @@ module PostgreSQL
 
           attr_reader :entries
 
-          SPLIT_REGEX = %r{^(((?<type>local)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+))|((?!local)(?<type>\w+)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+)\s+(?<address>[\w\-.:\/]+)))\s+(?<auth_method>[\w-]+)(?:\s*)(?<auth_options>[\w=-]+)?(?:\s*)(?<comment>#\s*.*)?$}.freeze
+          SPLIT_REGEX = %r{^(((?<type>local)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+))|((?!local)(?<type>\w+)\s+(?<database>[\w\-_]+)\s+(?<user>[\w\d\-_.$]+)\s+(?<address>[\w\-.:\/]+)))\s+(?<auth_method>[\w-]+)(?<auth_options>(?:\s+#{AUTH_OPTION_REGEX})*)(?:\s*)(?<comment>#\s*.*)?$}.freeze
           private_constant :SPLIT_REGEX
 
           def initialize
@@ -210,7 +210,7 @@ module PostgreSQL
 
           def update(auth_method: nil, auth_options: nil, comment: nil)
             @auth_method = auth_method if auth_method
-            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options
+            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
             self.comment = comment if comment
 
             self
@@ -249,8 +249,7 @@ module PostgreSQL
             @database = database
             @user = user
             @auth_method = auth_method
-            @auth_options = auth_options
-            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options
+            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
             self.comment = comment
           end
 
@@ -276,8 +275,7 @@ module PostgreSQL
             @user = user
             @address = address
             @auth_method = auth_method
-            @auth_options = auth_options
-            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options
+            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
             self.comment = comment
           end
 
@@ -287,6 +285,8 @@ module PostgreSQL
         end
 
         class PgHbaFileEntryAuthOptions
+          include PostgreSQL::Cookbook::Utils
+
           attr_reader :options
 
           def initialize(options_string)
@@ -321,7 +321,7 @@ module PostgreSQL
           private
 
           def options_string_parse(string)
-            string.split.map { |kv| kv.split('=') }.sort
+            string.scan(AUTH_OPTION_REGEX).sort!.map! { |s| s.split('=', 2) }
           end
         end
 

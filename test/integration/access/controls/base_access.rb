@@ -112,3 +112,31 @@ control 'database sous_chef should exist with encoding UTF8' do
     its('output') { should eql '6' }
   end
 end
+
+control 'postgresql-access-auth_options-with-url' do
+  impact 1.0
+  desc 'This test ensures URL may be specified in auth_options'
+
+  describe postgres_hba_conf.where { user == 'ldap_url.user' } do
+    its('type') { should cmp 'host' }
+    its('database') { should cmp 'all' }
+    its('user') { should cmp 'ldap_url.user' }
+    its('address') { should cmp '127.0.0.1/32' }
+    its('auth_method') { should cmp 'ldap' }
+    its('auth_params') { should cmp 'ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"' }
+  end
+end
+
+control 'postgresql-access-multiple-auth_options' do
+  impact 1.0
+  desc 'This test ensures multiple auth_options may  be specified'
+
+  describe postgres_hba_conf.where { user == 'ldap_options.user' } do
+    its('type') { should cmp 'host' }
+    its('database') { should cmp 'all' }
+    its('user') { should cmp 'ldap_options.user' }
+    its('address') { should cmp '127.0.0.1/32' }
+    its('auth_method') { should cmp 'ldap' }
+    its('auth_params') { should cmp 'ldapbasedn="dc=example, dc=net" ldapsearchattribute=uid ldapserver=ldap.example.net' }
+  end
+end
