@@ -24,6 +24,7 @@ platforms:
   - name: centos-stream-9
   - name: debian-10
   - name: debian-11
+  - name: debian-12
   - name: fedora-latest
   - name: oraclelinux-7
   - name: oraclelinux-8
