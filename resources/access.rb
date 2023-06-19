@@ -80,29 +80,35 @@ action_class do
 end
 
 action :create do
-  converge_if_changed do
-    config_resource_init
-    entry = config_resource.variables[:pg_hba].entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
+  config_resource_init
+  entry = config_resource.variables[:pg_hba].entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
 
-    if nil_or_empty?(entry)
+  if nil_or_empty?(entry)
+    converge_by("Add grant entry for #{new_resource.type}, #{new_resource.database}, #{new_resource.user}") do
       resource_properties = %i(type database user address auth_method auth_options comment).map { |p| [ p, new_resource.send(p) ] }.to_h.compact
       entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(**resource_properties)
       config_resource.variables[:pg_hba].add(entry)
-    else
+    end
+  elsif !entry.auth_method.eql?(new_resource.auth_method) || \
+        !entry.auth_options.eql?(new_resource.auth_options) || \
+        !entry.comment.eql?(new_resource.comment)
+    converge_by("Update grant entry for #{new_resource.type}, #{new_resource.database}, #{new_resource.user}") do
       entry.update(auth_method: new_resource.auth_method, auth_options: new_resource.auth_options, comment: new_resource.comment)
     end
   end
 end
 
 action :update do
-  converge_if_changed(:auth_method, :auth_options, :comment) do
-    config_resource_init
-    entry = config_resource.variables[:pg_hba].entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
+  config_resource_init
+  entry = config_resource.variables[:pg_hba].entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
 
-    raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update access entry for '#{new_resource.name}' as it does not exist" if nil_or_empty?(entry)
+  raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update access entry for '#{new_resource.name}' as it does not exist" if nil_or_empty?(entry)
 
+  converge_by("Update grant entry for #{new_resource.type}, #{new_resource.database}, #{new_resource.user}") do
     entry.update(auth_method: new_resource.auth_method, auth_options: new_resource.auth_options, comment: new_resource.comment)
-  end
+  end if !entry.auth_method.eql?(new_resource.auth_method) || \
+         !entry.auth_options.eql?(new_resource.auth_options) || \
+         !entry.comment.eql?(new_resource.comment)
 end
 
 action :delete do

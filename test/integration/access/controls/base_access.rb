@@ -140,3 +140,38 @@ control 'postgresql-access-multiple-auth_options' do
     its('auth_params') { should cmp 'ldapbasedn="dc=example, dc=net" ldapsearchattribute=uid ldapserver=ldap.example.net' }
   end
 end
+
+control 'postgresql-access-add-and-remove' do
+  impact 1.0
+  desc 'Ensure a ressource is added, even if it is deleted earlier in the recipe'
+
+  describe postgres_hba_conf.where { database == 'entry_remove_add' } do
+    its('type') { should cmp 'host' }
+    its('database') { should cmp 'entry_remove_add' }
+    its('user') { should cmp 'all' }
+    its('address') { should cmp '127.0.0.1/32' }
+    its('auth_method') { should cmp 'md5' }
+  end
+end
+
+control 'postgresql-access-remove-and-add' do
+  impact 1.0
+  desc 'Ensure a ressource is deleted, even if it is created earlier in the recipe'
+
+  describe postgres_hba_conf.where { database == 'entry_add_remove' } do
+    it { shout_not exist }
+  end
+end
+
+control 'postgresql-access-set-and-modify' do
+  impact 1.0
+  desc 'Ensure the most recent resource instance is used in the template'
+
+  describe postgres_hba_conf.where { database == 'entry_modify' } do
+    its('type') { should cmp 'host' }
+    its('database') { should cmp 'entry_modify' }
+    its('user') { should cmp 'all' }
+    its('address') { should cmp '127.0.0.1/32' }
+    its('auth_method') { should cmp 'md5' }
+  end
+end

@@ -128,3 +128,55 @@ postgresql_access 'access with several auth_options' do
                ldapbasedn: '"dc=example, dc=net"',
                ldapsearchattribute: 'uid'
 end
+
+postgresql_access 'access entry initially removed' do
+  type 'host'
+  database 'entry_remove_add'
+  user 'all'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+
+  action :delete
+end
+
+postgresql_access 'access entry later added' do
+  type 'host'
+  database 'entry_remove_add'
+  user 'all'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+end
+
+postgresql_access 'access entry initially added' do
+  type 'host'
+  database 'entry_add_remove'
+  user 'all'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+end
+
+postgresql_access 'access entry later removed' do
+  type 'host'
+  database 'entry_add_remove'
+  user 'all'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+
+  action :delete
+end
+
+postgresql_access 'access entry intially set' do
+  type 'host'
+  database 'entry_modify'
+  user 'all'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+end
+
+postgresql_access 'access entry later modified' do
+  type 'host'
+  database 'entry_modify'
+  user 'all'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+end
