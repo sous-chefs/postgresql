@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Added support for Debian 12
+
 ## 11.4.0 - *2023-06-18*
 
 - Allow to configure auth method with complex/multiple option(s)
