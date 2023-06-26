@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Fix typo in documentation of `postgresql_extension` resource
+
 ## 11.5.0 - *2023-06-19*
 
 - Added support for Debian 12

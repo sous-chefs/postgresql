@@ -39,7 +39,7 @@ package 'postgresql-contrib15'
 
 # Install adminpack extension
 postgresql_extension 'postgres adminpack' do
-  database 'postgres'
+  dbname 'postgres'
   extension 'adminpack'
 end
 ```
