@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 11.5.1 - *2023-06-26*
 
 - Fix typo in documentation of `postgresql_extension` resource
