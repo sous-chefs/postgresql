@@ -128,3 +128,11 @@ postgresql_access 'access with several auth_options' do
                ldapbasedn: '"dc=example, dc=net"',
                ldapsearchattribute: 'uid'
 end
+
+postgresql_access 'access with multiple databases' do
+  type 'host'
+  database 'foo,bar'
+  user 'john,doe'
+  address '127.0.0.1/32'
+  auth_method 'md5'
+end
