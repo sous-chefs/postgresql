@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Allow to configure multiple databases and users in one `pg_hba.conf` entry
+
 ## 11.5.1 - *2023-06-26*
 
 - Fix typo in documentation of `postgresql_extension` resource
