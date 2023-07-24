@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 11.6.2 - *2023-07-24*
 
 - Prevent `postgresql_config` resource from triggering changes, if `filemode`,
