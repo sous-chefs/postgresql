@@ -54,6 +54,12 @@ property :server_config, Hash,
 load_current_value do |new_resource|
   current_value_does_not_exist! unless ::File.exist?(new_resource.config_file)
 
+  if ::File.exist?(new_resource.config_file)
+    owner ::Etc.getpwuid(::File.stat(new_resource.config_file).uid).name
+    group ::Etc.getgrgid(::File.stat(new_resource.config_file).gid).name
+    filemode ::File.stat(new_resource.config_file).mode.to_s(8)[-4..-1]
+  end
+
   postgresql_server_config = PostgreSQL::Cookbook::ConfigHelpers.postgresql_conf_load_file(new_resource.config_file).fetch('global').deep_sort
   postgresql_server_config.transform_values! { |v| v.is_a?(String) ? v.gsub("'", '') : v }
 
