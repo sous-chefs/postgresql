@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Prevent `postgresql_config` resource from triggering changes, if `filemode`,
+  `owner` or `group` are specified, but there values don't change.
+
 ## 11.6.1 - *2023-07-09*
 
 ## 11.6.0 - *2023-07-07*
