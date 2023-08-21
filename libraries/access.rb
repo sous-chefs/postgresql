@@ -101,10 +101,15 @@ module PostgreSQL
             @entries.map(&:to_s).join("\n")
           end
 
-          def add(entry)
+          def add(entry, position = nil)
             raise PgHbaInvalidEntryType unless entry.is_a?(PgHbaFileEntry)
 
-            @entries.push(entry)
+            if position
+              @entries.insert(position, entry)
+            else
+              @entries.push(entry)
+            end
+
             @entries.uniq!
           end
 

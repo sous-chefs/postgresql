@@ -72,9 +72,7 @@ action :create do
       entry = PostgreSQL::Cookbook::IdentHelpers::PgIdent::PgIdentFileEntry.new(**resource_properties)
       config_resource.variables[:pg_ident].add(entry)
     else
-      entry.system_username = new_resource.system_username
-      entry.database_username = new_resource.database_username
-      entry.comment = new_resource.comment
+      entry.update(system_username: new_resource.system_username, database_username: new_resource.database_username, comment: new_resource.comment)
     end
   end
 end
@@ -86,9 +84,7 @@ action :update do
 
     raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update ident entry for '#{new_resource.map_name}' as it does not exist" if nil_or_empty?(entry)
 
-    entry.system_username = new_resource.system_username
-    entry.database_username = new_resource.database_username
-    entry.comment = new_resource.comment
+    entry.update(system_username: new_resource.system_username, database_username: new_resource.database_username, comment: new_resource.comment)
   end
 end
 
