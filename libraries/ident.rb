@@ -82,6 +82,7 @@ module PostgreSQL
             return false if entry?(entry.map_name)
 
             @entries.push(entry)
+
             sort!
           end
 
@@ -168,8 +169,7 @@ module PostgreSQL
         class PgIdentFileEntry
           include PostgreSQL::Cookbook::Utils
 
-          attr_accessor :map_name, :system_username, :database_username
-          attr_reader :comment
+          attr_reader :map_name, :system_username, :database_username, :comment
 
           ENTRY_FIELD_FORMAT = {
             map_name: 16,
@@ -205,6 +205,14 @@ module PostgreSQL
             return true if self.class.const_get(:ENTRY_FIELDS).all? { |field| send(field).eql?(entry.send(field)) }
 
             false
+          end
+
+          def update(system_username:, database_username:, comment:)
+            @system_username = system_username if system_username
+            @database_username = database_username if database_username
+            self.comment = comment if comment
+
+            self
           end
 
           def comment=(comment)
