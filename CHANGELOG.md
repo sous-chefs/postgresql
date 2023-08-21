@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 11.7.0 - *2023-08-21*
 
 - Add insert position option for access resources
