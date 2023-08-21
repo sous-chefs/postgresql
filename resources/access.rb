@@ -54,6 +54,9 @@ property :comment, String,
           coerce: proc { |p| p.start_with?('#') ? p : "# #{p}" },
           description: 'Access record comment'
 
+property :position, Integer,
+          description: 'Insert position for entry creation'
+
 load_current_value do |new_resource|
   current_value_does_not_exist! unless ::File.exist?(new_resource.config_file)
 
@@ -87,7 +90,7 @@ action :create do
     if nil_or_empty?(entry)
       resource_properties = %i(type database user address auth_method auth_options comment).map { |p| [ p, new_resource.send(p) ] }.to_h.compact
       entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(**resource_properties)
-      config_resource.variables[:pg_hba].add(entry)
+      config_resource.variables[:pg_hba].add(entry, new_resource.position)
     else
       entry.update(auth_method: new_resource.auth_method, auth_options: new_resource.auth_options, comment: new_resource.comment)
     end
