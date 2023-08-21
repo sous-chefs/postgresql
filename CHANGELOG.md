@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Add insert position option for access resources
+- Refactor ident class to use update method to empty properties overwriting settings on update
+
 ## 11.6.3 - *2023-07-25*
 
 - Fix PostgreSQL version detection
