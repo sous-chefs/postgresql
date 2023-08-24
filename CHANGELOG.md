@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Refactor access ordering to allow moves
+
 ## 11.7.1 - *2023-08-31*
 
 - Fix package source detection when other packages matching the postgresql name are installed

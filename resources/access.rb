@@ -76,6 +76,7 @@ load_current_value do |new_resource|
 
     send(p, entry.send(p).to_s)
   end
+  position entry.position if new_resource.position
 end
 
 action_class do
@@ -92,19 +93,21 @@ action :create do
       entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(**resource_properties)
       config_resource.variables[:pg_hba].add(entry, new_resource.position)
     else
-      entry.update(auth_method: new_resource.auth_method, auth_options: new_resource.auth_options, comment: new_resource.comment)
+      run_action(:update)
     end
   end
 end
 
 action :update do
-  converge_if_changed(:auth_method, :auth_options, :comment) do
+  converge_if_changed(:auth_method, :auth_options, :comment, :position) do
     config_resource_init
     entry = config_resource.variables[:pg_hba].entry(new_resource.type, new_resource.database, new_resource.user, new_resource.address)
 
     raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update access entry for '#{new_resource.name}' as it does not exist" if nil_or_empty?(entry)
 
     entry.update(auth_method: new_resource.auth_method, auth_options: new_resource.auth_options, comment: new_resource.comment)
+
+    config_resource.variables[:pg_hba].move(entry, new_resource.position) if property_is_set?(:position)
   end
 end
 
@@ -114,7 +117,7 @@ action :delete do
   resource_properties = %i(type database user address auth_method auth_options).map { |p| [ p, new_resource.send(p) ] }.to_h.compact
   entry = PostgreSQL::Cookbook::AccessHelpers::PgHba::PgHbaFileEntry.create(**resource_properties)
 
-  converge_by("Remove grant entry for #{new_resource.type}, #{new_resource.database}, #{new_resource.user}") do
+  converge_by("Remove grant entry for #{new_resource.type} | #{new_resource.database} | #{new_resource.user} | #{new_resource.auth_method}") do
     config_resource.variables[:pg_hba].remove(entry)
   end if config_resource.variables[:pg_hba].include?(entry)
 end

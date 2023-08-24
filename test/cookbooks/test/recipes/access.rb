@@ -47,6 +47,7 @@ postgresql_access 'a sous_chef local superuser' do
   user 'sous_chef'
   auth_method 'md5'
   address '127.0.0.1/32'
+  position 5
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed
 end
