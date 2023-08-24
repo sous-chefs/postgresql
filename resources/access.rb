@@ -55,7 +55,7 @@ property :comment, String,
           description: 'Access record comment'
 
 property :position, Integer,
-          description: 'Insert position for entry creation'
+          description: 'Access record order in file, empty spaces between positions will be truncated'
 
 load_current_value do |new_resource|
   current_value_does_not_exist! unless ::File.exist?(new_resource.config_file)

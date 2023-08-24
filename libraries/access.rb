@@ -185,7 +185,16 @@ module PostgreSQL
           }.freeze
           private_constant :ENTRY_FIELD_FORMAT
 
-          def initialize; end
+          def initialize(type:, database:, user:, auth_method:, auth_options: nil, comment: nil)
+            @type = type
+            @type.freeze
+
+            @database = database
+            @user = user
+            @auth_method = auth_method
+            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
+            self.comment = comment
+          end
 
           def to_s
             entry_string = ''
@@ -248,14 +257,7 @@ module PostgreSQL
           def initialize(type:, database:, user:, auth_method:, auth_options: nil, comment: nil)
             raise PgHbaInvalidEntryType, "Invalid entry type #{properties.first}" unless type.eql?('local')
 
-            @type = type
-            @type.freeze
-
-            @database = database
-            @user = user
-            @auth_method = auth_method
-            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
-            self.comment = comment
+            super
           end
 
           def to_a
@@ -273,15 +275,8 @@ module PostgreSQL
           def initialize(type:, database:, user:, address:, auth_method:, auth_options: nil, comment: nil)
             raise PgHbaInvalidEntryType unless %w(host hostssl hostnossl hostgssenc hostnogssenc).include?(type)
 
-            @type = type
-            @type.freeze
-
-            @database = database
-            @user = user
+            super(type: type, database: database, user: user, auth_method: auth_method, auth_options: auth_options, comment: comment)
             @address = address
-            @auth_method = auth_method
-            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
-            self.comment = comment
           end
 
           def to_a
