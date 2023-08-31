@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Fix package source detection when other packages matching the postgresql name are installed
+
 ## 11.7.0 - *2023-08-21*
 
 - Add insert position option for access resources

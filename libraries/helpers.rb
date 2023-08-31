@@ -42,7 +42,7 @@ module PostgreSQL
       end
 
       def installed_postgresql_package_source
-        pgsql_package = node['packages'].filter { |p| p.match?(/postgresql-?(\d+)?$/) }
+        pgsql_package = node['packages'].filter { |p| p.match?(/^postgresql-?(\d+)?$/) }
 
         raise 'Unable to determine installed PostgreSQL version' if nil_or_empty?(pgsql_package)
 
