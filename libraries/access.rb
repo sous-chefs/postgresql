@@ -262,8 +262,7 @@ module PostgreSQL
           attr_accessor :database, :user, :auth_method, :auth_options
 
           ENTRY_FIELDS = %i(type database user auth_method auth_options).freeze
-          MATCH_FIELDS = %i(type database user).freeze
-          private_constant :ENTRY_FIELDS, :MATCH_FIELDS
+          private_constant :ENTRY_FIELDS
 
           def initialize(type:, database:, user:, auth_method:, auth_options: nil, comment: nil, position: nil)
             raise PgHbaInvalidEntryType, "Invalid entry type #{properties.first}" unless type.eql?('local')
@@ -280,8 +279,7 @@ module PostgreSQL
           attr_accessor :database, :user, :address, :auth_method, :auth_options
 
           ENTRY_FIELDS = %i(type database user address auth_method auth_options).freeze
-          MATCH_FIELDS = %i(type database user address).freeze
-          private_constant :ENTRY_FIELDS, :MATCH_FIELDS
+          private_constant :ENTRY_FIELDS
 
           def initialize(type:, database:, user:, address:, auth_method:, auth_options: nil, comment: nil, position: nil)
             raise PgHbaInvalidEntryType unless %w(host hostssl hostnossl hostgssenc hostnogssenc).include?(type)
