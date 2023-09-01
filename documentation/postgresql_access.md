@@ -18,17 +18,18 @@ The content of `pg_hba.conf` is loaded into the template variables upon the firs
 
 ## Properties
 
-| Name           | Name? | Type         | Default | Description                          | Allowed Values |
-| -------------- | ----- | ------------ | ------- | ------------------------------------ | -------------- |
-| `config_file`  |       | String       |         |                                      |                |
-| `source`       |       | String       |         |                                      |                |
-| `type`         |       | String       |         | Access record type                   |                |
-| `database`     |       | String       |         | Access record database               |                |
-| `user`         |       | String       |         | Access record user                   |                |
-| `address`      |       | String       |         | Access record address                |                |
-| `auth_method`  |       | String       |         | Access record authentication method  |                |
-| `auth_options` |       | String, Hash |         | Access record authentication options |                |
-| `comment`      |       | String       |         | Access record comment                |                |
+| Name           | Name? | Type         | Default | Description                                                                   | Allowed Values |
+| -------------- | ----- | ------------ | ------- | ----------------------------------------------------------------------------- | -------------- |
+| `config_file`  |       | String       |         |                                                                               |                |
+| `source`       |       | String       |         |                                                                               |                |
+| `type`         |       | String       |         | Access record type                                                            |                |
+| `database`     |       | String       |         | Access record database                                                        |                |
+| `user`         |       | String       |         | Access record user                                                            |                |
+| `address`      |       | String       |         | Access record address                                                         |                |
+| `auth_method`  |       | String       |         | Access record authentication method                                           |                |
+| `auth_options` |       | String, Hash |         | Access record authentication options                                          |                |
+| `comment`      |       | String       |         | Access record comment                                                         |                |
+| `position`     |       | Integer      |         | Access record order in file, empty spaces between positions will be truncated |                |
 
 ## Libraries
 

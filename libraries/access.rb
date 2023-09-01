@@ -119,6 +119,16 @@ module PostgreSQL
             @entries.reject! { |e| e.eql?(entry) }
           end
 
+          def move(entry, position)
+            raise PgHbaInvalidEntryType unless entry.is_a?(PgHbaFileEntry)
+
+            index = @entries.index { |e| e.eql?(entry) }
+
+            return unless entry && !entry.eql?(position)
+
+            @entries.insert(position, @entries.delete_at(index))
+          end
+
           def include?(entry)
             raise unless entry.is_a?(PgHbaFileEntry)
 
@@ -163,7 +173,7 @@ module PostgreSQL
           def marshall_entries
             return if @access_entries.empty?
 
-            @access_entries.each { |entry| @entries.push(PgHbaFileEntry.create(**entry)) }
+            @access_entries.each_with_index { |entry, index| @entries.push(PgHbaFileEntry.create(**entry, position: index)) }
 
             @entries
           end
@@ -172,7 +182,7 @@ module PostgreSQL
         class PgHbaFileEntry
           include PostgreSQL::Cookbook::Utils
 
-          attr_reader :type, :comment
+          attr_reader :type, :comment, :position
 
           ENTRY_FIELD_FORMAT = {
             type: 8,
@@ -185,7 +195,17 @@ module PostgreSQL
           }.freeze
           private_constant :ENTRY_FIELD_FORMAT
 
-          def initialize; end
+          def initialize(type:, database:, user:, auth_method:, auth_options: nil, comment: nil, position: nil)
+            @type = type
+            @type.freeze
+
+            @database = database
+            @user = user
+            @auth_method = auth_method
+            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
+            self.comment = comment
+            @position = position
+          end
 
           def to_s
             entry_string = ''
@@ -242,20 +262,12 @@ module PostgreSQL
           attr_accessor :database, :user, :auth_method, :auth_options
 
           ENTRY_FIELDS = %i(type database user auth_method auth_options).freeze
-          MATCH_FIELDS = %i(type database user).freeze
-          private_constant :ENTRY_FIELDS, :MATCH_FIELDS
+          private_constant :ENTRY_FIELDS
 
-          def initialize(type:, database:, user:, auth_method:, auth_options: nil, comment: nil)
+          def initialize(type:, database:, user:, auth_method:, auth_options: nil, comment: nil, position: nil)
             raise PgHbaInvalidEntryType, "Invalid entry type #{properties.first}" unless type.eql?('local')
 
-            @type = type
-            @type.freeze
-
-            @database = database
-            @user = user
-            @auth_method = auth_method
-            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
-            self.comment = comment
+            super
           end
 
           def to_a
@@ -267,21 +279,13 @@ module PostgreSQL
           attr_accessor :database, :user, :address, :auth_method, :auth_options
 
           ENTRY_FIELDS = %i(type database user address auth_method auth_options).freeze
-          MATCH_FIELDS = %i(type database user address).freeze
-          private_constant :ENTRY_FIELDS, :MATCH_FIELDS
+          private_constant :ENTRY_FIELDS
 
-          def initialize(type:, database:, user:, address:, auth_method:, auth_options: nil, comment: nil)
+          def initialize(type:, database:, user:, address:, auth_method:, auth_options: nil, comment: nil, position: nil)
             raise PgHbaInvalidEntryType unless %w(host hostssl hostnossl hostgssenc hostnogssenc).include?(type)
 
-            @type = type
-            @type.freeze
-
-            @database = database
-            @user = user
+            super(type: type, database: database, user: user, auth_method: auth_method, auth_options: auth_options, comment: comment, position: position)
             @address = address
-            @auth_method = auth_method
-            @auth_options = PgHbaFileEntryAuthOptions.new(auth_options) if auth_options && !auth_options.empty?
-            self.comment = comment
           end
 
           def to_a

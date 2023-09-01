@@ -27,12 +27,12 @@ module PostgreSQL
       # @return [string] the alphanumerically sorted list of auth-options
       def sorted_auth_options_string(value)
         case value
-        when ::Hash
+        when Hash
           value.map { |k, v| "#{k}=#{v}" }.sort!.join(' ')
-        when ::String
+        when String
           value.scan(AUTH_OPTION_REGEX).sort!.join(' ')
         else
-          raise ::ArgumentError, "Only ::Hash & ::String are supported, #{value.class} given."
+          raise ArgumentError, "Only Hash and String are supported, #{value.class} given."
         end
       end
 
