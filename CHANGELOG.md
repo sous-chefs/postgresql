@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 11.8.1 - *2023-09-04*
 
 ## 11.8.0 - *2023-09-01*
