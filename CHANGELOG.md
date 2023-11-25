@@ -4,6 +4,10 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+## 11.8.4 - *2023-11-25*
+
+- Fix resource property in role library
+
 ## 11.8.3 - *2023-10-31*
 
 ## 11.8.2 - *2023-09-28*
