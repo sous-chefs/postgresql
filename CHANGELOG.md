@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.8.4 - *2023-12-15*
 
 - Fix resource property in role library
 
