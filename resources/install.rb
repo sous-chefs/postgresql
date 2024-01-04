@@ -64,7 +64,7 @@ property :repo_pgdg_source_updates_testing, [true, false],
           description: 'Create pgdg-source-updates-testing repo'
 
 property :yum_gpg_key_uri, String,
-          default: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG',
+          default: 'https://download.postgresql.org/pub/repos/yum/keys/RPM-GPG-KEY-PGDG',
           description: 'YUM/DNF GPG key URL'
 
 property :apt_gpg_key_uri, String,
