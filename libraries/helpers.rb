@@ -132,6 +132,22 @@ module PostgreSQL
         end
       end
 
+      def default_yum_gpg_key_uri
+        case node['platform_family']
+        when 'rhel', 'amazon'
+          case node['platform_version'].to_i
+          when 7
+            'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL7'
+          else
+            'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL'
+          end
+        when 'fedora'
+          'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-Fedora'
+        else
+          'https://download.postgresql.org/pub/repos/yum/keys/RPM-GPG-KEY-PGDG'
+        end
+      end
+
       def dnf_module_platform?
         (platform_family?('rhel') && node['platform_version'].to_i == 8) || platform_family?('fedora')
       end
