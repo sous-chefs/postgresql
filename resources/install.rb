@@ -64,7 +64,7 @@ property :repo_pgdg_source_updates_testing, [true, false],
           description: 'Create pgdg-source-updates-testing repo'
 
 property :yum_gpg_key_uri, String,
-          default: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG',
+          default: lazy { default_yum_gpg_key_uri },
           description: 'YUM/DNF GPG key URL'
 
 property :apt_gpg_key_uri, String,
@@ -94,7 +94,7 @@ action_class do
   def do_repository_action(repo_action)
     case node['platform_family']
     when 'rhel', 'fedora', 'amazon'
-      remote_file '/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG' do
+      remote_file '/etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY' do
         source new_resource.yum_gpg_key_uri
         sensitive new_resource.sensitive
       end
@@ -109,7 +109,7 @@ action_class do
         baseurl yum_repo_url('https://download.postgresql.org/pub/repos/yum')
         enabled new_resource.repo_pgdg
         gpgcheck true
-        gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
+        gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
       end
 
@@ -119,7 +119,7 @@ action_class do
         baseurl yum_common_repo_url
         enabled new_resource.repo_pgdg_common
         gpgcheck true
-        gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
+        gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
       end
 
@@ -130,7 +130,7 @@ action_class do
         make_cache false
         enabled new_resource.repo_pgdg_source
         gpgcheck true
-        gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
+        gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
       end
 
@@ -141,7 +141,7 @@ action_class do
         make_cache false
         enabled new_resource.repo_pgdg_updates_testing
         gpgcheck true
-        gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
+        gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
       end
 
@@ -152,7 +152,7 @@ action_class do
         make_cache false
         enabled new_resource.repo_pgdg_source_updates_testing
         gpgcheck true
-        gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG'
+        gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
       end
 
