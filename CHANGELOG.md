@@ -4,6 +4,9 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Modify installed_postgresql_package_source to get highest PG version from packages
+- Remove PG11 suites from kitchen & CI due to upstream removal
+
 ## 11.9.0 - *2024-01-05*
 
 ## 11.8.5 - *2023-12-18*
