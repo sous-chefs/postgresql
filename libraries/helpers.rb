@@ -24,12 +24,17 @@ module PostgreSQL
       include Utils
 
       def installed_postgresql_package_logic
-        pgsql_package = node['packages'].filter { |p| p.match?(/^postgresql-?(\d+)?$/) }
-        pgsql_package = [pgsql_package.max_by { |_key, value| value['version'].to_f }].to_h
+        pgsql_package = node['packages'].filter { |p| p.match?(/^postgresql-?(\d+)?$/) }.values
+
+        unless pgsql_package.one?
+          versions = pgsql_package.map { |values| values['version'] }.join(', ')
+          Chef::Log.warn("Detected #{pgsql_package.count} installed PostgreSQL versions: #{versions}. Using latest version.")
+          pgsql_package = [pgsql_package.max_by { |values| values['version'].to_f }]
+        end
 
         raise 'Unable to determine installed PostgreSQL version' if nil_or_empty?(pgsql_package)
 
-        pgsql_package.values.first
+        pgsql_package.first
       end
 
       def installed_postgresql_major_version
