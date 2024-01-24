@@ -23,12 +23,22 @@ module PostgreSQL
     module Helpers
       include Utils
 
-      def installed_postgresql_major_version
-        pgsql_package = node['packages'].filter { |p| p.match?(/^postgresql-?(\d+)?$/) }
+      def installed_postgresql_package_logic
+        pgsql_package = node['packages'].filter { |p| p.match?(/^postgresql-?(\d+)?$/) }.values
+
+        unless pgsql_package.one?
+          versions = pgsql_package.map { |values| values['version'] }.join(', ')
+          Chef::Log.warn("Detected #{pgsql_package.count} installed PostgreSQL versions: #{versions}. Using latest version.")
+          pgsql_package = [pgsql_package.max_by { |values| values['version'].to_f }]
+        end
 
         raise 'Unable to determine installed PostgreSQL version' if nil_or_empty?(pgsql_package)
 
-        pgsql_package = pgsql_package.values.first
+        pgsql_package.first
+      end
+
+      def installed_postgresql_major_version
+        pgsql_package = installed_postgresql_package_logic
         pgsql_package_version = pgsql_package.fetch('version').to_i
         pgsql_package_source = if pgsql_package.key?('release')
                                  pgsql_package.fetch('release').match?('PGDG') ? :repo : :os
@@ -42,11 +52,7 @@ module PostgreSQL
       end
 
       def installed_postgresql_package_source
-        pgsql_package = node['packages'].filter { |p| p.match?(/^postgresql-?(\d+)?$/) }
-
-        raise 'Unable to determine installed PostgreSQL version' if nil_or_empty?(pgsql_package)
-
-        pgsql_package = pgsql_package.values.first
+        pgsql_package = installed_postgresql_package_logic
         pgsql_package_version = pgsql_package.fetch('version').to_i
         pgsql_package_source = if pgsql_package.key?('release')
                                  pgsql_package.fetch('release').match?('PGDG') ? :repo : :os
