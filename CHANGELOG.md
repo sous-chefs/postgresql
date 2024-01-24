@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.10.0 - *2024-01-24*
 
 - Modify installed_postgresql_package_source to get highest PG version from packages
 - Remove PG11 suites from kitchen & CI due to upstream removal
