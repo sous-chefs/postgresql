@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.10.1 - *2024-01-31*
 
 - Add `apt_repository_uri` property to `postgresql_install` resource
 
