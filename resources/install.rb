@@ -67,6 +67,10 @@ property :yum_gpg_key_uri, String,
           default: lazy { default_yum_gpg_key_uri },
           description: 'YUM/DNF GPG key URL'
 
+property :apt_repository_uri, String,
+          default: 'https://download.postgresql.org/pub/repos/apt/',
+          description: 'apt repository URL'
+
 property :apt_gpg_key_uri, String,
           default: 'https://download.postgresql.org/pub/repos/apt/ACCC4CF8.asc',
           description: 'apt GPG key URL'
@@ -162,7 +166,7 @@ action_class do
       package 'apt-transport-https'
 
       apt_repository "postgresql_org_repository_#{new_resource.version.to_s}" do
-        uri 'https://download.postgresql.org/pub/repos/apt/'
+        uri new_resource.apt_repository_uri
         components ['main', new_resource.version.to_s]
         distribution "#{node['lsb']['codename']}-pgdg"
         key new_resource.apt_gpg_key_uri

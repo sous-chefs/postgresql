@@ -30,6 +30,7 @@
 | `repo_pgdg_updates_testing`        |       | true, false     |         | Create pgdg-updates-testing repo                 |                |
 | `repo_pgdg_source_updates_testing` |       | true, false     |         | Create pgdg-source-updates-testing repo          |                |
 | `yum_gpg_key_uri`                  |       | String          |         | YUM/DNF GPG key URL                              |                |
+| `apt_repository_uri`               |       | String          |         | apt repository URL                               |                |
 | `apt_gpg_key_uri`                  |       | String          |         | apt GPG key URL                                  |                |
 | `initdb_additional_options`        |       | String          |         | Additional options to pass to the initdb command |                |
 | `initdb_locale`                    |       | String          |         | Locale to use for the initdb command             |                |

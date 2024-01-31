@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Add `apt_repository_uri` property to `postgresql_install` resource
+
 ## 11.10.0 - *2024-01-24*
 
 - Modify installed_postgresql_package_source to get highest PG version from packages
