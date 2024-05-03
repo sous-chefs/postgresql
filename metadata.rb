@@ -10,7 +10,7 @@ chef_version      '>= 16.0'
 
 depends 'yum', '>= 7.2.0'
 
-gem 'deepsort', '~> 0.4.5'
+gem 'deepsort', '~> 0.5.0'
 gem 'inifile', '~> 3.0'
 
 supports 'amazon'

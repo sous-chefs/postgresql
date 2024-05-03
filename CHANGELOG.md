@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Bump deepsort fuzzy dependency to 0.5.0 to match latest upstream release
+
 ## 11.10.2 - *2024-05-03*
 
 ## 11.10.1 - *2024-01-31*
