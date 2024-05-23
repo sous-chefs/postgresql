@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+Standardise files with files in sous-chefs/repo-management
+
 ## 11.10.3 - *2024-05-03*
 
 - Bump deepsort fuzzy dependency to 0.5.0 to match latest upstream release
