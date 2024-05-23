@@ -90,9 +90,9 @@ module PostgreSQL
           sql.push("VALID UNTIL '#{new_resource.valid_until}'") if new_resource.valid_until
 
           unless new_resource.action.eql?(:update)
-            sql.push("IN ROLE #{new_resource.role}") if new_resource.in_role
+            sql.push("IN ROLE #{new_resource.in_role}") if new_resource.in_role
             sql.push("ROLE #{new_resource.role}") if new_resource.role
-            sql.push("ADMIN #{new_resource.role}") if new_resource.admin
+            sql.push("ADMIN #{new_resource.admin}") if new_resource.admin
           end
 
           "#{sql.join(' ').strip};"

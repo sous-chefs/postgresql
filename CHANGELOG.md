@@ -6,9 +6,26 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 Standardise files with files in sous-chefs/repo-management
 
-Standardise files with files in sous-chefs/repo-management
+## 11.10.3 - *2024-05-03*
 
-Standardise files with files in sous-chefs/repo-management
+- Bump deepsort fuzzy dependency to 0.5.0 to match latest upstream release
+
+## 11.10.2 - *2024-05-03*
+
+## 11.10.1 - *2024-01-31*
+
+- Add `apt_repository_uri` property to `postgresql_install` resource
+
+## 11.10.0 - *2024-01-24*
+
+- Modify installed_postgresql_package_source to get highest PG version from packages
+- Remove PG11 suites from kitchen & CI due to upstream removal
+
+## 11.9.0 - *2024-01-05*
+
+## 11.8.5 - *2023-12-18*
+
+- Fix resource property in role library
 
 ## 11.8.4 - *2023-12-15*
 
