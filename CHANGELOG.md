@@ -8,6 +8,8 @@ Standardise files with files in sous-chefs/repo-management
 
 Standardise files with files in sous-chefs/repo-management
 
+- Fix installation of `pg` gem build dependency `perl-IPC-Run` on oracle linux 9
+
 ## 11.10.3 - *2024-05-03*
 
 - Bump deepsort fuzzy dependency to 0.5.0 to match latest upstream release
