@@ -90,9 +90,8 @@ module PostgreSQL
               declare_resource(:package, libpq_package_name) { compile_time(true) }
               declare_resource(:package, 'perl-IPC-Run') do
                 compile_time(true)
-                case node['platform']
-                when 'oracle'
-                  options ["--enablerepo=ol9_codeready_builder"]
+                if platform?('oracle')
+                  options ['--enablerepo=ol9_codeready_builder']
                 else
                   options('--enablerepo=crb')
                 end
