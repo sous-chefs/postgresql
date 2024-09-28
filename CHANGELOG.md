@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Update CI config to remove deprecated platforms
+
 ## 11.11.0 - *2024-09-28*
 
 Standardise files with files in sous-chefs/repo-management
