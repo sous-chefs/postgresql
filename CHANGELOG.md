@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 11.11.1 - *2024-09-28*
 
 - Update CI config to remove deprecated platforms
 
