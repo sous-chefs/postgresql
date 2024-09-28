@@ -1,10 +1,14 @@
 driver:
   name: dokken
   privileged: true
+  chef_image: <%= ENV['CHEF_IMAGE'] || 'chef/chef' %>
   chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
 
 transport: { name: dokken }
-provisioner: { name: dokken }
+provisioner:
+  name: dokken
+  project_name: <%= ENV['PROJECT_NAME'] || 'chef' %>
+  chef_binary: <%= ENV['CHEF_BINARY'] || '/opt/chef/bin/chef-client' %>
 
 platforms:
   - name: almalinux-8

@@ -84,13 +84,21 @@ module PostgreSQL
               declare_resource(:package, libpq_package_name) { compile_time(true) }
               declare_resource(:package, 'perl-IPC-Run') do
                 compile_time(true)
-                options('--enablerepo=powertools')
+                if platform?('oracle')
+                  options ['--enablerepo=ol8_codeready_builder']
+                else
+                  options('--enablerepo=powertools')
+                end
               end
             when 9
               declare_resource(:package, libpq_package_name) { compile_time(true) }
               declare_resource(:package, 'perl-IPC-Run') do
                 compile_time(true)
-                options('--enablerepo=crb')
+                if platform?('oracle')
+                  options ['--enablerepo=ol9_codeready_builder']
+                else
+                  options('--enablerepo=crb')
+                end
               end
             end
           end
