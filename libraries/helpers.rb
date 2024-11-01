@@ -112,12 +112,12 @@ module PostgreSQL
         case node['platform_family']
         when 'rhel', 'fedora', 'amazon'
           {
-            os: %w(postgresql-contrib postgresql-server),
+            os: %w(libpq postgresql-contrib postgresql-server),
             repo: %W(postgresql#{version.delete('.')}-contrib postgresql#{version.delete('.')}-server),
           }.fetch(source, nil)
         when 'debian'
           {
-            os: %w(postgresql postgresql-common),
+            os: %w(libpq5 postgresql postgresql-common),
             repo: %W(postgresql-#{version} postgresql-common),
           }.fetch(source, nil)
         end
