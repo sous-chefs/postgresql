@@ -34,12 +34,12 @@ property :source, [String, Symbol],
           description: 'Installation source'
 
 property :client_packages, [String, Array],
-          default: lazy { default_client_packages(version: version, source: source) },
+          default: lazy { default_client_packages(version:, source:) },
           coerce: proc { |p| Array(p) },
           description: 'Client packages to install'
 
 property :server_packages, [String, Array],
-          default: lazy { default_server_packages(version: version, source: source) },
+          default: lazy { default_server_packages(version:, source:) },
           coerce: proc { |p| Array(p) },
           description: 'Server packages to install'
 
@@ -241,7 +241,7 @@ action :install_server do
       source 'createcluster.conf.erb'
       cookbook 'postgresql'
       variables(
-        initdb_options: initdb_options
+        initdb_options:
       )
     end
   end

@@ -94,7 +94,7 @@ action :create do
       mode new_resource.filemode
 
       variables(
-        config: config
+        config:
       )
 
       action :create
