@@ -29,7 +29,7 @@ module PostgreSQL
 
         def postgresql_devel_pkg_name(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
           case node['platform_family']
-          when 'rhel', 'fedora'
+          when 'rhel'
             source.eql?(:repo) ? "postgresql#{version}-devel" : 'postgresql-devel'
           when 'debian'
             'libpq-dev'
@@ -40,7 +40,7 @@ module PostgreSQL
 
         def postgresql_devel_path(suffix = nil, version: installed_postgresql_major_version)
           path = case node['platform_family']
-                 when 'rhel', 'fedora', 'amazon'
+                 when 'rhel', 'amazon'
                    "/usr/pgsql-#{version}"
                  when 'debian'
                    '/usr/include/postgresql'
@@ -55,7 +55,7 @@ module PostgreSQL
 
         def pg_gem_build_options
           case node['platform_family']
-          when 'rhel', 'fedora', 'amazon'
+          when 'rhel', 'amazon'
             "-- --with-pg-include=#{postgresql_devel_path('include')} --with-pg-lib=#{postgresql_devel_path('lib')}"
           when 'debian'
             "-- --with-pg-include=#{postgresql_devel_path} --with-pg-lib=#{postgresql_devel_path}"
@@ -75,8 +75,6 @@ module PostgreSQL
                                end
 
           case node['platform_family']
-          when 'fedora'
-            declare_resource(:package, libpq_package_name) { compile_time(true) }
           when 'rhel'
             case node['platform_version'].to_i
             when 7

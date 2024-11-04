@@ -67,7 +67,7 @@ module PostgreSQL
 
       def data_dir(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
         case node['platform_family']
-        when 'rhel', 'fedora', 'amazon'
+        when 'rhel', 'amazon'
           source.eql?(:repo) ? "/var/lib/pgsql/#{version}/data" : '/var/lib/pgsql/data'
         when 'debian'
           "/var/lib/postgresql/#{version}/main"
@@ -76,7 +76,7 @@ module PostgreSQL
 
       def conf_dir(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
         case node['platform_family']
-        when 'rhel', 'fedora', 'amazon'
+        when 'rhel', 'amazon'
           source.eql?(:repo) ? "/var/lib/pgsql/#{version}/data" : '/var/lib/pgsql/data'
         when 'debian'
           "/etc/postgresql/#{version}/main"
@@ -85,7 +85,7 @@ module PostgreSQL
 
       # determine the platform specific service name
       def default_platform_service_name(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
-        if platform_family?('rhel', 'fedora', 'amazon') && source.eql?(:repo)
+        if platform_family?('rhel', 'amazon') && source.eql?(:repo)
           "postgresql-#{version}"
         else
           'postgresql'
@@ -110,7 +110,7 @@ module PostgreSQL
 
       def default_server_packages(version: nil, source: :os)
         case node['platform_family']
-        when 'rhel', 'fedora'
+        when 'rhel'
           {
             os: %w(libpq postgresql-contrib postgresql-server),
             repo: %W(postgresql#{version.delete('.')}-contrib postgresql#{version.delete('.')}-server),
@@ -130,7 +130,7 @@ module PostgreSQL
 
       def default_client_packages(version: nil, source: :os)
         case node['platform_family']
-        when 'rhel', 'fedora'
+        when 'rhel'
           {
             os: %w(postgresql),
             repo: %W(postgresql#{version.delete('.')}),
@@ -151,18 +151,16 @@ module PostgreSQL
       def default_yum_gpg_key_uri
         if platform_family?('rhel') && node['platform_version'].to_i == 7
           'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL7'
-        elsif platform_family?('fedora')
-          'https://download.postgresql.org/pub/repos/yum/keys/PGDG-KEY-fedora'
         else
           'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL'
         end
       end
 
       def dnf_module_platform?
-        (platform_family?('rhel') && node['platform_version'].to_i == 8) || platform_family?('fedora')
+        (platform_family?('rhel') && node['platform_version'].to_i == 8)
       end
 
-      # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
+      # determine the appropriate DB init command to run based on RHEL/Amazon release
       # initdb defaults to the execution environment.
       # https://www.postgresql.org/docs/9.5/static/locale.html
       def rhel_init_db_command(new_resource)
@@ -175,36 +173,23 @@ module PostgreSQL
 
       # Given the base URL build the complete URL string for a yum repo
       def yum_repo_url(base_url)
-        "#{base_url}/#{new_resource.version}/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
+        "#{base_url}/#{new_resource.version}/redhat/#{yum_repo_platform_string}"
       end
 
       # Given the base URL build the complete URL string for a yum repo
       def yum_common_repo_url
-        "https://download.postgresql.org/pub/repos/yum/common/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
-      end
-
-      # The postgresql yum repos URLs are organized into redhat and fedora directories.s
-      # route things to the right place based on platform_family
-      def yum_repo_platform_family_string
-        platform_family?('fedora') ? 'fedora' : 'redhat'
+        "https://download.postgresql.org/pub/repos/yum/common/redhat/#{yum_repo_platform_string}"
       end
 
       # Build the platform string that makes up the final component of the yum repo URL
       def yum_repo_platform_string
-        platform = platform?('fedora') ? 'fedora' : 'rhel'
         release = platform?('amazon') ? '8' : '$releasever'
-        "#{platform}-#{release}-$basearch"
+        "rhel-#{release}-$basearch"
       end
 
       # On Amazon use the RHEL 8 packages. Otherwise use the releasever yum variable
       def yum_releasever
         platform?('amazon') ? '8' : '$releasever'
-      end
-
-      # Fedora doesn't seem to know the right symbols for psql
-      def psql_environment
-        return {} unless platform?('fedora')
-        { LD_LIBRARY_PATH: '/usr/lib64' }
       end
 
       # Generate a password if the value is set to generate.

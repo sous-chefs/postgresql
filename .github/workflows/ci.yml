@@ -29,7 +29,6 @@ jobs:
           - "amazonlinux-2023"
           - "debian-11"
           - "debian-12"
-          - "fedora-latest"
           - "ubuntu-2204"
           - "ubuntu-2404"
         suite:

@@ -9,7 +9,7 @@ postgresql_access 'postgresql host superuser' do
   database 'all'
   user 'postgres'
   address '127.0.0.1/32'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
 end
 
 postgresql_service 'postgresql' do
@@ -45,7 +45,7 @@ postgresql_access 'a sous_chef local superuser' do
   type 'host'
   database 'all'
   user 'sous_chef'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
   address '127.0.0.1/32'
   position 5
 
@@ -74,7 +74,7 @@ postgresql_access 'access with hostname address' do
   type 'host'
   database 'all'
   user 'hostname_user'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
   address 'host.domain'
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed
@@ -84,7 +84,7 @@ postgresql_access 'access with hostname address username with dot' do
   type 'host'
   database 'all'
   user 'hostname.user'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
   address 'host.domain'
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed
@@ -94,7 +94,7 @@ postgresql_access 'access with database name with an underscore' do
   type 'host'
   database 'my_database'
   user 'hostname.user'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
   address 'host.domain'
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed
@@ -104,7 +104,7 @@ postgresql_access 'access with hostname long' do
   type 'host'
   database 'my_database'
   user 'hostname.user'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
   address 'a.very.long.host.domain.that.exceeds.the.max.of.24.characters'
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed
@@ -135,5 +135,5 @@ postgresql_access 'access with multiple databases' do
   database 'foo,bar'
   user 'john,doe'
   address '127.0.0.1/32'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
 end

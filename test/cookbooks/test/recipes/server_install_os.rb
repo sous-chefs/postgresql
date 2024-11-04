@@ -4,6 +4,8 @@ postgresql_install 'postgresql' do
   action %i(install init_server)
 end
 
+apt_update
+
 package 'libpq-devel' if platform_family?('amazon')
 
 postgresql_config 'postgresql-server' do
@@ -41,7 +43,7 @@ postgresql_access 'postgresql host superuser' do
   database 'all'
   user 'postgres'
   address '127.0.0.1/32'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
 end
 
 postgresql_user 'postgres' do
@@ -77,7 +79,7 @@ postgresql_access 'a sous_chef local superuser' do
   type 'host'
   database 'all'
   user 'sous_chef'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
   address '127.0.0.1/32'
 
   notifies :restart, 'postgresql_service[postgresql]', :delayed

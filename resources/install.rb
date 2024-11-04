@@ -97,7 +97,8 @@ action_class do
 
   def do_repository_action(repo_action)
     case node['platform_family']
-    when 'rhel', 'fedora', 'amazon'
+    when 'rhel', 'amazon'
+      # Disable the PostgreSQL module if we're on RHEL 8
       dnf_module 'postgresql' do
         action :disable
       end if dnf_module_platform?
@@ -268,7 +269,7 @@ action :repository_delete do
 end
 
 action :init_server do
-  return if initialized? || !platform_family?('rhel', 'fedora', 'amazon')
+  return if initialized? || !platform_family?('rhel', 'amazon')
 
   converge_by('Init PostgreSQL') do
     execute 'init_db' do

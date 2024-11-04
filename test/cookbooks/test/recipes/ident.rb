@@ -50,7 +50,7 @@ postgresql_access 'postgresql host superuser' do
   database 'all'
   user 'postgres'
   address '127.0.0.1/32'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
 
   notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
