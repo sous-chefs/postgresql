@@ -98,14 +98,14 @@ action_class do
   def do_repository_action(repo_action)
     case node['platform_family']
     when 'rhel', 'fedora', 'amazon'
+      dnf_module 'postgresql' do
+        action :disable
+      end if dnf_module_platform?
+
       remote_file '/etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY' do
         source new_resource.yum_gpg_key_uri
         sensitive new_resource.sensitive
       end
-
-      dnf_module 'postgresql' do
-        action :disable
-      end if dnf_module_platform?
 
       yum_repository "PostgreSQL #{new_resource.version}" do
         repositoryid "pgdg#{new_resource.version}"
