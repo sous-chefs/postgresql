@@ -1,0 +1,1 @@
+We use Chef Cookstyle to lint our Chef cookbooks. We use Test Kitchen to integration test our cookbooks. Test cookbooks are in the test/cookbooks directory. We keep documentation in README.md and the documentation folder. 
