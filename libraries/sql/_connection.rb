@@ -29,10 +29,12 @@ module PostgreSQL
 
         def postgresql_devel_pkg_name(version: installed_postgresql_major_version, source: installed_postgresql_package_source)
           case node['platform_family']
-          when 'rhel', 'fedora', 'amazon'
+          when 'rhel', 'fedora'
             source.eql?(:repo) ? "postgresql#{version}-devel" : 'postgresql-devel'
           when 'debian'
             'libpq-dev'
+          when 'amazon'
+            'libpq-devel'
           end
         end
 

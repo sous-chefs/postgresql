@@ -110,9 +110,14 @@ module PostgreSQL
 
       def default_server_packages(version: nil, source: :os)
         case node['platform_family']
-        when 'rhel', 'fedora', 'amazon'
+        when 'rhel', 'fedora'
           {
             os: %w(libpq postgresql-contrib postgresql-server),
+            repo: %W(postgresql#{version.delete('.')}-contrib postgresql#{version.delete('.')}-server),
+          }.fetch(source, nil)
+        when 'amazon'
+          {
+            os: %W(postgresql#{version.delete('.')}-contrib postgresql#{version.delete('.')}-server),
             repo: %W(postgresql#{version.delete('.')}-contrib postgresql#{version.delete('.')}-server),
           }.fetch(source, nil)
         when 'debian'
@@ -125,9 +130,14 @@ module PostgreSQL
 
       def default_client_packages(version: nil, source: :os)
         case node['platform_family']
-        when 'rhel', 'fedora', 'amazon'
+        when 'rhel', 'fedora'
           {
             os: %w(postgresql),
+            repo: %W(postgresql#{version.delete('.')}),
+          }.fetch(source, nil)
+        when 'amazon'
+          {
+            os: %W(postgresql#{version.delete('.')}),
             repo: %W(postgresql#{version.delete('.')}),
           }.fetch(source, nil)
         when 'debian'
@@ -182,13 +192,13 @@ module PostgreSQL
       # Build the platform string that makes up the final component of the yum repo URL
       def yum_repo_platform_string
         platform = platform?('fedora') ? 'fedora' : 'rhel'
-        release = platform?('amazon') ? '7' : '$releasever'
+        release = platform?('amazon') ? '8' : '$releasever'
         "#{platform}-#{release}-$basearch"
       end
 
-      # On Amazon use the RHEL 7 packages. Otherwise use the releasever yum variable
+      # On Amazon use the RHEL 8 packages. Otherwise use the releasever yum variable
       def yum_releasever
-        platform?('amazon') ? '7' : '$releasever'
+        platform?('amazon') ? '8' : '$releasever'
       end
 
       # Fedora doesn't seem to know the right symbols for psql

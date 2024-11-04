@@ -1,19 +1,10 @@
-# STDERR: Importing GPG key 0x08B40D20:
-#   Userid     : "PostgreSQL RPM Repository <pgsql-pkg-yum@lists.postgresql.org>"
-#   Fingerprint: D4BF 08AE 67A0 B4C7 A1DB CCD2 40BC A2B4 08B4 0D20
-#   From       : /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY
-#  Public key for postgresql17-17.0-2PGDG.rhel9.aarch64.rpm is not installed. Failing package is: postgresql17-17.0-2PGDG.rhel9.aarch64
-#   GPG Keys are configured as: file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY
-#  Public key for postgresql17-libs-17.0-2PGDG.rhel9.aarch64.rpm is not installed. Failing package is: postgresql17-libs-17.0-2PGDG.rhel9.aarch64
-#   GPG Keys are configured as: file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY
-#  Error: GPG check FAILED
-#  ---- End output of ["dnf", "-y", "install", "postgresql17-0:17.0-2PGDG.rhel9.aarch64"] ----
-#  Ran ["dnf", "-y", "install", "postgresql17-0:17.0-2PGDG.rhel9.aarch64"] returned 1
-
 postgresql_install 'postgresql' do
   source :os
+  version '15'
   action %i(install init_server)
 end
+
+package 'libpq-devel' if platform_family?('amazon')
 
 postgresql_config 'postgresql-server' do
   server_config({
