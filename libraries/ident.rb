@@ -68,7 +68,7 @@ module PostgreSQL
 
           attr_reader :entries
 
-          SPLIT_REGEX = /^(?<map_name>[\w-]+)\s+(?<system_username>[\w-]+)\s+(?<database_username>[\w-]+)(?:\s*)(?<comment>#\s*.*)?$/.freeze
+          SPLIT_REGEX = /^(?<map_name>[\w-]+)\s+(?<system_username>[\w-]+)\s+(?<database_username>[\w-]+)(?:\s*)(?<comment>#\s*.*)?$/
           private_constant :SPLIT_REGEX
 
           def initialize
@@ -144,7 +144,7 @@ module PostgreSQL
 
           def self.read(file = 'pg_ident.conf', sort: true)
             pg_hba = new
-            pg_hba.read!(file, sort: sort)
+            pg_hba.read!(file, sort:)
 
             pg_hba
           end

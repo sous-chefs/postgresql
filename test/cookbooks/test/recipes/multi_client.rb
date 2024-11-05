@@ -1,5 +1,5 @@
-postgresql_install '13' do
-  version '13'
+postgresql_install '16' do
+  version '16'
 
   action :install_client
 end

@@ -18,7 +18,7 @@
 module PostgreSQL
   module Cookbook
     module Utils
-      AUTH_OPTION_REGEX = /[\w-]+=(?:"[^"]*"|[^\s"]+)/.freeze
+      AUTH_OPTION_REGEX = /[\w-]+=(?:"[^"]*"|[^\s"]+)/
 
       private
 

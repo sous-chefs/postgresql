@@ -4,6 +4,16 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Remove support for Fedora
+  Fedora is not an officially supported platform by the Sous Chefs community. If you would like to see Fedora support added back please open a PR to add it back.
+  The installation methods for Fedora are substantially different than other platforms and require a lot of additional testing and maintenance.
+- Add testing for PostgreSQL 16 and 17
+- Add libpq package to default packages
+- Fix GPG key URLs
+- Update Amazon to Amazon Linux 2023
+- Remove unsupported configuration options from the `postgresql_config` resource
+  `stats_temp_directory`
+
 ## 11.11.2 - *2024-10-07*
 
 Standardise files with files in sous-chefs/repo-management
@@ -301,7 +311,7 @@ Standardise files with files in sous-chefs/repo-management
 
 - Allow to install extensions with hyphens, ex: `postgresql_extension '"uuid-ossp"'`
 - Update Circle CI config to match sous-chefs defaults #617
-- Remove Fedora testing from CI, not an official supported OS by sous-chefs, PR welcome #617
+- Remove Fedora testing from CI, not an official supported OS by sous-chefs, PRs welcome #617
 
 ## v7.1.4 (2019-03-28)
 

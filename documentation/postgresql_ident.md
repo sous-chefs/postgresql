@@ -60,7 +60,7 @@ postgresql_access 'local_foo_user' do
   database 'all'
   user 'foo'
   address '127.0.0.1/32'
-  auth_method 'md5'
+  auth_method 'scram-sha-256'
 end
 ```
 

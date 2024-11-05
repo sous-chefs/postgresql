@@ -2,7 +2,7 @@ pg_path =
   case os.family
   when 'debian'
     '/usr/lib/postgresql/'
-  when 'redhat', 'fedora'
+  when 'redhat'
     '/usr/pgsql-'
   end
 

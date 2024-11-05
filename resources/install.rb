@@ -23,7 +23,7 @@ property :sensitive, [true, false],
           default: true
 
 property :version, [String, Integer],
-          default: '15',
+          default: '17',
           coerce: proc { |p| p.to_s },
           description: 'Version to install'
 
@@ -34,12 +34,12 @@ property :source, [String, Symbol],
           description: 'Installation source'
 
 property :client_packages, [String, Array],
-          default: lazy { default_client_packages(version: version, source: source) },
+          default: lazy { default_client_packages(version:, source:) },
           coerce: proc { |p| Array(p) },
           description: 'Client packages to install'
 
 property :server_packages, [String, Array],
-          default: lazy { default_server_packages(version: version, source: source) },
+          default: lazy { default_server_packages(version:, source:) },
           coerce: proc { |p| Array(p) },
           description: 'Server packages to install'
 
@@ -97,15 +97,16 @@ action_class do
 
   def do_repository_action(repo_action)
     case node['platform_family']
-    when 'rhel', 'fedora', 'amazon'
+    when 'rhel', 'amazon'
+      # Disable the PostgreSQL module if we're on RHEL 8
+      dnf_module 'postgresql' do
+        action :disable
+      end if dnf_module_platform?
+
       remote_file '/etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY' do
         source new_resource.yum_gpg_key_uri
         sensitive new_resource.sensitive
       end
-
-      dnf_module 'postgresql' do
-        action :disable
-      end if dnf_module_platform?
 
       yum_repository "PostgreSQL #{new_resource.version}" do
         repositoryid "pgdg#{new_resource.version}"
@@ -178,11 +179,6 @@ action_class do
   end
 
   def do_client_package_action(package_action)
-    if platform_family?('rhel') && node['platform_version'].to_i.eql?(7)
-      package 'epel-release'
-      package 'centos-release-scl'
-    end
-
     package 'postgresql-client' do
       package_name new_resource.client_packages
       action package_action
@@ -241,7 +237,7 @@ action :install_server do
       source 'createcluster.conf.erb'
       cookbook 'postgresql'
       variables(
-        initdb_options: initdb_options
+        initdb_options:
       )
     end
   end
@@ -273,7 +269,7 @@ action :repository_delete do
 end
 
 action :init_server do
-  return if initialized? || !platform_family?('rhel', 'fedora', 'amazon')
+  return if initialized? || !platform_family?('rhel', 'amazon')
 
   converge_by('Init PostgreSQL') do
     execute 'init_db' do

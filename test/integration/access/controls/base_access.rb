@@ -5,7 +5,7 @@ control 'postgresql-local-access' do
   describe postgres_hba_conf.where { type == 'host' && user == 'postgres' } do
     its('database') { should cmp 'all' }
     its('user') { should cmp 'postgres' }
-    its('auth_method') { should cmp 'md5' }
+    its('auth_method') { should cmp 'scram-sha-256' }
     its('address') { should cmp '127.0.0.1/32' }
   end
 
@@ -23,7 +23,7 @@ control 'postgresql-sous-chef-access' do
   describe postgres_hba_conf.where { user == 'sous_chef' } do
     its('database') { should cmp 'all' }
     its('type') { should cmp 'host' }
-    its('auth_method') { should cmp 'md5' }
+    its('auth_method') { should cmp 'scram-sha-256' }
     its('address') { should cmp '127.0.0.1/32' }
   end
 
@@ -41,7 +41,7 @@ control 'postgresql-hostname-access' do
   describe postgres_hba_conf.where { user == 'hostname_user' } do
     its('database') { should cmp 'all' }
     its('type') { should cmp 'host' }
-    its('auth_method') { should cmp 'md5' }
+    its('auth_method') { should cmp 'scram-sha-256' }
     its('address') { should cmp 'host.domain' }
   end
 end
@@ -53,7 +53,7 @@ control 'postgresql-long-hostname-access' do
   describe postgres_hba_conf.where { address == 'a.very.long.host.domain.that.exceeds.the.max.of.24.characters' } do
     its('database') { should cmp 'my_database' }
     its('type') { should cmp 'host' }
-    its('auth_method') { should cmp 'md5' }
+    its('auth_method') { should cmp 'scram-sha-256' }
     its('address') { should cmp 'a.very.long.host.domain.that.exceeds.the.max.of.24.characters' }
   end
 end
