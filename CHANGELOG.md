@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 12.0.0 - *2024-11-05*
 
 - Remove support for Fedora
