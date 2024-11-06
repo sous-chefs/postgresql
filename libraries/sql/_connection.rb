@@ -74,8 +74,7 @@ module PostgreSQL
                                  'libpq5'
                                end
 
-          case node['platform_family']
-          when 'rhel'
+          if platform_family?('rhel')
             case node['platform_version'].to_i
             when 7
               declare_resource(:package, 'epel-release') { compile_time(true) }
