@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 12.0.1 - *2024-11-10*
 
 - resolved cookstyle error: `libraries/sql/_connection.rb:77:11` refactor: `Chef/Style/UnnecessaryPlatformCaseStatement`
 
