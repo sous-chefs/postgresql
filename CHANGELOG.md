@@ -6,6 +6,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 Standardise files with files in sous-chefs/repo-management
 
+Standardise files with files in sous-chefs/repo-management
+
 ## 12.0.0 - *2024-11-05*
 
 - Remove support for Fedora
