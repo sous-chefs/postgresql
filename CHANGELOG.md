@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Bump version to force supermarket release
+
 ## 12.0.2 - *2024-11-18*
 
 Standardise files with files in sous-chefs/repo-management
