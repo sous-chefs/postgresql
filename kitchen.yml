@@ -246,3 +246,25 @@ suites:
         pg_ver: "15"
     run_list:
       - recipe[test::server_install]
+  - name: all_repos_install_15
+    attributes:
+      test:
+        pg_ver: "15"
+    verifier:
+      inspec_tests:
+        - path: test/integration/all_repos_install/
+      inputs:
+        pg_ver: "15"
+    run_list:
+      - recipe[test::all_repos_install]
+  - name: no_repos_install_15
+    attributes:
+      test:
+        pg_ver: "15"
+    verifier:
+      inspec_tests:
+        - path: test/integration/no_repos_install/
+      inputs:
+        pg_ver: "15"
+    run_list:
+      - recipe[test::no_repos_install]
