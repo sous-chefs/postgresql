@@ -2,6 +2,8 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
 ## 12.1.0 - *2025-05-17*
 
 - Cast `server_config` keys to strings in `postgresql_config` to avoid unnecessary converges
