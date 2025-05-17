@@ -45,23 +45,43 @@ property :server_packages, [String, Array],
 
 property :repo_pgdg, [true, false],
           default: true,
-          description: 'Create pgdg repo'
+          description: 'Enable pgdg repo'
+
+property :setup_repo_pgdg, [true, false],
+          default: lazy { |r| r.repo_pgdg },
+          description: 'Setup pgdg repo. Defaults to value of `:repo_pgdg`.'
 
 property :repo_pgdg_common, [true, false],
           default: true,
-          description: 'Create pgdg-common repo'
+          description: 'Enable pgdg-common repo'
+
+property :setup_repo_pgdg_common, [true, false],
+          default: lazy { |r| r.repo_pgdg_common },
+          description: 'Setup pgdg-common repo. Defaults to value of `:repo_pgdg_common`.'
 
 property :repo_pgdg_source, [true, false],
           default: false,
-          description: 'Create pgdg-source repo'
+          description: 'Enable pgdg-source repo'
+
+property :setup_repo_pgdg_source, [true, false],
+          default: lazy { |r| r.repo_pgdg_source },
+          description: 'Setup pgdg-source repo. Defaults to value of `:repo_pgdg_source`.'
 
 property :repo_pgdg_updates_testing, [true, false],
           default: false,
-          description: 'Create pgdg-updates-testing repo'
+          description: 'Enable pgdg-updates-testing repo'
+
+property :setup_repo_pgdg_updates_testing, [true, false],
+          default: lazy { |r| r.repo_pgdg_updates_testing },
+          description: 'Setup pgdg-updates-testing repo. Defaults to value of `:repo_pgdg_updates_testing`.'
 
 property :repo_pgdg_source_updates_testing, [true, false],
           default: false,
-          description: 'Create pgdg-source-updates-testing repo'
+          description: 'Enable pgdg-source-updates-testing repo'
+
+property :setup_repo_pgdg_source_updates_testing, [true, false],
+          default: lazy { |r| r.repo_pgdg_source_updates_testing },
+          description: 'Setup pgdg-source-updates-testing repo. Defaults to value of `:repo_pgdg_source_updates_testing`.'
 
 property :yum_gpg_key_uri, String,
           default: lazy { default_yum_gpg_key_uri },
@@ -116,6 +136,7 @@ action_class do
         gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
+        only_if { new_resource.repo_pgdg || new_resource.setup_repo_pgdg }
       end
 
       yum_repository 'PostgreSQL - common' do
@@ -126,6 +147,7 @@ action_class do
         gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
+        only_if { new_resource.repo_pgdg_common || new_resource.setup_repo_pgdg_common }
       end
 
       yum_repository "PostgreSQL #{new_resource.version} - source " do
@@ -137,6 +159,7 @@ action_class do
         gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
+        only_if { new_resource.repo_pgdg_source || new_resource.setup_repo_pgdg_source }
       end
 
       yum_repository "PostgreSQL #{new_resource.version} - updates testing" do
@@ -148,6 +171,7 @@ action_class do
         gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
+        only_if { new_resource.repo_pgdg_updates_testing || new_resource.setup_repo_pgdg_updates_testing }
       end
 
       yum_repository "PostgreSQL #{new_resource.version} - source - updates testing" do
@@ -159,6 +183,7 @@ action_class do
         gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
+        only_if { new_resource.repo_pgdg_source_updates_testing || new_resource.setup_repo_pgdg_source_updates_testing }
       end
 
     when 'debian'
