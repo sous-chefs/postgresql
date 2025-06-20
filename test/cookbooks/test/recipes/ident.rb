@@ -18,6 +18,7 @@ postgresql_service 'postgresql' do
 end
 
 user 'shef'
+user 'shef2'
 
 postgresql_ident 'postgresl mapping' do
   map_name 'testmap1'
@@ -31,6 +32,14 @@ end
 postgresql_ident 'shef mapping' do
   map_name 'testmap2'
   system_username 'shef'
+  database_username 'sous_chef'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
+end
+
+postgresql_ident 'shef2 mapping' do
+  map_name 'testmap2'
+  system_username 'shef2'
   database_username 'sous_chef'
 
   notifies :reload, 'postgresql_service[postgresql]', :delayed

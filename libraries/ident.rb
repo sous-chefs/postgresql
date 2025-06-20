@@ -79,15 +79,15 @@ module PostgreSQL
           def add(entry)
             raise unless entry.is_a?(PgIdentFileEntry)
 
-            return false if entry?(entry.map_name)
+            return false if entry?(entry.map_name, entry.system_username, entry.database_username)
 
             @entries.push(entry)
 
             sort!
           end
 
-          def entry(map_name)
-            entry = @entries.filter { |e| e.map_name.eql?(map_name) }
+          def entry(map_name, system_username, database_username)
+            entry = @entries.filter { |e| e.map_name.eql?(map_name) && e.system_username.eql?(system_username) && e.database_username.eql?(database_username) }
 
             return if nil_or_empty?(entry)
 
@@ -96,8 +96,8 @@ module PostgreSQL
             entry.pop
           end
 
-          def entry?(map_name)
-            !@entries.filter { |e| e.map_name.eql?(map_name) }.empty?
+          def entry?(map_name, system_username, database_username)
+            !@entries.filter { |e| e.map_name.eql?(map_name) && e.system_username.eql?(system_username) && e.database_username.eql?(database_username) }.empty?
           end
 
           def include?(entry)
@@ -120,17 +120,8 @@ module PostgreSQL
             sort! if sort
           end
 
-          def remove(entry)
-            raise unless entry.is_a?(PgIdentFileEntry) || entry.is_a?(String)
-
-            remove_name = case entry
-                          when PgIdentFileEntry
-                            entry.map_name
-                          when String
-                            entry
-                          end
-
-            @entries.reject! { |e| e.map_name.eql?(remove_name) }
+          def remove(map_name, system_username, database_username)
+            @entries.reject! { |e| e.map_name.eql?(map_name) && e.system_username.eql?(system_username) && e.database_username.eql?(database_username) }
           end
 
           def sort!

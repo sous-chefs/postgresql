@@ -7,6 +7,19 @@ control 'postgresql-ident-map' do
   end
 end
 
+control 'postgresql-ident-multi-map' do
+  impact 1.0
+  desc 'This test ensures postgres configures ident access with multiple mappings correctly'
+
+  describe command("sudo -u shef bash -c \"psql -U sous_chef -d test1 -c 'SELECT 1;'\"") do
+    its('exit_status') { should eq 0 }
+  end
+
+  describe command("sudo -u shef2 bash -c \"psql -U sous_chef -d test1 -c 'SELECT 1;'\"") do
+    its('exit_status') { should eq 0 }
+  end
+end
+
 control 'shef and postgres roles should exist' do
   impact 1.0
   desc 'The shef & postgres database user role should exist'
