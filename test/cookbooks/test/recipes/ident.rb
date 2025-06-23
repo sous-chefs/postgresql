@@ -54,6 +54,14 @@ postgresql_ident 'shef remove mapping' do
   action :delete
 end
 
+postgresql_ident 'map with very long name' do
+  map_name 'this_is_a_very_long_map_name_that_should_be_handled_correctly_by_the_postgresql_ident_resource'
+  system_username 'shef'
+  database_username 'sous_chef'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
+end
+
 postgresql_access 'postgresql host superuser' do
   type 'host'
   database 'all'

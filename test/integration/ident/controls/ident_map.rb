@@ -31,3 +31,13 @@ control 'shef and postgres roles should exist' do
     its('output') { should include 'sous_chef' }
   end
 end
+
+control 'postgresql-ident-long-map-name' do
+  impact 1.0
+  desc 'This test ensures postgres configures ident access with long map names correctly'
+
+  describe postgres_ident_conf.where { map_name == 'this_is_a_very_long_map_name_that_should_be_handled_correctly_by_the_postgresql_ident_resource' } do
+    its('system_username') { should cmp 'shef' }
+    its('pg_username') { should cmp 'sous_chef' }
+  end
+end

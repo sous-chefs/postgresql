@@ -184,6 +184,7 @@ module PostgreSQL
             ENTRY_FIELD_FORMAT.each do |field, ljust_count|
               field = respond_to?(field) ? send(field) : ''
               field_string = field.to_s.ljust(ljust_count)
+              field_string += ' ' unless field_string.include?(' ') || field == :comment
               entry_string.concat(field_string)
             end
 
