@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Fix where only a single mapname was being set in the `pg_hba.conf` file when multiple were specified
+
 ## 12.1.0 - *2025-05-17*
 
 - Cast `server_config` keys to strings in `postgresql_config` to avoid unnecessary converges
