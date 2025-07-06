@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 12.1.0 - *2025-07-06*
 
 - Cast `server_config` keys to strings in `postgresql_config` to avoid unnecessary converges
 - Add `setup_pgdg_*` properties to `postgresql_install` to allow more fine grained control over derived `yum_repository` resources
