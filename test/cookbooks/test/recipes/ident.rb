@@ -18,6 +18,7 @@ postgresql_service 'postgresql' do
 end
 
 user 'shef'
+user 'shef2'
 
 postgresql_ident 'postgresl mapping' do
   map_name 'testmap1'
@@ -36,6 +37,14 @@ postgresql_ident 'shef mapping' do
   notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
 
+postgresql_ident 'shef2 mapping' do
+  map_name 'testmap2'
+  system_username 'shef2'
+  database_username 'sous_chef'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
+end
+
 postgresql_ident 'shef remove mapping' do
   map_name 'testmap3'
   system_username 'shef_remove'
@@ -43,6 +52,14 @@ postgresql_ident 'shef remove mapping' do
 
   notifies :reload, 'postgresql_service[postgresql]', :delayed
   action :delete
+end
+
+postgresql_ident 'map with very long name' do
+  map_name 'this_is_a_very_long_map_name_that_should_be_handled_correctly_by_the_postgresql_ident_resource'
+  system_username 'shef'
+  database_username 'sous_chef'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
 
 postgresql_access 'postgresql host superuser' do
