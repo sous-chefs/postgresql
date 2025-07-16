@@ -4,6 +4,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Correct createdb column name from `rolecreatedb` to `rolcreatedb`
 Standardise files with files in sous-chefs/repo-management
 
 ## 12.1.0 - *2025-05-17*
