@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 12.3.1 - *2025-07-17*
 
 - Correct createdb column name from `rolecreatedb` to `rolcreatedb`
 Standardise files with files in sous-chefs/repo-management
