@@ -90,7 +90,7 @@ load_current_value do |new_resource|
 
   rolename(role_data.fetch('rolname', nil))
   superuser(role_data.fetch('rolsuper', nil))
-  createdb(role_data.fetch('rolecreatedb', nil))
+  createdb(role_data.fetch('rolcreatedb', nil))
   createrole(role_data.fetch('rolcreaterole', nil))
   inherit(role_data.fetch('rolinherit', nil))
   login(role_data.fetch('rolcanlogin', nil))
