@@ -56,9 +56,9 @@ module PostgreSQL
         def pg_gem_build_options
           case node['platform_family']
           when 'rhel', 'amazon'
-            "-- --with-pg-include=#{postgresql_devel_path('include')} --with-pg-lib=#{postgresql_devel_path('lib')}"
+            "--platform ruby -- --with-pg-include=#{postgresql_devel_path('include')} --with-pg-lib=#{postgresql_devel_path('lib')}"
           when 'debian'
-            "-- --with-pg-include=#{postgresql_devel_path} --with-pg-lib=#{postgresql_devel_path}"
+            "--platform ruby -- --with-pg-include=#{postgresql_devel_path} --with-pg-lib=#{postgresql_devel_path}"
           else
             raise "Unsupported platform family #{node['platform_family']}"
           end

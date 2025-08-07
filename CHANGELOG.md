@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+- Use `--platform ruby` to ensure we install the source based pg gem
+
 ## 12.3.1 - *2025-07-17*
 
 - Correct createdb column name from `rolecreatedb` to `rolcreatedb`
