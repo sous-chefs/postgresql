@@ -4,6 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
+## Unreleased
+
 ## 12.3.2 - *2025-08-07*
 
 - Use `--platform ruby` to ensure we install the source based pg gem
