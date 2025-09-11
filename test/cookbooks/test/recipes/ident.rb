@@ -36,6 +36,27 @@ postgresql_ident 'shef mapping' do
   notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
 
+# Test the fix for issue #787 - multiple mappings per map name
+postgresql_ident 'someuser to postgres mapping' do
+  map_name 'someuser_postgres'
+  system_username 'someuser'
+  database_username 'postgres'
+  comment 'Test mapping for issue #787'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
+end
+   
+# Make sure that the postgres keeps its own identity
+# Without this, the cookbook would previously fail to run
+postgresql_ident 'postgres to postgres mapping' do  
+  map_name 'someuser_postgres'
+  system_username 'postgres'
+  database_username 'postgres'
+  comment 'Second mapping with same map_name for issue #787'
+
+  notifies :reload, 'postgresql_service[postgresql]', :delayed
+end
+
 postgresql_ident 'shef remove mapping' do
   map_name 'testmap3'
   system_username 'shef_remove'
