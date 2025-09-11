@@ -86,7 +86,7 @@ module PostgreSQL
                 if platform?('oracle')
                   options ['--enablerepo=ol8_codeready_builder']
                 else
-                  options('--enablerepo=powertools')
+                  options('--enablerepo=codeready-builder-for-rhel-8')
                 end
               end
             when 9
