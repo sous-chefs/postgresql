@@ -48,6 +48,10 @@ We follow the currently supported versions listed on <https://www.postgresql.org
 - [postgresql_role](documentation/postgresql_role.md)
 - [postgresql_service](documentation/postgresql_service.md)
 
+## Additional Documentation
+
+- [SCRAM-SHA-256 Authentication](documentation/scram-sha-256.md)
+
 ## Contributors
 
 This project exists thanks to all the people who [contribute.](https://opencollective.com/sous-chefs/contributors.svg?width=890&button=false)

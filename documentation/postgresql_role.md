@@ -65,3 +65,57 @@ postgresql_role 'user1' do
   valid_until '2018-12-31'
 end
 ```
+
+Create a user with a pre-hashed SCRAM-SHA-256 password:
+
+```ruby
+postgresql_role 'secure_user' do
+  encrypted_password 'SCRAM-SHA-256$4096:27klCUc487uwvJVGKI5YNA==$6K2Y+S3YBlpfRNrLROoO2ulWmnrQoRlGI1GqpNRq0T0=:y4esBVjK/hMtxDB5aWN4ynS1SnQcT1TFTqV0J/snls4='
+  login true
+  createdb true
+end
+```
+
+## SCRAM-SHA-256 Authentication
+
+SCRAM-SHA-256 is a password authentication method that provides better security than MD5. When using SCRAM-SHA-256 authentication:
+
+1. **Pre-hashed passwords**: If you have a pre-computed SCRAM-SHA-256 password hash, use the `encrypted_password` property.
+2. **Password format**: SCRAM-SHA-256 passwords have the format: `SCRAM-SHA-256$<iter>:<salt>$<StoredKey>:<ServerKey>`
+3. **Automatic escaping**: The cookbook automatically handles escaping of special characters (`$`) in SCRAM-SHA-256 passwords.
+
+### Password Generation
+
+To generate a SCRAM-SHA-256 password hash, you can use:
+
+```bash
+# Using PostgreSQL's built-in function
+psql -c "SELECT gen_random_uuid();" # for salt generation
+# Then use a SCRAM-SHA-256 library to generate the hash
+```
+
+Or use a Ruby library like `scram-sha-256`:
+
+```ruby
+require 'scram-sha-256'
+password_hash = ScramSha256.hash_password('your_password', 4096)
+```
+
+### Configuration Example
+
+```ruby
+# Configure access method
+postgresql_access 'scram access' do
+  type 'host'
+  database 'all'
+  user 'myuser'
+  address '127.0.0.1/32'
+  auth_method 'scram-sha-256'
+end
+
+# Create user with SCRAM password
+postgresql_role 'myuser' do
+  encrypted_password 'SCRAM-SHA-256$4096:abc123...$def456...:ghi789...'
+  login true
+end
+```
