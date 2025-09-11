@@ -6,7 +6,7 @@ description       'Installs and configures postgresql for clients or servers'
 version           '12.3.3'
 source_url        'https://github.com/sous-chefs/postgresql'
 issues_url        'https://github.com/sous-chefs/postgresql/issues'
-chef_version      '>= 16.0'
+chef_version      '>= 18.0'
 
 depends 'yum', '>= 7.2.0'
 
