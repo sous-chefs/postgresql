@@ -79,21 +79,31 @@ module PostgreSQL
           def add(entry)
             raise unless entry.is_a?(PgIdentFileEntry)
 
-            return false if entry?(entry.map_name)
+            return false if include?(entry)
 
             @entries.push(entry)
 
             sort!
           end
 
-          def entry(map_name)
-            entry = @entries.filter { |e| e.map_name.eql?(map_name) }
+          def entry(map_name, system_username = nil, database_username = nil)
+            entries = @entries.filter { |e| e.map_name.eql?(map_name) }
 
-            return if nil_or_empty?(entry)
+            return if nil_or_empty?(entries)
 
-            raise PgIdentFileDuplicateEntry, "Duplicate entries found for #{map_name}" unless entry.one?
+            # If specific system_username and database_username are provided, find exact match
+            if system_username && database_username
+              entry = entries.filter { |e| e.system_username.eql?(system_username) && e.database_username.eql?(database_username) }
+              return entry.first if entry.one?
+              return
+            end
 
-            entry.pop
+            # If only map_name is provided and there's only one entry, return it
+            return entries.first if entries.one?
+
+            # If multiple entries exist for the same map_name but no specific system/database username provided
+            # This is for backward compatibility - return the first one but don't raise an error
+            entries.first
           end
 
           def entry?(map_name)
@@ -103,7 +113,7 @@ module PostgreSQL
           def include?(entry)
             raise unless entry.is_a?(PgIdentFileEntry)
 
-            @entries.any? { |e| e.map_name.eql?(entry.map_name) }
+            @entries.any? { |e| e.eql?(entry) }
           end
 
           def read!(file = 'pg_ident.conf', sort: true)
@@ -123,14 +133,13 @@ module PostgreSQL
           def remove(entry)
             raise unless entry.is_a?(PgIdentFileEntry) || entry.is_a?(String)
 
-            remove_name = case entry
-                          when PgIdentFileEntry
-                            entry.map_name
-                          when String
-                            entry
-                          end
-
-            @entries.reject! { |e| e.map_name.eql?(remove_name) }
+            case entry
+            when PgIdentFileEntry
+              @entries.reject! { |e| e.eql?(entry) }
+            when String
+              # For backward compatibility, remove all entries with this map_name
+              @entries.reject! { |e| e.map_name.eql?(entry) }
+            end
           end
 
           def sort!
@@ -202,7 +211,7 @@ module PostgreSQL
           def eql?(entry)
             return false unless self.class.eql?(entry.class)
 
-            return true if self.class.const_get(:ENTRY_FIELDS).all? { |field| send(field).eql?(entry.send(field)) }
+            return true if %i(map_name system_username database_username).all? { |field| send(field).eql?(entry.send(field)) }
 
             false
           end
