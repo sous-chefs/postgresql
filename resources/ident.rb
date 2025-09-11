@@ -54,7 +54,9 @@ load_current_value do |new_resource|
 
   current_value_does_not_exist! unless ident_file.entry?(new_resource.map_name)
 
-  entry = ident_file.entry(new_resource.map_name)
+  entry = ident_file.entry(new_resource.map_name, new_resource.system_username, new_resource.database_username)
+  current_value_does_not_exist! unless entry
+
   %i(map_name system_username database_username comment).each { |p| send(p, entry.send(p)) }
 end
 
@@ -65,7 +67,7 @@ end
 action :create do
   converge_if_changed do
     config_resource_init
-    entry = config_resource.variables[:pg_ident].entry(new_resource.map_name)
+    entry = config_resource.variables[:pg_ident].entry(new_resource.map_name, new_resource.system_username, new_resource.database_username)
 
     if nil_or_empty?(entry)
       resource_properties = %i(map_name system_username database_username comment).map { |p| [ p, new_resource.send(p) ] }.to_h.compact
@@ -80,9 +82,9 @@ end
 action :update do
   converge_if_changed(:system_username, :database_username, :comment) do
     config_resource_init
-    entry = config_resource.variables[:pg_ident].entry(new_resource.map_name)
+    entry = config_resource.variables[:pg_ident].entry(new_resource.map_name, new_resource.system_username, new_resource.database_username)
 
-    raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update ident entry for '#{new_resource.map_name}' as it does not exist" if nil_or_empty?(entry)
+    raise Chef::Exceptions::CurrentValueDoesNotExist, "Cannot update ident entry for '#{new_resource.map_name}' with system_username '#{new_resource.system_username}' and database_username '#{new_resource.database_username}' as it does not exist" if nil_or_empty?(entry)
 
     entry.update(system_username: new_resource.system_username, database_username: new_resource.database_username, comment: new_resource.comment)
   end
@@ -91,7 +93,14 @@ end
 action :delete do
   config_resource_init
 
-  converge_by("Remove ident entry with map_name: #{new_resource.map_name}") do
-    config_resource.variables[:pg_ident].remove(new_resource.map_name)
-  end if config_resource.variables[:pg_ident].entry?(new_resource.map_name)
+  # Create an entry object to match for removal
+  entry_to_remove = PostgreSQL::Cookbook::IdentHelpers::PgIdent::PgIdentFileEntry.new(
+    map_name: new_resource.map_name,
+    system_username: new_resource.system_username,
+    database_username: new_resource.database_username
+  )
+
+  converge_by("Remove ident entry with map_name: #{new_resource.map_name}, system_username: #{new_resource.system_username}, database_username: #{new_resource.database_username}") do
+    config_resource.variables[:pg_ident].remove(entry_to_remove)
+  end if config_resource.variables[:pg_ident].include?(entry_to_remove)
 end
