@@ -140,3 +140,14 @@ control 'postgresql-access-multiple-auth_options' do
     its('auth_params') { should cmp 'ldapbasedn="dc=example, dc=net" ldapsearchattribute=uid ldapserver=ldap.example.net' }
   end
 end
+
+control 'scram_test_user role should exist' do
+  impact 1.0
+  desc 'The scram_test_user database role should exist to test SCRAM-SHA-256 password handling'
+
+  postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
+
+  describe postgres_access.query('SELECT rolname FROM pg_roles;') do
+    its('output') { should cmp /scram_test_user/ }
+  end
+end
