@@ -63,7 +63,7 @@ module PostgreSQL
         end
 
         def escape_password_for_sql(password)
-          return password if password.nil? || password.empty?
+          return password if nil_or_empty?(password)
 
           # SCRAM-SHA-256 passwords contain $ characters that can be interpreted
           # by shell or string processing. Escape them to prevent mangling.
