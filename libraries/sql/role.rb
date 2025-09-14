@@ -68,7 +68,7 @@ module PostgreSQL
           # SCRAM-SHA-256 passwords contain $ characters that can be interpreted
           # by shell or string processing. Escape them to prevent mangling.
           if password.start_with?('SCRAM-SHA-256')
-            password.gsub('\\', '\\\\\\\\').gsub("'", "''").gsub('$', '\\$')
+            password.gsub('\\', '\\\\').gsub("'", "''").gsub('$', '\\$')
           else
             password.gsub("'", "''")
           end
