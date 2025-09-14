@@ -5,6 +5,7 @@ SCRAM-SHA-256 (Salted Challenge Response Authentication Mechanism) is a password
 ## Overview
 
 SCRAM-SHA-256 authentication offers several advantages:
+
 - **Stronger security**: Uses SHA-256 instead of MD5
 - **Salt protection**: Prevents rainbow table attacks
 - **Iteration count**: Makes brute force attacks more difficult
@@ -13,12 +14,14 @@ SCRAM-SHA-256 authentication offers several advantages:
 ## Password Format
 
 SCRAM-SHA-256 passwords have this specific format:
-```
+
+```text
 SCRAM-SHA-256$<iteration_count>:<salt>$<StoredKey>:<ServerKey>
 ```
 
 Example:
-```
+
+```text
 SCRAM-SHA-256$4096:27klCUc487uwvJVGKI5YNA==$6K2Y+S3YBlpfRNrLROoO2ulWmnrQoRlGI1GqpNRq0T0=:y4esBVjK/hMtxDB5aWN4ynS1SnQcT1TFTqV0J/snls4=
 ```
 
@@ -41,6 +44,7 @@ end
 The cookbook automatically handles escaping of special characters (`$`) in SCRAM-SHA-256 passwords. You don't need to manually escape these characters - the cookbook will handle this transparently.
 
 **Before (manual escaping required):**
+
 ```ruby
 postgresql_role 'user1' do
   # Manual escaping was required
@@ -50,6 +54,7 @@ end
 ```
 
 **Now (automatic escaping):**
+
 ```ruby
 postgresql_role 'user1' do
   # No manual escaping needed
