@@ -62,6 +62,18 @@ module PostgreSQL
           authid&.to_a&.pop&.fetch('rolpassword')
         end
 
+        def escape_password_for_sql(password)
+          return password if nil_or_empty?(password)
+
+          # SCRAM-SHA-256 passwords contain $ characters that can be interpreted
+          # by shell or string processing. Escape them to prevent mangling.
+          if password.start_with?('SCRAM-SHA-256')
+            password.gsub('\\', '\\\\').gsub("'", "''").gsub('$', '\\$')
+          else
+            password.gsub("'", "''")
+          end
+        end
+
         def role_sql(new_resource)
           sql = []
 
@@ -80,7 +92,8 @@ module PostgreSQL
           sql.push("CONNECTION LIMIT #{new_resource.connection_limit}")
 
           if new_resource.encrypted_password
-            sql.push("ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'")
+            escaped_password = escape_password_for_sql(new_resource.encrypted_password)
+            sql.push("ENCRYPTED PASSWORD '#{escaped_password}'")
           elsif new_resource.unencrypted_password
             sql.push("PASSWORD '#{new_resource.unencrypted_password}'")
           else
@@ -121,7 +134,8 @@ module PostgreSQL
           sql.push("ALTER ROLE \"#{new_resource.rolename}\"")
 
           if new_resource.encrypted_password
-            sql.push("ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'")
+            escaped_password = escape_password_for_sql(new_resource.encrypted_password)
+            sql.push("ENCRYPTED PASSWORD '#{escaped_password}'")
           elsif new_resource.unencrypted_password
             sql.push("PASSWORD '#{new_resource.unencrypted_password}'")
           else
