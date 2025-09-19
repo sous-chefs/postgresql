@@ -2,7 +2,7 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
-## Unreleased
+## 12.3.4 - *2025-09-19*
 
 - Ensure access config file is written before notifications are sent
 - Standardise files with files in sous-chefs/repo-management
