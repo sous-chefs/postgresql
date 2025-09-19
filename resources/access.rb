@@ -95,6 +95,9 @@ action :create do
     else
       run_action(:update)
     end
+
+    # Ensure config file is written before notifications are sent
+    config_resource.run_action(:create)
   end
 end
 

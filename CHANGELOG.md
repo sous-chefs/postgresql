@@ -4,7 +4,8 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ## Unreleased
 
-Standardise files with files in sous-chefs/repo-management
+- Ensure access config file is written before notifications are sent
+- Standardise files with files in sous-chefs/repo-management
 
 ## 12.3.3 - *2025-09-04*
 
