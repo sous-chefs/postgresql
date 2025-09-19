@@ -163,7 +163,11 @@ module PostgreSQL
           def split_entries
             return if @ident_entries.empty?
 
-            @ident_entries.map! { |entry| SPLIT_REGEX.match(entry).named_captures.compact.transform_keys(&:to_sym) }
+            @ident_entries.map! do |entry|
+              match = SPLIT_REGEX.match(entry)
+              match ? match.named_captures.compact.transform_keys(&:to_sym) : nil
+            end
+            @ident_entries.compact!
           end
 
           def marshall_entries
