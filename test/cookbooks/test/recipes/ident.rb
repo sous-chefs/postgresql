@@ -45,10 +45,10 @@ postgresql_ident 'someuser to postgres mapping' do
 
   notifies :reload, 'postgresql_service[postgresql]', :delayed
 end
-   
+
 # Make sure that the postgres keeps its own identity
 # Without this, the cookbook would previously fail to run
-postgresql_ident 'postgres to postgres mapping' do  
+postgresql_ident 'postgres to postgres mapping' do
   map_name 'someuser_postgres'
   system_username 'postgres'
   database_username 'postgres'
