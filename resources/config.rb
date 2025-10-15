@@ -30,7 +30,7 @@ property :source, String,
 property :version, [String, Integer],
           default: lazy { installed_postgresql_major_version },
           desired_state: false,
-          coerce: proc { |p| p.to_s },
+          coerce: proc(&:to_s),
           description: 'PostgreSQL installed version override'
 
 property :data_directory, String,

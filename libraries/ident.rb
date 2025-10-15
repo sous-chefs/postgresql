@@ -97,7 +97,7 @@ module PostgreSQL
           end
 
           def entry?(map_name)
-            !@entries.filter { |e| e.map_name.eql?(map_name) }.empty?
+            !@entries.none? { |e| e.map_name.eql?(map_name) }
           end
 
           def include?(entry)
@@ -199,10 +199,10 @@ module PostgreSQL
             entry_string.strip
           end
 
-          def eql?(entry)
-            return false unless self.class.eql?(entry.class)
+          def eql?(other)
+            return false unless self.class.eql?(other.class)
 
-            return true if self.class.const_get(:ENTRY_FIELDS).all? { |field| send(field).eql?(entry.send(field)) }
+            return true if self.class.const_get(:ENTRY_FIELDS).all? { |field| send(field).eql?(other.send(field)) }
 
             false
           end
