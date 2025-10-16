@@ -149,8 +149,17 @@ module PostgreSQL
       end
 
       def default_yum_gpg_key_uri
-        if platform_family?('rhel') && node['platform_version'].to_i == 7
-          'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL7'
+        if platform_family?('rhel')
+          rhel_version = node['platform_version'].to_i
+          arch = node['kernel']['machine']
+          
+          if rhel_version == 7
+            arch == 'aarch64' ? 'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-AARCH64-RHEL7' : 'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL7'
+          elsif arch == 'aarch64'
+            'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-AARCH64-RHEL'
+          else
+            'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL'
+          end
         else
           'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL'
         end
