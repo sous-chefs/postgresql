@@ -71,7 +71,7 @@ module PostgreSQL
             next unless property_is_set?(perm)
 
             if new_resource.send(perm)
-              sql.push("#{perm.to_s.upcase.gsub('_', ' ')}")
+              sql.push(perm.to_s.upcase.gsub('_', ' ').to_s)
             else
               sql.push("NO#{perm.to_s.upcase.gsub('_', ' ')}")
             end

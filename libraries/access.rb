@@ -219,10 +219,10 @@ module PostgreSQL
             entry_string.strip
           end
 
-          def eql?(entry)
-            return false unless self.class.eql?(entry.class)
+          def eql?(other)
+            return false unless self.class.eql?(other.class)
 
-            return true if self.class.const_get(:ENTRY_FIELDS).all? { |field| send(field).eql?(entry.send(field)) }
+            return true if self.class.const_get(:ENTRY_FIELDS).all? { |field| send(field).eql?(other.send(field)) }
 
             false
           end
@@ -314,14 +314,14 @@ module PostgreSQL
             end.join(' ')
           end
 
-          def eql?(auth_options)
-            case auth_options
+          def eql?(other)
+            case other
             when self.class
-              @options.eql?(auth_options.options)
+              @options.eql?(other.options)
             when Hash
-              @options.eql?(auth_options)
+              @options.eql?(other)
             when String
-              to_s.eql?(options_string_parse(auth_options))
+              to_s.eql?(options_string_parse(other))
             else
               false
             end
