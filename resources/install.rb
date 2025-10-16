@@ -132,7 +132,6 @@ action_class do
       execute 'import-pgdg-gpg-key' do
         command 'rpm --import /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action :nothing
-        not_if 'rpm -q gpg-pubkey-08b40d20-* 2>/dev/null'
       end
 
       yum_repository "PostgreSQL #{new_resource.version}" do
