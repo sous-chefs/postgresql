@@ -2,6 +2,20 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## [12.4.0](https://github.com/sous-chefs/postgresql/compare/v12.3.5...v12.4.0) (2025-10-16)
+
+
+### Features
+
+* Support PostgreSQL 17 ([#778](https://github.com/sous-chefs/postgresql/issues/778)) ([58230dd](https://github.com/sous-chefs/postgresql/commit/58230dd487459099902719574bc035bbb6bb3a63))
+
+
+### Bug Fixes
+
+* allow multiple users/databases in postgresql_access resources ([#751](https://github.com/sous-chefs/postgresql/issues/751)) ([e9012eb](https://github.com/sous-chefs/postgresql/commit/e9012eb79eb0c136e59bbc1ac5c45cd6fe4cfa37))
+* **ci:** Update workflows to use release pipeline ([#807](https://github.com/sous-chefs/postgresql/issues/807)) ([39d5b91](https://github.com/sous-chefs/postgresql/commit/39d5b911d82b8301691dd0d8face338c527d5f1f))
+* rerun last release ([#788](https://github.com/sous-chefs/postgresql/issues/788)) for ([#784](https://github.com/sous-chefs/postgresql/issues/784)) ([1eed1e2](https://github.com/sous-chefs/postgresql/commit/1eed1e29ecd080239d35c566661e2684ba4cba7d))
+
 ## [12.3.5](https://github.com/sous-chefs/postgresql/compare/12.3.4...v12.3.5) (2025-10-15)
 
 
