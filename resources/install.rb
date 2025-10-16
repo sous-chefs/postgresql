@@ -126,6 +126,13 @@ action_class do
       remote_file '/etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY' do
         source new_resource.yum_gpg_key_uri
         sensitive new_resource.sensitive
+        notifies :run, 'execute[import-pgdg-gpg-key]', :immediately
+      end
+
+      execute 'import-pgdg-gpg-key' do
+        command 'rpm --import /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
+        action :nothing
+        not_if 'rpm -q gpg-pubkey-08b40d20-* 2>/dev/null'
       end
 
       yum_repository "PostgreSQL #{new_resource.version}" do
@@ -134,6 +141,7 @@ action_class do
         baseurl yum_repo_url('https://download.postgresql.org/pub/repos/yum')
         enabled new_resource.repo_pgdg
         gpgcheck true
+        repo_gpgcheck false
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
         only_if { new_resource.repo_pgdg || new_resource.setup_repo_pgdg }
@@ -145,6 +153,7 @@ action_class do
         baseurl yum_common_repo_url
         enabled new_resource.repo_pgdg_common
         gpgcheck true
+        repo_gpgcheck false
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
         only_if { new_resource.repo_pgdg_common || new_resource.setup_repo_pgdg_common }
