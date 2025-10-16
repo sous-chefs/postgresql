@@ -31,7 +31,7 @@ GPG Keys are configured as: file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY
 Error: GPG check FAILED
 ```
 
-**Root Cause**: 
+**Root Cause**:
 PostgreSQL uses **architecture-specific GPG keys** for signing packages. The aarch64 builds are signed with a different key (b9738825) than x86_64 builds (08b40d20). The cookbook was only downloading the generic RHEL key, not the aarch64-specific key.
 
 **Reproduction Steps**:
@@ -66,24 +66,28 @@ kitchen test ident-16-centos-stream-9
 
 **Affected Suites**: ident-* suites
 
-**Platforms Affected**: 
+**Platforms Affected**:
+
 - Seen in CI on centos-stream-9 (from CI logs)
 - **NOT reproducible locally on debian-12** (test passes)
 - Need to verify on RHEL platforms once GPG issue is fixed
 
 **Error Message** (from CI):
-```
+
+```text
 Command: `sudo -u shef bash -c "psql -U sous_chef -d postgres -c 'SELECT 1;'"`
 exit_status is expected to eq 0
 got: 1
 ```
 
 **Root Cause**: Unknown - may be related to:
+
 - Service reload vs restart for ident changes
 - Timing issue with ident file application
 - Platform-specific peer authentication behavior
 
 **Reproduction Steps**:
+
 ```bash
 # Passes locally:
 kitchen test ident-16-debian-12
@@ -93,6 +97,7 @@ kitchen test ident-16-centos-stream-9
 ```
 
 **Fix Strategy**:
+
 - First fix GPG issue to test on RHEL platforms
 - Compare working Debian vs failing RHEL behavior
 - May need to change from `:reload` to `:restart` for ident changes
@@ -119,13 +124,16 @@ None identified yet.
 ## Test Results Summary
 
 ### Passing Platforms
+
 - debian-12 (ident-16 suite confirmed passing)
 - ubuntu-* (likely passing, not yet tested)
 
-### Failing Platforms  
+### Failing Platforms
+
 - All RHEL-based platforms (GPG issue)
 
 ### Not Yet Tested
+
 - amazonlinux-2023
 - fedora-latest
 - opensuse-leap-15
