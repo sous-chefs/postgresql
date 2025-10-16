@@ -2,6 +2,13 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## [12.3.5](https://github.com/sous-chefs/postgresql/compare/12.3.4...v12.3.5) (2025-10-15)
+
+
+### Bug Fixes
+
+* **ci:** Update workflows to use release pipeline ([#807](https://github.com/sous-chefs/postgresql/issues/807)) ([39d5b91](https://github.com/sous-chefs/postgresql/commit/39d5b911d82b8301691dd0d8face338c527d5f1f))
+
 ## 12.3.4 - *2025-09-19*
 
 * Ensure access config file is written before notifications are sent
