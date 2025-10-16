@@ -51,7 +51,7 @@ property :bypassrls, [true, false],
 
 property :connection_limit, [Integer, String],
           default: -1,
-          coerce: proc { |p| p.to_s },
+          coerce: proc(&:to_s),
           description: 'If role can log in, this specifies how many concurrent connections the role can make'
 
 property :unencrypted_password, String,

@@ -24,12 +24,12 @@ property :sensitive, [true, false],
 
 property :version, [String, Integer],
           default: '17',
-          coerce: proc { |p| p.to_s },
+          coerce: proc(&:to_s),
           description: 'Version to install'
 
 property :source, [String, Symbol],
           default: :repo,
-          coerce: proc { |p| p.to_sym },
+          coerce: proc(&:to_sym),
           equal_to: %i(repo os),
           description: 'Installation source'
 
@@ -191,7 +191,7 @@ action_class do
 
       package 'apt-transport-https'
 
-      apt_repository "postgresql_org_repository_#{new_resource.version.to_s}" do
+      apt_repository "postgresql_org_repository_#{new_resource.version}" do
         uri new_resource.apt_repository_uri
         components ['main', new_resource.version.to_s]
         distribution "#{node['lsb']['codename']}-pgdg"

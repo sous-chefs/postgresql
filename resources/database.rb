@@ -63,7 +63,7 @@ property :allow_connections, [true, false],
 
 property :connection_limit, [Integer, String],
           default: -1,
-          coerce: proc { |p| p.to_s },
+          coerce: proc(&:to_s),
           description: 'How many concurrent connections can be made to this database. -1 (the default) means no limit.'
 
 property :is_template, [true, false],
