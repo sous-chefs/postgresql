@@ -140,7 +140,7 @@ action_class do
         baseurl yum_repo_url('https://download.postgresql.org/pub/repos/yum')
         enabled new_resource.repo_pgdg
         gpgcheck true
-        repo_gpgcheck false
+        repo_gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
         only_if { new_resource.repo_pgdg || new_resource.setup_repo_pgdg }
@@ -152,7 +152,7 @@ action_class do
         baseurl yum_common_repo_url
         enabled new_resource.repo_pgdg_common
         gpgcheck true
-        repo_gpgcheck false
+        repo_gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
         only_if { new_resource.repo_pgdg_common || new_resource.setup_repo_pgdg_common }
@@ -165,6 +165,7 @@ action_class do
         make_cache false
         enabled new_resource.repo_pgdg_source
         gpgcheck true
+        repo_gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
         only_if { new_resource.repo_pgdg_source || new_resource.setup_repo_pgdg_source }
@@ -177,6 +178,7 @@ action_class do
         make_cache false
         enabled new_resource.repo_pgdg_updates_testing
         gpgcheck true
+        repo_gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
         only_if { new_resource.repo_pgdg_updates_testing || new_resource.setup_repo_pgdg_updates_testing }
@@ -189,6 +191,7 @@ action_class do
         make_cache false
         enabled new_resource.repo_pgdg_source_updates_testing
         gpgcheck true
+        repo_gpgcheck true
         gpgkey 'file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY'
         action repo_action
         only_if { new_resource.repo_pgdg_source_updates_testing || new_resource.setup_repo_pgdg_source_updates_testing }
