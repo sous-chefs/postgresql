@@ -99,6 +99,16 @@ module PostgreSQL
                   options('--enablerepo=crb')
                 end
               end
+            when 10
+              declare_resource(:package, libpq_package_name) { compile_time(true) }
+              declare_resource(:package, 'perl-IPC-Run') do
+                compile_time(true)
+                if platform?('oracle')
+                  options ['--enablerepo=ol10_codeready_builder']
+                else
+                  options('--enablerepo=crb')
+                end
+              end
             end
           end
 
