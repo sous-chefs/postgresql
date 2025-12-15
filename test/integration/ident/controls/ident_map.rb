@@ -2,7 +2,8 @@ control 'postgresql-ident-map' do
   impact 1.0
   desc 'This test ensures postgres configures ident access correctly'
 
-  describe command("sudo -u shef bash -c \"psql -U sous_chef -d postgres -c 'SELECT 1;'\"") do
+  # Use su instead of sudo - we're already root in the container and su doesn't require PAM auth
+  describe command("su - shef -c \"psql -U sous_chef -d postgres -c 'SELECT 1;'\"") do
     its('exit_status') { should eq 0 }
     its('stderr') { should eq '' }
     its('stdout') { should match(/1/) }
