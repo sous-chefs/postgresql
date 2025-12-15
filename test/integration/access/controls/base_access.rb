@@ -1,17 +1,18 @@
+pg_superuser_session = postgres_session('postgres', '12345', '127.0.0.1')
+hba_conf_path = pg_superuser_session.query('SHOW hba_file;').output.strip
+
 control 'postgresql-local-access' do
   impact 1.0
   desc 'This test ensures postgres has localhost access to the database'
 
-  describe postgres_hba_conf.where { type == 'host' && user == 'postgres' } do
+  describe postgres_hba_conf(hba_conf_path).where { type == 'host' && user == 'postgres' } do
     its('database') { should cmp 'all' }
     its('user') { should cmp 'postgres' }
     its('auth_method') { should cmp 'scram-sha-256' }
     its('address') { should cmp '127.0.0.1/32' }
   end
 
-  postgres_access = postgres_session('postgres', '12345', '127.0.0.1')
-
-  describe postgres_access.query('SELECT 1;') do
+  describe pg_superuser_session.query('SELECT 1;') do
     its('output') { should eq '1' }
   end
 end
@@ -20,7 +21,7 @@ control 'postgresql-sous-chef-access' do
   impact 1.0
   desc 'This test ensures sous_chefs have local trust access to the database'
 
-  describe postgres_hba_conf.where { user == 'sous_chef' } do
+  describe postgres_hba_conf(hba_conf_path).where { user == 'sous_chef' } do
     its('database') { should cmp 'all' }
     its('type') { should cmp 'host' }
     its('auth_method') { should cmp 'scram-sha-256' }
@@ -38,7 +39,7 @@ control 'postgresql-hostname-access' do
   impact 1.0
   desc 'This test ensures hostnames may be specified in ACLs'
 
-  describe postgres_hba_conf.where { user == 'hostname_user' } do
+  describe postgres_hba_conf(hba_conf_path).where { user == 'hostname_user' } do
     its('database') { should cmp 'all' }
     its('type') { should cmp 'host' }
     its('auth_method') { should cmp 'scram-sha-256' }
@@ -50,7 +51,7 @@ control 'postgresql-long-hostname-access' do
   impact 1.0
   desc 'This test ensures long hostnames may be specified in ACLs'
 
-  describe postgres_hba_conf.where { address == 'a.very.long.host.domain.that.exceeds.the.max.of.24.characters' } do
+  describe postgres_hba_conf(hba_conf_path).where { address == 'a.very.long.host.domain.that.exceeds.the.max.of.24.characters' } do
     its('database') { should cmp 'my_database' }
     its('type') { should cmp 'host' }
     its('auth_method') { should cmp 'scram-sha-256' }
@@ -117,7 +118,7 @@ control 'postgresql-access-auth_options-with-url' do
   impact 1.0
   desc 'This test ensures URL may be specified in auth_options'
 
-  describe postgres_hba_conf.where { user == 'ldap_url.user' } do
+  describe postgres_hba_conf(hba_conf_path).where { user == 'ldap_url.user' } do
     its('type') { should cmp 'host' }
     its('database') { should cmp 'all' }
     its('user') { should cmp 'ldap_url.user' }
@@ -131,7 +132,7 @@ control 'postgresql-access-multiple-auth_options' do
   impact 1.0
   desc 'This test ensures multiple auth_options may  be specified'
 
-  describe postgres_hba_conf.where { user == 'ldap_options.user' } do
+  describe postgres_hba_conf(hba_conf_path).where { user == 'ldap_options.user' } do
     its('type') { should cmp 'host' }
     its('database') { should cmp 'all' }
     its('user') { should cmp 'ldap_options.user' }

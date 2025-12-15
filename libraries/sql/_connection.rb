@@ -83,9 +83,13 @@ module PostgreSQL
               declare_resource(:package, libpq_package_name) { compile_time(true) }
               declare_resource(:package, 'perl-IPC-Run') do
                 compile_time(true)
-                if platform?('oracle')
+                case node['platform']
+                when 'oracle'
                   options ['--enablerepo=ol8_codeready_builder']
+                when 'redhat'
+                  options('--enablerepo=codeready-builder-for-rhel-8')
                 else
+                  # CentOS Stream, AlmaLinux, Rocky Linux use powertools
                   options('--enablerepo=powertools')
                 end
               end
@@ -95,6 +99,16 @@ module PostgreSQL
                 compile_time(true)
                 if platform?('oracle')
                   options ['--enablerepo=ol9_codeready_builder']
+                else
+                  options('--enablerepo=crb')
+                end
+              end
+            when 10
+              declare_resource(:package, libpq_package_name) { compile_time(true) }
+              declare_resource(:package, 'perl-IPC-Run') do
+                compile_time(true)
+                if platform?('oracle')
+                  options ['--enablerepo=ol10_codeready_builder']
                 else
                   options('--enablerepo=crb')
                 end

@@ -122,4 +122,35 @@ RSpec.describe PostgreSQL::Cookbook::Helpers do
       end
     end
   end
+
+  describe '#dnf_module_platform?' do
+    before do
+      allow(subject).to receive(:platform_family?).and_return(false)
+      allow(subject).to receive(:platform_family?).with('rhel').and_return(true)
+    end
+
+    it 'returns false on RHEL 7' do
+      allow(subject).to receive(:[]).with('platform_version').and_return('7.9')
+
+      expect(subject.dnf_module_platform?).to be false
+    end
+
+    it 'returns true on RHEL 8' do
+      allow(subject).to receive(:[]).with('platform_version').and_return('8.9')
+
+      expect(subject.dnf_module_platform?).to be true
+    end
+
+    it 'returns true on RHEL 9' do
+      allow(subject).to receive(:[]).with('platform_version').and_return('9.4')
+
+      expect(subject.dnf_module_platform?).to be true
+    end
+
+    it 'returns false on RHEL 10' do
+      allow(subject).to receive(:[]).with('platform_version').and_return('10.0')
+
+      expect(subject.dnf_module_platform?).to be false
+    end
+  end
 end

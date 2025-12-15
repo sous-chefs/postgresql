@@ -17,7 +17,10 @@ postgresql_service 'postgresql' do
   action %i(enable start)
 end
 
-user 'shef'
+user 'shef' do
+  shell '/bin/bash'
+  manage_home true
+end
 
 postgresql_ident 'postgresl mapping' do
   map_name 'testmap1'
