@@ -2,6 +2,13 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## [13.0.1](https://github.com/sous-chefs/postgresql/compare/v13.0.0...v13.0.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* RHEL 8 repository names for perl-IPC-Run package installation and ident test failures ([#796](https://github.com/sous-chefs/postgresql/issues/796)) ([eb41d89](https://github.com/sous-chefs/postgresql/commit/eb41d8916c17bd15408b20767df8cdc8ffd67c75))
+
 ## [13.0.0](https://github.com/sous-chefs/postgresql/compare/v12.4.0...v13.0.0) (2025-11-20)
 
 
