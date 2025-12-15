@@ -166,7 +166,7 @@ module PostgreSQL
       end
 
       def dnf_module_platform?
-        platform_family?('rhel') && node['platform_version'].to_i == 8
+        platform_family?('rhel') && node['platform_version'].to_i.between?(8, 9)
       end
 
       # determine the appropriate DB init command to run based on RHEL/Amazon release

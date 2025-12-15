@@ -217,6 +217,7 @@ action_class do
   def do_client_package_action(package_action)
     package 'postgresql-client' do
       package_name new_resource.client_packages
+      options '--setopt=install_weak_deps=False' if install_method_repo? && platform_family?('rhel', 'amazon', 'fedora')
       action package_action
 
       notifies :reload, 'ohai[postgresql_client_packages]', :immediately
@@ -237,6 +238,7 @@ action_class do
 
     package 'postgresql-server' do
       package_name new_resource.server_packages
+      options '--setopt=install_weak_deps=False' if install_method_repo? && platform_family?('rhel', 'amazon', 'fedora')
       action package_action
 
       notifies :reload, 'ohai[postgresql_server_packages]', :immediately
