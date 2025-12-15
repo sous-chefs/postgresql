@@ -2,6 +2,26 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## [13.0.0](https://github.com/sous-chefs/postgresql/compare/v12.4.0...v13.0.0) (2025-11-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* Update Chef version requirement from 16+ to 18+ ([#794](https://github.com/sous-chefs/postgresql/issues/794))
+
+### Features
+
+* Support PostgreSQL 17 ([#778](https://github.com/sous-chefs/postgresql/issues/778)) ([58230dd](https://github.com/sous-chefs/postgresql/commit/58230dd487459099902719574bc035bbb6bb3a63))
+* Update Chef version requirement from 16+ to 18+ ([#794](https://github.com/sous-chefs/postgresql/issues/794)) ([60e330e](https://github.com/sous-chefs/postgresql/commit/60e330e4473f2d6e1ccce48404d91019b8c5aae5))
+
+
+### Bug Fixes
+
+* allow multiple users/databases in postgresql_access resources ([#751](https://github.com/sous-chefs/postgresql/issues/751)) ([e9012eb](https://github.com/sous-chefs/postgresql/commit/e9012eb79eb0c136e59bbc1ac5c45cd6fe4cfa37))
+* **ci:** Update workflows to use release pipeline ([#807](https://github.com/sous-chefs/postgresql/issues/807)) ([39d5b91](https://github.com/sous-chefs/postgresql/commit/39d5b911d82b8301691dd0d8face338c527d5f1f))
+* **install:** resolve GPG key verification failures on RHEL platforms ([#810](https://github.com/sous-chefs/postgresql/issues/810)) ([f4de4b5](https://github.com/sous-chefs/postgresql/commit/f4de4b564ae17ae69eb75a8c364fc62c0f5ee138))
+* rerun last release ([#788](https://github.com/sous-chefs/postgresql/issues/788)) for ([#784](https://github.com/sous-chefs/postgresql/issues/784)) ([1eed1e2](https://github.com/sous-chefs/postgresql/commit/1eed1e29ecd080239d35c566661e2684ba4cba7d))
+
 ## [12.4.0](https://github.com/sous-chefs/postgresql/compare/v12.3.5...v12.4.0) (2025-10-16)
 
 
