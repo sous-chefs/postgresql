@@ -4,6 +4,8 @@ control 'postgresql-ident-map' do
 
   describe command("sudo -u shef bash -c \"psql -U sous_chef -d postgres -c 'SELECT 1;'\"") do
     its('exit_status') { should eq 0 }
+    its('stderr') { should eq '' }
+    its('stdout') { should match(/1/) }
   end
 end
 
