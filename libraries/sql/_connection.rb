@@ -151,14 +151,16 @@ module PostgreSQL
 
           host = connection_params.fetch(:host, nil) || :local_socket
           dbname = connection_params.fetch(:dbname, 'postgres')
-          client = node.run_state.dig('postgresql_pg_connection', host, dbname)
+          # Use the actual port that will be used (PG defaults to 5432)
+          port = connection_params.fetch(:port, 5432)
+          client = node.run_state.dig('postgresql_pg_connection', host, port, dbname)
 
           if client.is_a?(::PG::Connection)
-            Chef::Log.info("Returning pre-existing client for #{host}/#{dbname}")
+            Chef::Log.info("Returning pre-existing client for #{host}:#{port}/#{dbname}")
             return client
           end
 
-          Chef::Log.info("Creating client for #{host}/#{dbname}")
+          Chef::Log.info("Creating client for #{host}:#{port}/#{dbname}")
 
           # The Chef Infra Client runs as user `root`. In local connnection
           # mode we have to connect as local user `postgres` to the socket.
@@ -181,9 +183,10 @@ module PostgreSQL
 
           node.run_state['postgresql_pg_connection'] ||= {}
           node.run_state['postgresql_pg_connection'][host] ||= {}
-          node.run_state['postgresql_pg_connection'][host][dbname] = client
+          node.run_state['postgresql_pg_connection'][host][port] ||= {}
+          node.run_state['postgresql_pg_connection'][host][port][dbname] = client
 
-          node.run_state['postgresql_pg_connection'][host][dbname]
+          node.run_state['postgresql_pg_connection'][host][port][dbname]
         end
 
         def execute_sql(query, max_one_result: false)
