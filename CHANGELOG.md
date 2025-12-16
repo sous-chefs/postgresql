@@ -2,6 +2,13 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## [13.0.2](https://github.com/sous-chefs/postgresql/compare/v13.0.1...v13.0.2) (2025-12-16)
+
+
+### Bug Fixes
+
+* key pg connection cache by port ([#817](https://github.com/sous-chefs/postgresql/issues/817)) ([f179db3](https://github.com/sous-chefs/postgresql/commit/f179db3eb4e6fa61a178be24f1021390a7ada566))
+
 ## [13.0.1](https://github.com/sous-chefs/postgresql/compare/v13.0.0...v13.0.1) (2025-12-15)
 
 
