@@ -112,7 +112,7 @@ module PostgreSQL
         end
 
         def drop_database(new_resource)
-          sql = "DROP DATABASE #{new_resource.database}"
+          sql = "DROP #{database_sql(new_resource)}"
           sql.concat(' WITH FORCE') if new_resource.force
           execute_sql(sql)
         end
