@@ -95,4 +95,15 @@ postgresql_database 'test2' do
   action :delete
 end
 
+execute 'createdb "Test3"' do
+  user 'postgres'
+  creates '/tmp/Test3_created'
+end
+
+file '/tmp/Test3_created'
+postgresql_database 'drop Test3' do
+  database 'Test3'
+  action :delete
+end
+
 postgresql_extension 'plpgsql'
