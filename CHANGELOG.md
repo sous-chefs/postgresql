@@ -2,6 +2,13 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## [13.0.4](https://github.com/sous-chefs/postgresql/compare/v13.0.3...v13.0.4) (2026-04-07)
+
+
+### Bug Fixes
+
+* any? on nil error when dropping a database ([c4ca8b7](https://github.com/sous-chefs/postgresql/commit/c4ca8b7e3388fe824afbf808702fbcb2149ac252))
+
 ## [13.0.3](https://github.com/sous-chefs/postgresql/compare/v13.0.2...v13.0.3) (2026-04-07)
 
 
