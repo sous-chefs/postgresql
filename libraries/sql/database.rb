@@ -76,7 +76,7 @@ module PostgreSQL
                          )
                        end
 
-          if properties.any? { |p| property_is_set?(p) }
+          if properties&.any? { |p| property_is_set?(p) }
             sql.push('WITH')
 
             properties.each do |p|
