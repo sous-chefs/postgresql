@@ -2,6 +2,13 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## [13.0.3](https://github.com/sous-chefs/postgresql/compare/v13.0.2...v13.0.3) (2026-04-07)
+
+
+### Bug Fixes
+
+* dropping uppercase database names ([5190a9f](https://github.com/sous-chefs/postgresql/commit/5190a9f3b0c3d8bf504ce3572ad18845c5702a11))
+
 ## [13.0.2](https://github.com/sous-chefs/postgresql/compare/v13.0.1...v13.0.2) (2025-12-16)
 
 
