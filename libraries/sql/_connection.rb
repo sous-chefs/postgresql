@@ -190,10 +190,10 @@ module PostgreSQL
         end
 
         def execute_sql(query, max_one_result: false)
-          Chef::Log.debug("Executing query: #{query}")
+          Chef::Log.debug('Executing PostgreSQL query')
           result = pg_client.exec(query).to_a
 
-          Chef::Log.debug("Got result: #{result}")
+          Chef::Log.debug("PostgreSQL query returned #{result.count} row(s)")
           return if result.empty?
 
           raise "Expected a single result, got #{result.count}" unless result.one? || !max_one_result
@@ -202,10 +202,10 @@ module PostgreSQL
         end
 
         def execute_sql_params(query, params, max_one_result: false)
-          Chef::Log.debug("Executing query: #{query} with params: #{params}")
+          Chef::Log.debug('Executing parameterized PostgreSQL query')
           result = pg_client.exec_params(query, params).to_a
 
-          Chef::Log.debug("Got result: #{result}")
+          Chef::Log.debug("PostgreSQL query returned #{result.count} row(s)")
           return if result.empty?
 
           raise "Expected a single result, got #{result.count}" unless result.one? || !max_one_result

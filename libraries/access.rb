@@ -98,7 +98,7 @@ module PostgreSQL
 
           def to_s(sort: false)
             sort! if sort
-            @entries.map(&:to_s).join("\n")
+            @entries.join("\n")
           end
 
           def add(entry, position = nil)

@@ -139,7 +139,7 @@ module PostgreSQL
 
           def to_s(sort: true)
             sort! if sort
-            @entries.map(&:to_s).join("\n")
+            @entries.join("\n")
           end
 
           def self.read(file = 'pg_ident.conf', sort: true)
