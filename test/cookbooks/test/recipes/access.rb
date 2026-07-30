@@ -137,3 +137,8 @@ postgresql_access 'access with multiple databases' do
   address '127.0.0.1/32'
   auth_method 'scram-sha-256'
 end
+
+postgresql_user 'scram_test_user' do
+  encrypted_password 'SCRAM-SHA-256$4096:27klCUc487uwvJVGKI5YNA==$6K2Y+S3YBlpfRNrLROoO2ulWmnrQoRlGI1GqpNRq0T0=:y4esBVjK/hMtxDB5aWN4ynS1SnQcT1TFTqV0J/snls4='
+  login true
+end

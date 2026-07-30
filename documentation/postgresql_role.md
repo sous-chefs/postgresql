@@ -46,22 +46,25 @@
 
 ## Examples
 
-Create a user `user1` with a password, with `createdb` and set an expiration date to 2018, Dec 21.
+Create a user with a pre-computed SCRAM-SHA-256 verifier. Pass the verifier
+exactly as generated; shell escaping is not required.
 
 ```ruby
-postgresql_role 'user1' do
-  unencrypted_password 'UserP4ssword'
-  createdb true
-  valid_until '2018-12-31'
+postgresql_role 'secure_user' do
+  encrypted_password 'SCRAM-SHA-256$4096:27klCUc487uwvJVGKI5YNA==$6K2Y+S3YBlpfRNrLROoO2ulWmnrQoRlGI1GqpNRq0T0=:y4esBVjK/hMtxDB5aWN4ynS1SnQcT1TFTqV0J/snls4='
+  login true
 end
 ```
 
-Create a user `user1` with a password, with `createdb` and set an expiration date to 2018, Dec 21.
+The verifier is password-equivalent secret material and should be retrieved
+from an encrypted data bag, Chef Vault, or another secrets manager.
+
+Use the `set_password` action when rotating the verifier for an existing role.
 
 ```ruby
-postgresql_role 'user1' do
-  unencrypted_password 'UserP4ssword'
-  createdb true
-  valid_until '2018-12-31'
+postgresql_role 'secure_user password rotation' do
+  rolename 'secure_user'
+  encrypted_password lazy { ::File.read('/run/secrets/postgresql/secure_user').strip }
+  action :set_password
 end
 ```

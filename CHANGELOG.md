@@ -2,6 +2,12 @@
 
 This file is used to list changes made in the last 3 major versions of the postgresql cookbook.
 
+## Unreleased
+
+### Bug Fixes
+
+* Preserve pre-computed SCRAM-SHA-256 role password verifiers
+
 ## [13.0.4](https://github.com/sous-chefs/postgresql/compare/v13.0.3...v13.0.4) (2026-04-07)
 
 

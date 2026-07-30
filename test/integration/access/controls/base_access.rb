@@ -141,3 +141,14 @@ control 'postgresql-access-multiple-auth_options' do
     its('auth_params') { should cmp 'ldapbasedn="dc=example, dc=net" ldapsearchattribute=uid ldapserver=ldap.example.net' }
   end
 end
+
+control 'postgresql-role-preserves-scram-verifier' do
+  impact 1.0
+  desc 'The role resource stores a pre-computed SCRAM-SHA-256 verifier verbatim'
+
+  scram_verifier = 'SCRAM-SHA-256$4096:27klCUc487uwvJVGKI5YNA==$6K2Y+S3YBlpfRNrLROoO2ulWmnrQoRlGI1GqpNRq0T0=:y4esBVjK/hMtxDB5aWN4ynS1SnQcT1TFTqV0J/snls4='
+
+  describe pg_superuser_session.query("SELECT rolpassword FROM pg_authid WHERE rolname = 'scram_test_user';") do
+    its('output') { should eq scram_verifier }
+  end
+end

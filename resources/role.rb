@@ -59,6 +59,7 @@ property :unencrypted_password, String,
           description: 'Sets the role password via a plain text string'
 
 property :encrypted_password, String,
+          sensitive: true,
           description: 'Sets the role password via a pre-encrypted string'
 
 property :valid_until, String,

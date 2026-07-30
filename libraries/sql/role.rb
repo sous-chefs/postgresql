@@ -62,6 +62,16 @@ module PostgreSQL
           authid&.to_a&.pop&.fetch('rolpassword')
         end
 
+        def role_password_sql(new_resource)
+          if new_resource.encrypted_password
+            "ENCRYPTED PASSWORD #{pg_client.escape_literal(new_resource.encrypted_password)}"
+          elsif new_resource.unencrypted_password
+            "PASSWORD #{pg_client.escape_literal(new_resource.unencrypted_password)}"
+          else
+            'PASSWORD NULL'
+          end
+        end
+
         def role_sql(new_resource)
           sql = []
 
@@ -79,13 +89,7 @@ module PostgreSQL
 
           sql.push("CONNECTION LIMIT #{new_resource.connection_limit}")
 
-          if new_resource.encrypted_password
-            sql.push("ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'")
-          elsif new_resource.unencrypted_password
-            sql.push("PASSWORD '#{new_resource.unencrypted_password}'")
-          else
-            sql.push('PASSWORD NULL')
-          end
+          sql.push(role_password_sql(new_resource))
 
           sql.push("VALID UNTIL '#{new_resource.valid_until}'") if new_resource.valid_until
 
@@ -120,13 +124,7 @@ module PostgreSQL
 
           sql.push("ALTER ROLE \"#{new_resource.rolename}\"")
 
-          if new_resource.encrypted_password
-            sql.push("ENCRYPTED PASSWORD '#{new_resource.encrypted_password}'")
-          elsif new_resource.unencrypted_password
-            sql.push("PASSWORD '#{new_resource.unencrypted_password}'")
-          else
-            sql.push('PASSWORD NULL')
-          end
+          sql.push(role_password_sql(new_resource))
 
           execute_sql("#{sql.join(' ').strip};")
         end
