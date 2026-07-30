@@ -8,6 +8,13 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 * Preserve pre-computed SCRAM-SHA-256 role password verifiers
 
+## [13.0.5](https://github.com/sous-chefs/postgresql/compare/v13.0.4...v13.0.5) (2026-07-30)
+
+
+### Bug Fixes
+
+* **role:** preserve SCRAM password verifiers ([#831](https://github.com/sous-chefs/postgresql/issues/831)) ([27c5f41](https://github.com/sous-chefs/postgresql/commit/27c5f4137d2009cf3b0e9a5e5c06bd15fd5b1b74))
+
 ## [13.0.4](https://github.com/sous-chefs/postgresql/compare/v13.0.3...v13.0.4) (2026-04-07)
 
 
