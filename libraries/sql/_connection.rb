@@ -17,12 +17,21 @@
 
 require_relative '../_utils'
 require_relative '../helpers'
+require 'open3'
 require 'rbconfig'
 
 module PostgreSQL
   module Cookbook
     module SqlHelpers
       module Connection
+        PG_GEM_VERSION = '~> 1.4'.freeze
+        HABITAT_PG_GEM_CHECK = <<~RUBY.freeze
+          require 'rubygems'
+          gem 'pg', '#{PG_GEM_VERSION}'
+          require 'pg'
+          exit(Gem.loaded_specs.fetch('pg').platform.to_s == 'ruby' ? 1 : 0)
+        RUBY
+
         private
 
         include PostgreSQL::Cookbook::Utils
@@ -71,8 +80,34 @@ module PostgreSQL
           ::RbConfig.ruby.start_with?('/hab/pkgs/')
         end
 
+        def pg_gem_usable?
+          return gem_installed?('pg') unless habitat_runtime?
+          return true if @postgresql_habitat_pg_gem_usable
+          return false unless gem_installed?('pg')
+
+          # Keep a failed native extension load from activating the bad spec in Chef's process.
+          _, _, status = ::Open3.capture3(
+            {
+              'GEM_HOME' => ::Gem.dir,
+              'GEM_PATH' => ::Gem.path.join(::File::PATH_SEPARATOR),
+            },
+            ::RbConfig.ruby,
+            '-e',
+            HABITAT_PG_GEM_CHECK
+          )
+          @postgresql_habitat_pg_gem_usable = status.success?
+        end
+
         def install_pg_gem
-          return if gem_installed?('pg')
+          return if pg_gem_usable?
+
+          if habitat_runtime? && gem_installed?('pg')
+            declare_resource(:chef_gem, 'Remove incompatible pg gem') do
+              package_name 'pg'
+              compile_time true
+              action :remove
+            end
+          end
 
           libpq_package_name = case installed_postgresql_package_source
                                when :os
@@ -129,7 +164,7 @@ module PostgreSQL
           build_options = pg_gem_build_options
           declare_resource(:chef_gem, 'pg') do
             options build_options unless build_options.nil?
-            version '~> 1.4'
+            version PG_GEM_VERSION
             compile_time true
           end
         end
@@ -147,9 +182,9 @@ module PostgreSQL
         end
 
         def pg_client
-          install_pg_gem unless gem_installed?('pg')
+          install_pg_gem unless pg_gem_usable?
 
-          raise 'pg Gem Missing' unless gem_installed?('pg')
+          raise 'pg Gem Missing' unless pg_gem_usable?
 
           require 'pg' unless defined?(::PG)
 

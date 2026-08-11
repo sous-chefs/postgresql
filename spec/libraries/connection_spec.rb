@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'open3'
 require 'rbconfig'
 require_relative '../../libraries/sql/_connection'
 
@@ -55,7 +56,7 @@ RSpec.describe PostgreSQL::Cookbook::SqlHelpers::Connection do
           @properties = {}
         end
 
-        %i(compile_time options version).each do |property|
+        %i(action compile_time options package_name version).each do |property|
           define_method(property) { |value| @properties[property] = value }
         end
       end
@@ -84,6 +85,58 @@ RSpec.describe PostgreSQL::Cookbook::SqlHelpers::Connection do
           [:chef_gem, 'pg', { version: '~> 1.4', compile_time: true }],
         ]
       )
+    end
+
+    context 'when a prior converge installed an unusable pg gem under Habitat' do
+      let(:failed_status) { instance_double(Process::Status, success?: false) }
+
+      before do
+        allow(helper).to receive(:gem_installed?).with('pg').and_return(true)
+        allow(Open3).to receive(:capture3).and_return(['', '', failed_status])
+      end
+
+      it 'removes the incompatible gem before installing the platform gem' do
+        helper.send(:install_pg_gem)
+
+        expect(declared_resources).to eq(
+          [
+            [:chef_gem, 'Remove incompatible pg gem', { package_name: 'pg', compile_time: true, action: :remove }],
+            [:build_essential, 'Build Essential', { compile_time: true }],
+            [:package, 'libpq-dev', { compile_time: true }],
+            [:chef_gem, 'pg', { version: '~> 1.4', compile_time: true }],
+          ]
+        )
+      end
+    end
+
+    context 'when a healthy platform pg gem is already installed under Habitat' do
+      let(:successful_status) { instance_double(Process::Status, success?: true) }
+
+      before do
+        allow(helper).to receive(:gem_installed?).with('pg').and_return(true)
+        allow(Open3).to receive(:capture3).and_return(['', '', successful_status])
+      end
+
+      it 'does not disturb the installed gem' do
+        helper.send(:install_pg_gem)
+
+        expect(declared_resources).to be_empty
+      end
+    end
+
+    context 'when pg is already installed outside Habitat' do
+      before do
+        allow(RbConfig).to receive(:ruby).and_return('/opt/chef/embedded/bin/ruby')
+        allow(helper).to receive(:gem_installed?).with('pg').and_return(true)
+      end
+
+      it 'retains the existing presence-only behavior' do
+        expect(Open3).not_to receive(:capture3)
+
+        helper.send(:install_pg_gem)
+
+        expect(declared_resources).to be_empty
+      end
     end
   end
 end

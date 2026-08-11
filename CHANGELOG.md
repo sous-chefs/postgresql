@@ -6,7 +6,7 @@ This file is used to list changes made in the last 3 major versions of the postg
 
 ### Bug Fixes
 
-* Use the pg gem's bundled libpq when Chef runs from Habitat
+* Use the pg gem's bundled libpq when Chef runs from Habitat, replacing incompatible source installs
 * Preserve pre-computed SCRAM-SHA-256 role password verifiers
 
 ## [13.0.5](https://github.com/sous-chefs/postgresql/compare/v13.0.4...v13.0.5) (2026-07-30)
