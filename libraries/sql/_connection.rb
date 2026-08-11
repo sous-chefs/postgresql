@@ -17,6 +17,7 @@
 
 require_relative '../_utils'
 require_relative '../helpers'
+require 'rbconfig'
 
 module PostgreSQL
   module Cookbook
@@ -54,6 +55,8 @@ module PostgreSQL
         end
 
         def pg_gem_build_options
+          return if habitat_runtime?
+
           case node['platform_family']
           when 'rhel', 'amazon'
             "--platform ruby -- --with-pg-include=#{postgresql_devel_path('include')} --with-pg-lib=#{postgresql_devel_path('lib')}"
@@ -62,6 +65,10 @@ module PostgreSQL
           else
             raise "Unsupported platform family #{node['platform_family']}"
           end
+        end
+
+        def habitat_runtime?
+          ::RbConfig.ruby.start_with?('/hab/pkgs/')
         end
 
         def install_pg_gem
@@ -121,7 +128,7 @@ module PostgreSQL
 
           build_options = pg_gem_build_options
           declare_resource(:chef_gem, 'pg') do
-            options build_options
+            options build_options unless build_options.nil?
             version '~> 1.4'
             compile_time true
           end
