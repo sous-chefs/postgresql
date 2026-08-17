@@ -53,12 +53,32 @@ module PostgreSQL
           path
         end
 
+        # Debian/Ubuntu install libpq.so under an architecture-specific
+        # multiarch directory (e.g. /usr/lib/x86_64-linux-gnu), not directly
+        # under /usr/lib or /usr/include/postgresql. Ask dpkg directly rather
+        # than guessing from the kernel architecture so this stays correct
+        # across all supported architectures.
+        def postgresql_lib_path
+          multiarch = shell_out!('dpkg-architecture', '-qDEB_HOST_MULTIARCH').stdout.strip
+          "/usr/lib/#{multiarch}"
+        end
+
         def pg_gem_build_options
+          # --disable-new-dtags forces the linker to emit a legacy DT_RPATH
+          # (rather than the modern default DT_RUNPATH) into pg's compiled
+          # C extension. DT_RPATH is inherited by everything subsequently
+          # resolved in that dependency chain, whereas DT_RUNPATH is only
+          # used to resolve the extension's own direct dependency (libpq).
+          # This matters under Chef Infra Client packaged via Habitat: its
+          # Ruby runs under Habitat's own bundled dynamic linker, which does
+          # not share the host's default library search paths. Without
+          # DT_RPATH, libpq.so's own dependencies (libssl, libldap, libkrb5,
+          # etc.) fail to resolve even though libpq.so itself loads fine.
           case node['platform_family']
           when 'rhel', 'amazon'
-            "--platform ruby -- --with-pg-include=#{postgresql_devel_path('include')} --with-pg-lib=#{postgresql_devel_path('lib')}"
+            "--platform ruby -- --with-pg-include=#{postgresql_devel_path('include')} --with-pg-lib=#{postgresql_devel_path('lib')} --with-ldflags=-Wl,--disable-new-dtags"
           when 'debian'
-            "--platform ruby -- --with-pg-include=#{postgresql_devel_path} --with-pg-lib=#{postgresql_devel_path}"
+            "--platform ruby -- --with-pg-include=#{postgresql_devel_path} --with-pg-lib=#{postgresql_lib_path} --with-ldflags=-Wl,--disable-new-dtags"
           else
             raise "Unsupported platform family #{node['platform_family']}"
           end
